@@ -205,8 +205,6 @@ export default function ProjectPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 flex">
-      <MainSidebar />
-
       {/* Sidebar */}
       <div className="w-64 bg-white border-r border-gray-200 flex flex-col">
         {/* Header */}

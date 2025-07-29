@@ -64,7 +64,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
       // Если пользователь авторизован и находится на странице авторизации,
       // перенаправляем его на страницу настроек
-      if (session && window.location.pathname === '/auth-page') {
+      if (session && (window.location.pathname === '/auth-page' || window.location.pathname === '/auth')) {
         router.push('/settings')
       }
     })
@@ -82,10 +82,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     try {
       // Проверка настроек Supabase
       console.log('Supabase URL:', process.env.NEXT_PUBLIC_SUPABASE_URL)
-      console.log('Supabase Key присутствует:', !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY)
+      console.log('Supabase Key присутствует:', !!process.env.NEXT_PUBLIC_SUPABASE_KEY)
       
       const origin = typeof window !== 'undefined' ? window.location.origin : '';
-      console.log('Redirect URL:', `${origin}/auth-page`);
+      console.log('Redirect URL:', `${origin}/auth`);
       
       const { data, error } = await supabase.auth.signInWithOtp({
         email,
@@ -141,7 +141,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const { error } = await supabase.auth.signOut()
     setIsLoading(false)
     if (!error) {
-      router.push('/auth-page')
+      router.push('/auth')
     }
     return { error }
   }

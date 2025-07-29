@@ -7,6 +7,7 @@ import { useEffect } from 'react'
 export default function withAuth<P extends object>(Component: React.ComponentType<P>) {
   return function WithAuth(props: P) {
     const { user, isLoading } = useAuth()
+    console.log(user, isLoading)
     const router = useRouter()
 
     useEffect(() => {

@@ -1,5 +1,6 @@
 import * as React from "react"
 import { cn } from "@/lib/utils"
+import IMask from 'imask'
 
 export interface InputProps
   extends React.InputHTMLAttributes<HTMLInputElement> {
@@ -8,15 +9,114 @@ export interface InputProps
   prefix?: string
   error?: string
   description?: string
+  /** 
+   * Маска для input. Примеры:
+   * - Телефон: '+7 (000) 000-00-00'
+   * - Дата: '00.00.0000' 
+   * - Email: /^[^@]*@?[^@]*$/
+   * - Число: Number
+   */
+  mask?: any
+  /** 
+   * Дополнительные опции для маски
+   * Примеры: { lazy: false, placeholderChar: '_' }
+   */
+  maskOptions?: any
+  /** Вызывается при изменении значения маски */
+  onAccept?: (value: string, maskRef: any) => void
+  /** Вызывается при полном заполнении маски */
+  onComplete?: (value: string, maskRef: any) => void
 }
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
-  ({ className, type, maxLength, showCounter, prefix, error, description, disabled, ...props }, ref) => {
+  ({ 
+    className, 
+    type, 
+    maxLength, 
+    showCounter, 
+    prefix, 
+    error, 
+    description, 
+    disabled, 
+    mask,
+    maskOptions,
+    onAccept,
+    onComplete,
+    onChange,
+    ...props 
+  }, ref) => {
     const [value, setValue] = React.useState(props.value || props.defaultValue || "")
+    const inputRef = React.useRef<HTMLInputElement>(null)
+    const maskRef = React.useRef<any>(null)
+
+    // Объединяем внешний ref с внутренним
+    React.useImperativeHandle(ref, () => inputRef.current!, [])
+
+    // Инициализация и обновление маски
+    React.useEffect(() => {
+      if (mask && inputRef.current) {
+        const maskConfig: any = {
+          mask,
+          ...maskOptions,
+        }
+
+        maskRef.current = IMask(inputRef.current, maskConfig)
+
+        // Обработчики событий маски
+        if (onAccept) {
+          maskRef.current.on('accept', () => {
+            onAccept(maskRef.current.value, maskRef.current)
+          })
+        }
+
+        if (onComplete) {
+          maskRef.current.on('complete', () => {
+            onComplete(maskRef.current.value, maskRef.current)
+          })
+        }
+
+        // Устанавливаем начальное значение
+        if (value) {
+          maskRef.current.value = String(value)
+        }
+
+        return () => {
+          if (maskRef.current) {
+            maskRef.current.destroy()
+            maskRef.current = null
+          }
+        }
+      }
+    }, [mask, maskOptions, onAccept, onComplete])
+
+    // Обновляем значение маски при изменении value извне
+    React.useEffect(() => {
+      if (maskRef.current && value !== maskRef.current.value) {
+        maskRef.current.value = String(value)
+      }
+    }, [value])
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      setValue(e.target.value)
-      props.onChange?.(e)
+      const newValue = e.target.value
+      setValue(newValue)
+      
+      // Если есть маска, используем её значение
+      if (maskRef.current) {
+        const maskedValue = maskRef.current.value
+        setValue(maskedValue)
+        
+        // Создаем событие с замаскированным значением
+        const syntheticEvent = {
+          ...e,
+          target: {
+            ...e.target,
+            value: maskedValue,
+          }
+        }
+        onChange?.(syntheticEvent as React.ChangeEvent<HTMLInputElement>)
+      } else {
+        onChange?.(e)
+      }
     }
 
     return (
@@ -38,9 +138,9 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
                 "disabled:cursor-not-allowed",
                 className
               )}
-              ref={ref}
+              ref={inputRef}
               disabled={disabled}
-              maxLength={maxLength}
+              maxLength={mask ? undefined : maxLength}
               value={value}
               onChange={handleChange}
               {...props}
@@ -57,9 +157,9 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
               error && "border-red-300 focus:ring-red-500",
               className
             )}
-            ref={ref}
+            ref={inputRef}
             disabled={disabled}
-            maxLength={maxLength}
+            maxLength={mask ? undefined : maxLength}
             value={value}
             onChange={handleChange}
             {...props}
@@ -76,7 +176,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
             )}
           </div>
           
-          {showCounter && maxLength && (
+          {showCounter && maxLength && !mask && (
             <div className="text-sm text-gray-500">
               {String(value).length} / {maxLength}
             </div>

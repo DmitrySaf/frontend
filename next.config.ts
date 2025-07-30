@@ -12,6 +12,16 @@ const nextConfig: NextConfig = {
     }
     return config;
   },
+  async redirects() {
+    return [
+      // Basic redirect
+      {
+        source: '/settings',
+        destination: '/settings/general',
+        permanent: true,
+      },
+    ]
+  },
 };
 
 export default nextConfig;

@@ -3,6 +3,7 @@
 import { createContext, useContext, useEffect, useState } from 'react'
 import { User, Session } from '@supabase/supabase-js'
 import { supabase } from '@/lib/supabaseClient'
+import { authAPI } from '@/lib/api'
 import { useRouter } from 'next/navigation'
 
 // Определение типа контекста авторизации
@@ -38,40 +39,37 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     // Получение текущей сессии при загрузке
     const getSession = async () => {
-      const { data: { session }, error } = await supabase.auth.getSession()
-      if (error) {
+      try {
+        // Проверяем наличие токена в localStorage
+        const token = typeof window !== 'undefined' ? localStorage.getItem('supabase_token') : null
+        
+        if (token) {
+          // Проверяем токен через API
+          const result = await authAPI.getSession()
+          console.log('Текущая сессия:', result)
+          
+          if (result.session) {
+            setSession(result.session)
+            setUser(result.user)
+          } else {
+            // Токен невалиден, удаляем его
+            if (typeof window !== 'undefined') {
+              localStorage.removeItem('supabase_token')
+            }
+          }
+        }
+      } catch (error) {
         console.error('Ошибка при получении сессии:', error)
+        // В случае ошибки удаляем токен
+        if (typeof window !== 'undefined') {
+          localStorage.removeItem('supabase_token')
+        }
       }
       
-      setSession(session)
-      setUser(session?.user ?? null)
       setIsLoading(false)
-      
-      // Логируем для отладки
-      console.log('Текущая сессия:', session)
-      console.log('Текущий пользователь:', session?.user)
     }
 
     getSession()
-
-    // Подписка на изменения авторизации
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      console.log('Изменение состояния авторизации:', _event, session)
-      
-      setSession(session)
-      setUser(session?.user ?? null)
-      setIsLoading(false)
-
-      // Если пользователь авторизован и находится на странице авторизации,
-      // перенаправляем его на страницу настроек
-      if (session && (window.location.pathname === '/auth-page' || window.location.pathname === '/auth')) {
-        router.push('/settings')
-      }
-    })
-
-    return () => {
-      subscription.unsubscribe()
-    }
   }, [router])
 
   // Отправка кода на email
@@ -80,25 +78,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     console.log('Отправка OTP на email:', email)
     
     try {
-      // Проверка настроек Supabase
-      console.log('Supabase URL:', process.env.NEXT_PUBLIC_SUPABASE_URL)
-      console.log('Supabase Key присутствует:', !!process.env.NEXT_PUBLIC_SUPABASE_KEY)
-      
-      const origin = typeof window !== 'undefined' ? window.location.origin : '';
-      console.log('Redirect URL:', `${origin}/auth`);
-      
-      const { data, error } = await supabase.auth.signInWithOtp({
-        email,
-        options: {
-          shouldCreateUser: true,
-          // Убираем redirectTo, так как мы используем OTP, а не магические ссылки
-        },
-      })
-      
-      console.log('Результат отправки OTP:', data, error)
+      const result = await authAPI.signInWithEmail(email)
+      console.log('Результат отправки OTP:', result)
       
       setIsLoading(false)
-      return { error }
+      return { error: null }
     } catch (e) {
       console.error('Ошибка при отправке OTP:', e)
       setIsLoading(false)
@@ -112,22 +96,22 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     console.log('Проверка OTP:', email, token)
     
     try {
-      const { data, error } = await supabase.auth.verifyOtp({
-        email,
-        token,
-        type: 'email'
-      })
+      const result = await authAPI.verifyOtp(email, token)
+      console.log('Результат проверки OTP:', result)
       
-      console.log('Результат проверки OTP:', data, error)
-      
-      setIsLoading(false)
-      
-      // Если ошибок нет и пользователь успешно авторизован, перенаправляем на настройки
-      if (!error && (await supabase.auth.getSession()).data.session) {
+      if (result.data?.session) {
+        // Сохраняем токен в localStorage
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('supabase_token', result.data.session.access_token)
+        }
+        
+        setSession(result.data.session)
+        setUser(result.data.session.user)
         router.push('/settings')
       }
       
-      return { error }
+      setIsLoading(false)
+      return { error: null }
     } catch (e) {
       console.error('Ошибка при проверке OTP:', e)
       setIsLoading(false)
@@ -138,12 +122,26 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   // Выход из системы
   const signOut = async () => {
     setIsLoading(true)
-    const { error } = await supabase.auth.signOut()
-    setIsLoading(false)
-    if (!error) {
+    
+    try {
+      await authAPI.signOut()
+      
+      // Удаляем токен из localStorage
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem('supabase_token')
+      }
+      
+      setSession(null)
+      setUser(null)
+      setIsLoading(false)
       router.push('/auth')
+      
+      return { error: null }
+    } catch (e) {
+      console.error('Ошибка при выходе:', e)
+      setIsLoading(false)
+      return { error: e }
     }
-    return { error }
   }
 
   const value = {

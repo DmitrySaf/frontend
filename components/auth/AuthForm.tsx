@@ -7,7 +7,6 @@ import Link from "next/link";
 import { useState } from "react";
 import { useAuth } from "@/lib/context/AuthContext";
 import { useRouter } from "next/navigation";
-import { supabase } from "@/lib/supabaseClient";
 
 export default function AuthForm() {
   const [email, setEmail] = useState("");
@@ -20,29 +19,20 @@ export default function AuthForm() {
   const { signInWithEmail, verifyOtp } = useAuth();
   const router = useRouter();
 
-  // Функция для проверки соединения с Supabase
-  const testSupabaseConnection = async () => {
+  // Функция для проверки соединения с API
+  const testApiConnection = async () => {
     try {
-      setTestResult("Проверка соединения...");
+      setTestResult("Проверка соединения с API...");
       
-      // Проверяем переменные окружения
-      const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-      const key = process.env.NEXT_PUBLIC_SUPABASE_KEY;
+      // Проверяем соединение с API
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/auth/signin`, {
+        method: 'OPTIONS',
+      });
       
-      if (!url || !key) {
-        setTestResult(`Ошибка: Отсутствуют переменные окружения. URL: ${!!url}, KEY: ${!!key}`);
-        return;
-      }
-      
-      // Проверка через запрос к auth API
-      const authResponse = await supabase.auth.getSession();
-      
-      if (authResponse.error) {
-        setTestResult(`Ошибка соединения с Supabase: ${authResponse.error.message}`);
-        console.error('Ошибка соединения с Supabase:', authResponse.error);
+      if (response.ok) {
+        setTestResult("Соединение с API установлено успешно!");
       } else {
-        setTestResult("Соединение с Supabase установлено успешно!");
-        console.log('Соединение с Supabase успешно через auth');
+        setTestResult(`Ошибка соединения с API: ${response.status}`);
       }
     } catch (e) {
       setTestResult(`Критическая ошибка: ${e instanceof Error ? e.message : 'Неизвестная ошибка'}`);
@@ -50,48 +40,7 @@ export default function AuthForm() {
     }
   };
 
-  // Прямой вызов Supabase API для отправки OTP
-  const sendOtpDirectly = async (email: string) => {
-    console.log('Прямая отправка OTP на email:', email);
-    try {
-      const { data, error } = await supabase.auth.signInWithOtp({
-        email,
-        options: {
-          shouldCreateUser: true,
-        },
-      });
-      
-      console.log('Результат прямой отправки OTP:', data, error);
-      return { error };
-    } catch (e) {
-      console.error('Ошибка при прямой отправке OTP:', e);
-      return { error: e };
-    }
-  };
 
-  // Прямой вызов Supabase API для проверки OTP
-  const verifyOtpDirectly = async (email: string, token: string) => {
-    console.log('Прямая проверка OTP:', email, token);
-    try {
-      const { data, error } = await supabase.auth.verifyOtp({
-        email,
-        token,
-        type: 'email'
-      });
-      
-      console.log('Результат прямой проверки OTP:', data, error);
-      
-      // Если ошибок нет и пользователь успешно авторизован, перенаправляем на настройки
-      if (!error && (await supabase.auth.getSession()).data.session) {
-        router.push('/settings');
-      }
-      
-      return { error };
-    } catch (e) {
-      console.error('Ошибка при прямой проверке OTP:', e);
-      return { error: e };
-    }
-  };
 
   const handleSendOtp = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -107,14 +56,7 @@ export default function AuthForm() {
 
     console.log('Отправка кода на email:', email);
     
-    // Попробуем сначала через контекст
-    let result = await signInWithEmail(email);
-    
-    // Если возникла ошибка или контекст не работает, попробуем напрямую
-    if (result.error) {
-      console.log('Ошибка через контекст, пробуем напрямую');
-      result = await sendOtpDirectly(email);
-    }
+    const result = await signInWithEmail(email);
     
     setIsLoading(false);
 
@@ -142,14 +84,7 @@ export default function AuthForm() {
 
     console.log('Проверка кода:', email, otpCode);
     
-    // Попробуем сначала через контекст
-    let result = await verifyOtp(email, otpCode);
-    
-    // Если возникла ошибка или контекст не работает, попробуем напрямую
-    if (result.error) {
-      console.log('Ошибка при проверке через контекст, пробуем напрямую');
-      result = await verifyOtpDirectly(email, otpCode);
-    }
+    const result = await verifyOtp(email, otpCode);
     
     setIsLoading(false);
 
@@ -202,10 +137,10 @@ export default function AuthForm() {
           {process.env.NODE_ENV === 'development' && (
             <button 
               type="button"
-              onClick={testSupabaseConnection}
+              onClick={testApiConnection}
               className="w-full mt-2 text-xs text-gray-500 underline"
             >
-              Проверить соединение с Supabase
+              Проверить соединение с API
             </button>
           )}
         </form>

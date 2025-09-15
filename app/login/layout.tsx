@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "../globals.css";
-import { StagewiseToolbar } from "@stagewise/toolbar-next";
 import MainSidebar from "@/components/common/sidebar";
 
 const geistSans = Geist({

@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { projectsAPI } from "@/lib/api";
 import { useState } from "react";
 
 interface ProjectData {
@@ -17,15 +18,41 @@ export default function CreateProjectForm() {
     uniqueName: "",
     description: "",
   });
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleComplete = () => {
-    console.log("Проект создан:", projectData);
-    // Здесь будет логика создания проекта
+  const handleComplete = async () => {
+    if (!projectData.displayName || !projectData.uniqueName) {
+      setError("Заполните обязательные поля");
+      return;
+    }
+
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const result = await projectsAPI.createProject(projectData);
+      console.log("Проект создан:", result);
+      
+      // Можно добавить редирект или показать успешное сообщение
+      // router.push('/projects');
+    } catch (e) {
+      console.error("Ошибка при создании проекта:", e);
+      setError(e instanceof Error ? e.message : "Ошибка при создании проекта");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
     <div className="w-full max-w-md bg-white rounded-xl shadow-sm p-8 space-y-4">
       <h1 className="text-2xl font-bold text-gray-900">Создание проекта</h1>
+      
+      {error && (
+        <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-red-600 text-sm">
+          {error}
+        </div>
+      )}
 
       <div className="space-y-2">
         <label className="block text-sm font-medium text-gray-700">
@@ -77,9 +104,10 @@ export default function CreateProjectForm() {
 
       <Button
         onClick={handleComplete}
-        className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 px-4 rounded-lg font-medium text-base h-auto"
+        disabled={isLoading}
+        className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 px-4 rounded-lg font-medium text-base h-auto disabled:opacity-70 disabled:cursor-not-allowed"
       >
-        Создать
+        {isLoading ? "Создание..." : "Создать"}
       </Button>
     </div>
   );

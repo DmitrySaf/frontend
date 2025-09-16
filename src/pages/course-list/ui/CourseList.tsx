@@ -1,7 +1,41 @@
+'use client'
+
 import { Button } from "@/shared/components";
-import { BookOpen, FileText, Play } from "lucide-react";
+import { useCourses } from "@/entities/course";
+import { BookOpen, FileText, Play, Loader2 } from "lucide-react";
 
 export default function CourseList() {
+  const { data: coursesData, isLoading, error } = useCourses();
+
+  if (isLoading) {
+    return (
+      <div className="flex-1 flex items-center justify-center">
+        <div className="text-center space-y-4">
+          <Loader2 className="w-8 h-8 animate-spin mx-auto text-blue-500" />
+          <p className="text-gray-600">Загружаем курсы...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex-1 flex items-center justify-center">
+        <div className="text-center space-y-4">
+          <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mx-auto">
+            <span className="text-red-500 text-xl">⚠️</span>
+          </div>
+          <div>
+            <h2 className="text-lg font-semibold text-gray-900">Ошибка загрузки</h2>
+            <p className="text-gray-600">Не удалось загрузить курсы</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  console.log('📚 Courses data:', coursesData);
+
   return (
     <div className="flex-1 flex">
       {/* Course Content */}

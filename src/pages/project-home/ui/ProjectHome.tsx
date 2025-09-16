@@ -1,9 +1,89 @@
+'use client'
+
+import { useProjects, useProject } from "@/entities/project";
+import { Loader2 } from "lucide-react";
+import { useParams } from "next/navigation";
+
 export default function ProjectHome() {
+  const params = useParams();
+  const projectSlug = params?.slug as string;
+  
+  const { data: projectsData } = useProjects();
+  const { data: projectData, isLoading, error } = useProject(projectSlug);
+
+  console.log('🏠 Project Home - Projects list:', projectsData);
+  console.log('🚀 Project Home - Current project:', projectData);
+
+  if (isLoading) {
+    return (
+      <div className="flex-1 p-6">
+        <h1 className="text-2xl font-bold text-gray-900 mb-6">Главная</h1>
+        <div className="bg-white rounded-xl border border-gray-200 p-6 flex items-center justify-center">
+          <div className="text-center space-y-4">
+            <Loader2 className="w-8 h-8 animate-spin mx-auto text-blue-500" />
+            <p className="text-gray-600">Загружаем проект...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex-1 p-6">
+        <h1 className="text-2xl font-bold text-gray-900 mb-6">Главная</h1>
+        <div className="bg-white rounded-xl border border-gray-200 p-6 flex items-center justify-center">
+          <div className="text-center space-y-4">
+            <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mx-auto">
+              <span className="text-red-500 text-xl">⚠️</span>
+            </div>
+            <div>
+              <h2 className="text-lg font-semibold text-gray-900">Ошибка загрузки</h2>
+              <p className="text-gray-600">Не удалось загрузить проект</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex-1 p-6">
-      <h1 className="text-2xl font-bold text-gray-900 mb-6">Главная</h1>
-      <div className="bg-white rounded-xl border border-gray-200 p-6">
-        <p className="text-gray-500">Добро пожаловать в ваш проект</p>
+      <h1 className="text-2xl font-bold text-gray-900 mb-6">
+        {projectData?.name || 'Главная'}
+      </h1>
+      
+      <div className="space-y-6">
+        <div className="bg-white rounded-xl border border-gray-200 p-6">
+          <h2 className="text-xl font-semibold text-gray-900 mb-4">О проекте</h2>
+          <p className="text-gray-600 mb-4">
+            {projectData?.description || 'Добро пожаловать в ваш проект'}
+          </p>
+          
+          {projectData && (
+            <div className="space-y-2 text-sm text-gray-500">
+              <p>Статус: <span className="font-medium">{projectData.status}</span></p>
+              <p>Участников: <span className="font-medium">{projectData.members?.length || 0}</span></p>
+              <p>Создан: <span className="font-medium">
+                {new Date(projectData.createdAt).toLocaleDateString('ru-RU')}
+              </span></p>
+            </div>
+          )}
+        </div>
+
+        {projectData?.members && (
+          <div className="bg-white rounded-xl border border-gray-200 p-6">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Участники проекта</h3>
+            <div className="space-y-2">
+              {projectData.members.map((member: any) => (
+                <div key={member.id} className="flex items-center justify-between p-2 bg-gray-50 rounded-lg">
+                  <span className="font-medium text-gray-900">{member.name}</span>
+                  <span className="text-sm text-gray-500 capitalize">{member.role}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

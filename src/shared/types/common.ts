@@ -19,6 +19,36 @@ export interface Project extends BaseEntity {
   ownerId: string;
 }
 
+// Расширенные типы для моковых данных
+export interface ProjectMock {
+  id: string;
+  name: string;
+  description: string;
+  status: 'active' | 'completed' | 'in_progress' | 'archived';
+  members?: ProjectMember[];
+  settings?: ProjectSettings;
+}
+
+export interface ProjectMember {
+  id: string;
+  name: string;
+  role: 'owner' | 'admin' | 'member' | 'viewer';
+}
+
+export interface ProjectSettings {
+  isPublic: boolean;
+  allowComments: boolean;
+  autoSave: boolean;
+}
+
+// API Response для списка проектов
+export interface ProjectsResponse {
+  projects: ProjectMock[];
+  total: number;
+  page: number;
+  limit: number;
+}
+
 // API Response types
 export interface ApiResponse<T = any> {
   data?: T;

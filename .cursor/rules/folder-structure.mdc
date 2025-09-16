@@ -60,6 +60,63 @@ This project follows a modular architecture pattern for Next.js applications wit
 - Data fetching and side effects should live in slice `api/` or server components; pass data to `ui` via typed props.
 - Keep Next.js-specific concerns (`generateMetadata`, `generateStaticParams`, route handlers) in `app/` files. Do not leak framework details into slices.
 - Public API boundaries: expose only what is needed via each slice `index.ts`. Hide internals.
+- **Domain-specific logic placement**: All domain-specific logic (API functions, query keys, prefetch functions, hooks) MUST be placed in the corresponding domain slice (`entities/` or `features/`), NOT in `shared`.
+
+## Data Fetching Layer Structure
+
+Each entity (`entities/`) or feature (`features/`) must follow this structure for data management:
+
+```
+src/
+  entities/
+    {entity}/
+      api/
+        api.ts          # Pure API functions (getCourses, getCourse)
+        queries.ts      # React Query hooks and prefetch functions
+        constants.ts    # Query keys for typed caching
+        index.ts        # API layer exports
+      model/
+        useSSR{Entity}.ts  # SSR hooks for server components
+        index.ts        # Model layer exports
+      ui/
+        {Entity}Card.tsx   # UI components
+        index.ts        # UI layer exports
+      index.ts          # Public entity API
+```
+
+### Data Layer File Responsibilities
+
+#### `api/api.ts` - Pure API Functions
+
+- Contains only API calls, no React Query logic
+- Same functions used for both server and client
+- Example: `getCourses()`, `getCourse(id)`
+
+#### `api/constants.ts` - Query Keys
+
+- Typed query keys for caching
+- Pattern: `{entity}QueryKeys = { items: ['items'] as const }`
+
+#### `api/queries.ts` - React Query Integration
+
+- Client-side hooks (`useCourses()`)
+- Server-side prefetch functions (`prefetchCoursesData()`)
+- All React Query logic centralized here
+
+#### `model/useSSR{Entity}.ts` - SSR Hooks
+
+- Server-side hooks using `useSSRQuery` from shared
+- Domain-specific SSR logic
+- Used in server components for data prefetching
+
+### Shared Layer for Data
+
+#### `shared/composables/useSSRQuery.ts`
+
+- Universal SSR hook to eliminate boilerplate
+- Takes API function and prefetch function as parameters
+- Returns dehydrated state for client hydration
+
 - **Shared layer imports**: Always import from `shared` through index.ts files, never directly from files:
   - ✅ `import { Button } from '@/shared/components'`
   - ✅ `import { cn } from '@/shared/utils'`

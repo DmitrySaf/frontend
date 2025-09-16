@@ -1,8 +1,9 @@
 "use client";
 
 import { Button } from "@/shared/components";
-import { Edit2 } from "lucide-react";
-import { useState } from "react";
+import { useUserSettings, useUpdateUserSettings } from "@/features/settings";
+import { Edit2, Loader2 } from "lucide-react";
+import { useState, useEffect } from "react";
 import type { UserFormData } from "../model/types";
 
 interface SettingsGeneralProps {
@@ -14,6 +15,9 @@ export function SettingsGeneral({
   initialData = {}, 
   onSave 
 }: SettingsGeneralProps) {
+  const { data: settingsData, isLoading, error } = useUserSettings();
+  const updateSettings = useUpdateUserSettings();
+
   const [formData, setFormData] = useState<UserFormData>({
     name: "Arkadiy",
     bio: "",
@@ -24,10 +28,57 @@ export function SettingsGeneral({
     ...initialData,
   });
 
+  // Обновляем данные формы когда загружаются настройки
+  useEffect(() => {
+    if (settingsData?.user) {
+      setFormData(prev => ({
+        ...prev,
+        name: settingsData.user.name || prev.name,
+        email: settingsData.user.email || prev.email,
+        bio: (settingsData.user as any).bio || prev.bio,
+        username: (settingsData.user as any).username || prev.username,
+      }));
+    }
+  }, [settingsData]);
+
   const handleSave = () => {
-    onSave?.(formData);
-    console.log("Настройки сохранены:", formData);
+    console.log("Сохраняем настройки:", formData);
+    
+    updateSettings.mutate(formData, {
+      onSuccess: () => {
+        onSave?.(formData);
+      }
+    });
   };
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center p-8">
+        <div className="text-center space-y-4">
+          <Loader2 className="w-8 h-8 animate-spin mx-auto text-blue-500" />
+          <p className="text-gray-600">Загружаем настройки...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center p-8">
+        <div className="text-center space-y-4">
+          <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mx-auto">
+            <span className="text-red-500 text-xl">⚠️</span>
+          </div>
+          <div>
+            <h2 className="text-lg font-semibold text-gray-900">Ошибка загрузки</h2>
+            <p className="text-gray-600">Не удалось загрузить настройки</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  console.log('⚙️ Settings data:', settingsData);
 
   return (
     <div className="space-y-8">
@@ -136,9 +187,17 @@ export function SettingsGeneral({
 
         <Button
           onClick={handleSave}
-          className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 px-4 rounded-xl font-medium text-base h-auto"
+          disabled={updateSettings.isPending}
+          className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 px-4 rounded-xl font-medium text-base h-auto disabled:opacity-50"
         >
-          Сохранить
+          {updateSettings.isPending ? (
+            <>
+              <Loader2 className="w-4 h-4 animate-spin mr-2" />
+              Сохраняем...
+            </>
+          ) : (
+            'Сохранить'
+          )}
         </Button>
       </div>
     </div>

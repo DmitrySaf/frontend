@@ -1,0 +1,188 @@
+---
+description: "Data fetching architecture and patterns"
+alwaysApply: false
+---
+
+# Data Fetching Patterns
+
+Паттерны и примеры использования архитектуры данных в проекте. Структура слоев описана в [folder-structure.mdc](mdc:folder-structure.mdc).
+
+## Примеры реализации
+
+#### 1. `api/api.ts` - Чистые API функции
+
+```typescript
+// Только API вызовы, без React Query логики
+export const getCourses = async () => {
+  return mockRequest(data, options);
+};
+
+export const getCourse = async (id: string) => {
+  return mockRequest(data, options);
+};
+```
+
+#### 2. `api/constants.ts` - Query Keys
+
+```typescript
+// Query keys для типизированного кэширования
+export const courseQueryKeys = {
+  courses: ["courses"] as const,
+  course: (id: string) => ["courses", id] as const,
+} as const;
+```
+
+#### 3. `api/queries.ts` - React Query хуки и prefetch
+
+```typescript
+// Клиентские хуки и серверные prefetch функции
+export const useCourses = () => {
+  return useQuery({
+    queryKey: courseQueryKeys.courses,
+    queryFn: getCourses,
+    staleTime: 1000 * 60 * 5,
+  });
+};
+
+export const prefetchCoursesData = async (
+  queryClient: QueryClient,
+  data: any
+) => {
+  await queryClient.prefetchQuery({
+    queryKey: courseQueryKeys.courses,
+    queryFn: () => Promise.resolve(data),
+    staleTime: 1000 * 60 * 5,
+  });
+};
+```
+
+#### 4. `api/index.ts` - Экспорты API слоя
+
+```typescript
+export * from "./api";
+export * from "./queries";
+export * from "./constants";
+```
+
+### Model слой - SSR хуки
+
+#### `model/useSSR{Entity}.ts` - Серверные хуки
+
+```typescript
+import { useSSRQuery } from "@/shared/composables";
+import { getCourses, prefetchCoursesData } from "../api";
+
+export const useSSRCourses = () => {
+  return useSSRQuery(getCourses, prefetchCoursesData);
+};
+```
+
+## Shared слой
+
+### `shared/composables/useSSRQuery.ts` - Универсальный SSR хук
+
+```typescript
+// Общий хук для SSR, избавляет от дублирования кода
+export const useSSRQuery = async <TData>(
+  apiFunction: () => Promise<TData>,
+  prefetchFunction: (queryClient: QueryClient, data: TData) => Promise<void>
+) => {
+  const queryClient = new QueryClient({...})
+  const data = await apiFunction()
+  await prefetchFunction(queryClient, data)
+  const dehydratedState = dehydrate(queryClient)
+
+  return { dehydratedState, data }
+}
+```
+
+## Использование в серверных компонентах
+
+### Простые случаи
+
+```typescript
+// app/(authenticated)/projects/[slug]/courses/page.tsx
+import { useSSRCourses } from "@/entities/course";
+
+export default async function CoursesPage() {
+  const { dehydratedState } = await useSSRCourses();
+
+  return (
+    <HydrationBoundary state={dehydratedState}>
+      <CourseList />
+    </HydrationBoundary>
+  );
+}
+```
+
+### Сложные случаи (несколько запросов)
+
+```typescript
+// Создаем специальный хук в model слое
+export const useSSRProjectWithList = async (projectId: string) => {
+  const queryClient = new QueryClient({...})
+
+  const [projectsData, projectData] = await Promise.all([
+    getProjects(),
+    getProject(projectId)
+  ])
+
+  await Promise.all([
+    prefetchProjectsData(queryClient, projectsData),
+    prefetchProjectData(queryClient, projectId, projectData)
+  ])
+
+  return { dehydratedState: dehydrate(queryClient) }
+}
+```
+
+## Использование в клиентских компонентах
+
+### Импорты из API слоя
+
+```typescript
+// pages/course-list/ui/CourseList.tsx
+"use client";
+
+import { useCourses } from "@/entities/course";
+
+export default function CourseList() {
+  const { data, isLoading, error } = useCourses();
+  // ...
+}
+```
+
+## Best Practices
+
+### ✅ Правильные паттерны
+
+- Используйте `useSSRQuery` для упрощения серверных компонентов
+- Импортируйте хуки из API слоя: `import { useCourses } from "@/entities/course"`
+- Создавайте специализированные SSR хуки для сложных случаев
+- Используйте типизированные query keys из constants
+
+### ❌ Антипаттерны
+
+- Дублирование API функций для сервера/клиента
+- Размещение доменной логики в `shared` слое
+- Прямые импорты в обход публичных API
+- Создание отдельных серверных/клиентских версий хуков
+
+## Преимущества подхода
+
+1. **DRY принцип** - один API для сервера и клиента
+2. **Типизированное кэширование** - безопасность query keys
+3. **Упрощенный SSR** - универсальный хук убирает boilerplate
+4. **Четкая инкапсуляция** - вся логика домена в его слое
+5. **Легкое тестирование** - изолированные API функции
+
+## Миграция существующего кода
+
+При добавлении новой сущности или обновлении существующей:
+
+1. Создайте `api/api.ts` с чистыми API функциями
+2. Создайте `api/constants.ts` с query keys
+3. Создайте `api/queries.ts` с хуками и prefetch функциями
+4. Создайте `model/useSSR{Entity}.ts` с SSR хуком
+5. Обновите серверные компоненты для использования SSR хука
+6. Обновите клиентские компоненты для импорта из API слоя

@@ -1,6 +1,6 @@
 'use client'
 
-import { useProjects, useProject } from "@/entities/project";
+import { useProjects, useProject, useProjectsRealtime } from "@/entities/project";
 import { Loader2 } from "lucide-react";
 import { useParams } from "next/navigation";
 
@@ -10,6 +10,9 @@ export default function ProjectHome() {
   
   const { data: projectsData } = useProjects();
   const { data: projectData, isLoading, error } = useProject(projectSlug);
+  
+  // Подключаем realtime подписку для автоматического обновления
+  useProjectsRealtime(true);
 
   console.log('🏠 Project Home - Projects list:', projectsData);
   console.log('🚀 Project Home - Current project:', projectData);
@@ -65,7 +68,7 @@ export default function ProjectHome() {
               <p>Статус: <span className="font-medium">{projectData.status}</span></p>
               <p>Участников: <span className="font-medium">{projectData.members?.length || 0}</span></p>
               <p>Создан: <span className="font-medium">
-                {new Date(projectData.createdAt).toLocaleDateString('ru-RU')}
+                {projectData.createdAt ? new Date(projectData.createdAt).toLocaleDateString('ru-RU') : 'Не указано'}
               </span></p>
             </div>
           )}

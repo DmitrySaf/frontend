@@ -1,7 +1,16 @@
+'use client'
+
 import { Button } from "@/shared/components";
 import { Bell, HelpCircle, Home, Plus, Search } from "lucide-react";
+import { useQueryState } from "nuqs";
 
 export default function MainSidebar() {
+  const [, setCreateParam] = useQueryState('create')
+
+  const handleCreateProject = () => {
+    setCreateParam('project')
+  }
+
   return (
     <div className="w-16 bg-white border-r border-gray-200 flex flex-col items-center py-4">
       {/* Logo */}
@@ -10,7 +19,10 @@ export default function MainSidebar() {
       </div>
 
       {/* Add Project Button */}
-      <Button className="w-10 h-10 bg-blue-600 hover:bg-blue-700 rounded-xl mb-6 p-0">
+      <Button 
+        className="w-10 h-10 bg-blue-600 hover:bg-blue-700 rounded-xl mb-6 p-0"
+        onClick={handleCreateProject}
+      >
         <Plus className="w-5 h-5 text-white" />
       </Button>
 

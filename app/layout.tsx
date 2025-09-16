@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { QueryProvider } from "@/shared/components";
+import { QueryProvider, Toaster } from "@/shared/components";
+import { NuqsAdapter } from 'nuqs/adapters/next/app';
 // import { StagewiseToolbar } from "@stagewise/toolbar-next";
 
 const geistSans = Geist({
@@ -31,10 +32,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <QueryProvider>
-          {children}
-          {/* {process.env.NODE_ENV === "development" && <StagewiseToolbar config={stagewiseConfig} />} */}
-        </QueryProvider>
+        <NuqsAdapter>
+          <QueryProvider>
+            {children}
+            <Toaster />
+            {/* {process.env.NODE_ENV === "development" && <StagewiseToolbar config={stagewiseConfig} />} */}
+          </QueryProvider>
+        </NuqsAdapter>
       </body>
     </html>
   );

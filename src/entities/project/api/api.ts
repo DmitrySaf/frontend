@@ -1,5 +1,5 @@
-import { mockRequest } from '@/shared/utils'
-import type { ProjectsResponse, ProjectMock } from '@/shared/types'
+import { apiClient } from '@/shared/config'
+import type { ProjectsResponse, ProjectAPI } from '@/shared/types'
 
 /**
  * Получение списка проектов
@@ -10,51 +10,12 @@ export const getProjects = async (): Promise<ProjectsResponse> => {
   const startTime = Date.now()
   
   try {
-    const result = await mockRequest<ProjectsResponse>(
-      {
-        projects: [
-          { 
-            id: '1', 
-            name: 'Project Alpha', 
-            description: 'Первый проект для демонстрации возможностей платформы', 
-            status: 'active',
-            members: [
-              { id: '1', name: 'Алексей Иванов', role: 'owner' },
-              { id: '2', name: 'Мария Петрова', role: 'admin' },
-              { id: '3', name: 'Дмитрий Сидоров', role: 'member' }
-            ]
-          },
-          { 
-            id: '2', 
-            name: 'Project Beta', 
-            description: 'Второй проект с расширенным функционалом', 
-            status: 'completed',
-            members: [
-              { id: '1', name: 'Алексей Иванов', role: 'owner' },
-              { id: '4', name: 'Елена Козлова', role: 'member' }
-            ]
-          },
-          { 
-            id: '3', 
-            name: 'Project Gamma', 
-            description: 'Третий проект в разработке', 
-            status: 'in_progress',
-            members: [
-              { id: '1', name: 'Алексей Иванов', role: 'owner' }
-            ]
-          }
-        ],
-        total: 3,
-        page: 1,
-        limit: 10
-      },
-      { delay: 900, successRate: 0.95 }
-    )
+    const response = await apiClient.get<ProjectsResponse>('/projects')
     
     const duration = Date.now() - startTime
-    console.log(`✅ [Client API] Projects loaded successfully in ${duration}ms:`, result.projects?.length || 0)
+    console.log(`✅ [Client API] Projects loaded successfully in ${duration}ms:`, response.data?.length || 0)
     
-    return result
+    return response.data
   } catch (error) {
     const duration = Date.now() - startTime
     console.error(`❌ [Client API] Failed to load projects after ${duration}ms:`, error)
@@ -65,27 +26,68 @@ export const getProjects = async (): Promise<ProjectsResponse> => {
 /**
  * Получение единичного проекта
  */
-export const getProject = async (id: string) => {
-  console.log(`🚀 Fetching project with id: ${id}...`)
+export const getProject = async (id: string): Promise<ProjectAPI> => {
+  console.log(`🚀 [Client API] Fetching project with id: ${id}...`)
   
-  return mockRequest(
-    {
-      id,
-      name: `Project ${id}`,
-      description: `Описание проекта ${id}`,
-      status: 'active',
-      members: [
-        { id: '1', name: 'Участник 1', role: 'owner' },
-        { id: '2', name: 'Участник 2', role: 'member' }
-      ],
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-      settings: {
-        isPublic: true,
-        allowComments: true,
-        autoSave: true
-      }
-    },
-    { delay: 600 }
-  )
+  const startTime = Date.now()
+  
+  try {
+    const response = await apiClient.get<ProjectAPI>(`/projects/${id}`)
+    
+    const duration = Date.now() - startTime
+    console.log(`✅ [Client API] Project loaded successfully in ${duration}ms:`, response.data.displayName)
+    
+    return response.data
+  } catch (error) {
+    const duration = Date.now() - startTime
+    console.error(`❌ [Client API] Failed to load project after ${duration}ms:`, error)
+    throw error
+  }
+}
+
+/**
+ * Создание нового проекта
+ */
+export interface CreateProjectData {
+  displayName: string
+  name: string
+}
+
+export const createProject = async (data: CreateProjectData): Promise<ProjectAPI> => {
+  console.log('🚀 [Client API] Creating project...', data)
+  
+  const startTime = Date.now()
+  
+  try {
+    const response = await apiClient.post<ProjectAPI>('/projects', data)
+    
+    const duration = Date.now() - startTime
+    console.log(`✅ [Client API] Project created successfully in ${duration}ms:`, response.data.displayName)
+    
+    return response.data
+  } catch (error) {
+    const duration = Date.now() - startTime
+    console.error(`❌ [Client API] Failed to create project after ${duration}ms:`, error)
+    throw error
+  }
+}
+
+/**
+ * Удаление проекта
+ */
+export const deleteProject = async (name: string): Promise<void> => {
+  console.log(`🚀 [Client API] Deleting project with name: ${name}...`)
+  
+  const startTime = Date.now()
+  
+  try {
+    await apiClient.delete(`/projects/${name}`)
+    
+    const duration = Date.now() - startTime
+    console.log(`✅ [Client API] Project deleted successfully in ${duration}ms`)
+  } catch (error) {
+    const duration = Date.now() - startTime
+    console.error(`❌ [Client API] Failed to delete project after ${duration}ms:`, error)
+    throw error
+  }
 }

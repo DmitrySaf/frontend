@@ -152,6 +152,11 @@ export default function CourseList() {
 }
 ```
 
+## Связанные правила
+
+- [data-actions.mdc](mdc:data-actions.mdc) - Паттерны мутаций и действий пользователя
+- [supabase-realtime.mdc](mdc:supabase-realtime.mdc) - Интеграция realtime обновлений
+
 ## Best Practices
 
 ### ✅ Правильные паттерны
@@ -160,6 +165,7 @@ export default function CourseList() {
 - Импортируйте хуки из API слоя: `import { useCourses } from "@/entities/course"`
 - Создавайте специализированные SSR хуки для сложных случаев
 - Используйте типизированные query keys из constants
+- Интегрируйте realtime подписки для автоматического обновления данных
 
 ### ❌ Антипаттерны
 
@@ -167,6 +173,7 @@ export default function CourseList() {
 - Размещение доменной логики в `shared` слое
 - Прямые импорты в обход публичных API
 - Создание отдельных серверных/клиентских версий хуков
+- Ручная инвалидация кэша в мутациях (используйте realtime)
 
 ## Преимущества подхода
 

@@ -57,3 +57,4 @@ export const prefetchProjectData = async (queryClient: QueryClient, id: string, 
     staleTime: 1000 * 60 * 10,
   })
 }
+

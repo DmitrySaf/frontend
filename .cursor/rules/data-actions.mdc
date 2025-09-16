@@ -1,0 +1,283 @@
+---
+description: "Data mutations architecture and patterns"
+---
+
+# Data Actions & Mutations Architecture
+
+Этот документ описывает единый подход к работе с мутациями данных, модальными окнами, уведомлениями и действиями пользователя.
+
+## Принципы
+
+- **Атомарность**: Каждая мутация выполняет одно конкретное действие
+- **Переиспользуемость**: Мутации можно использовать в разных компонентах
+- **Гибкость**: Поддержка различных сценариев использования
+- **Единообразие**: Одинаковый подход во всех доменах
+
+## Структура мутаций
+
+### Расположение файлов
+
+```
+entities/
+  {entity}/
+    api/
+      mutations.ts    # React Query мутации
+      api.ts         # Pure API функции
+```
+
+### Пример структуры мутации
+
+```typescript
+// entities/project/api/mutations.ts
+import { useMutation } from "@tanstack/react-query";
+import { toast } from "sonner";
+import { createProject, CreateProjectData } from "./api";
+
+export const useCreateProject = () => {
+  return useMutation({
+    mutationFn: createProject,
+    onSuccess: (data) => {
+      // Realtime подписка автоматически обновит кэш
+      // Только логирование успеха
+      console.log("✅ Project created successfully");
+    },
+    onError: (error) => {
+      // Показываем ошибку пользователю
+      toast.error("Ошибка при создании проекта", {
+        description:
+          error instanceof Error ? error.message : "Попробуйте еще раз",
+      });
+      console.error("❌ Failed to create project:", error);
+    },
+  });
+};
+```
+
+## Правила для мутаций
+
+### 1. Не инвалидируйте кэш вручную
+
+❌ **Плохо:**
+
+```typescript
+onSuccess: (data) => {
+  queryClient.invalidateQueries({ queryKey: projectQueryKeys.projects });
+  toast.success("Успех!");
+};
+```
+
+✅ **Хорошо:**
+
+```typescript
+onSuccess: (data) => {
+  // Realtime подписка автоматически обновит кэш при INSERT/UPDATE/DELETE
+  console.log("✅ Operation completed successfully");
+};
+```
+
+### 2. Обрабатывайте ошибки через toast
+
+```typescript
+onError: (error) => {
+  toast.error("Заголовок ошибки", {
+    description: error instanceof Error ? error.message : "Общее сообщение",
+  });
+  console.error("❌ Operation failed:", error);
+};
+```
+
+### 3. Логируйте операции
+
+```typescript
+// В API функциях
+console.log("🚀 [Client API] Starting operation...", data);
+console.log("✅ [Client API] Operation completed successfully");
+console.error("❌ [Client API] Operation failed:", error);
+```
+
+## Модальные окна
+
+### Структура модальных компонентов
+
+```
+features/
+  {feature-name}/
+    ui/
+      CreateEntityModal.tsx
+      DeleteEntityModal.tsx
+      EditEntityModal.tsx
+```
+
+### Паттерн модального окна
+
+```typescript
+interface DeleteEntityModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  entityId: string | null;
+  entityName: string | null;
+}
+
+export default function DeleteEntityModal({
+  isOpen,
+  onClose,
+  entityId,
+  entityName,
+}: DeleteEntityModalProps) {
+  const deleteEntity = useDeleteEntity();
+
+  const handleDelete = async () => {
+    if (!entityId) return;
+
+    try {
+      await deleteEntity.mutateAsync(entityId);
+      onClose(); // Закрываем модалку после успеха
+    } catch (error) {
+      // Ошибка обрабатывается в мутации
+    }
+  };
+
+  return (
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Удалить {entityName}?</DialogTitle>
+          <DialogDescription>Это действие нельзя отменить</DialogDescription>
+        </DialogHeader>
+
+        <DialogFooter>
+          <Button variant="outline" onClick={onClose}>
+            Отмена
+          </Button>
+          <Button
+            variant="destructive"
+            onClick={handleDelete}
+            disabled={deleteEntity.isPending}
+          >
+            {deleteEntity.isPending ? "Удаление..." : "Удалить"}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
+```
+
+## Уведомления (Toast)
+
+### Типы уведомлений
+
+```typescript
+// Успешные операции (показываются через realtime хуки)
+toast.success("Операция выполнена!", {
+  description: "Детали операции",
+});
+
+// Ошибки (показываются в мутациях)
+toast.error("Ошибка операции", {
+  description: "Описание ошибки или совет",
+});
+
+// Информационные (обновления)
+toast.info("Данные обновлены", {
+  description: "Информация об изменении",
+});
+```
+
+### Где показывать toast
+
+- **В мутациях**: Ошибки операций
+- **В realtime хуках**: Успешные изменения от других пользователей
+- **В компонентах**: Информационные сообщения
+
+## Состояния загрузки
+
+### В кнопках
+
+```typescript
+<Button disabled={mutation.isPending} onClick={handleAction}>
+  {mutation.isPending ? (
+    <>
+      <Loader2 className="w-4 h-4 animate-spin mr-2" />
+      Загрузка...
+    </>
+  ) : (
+    "Выполнить действие"
+  )}
+</Button>
+```
+
+### В формах
+
+```typescript
+const { register, handleSubmit, formState: { isSubmitting } } = useForm()
+
+<form onSubmit={handleSubmit(onSubmit)}>
+  <Input {...register('name')} disabled={isSubmitting} />
+  <Button type="submit" disabled={isSubmitting}>
+    {isSubmitting ? 'Сохранение...' : 'Сохранить'}
+  </Button>
+</form>
+```
+
+## Интеграция с Realtime
+
+Мутации НЕ должны инвалидировать кэш вручную. Вместо этого:
+
+1. Realtime подписка автоматически отслеживает изменения в БД
+2. При INSERT/UPDATE/DELETE события автоматически инвалидируют кэш
+3. React Query перезапрашивает данные
+4. UI обновляется автоматически
+
+См. правило [supabase-realtime](mdc:supabase-realtime.mdc) для деталей.
+
+## Примеры использования
+
+### Создание сущности
+
+```typescript
+// В компоненте
+const createEntity = useCreateEntity();
+
+const handleCreate = async (data) => {
+  try {
+    const result = await createEntity.mutateAsync(data);
+    onClose(); // Закрываем форму/модалку
+    // Данные обновятся автоматически через realtime
+  } catch (error) {
+    // Ошибка показана через toast в мутации
+  }
+};
+```
+
+### Удаление сущности
+
+```typescript
+// В компоненте списка
+const [deleteModal, setDeleteModal] = useState({
+  isOpen: false,
+  entityId: null,
+  entityName: null,
+});
+
+const handleDeleteClick = (entity) => {
+  setDeleteModal({
+    isOpen: true,
+    entityId: entity.id,
+    entityName: entity.name,
+  });
+};
+
+// В модалке удаления используется паттерн выше
+```
+
+## Checklist для новых мутаций
+
+- [ ] Мутация находится в `entities/{entity}/api/mutations.ts`
+- [ ] Используется `useMutation` из React Query
+- [ ] НЕ инвалидирует кэш вручную (полагается на realtime)
+- [ ] Показывает ошибки через `toast.error`
+- [ ] Логирует операции в консоль
+- [ ] Модальные окна закрываются после успешной операции
+- [ ] Кнопки показывают состояние загрузки
+- [ ] Поля форм блокируются во время отправки

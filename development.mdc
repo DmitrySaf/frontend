@@ -1,0 +1,92 @@
+---
+alwaysApply: true
+---
+
+## Development Rules
+
+### 1) Стили и UI
+
+- Используем Tailwind CSS (v4). Избегаем инлайн-стилей.
+- Для сложных комбинаций классов используем `cn` из `@/shared/utils`.
+- Для вариативных компонентов используем `class-variance-authority` (CVA).
+- Можно использовать Radix UI primitives точечно (доступность и поведение), оборачивая их в свои компоненты.
+- Mobile First, семантическая разметка, a11y (ARIA где нужно).
+
+### 2) Данные и API (Supabase)
+
+- Клиент Supabase создаём один раз в `@/shared/config` и реюзаем его.
+- Логика API/DTO — в `api` каждого слайса. Не делаем сетевые вызовы прямо из UI.
+- Типизируем запросы/ответы. Ошибки оборачиваем в человеко-понятные сообщения.
+- Реалтайм (при необходимости) — через Supabase Realtime (подписки на каналы/таблицы).
+- Переменные окружения: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_KEY` (должны быть заданы).
+
+### 3) Управление состоянием
+
+- Глобальное состояние (например, аутентификация) — через React Context в соответствующем слое (`shared`/`features`).
+- Локальные состояния — через `useState`/`useReducer` в компонентах.
+- Минимизируем клиентские компоненты. По умолчанию — серверные, `'use client'` только там, где нужно.
+
+### 4) Маршрутизация и навигация
+
+- App Router: страницы, макеты и сегменты — в `app/`.
+- Разделяем публичные и защищённые сегменты. Для защиты используем HOC/Guard из `features/auth`.
+- Для навигации используем Next.js `Link` и `useRouter` из `next/navigation`.
+
+### 5) Формы
+
+- Рекомендуем `react-hook-form` + `zod` (через `@hookform/resolvers/zod`) для валидации и UX.
+- Состояния отправки отображаем (кнопка с лоадером, disabled, ошибки полей).
+- Сообщения об ошибках должны быть понятными; показываем пустые состояния.
+
+### 6) Типобезопасность
+
+- Строгий TypeScript, избегаем `any` (лучше `unknown` и точечные сужения типов).
+
+### 7) Качество, производительность, DX
+
+- Линтинг/форматирование: Biome (`pnpm lint`, `pnpm format`).
+- Динамические импорты и сплит кода, мемоизации `useMemo`/`useCallback` по необходимости.
+- Списки — с корректными ключами. Изображения — через `next/image`.
+- Загрузка/пустые состояния — скелетоны/заглушки, чтобы UX был понятным.
+
+## Common Patterns
+
+### Защищённый сегмент (HOC/Guard)
+
+```tsx
+// src/features/auth/model/withAuth.tsx
+export function withAuth<P>(Component: React.ComponentType<P>) {
+  return function Authenticated(props: P) {
+    // здесь используем контекст аутентификации и редирект при необходимости
+    return <Component {...props} />;
+  };
+}
+```
+
+## Naming Conventions
+
+- Используем русский язык для UI элементов и текстов
+- Используем английский язык для кода, переменных и комментариев
+- Компоненты именуются в PascalCase (например, `AuthorProfile`)
+- Функции и переменные именуются в camelCase (например, `getUserData`)
+- Константы именуются в UPPER_SNAKE_CASE (например, `MAX_FILE_SIZE`)
+- Файлы компонентов именуются в PascalCase (например, `AuthorCard.tsx`)
+- Утилиты и хуки именуются в camelCase (например, `useSubscription.ts`)
+
+## Import Order
+
+1. React/Next.js
+2. Библиотеки (Radix, CVA, Supabase и др.)
+3. Абсолютные импорты (`@/`)
+4. Относительные импорты
+5. Импорты типов
+
+Example:
+
+```tsx
+import { useEffect, useState } from "react";
+import { Slot } from "@radix-ui/react-slot";
+import { supabase } from "@/shared/config";
+import { Button } from "@/shared/components";
+import type { JSX } from "react";
+```

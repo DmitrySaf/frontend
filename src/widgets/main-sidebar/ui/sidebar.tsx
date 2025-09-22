@@ -20,21 +20,18 @@ export default function MainSidebar() {
 
       {/* Add Project Button */}
       <Button 
-        className="w-10 h-10 bg-blue-600 hover:bg-blue-700 rounded-xl mb-6 p-0"
+        theme="primary"
+        size="m"
+        Icon={Plus}
         onClick={handleCreateProject}
-      >
-        <Plus className="w-5 h-5 text-white" />
-      </Button>
+        className="mb-6"
+      />
 
       {/* Navigation Icons */}
       <div className="flex flex-col space-y-4">
-        <Button variant="ghost" className="w-10 h-10 rounded-xl p-0">
-          <Home className="w-5 h-5 text-gray-600" />
-        </Button>
+        <Button theme="ghost" size="m" Icon={Home} />
 
-        <Button variant="ghost" className="w-10 h-10 rounded-xl p-0">
-          <Search className="w-5 h-5 text-gray-600" />
-        </Button>
+        <Button theme="ghost" size="m" Icon={Search} />
       </div>
 
       {/* User Avatar */}

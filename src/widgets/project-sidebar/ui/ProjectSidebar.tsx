@@ -1,8 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { Tab } from "@/shared/components";
 import { SIDEBAR_ITEMS, BOTTOM_ITEMS } from "../model";
 
 interface ProjectSidebarProps {
@@ -11,6 +11,8 @@ interface ProjectSidebarProps {
 
 export default function ProjectSidebar({ slug }: ProjectSidebarProps) {
   const pathname = usePathname();
+  const router = useRouter();
+  
   return (
     <div className="w-64 bg-white border-r border-gray-200 flex flex-col">
       {/* Header */}
@@ -35,23 +37,16 @@ export default function ProjectSidebar({ slug }: ProjectSidebarProps) {
             const isActive = pathname === href;
             
             return (
-              <Link
+              <Tab
                 key={item.id}
-                href={href}
-                className={`w-full flex items-center space-x-3 px-3 py-2 rounded-xl text-left transition-colors ${
-                  isActive
-                    ? "bg-orange-50 text-orange-600"
-                    : "text-gray-700 hover:bg-gray-50"
-                }`}
+                theme="secondary"
+                active={isActive}
+                onClick={() => router.push(href)}
+                Icon={Icon}
+                badge={item.badge}
               >
-                <Icon className="w-5 h-5" />
-                <span className="font-medium">{item.name}</span>
-                {item.badge && (
-                  <span className="ml-auto bg-blue-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                    {item.badge}
-                  </span>
-                )}
-              </Link>
+                {item.name}
+              </Tab>
             );
           })}
         </nav>
@@ -66,18 +61,15 @@ export default function ProjectSidebar({ slug }: ProjectSidebarProps) {
             const isActive = pathname === href;
             
             return (
-              <Link
+              <Tab
                 key={item.id}
-                href={href}
-                className={`w-full flex items-center space-x-3 px-3 py-2 rounded-xl text-left transition-colors ${
-                  isActive
-                    ? "bg-orange-50 text-orange-600"
-                    : "text-gray-700 hover:bg-gray-50"
-                }`}
+                theme="secondary"
+                active={isActive}
+                onClick={() => router.push(href)}
+                Icon={Icon}
               >
-                <Icon className="w-5 h-5" />
-                <span className="font-medium">{item.name}</span>
-              </Link>
+                {item.name}
+              </Tab>
             );
           })}
         </nav>

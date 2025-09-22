@@ -1,16 +1,35 @@
 import * as React from "react"
 import { cn } from "@/shared/utils"
 
-export interface TextareaProps
-  extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
-  maxLength?: number
-  showCounter?: boolean
-  error?: string
-  description?: string
+export interface TextareaProps {
+  // Custom Props
+  label?: string;
+  error?: string;
+  description?: string;
+  maxLength?: number;
+  showCounter?: boolean;
+  
+  // Styling
+  className?: string;
+  
+  // Standard HTML Textarea Props
+  value?: string;
+  defaultValue?: string;
+  placeholder?: string;
+  disabled?: boolean;
+  rows?: number;
+  
+  // Events (from react-hook-form register)
+  onChange?: (event: React.ChangeEvent<HTMLTextAreaElement>) => void;
+  onBlur?: (event: React.FocusEvent<HTMLTextAreaElement>) => void;
+  
+  // Form (from react-hook-form register)
+  id?: string;
+  name?: string;
 }
 
 const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
-  ({ className, maxLength, showCounter, error, description, disabled, ...props }, ref) => {
+  ({ className, label, maxLength, showCounter, error, description, disabled, ...props }, ref) => {
     const [value, setValue] = React.useState(props.value || props.defaultValue || "")
 
     const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -20,9 +39,14 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
 
     return (
       <div className="space-y-2">
+        {label && (
+          <label className="block text-sm font-medium text-gray-700">
+            {label}
+          </label>
+        )}
         <textarea
           className={cn(
-            "w-full py-3 px-4 text-base border border-gray-300 rounded-lg",
+            "w-full py-3 px-4 text-base border border-gray-300 rounded-xl",
             "focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent",
             "transition-colors resize-none",
             "disabled:opacity-50 disabled:cursor-not-allowed",

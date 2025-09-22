@@ -10,7 +10,7 @@ export default function ProjectHeader({ slug }: ProjectHeaderProps) {
     <div className="bg-white border-b border-gray-200 px-6 py-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-4">
-          <Button variant="ghost" size="sm" className="rounded-xl">
+          <Button theme="ghost" size="s">
             ←
           </Button>
         </div>
@@ -28,13 +28,9 @@ export default function ProjectHeader({ slug }: ProjectHeaderProps) {
             </span>
           </div>
 
-          <Button variant="ghost" size="sm" className="rounded-xl">
-            <HelpCircle className="w-5 h-5" />
-          </Button>
+          <Button theme="ghost" size="s" Icon={HelpCircle} />
 
-          <Button variant="ghost" size="sm" className="rounded-xl">
-            <Bell className="w-5 h-5" />
-          </Button>
+          <Button theme="ghost" size="s" Icon={Bell} />
         </div>
       </div>
     </div>

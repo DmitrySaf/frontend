@@ -4,6 +4,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { LogOut } from "lucide-react";
 import { useAuth } from "@/features/auth";
 import { SETTINGS_SECTIONS } from "@/pages/settings";
+import { Tab, Button } from "@/shared/components";
 
 export function SettingsSidebar() {
   const pathname = usePathname();
@@ -35,18 +36,15 @@ export function SettingsSidebar() {
           {SETTINGS_SECTIONS.map((section) => {
             const Icon = section.icon;
             return (
-              <button
+              <Tab
                 key={section.id}
+                theme="primary"
+                active={pathname === `/settings/${section.id}`}
                 onClick={() => router.push(`/settings/${section.id}`)}
-                className={`w-full flex space-x-3 px-3 py-2 rounded-xl text-left transition-colors cursor-pointer ${
-                  pathname === `/settings/${section.id}`
-                    ? "bg-blue-50 text-blue-600"
-                    : "text-gray-700 hover:bg-gray-50"
-                }`}
+                Icon={Icon}
               >
-                <Icon className="w-6 h-6 flex-shrink-0" />
-                <span className="font-medium">{section.name}</span>
-              </button>
+                {section.name}
+              </Tab>
             );
           })}
         </nav>
@@ -54,13 +52,13 @@ export function SettingsSidebar() {
 
       {/* Logout */}
       <div className="p-4">
-        <button
+        <Tab
+          theme="danger"
           onClick={handleLogout}
-          className="w-full flex items-center space-x-3 px-3 py-2 rounded-xl text-left text-red-600 hover:bg-red-50 transition-colors cursor-pointer"
+          Icon={LogOut}
         >
-          <LogOut className="w-5 h-5" />
-          <span className="font-medium">Выйти</span>
-        </button>
+          Выйти
+        </Tab>
       </div>
     </div>
   );

@@ -51,14 +51,16 @@ export default function DeleteProjectModal({
 
         <DialogFooter>
           <Button
-            variant="outline"
+            theme="outline"
+            size="m"
             onClick={onClose}
             disabled={deleteProject.isPending}
           >
             Отмена
           </Button>
           <Button
-            variant="destructive"
+            theme="destructive"
+            size="m"
             onClick={handleDelete}
             disabled={deleteProject.isPending || !projectName}
           >

@@ -1,0 +1,160 @@
+---
+description: "UI-kit component guidelines and patterns"
+globs:
+alwaysApply: false
+---
+
+# UI-Kit Component Guidelines
+
+This document outlines the universal standards and patterns for creating and using UI components in the ProFound frontend application.
+
+## Core Principles
+
+### 1. Component Naming
+
+- All UI components MUST be named with PascalCase (e.g., `Button`, `Input`, `Textarea`)
+- Component files should use PascalCase naming (e.g., `Button.tsx`, `Input.tsx`)
+- Export components with their PascalCase names
+
+### 2. Built-in Styling
+
+- Components should include all necessary base styling internally
+- External styling should be minimal and only for layout/positioning
+- Use `rounded-xl` for consistent border radius across components
+- Components should handle their own responsive behavior
+
+### 3. Props Interface Standards
+
+- Each component MUST have explicitly defined props interface
+- NO `extends React.HTMLAttributes` - all props must be explicitly defined
+- Use TypeScript interfaces for all component props
+- Add new props only as needed - start minimal and expand
+- Group props logically with comments (Custom Props, Styling, Events, Accessibility, etc.)
+
+## Universal Component Patterns
+
+### Props Interface Structure
+
+```tsx
+interface ComponentProps {
+  // Custom Props (component-specific functionality)
+  label?: string;
+  error?: string;
+  isLoading?: boolean;
+
+  // Styling
+  className?: string;
+  variant?: "default" | "outline" | "ghost";
+  size?: "sm" | "default" | "lg";
+
+  // Standard HTML Props (only those actually used)
+  disabled?: boolean;
+  onClick?: (event: React.MouseEvent<HTMLElement>) => void;
+
+  // Events (only those needed)
+  onChange?: (event: React.ChangeEvent<HTMLElement>) => void;
+  onFocus?: (event: React.FocusEvent<HTMLElement>) => void;
+
+  // Accessibility (when needed)
+  id?: string;
+  "aria-label"?: string;
+  "aria-describedby"?: string;
+
+  // Content
+  children?: React.ReactNode;
+}
+```
+
+### Component Implementation Standards
+
+- Use `React.forwardRef` for components that need DOM refs
+- Handle internal state when necessary (forms, toggles, etc.)
+- Implement proper accessibility attributes
+- Use consistent error handling patterns
+- Include loading states for interactive components
+
+## Styling Guidelines
+
+### Internal Styling Rules
+
+- ✅ **DO**: Include base styling in components (`rounded-xl`, `resize-none`, etc.)
+- ✅ **DO**: Handle state-based styling internally (error states, disabled, loading)
+- ✅ **DO**: Use consistent spacing and sizing patterns
+- ✅ **DO**: Implement proper focus and hover states
+
+### External Styling Rules
+
+- ❌ **DON'T**: Add component-internal styling externally (`rounded-xl`, `resize-none`)
+- ❌ **DON'T**: Implement loading states manually when component has built-in support
+- ❌ **DON'T**: Create manual label elements when component has built-in label prop
+
+- ✅ **DO**: Use layout and positioning classes (`w-full`, `mb-4`, `flex`, etc.)
+- ✅ **DO**: Use component variants and sizes (`variant="outline"`, `size="lg"`)
+- ✅ **DO**: Use built-in props for functionality (`label`, `error`, `isLoading`)
+
+## Development Workflow
+
+### Adding New Props
+
+1. Identify the need for a new prop
+2. Add it to the interface with proper TypeScript typing
+3. Implement the functionality in the component
+4. Update component usage across the codebase
+5. Test accessibility and responsive behavior
+
+### Component Creation Checklist
+
+- [ ] PascalCase naming
+- [ ] Explicit props interface (no extends)
+- [ ] Built-in styling with `rounded-xl`
+- [ ] Error handling support
+- [ ] Loading states (for interactive components)
+- [ ] Accessibility attributes
+- [ ] Proper TypeScript typing
+- [ ] forwardRef implementation (if needed)
+- [ ] Consistent label patterns (for form components)
+
+## Form Component Patterns
+
+### Label Integration
+
+- Form components should include built-in label support
+- Use consistent label styling: `block text-sm font-medium text-gray-700`
+- Render labels only when provided
+
+### Error Handling
+
+- Include `error` prop for error message display
+- Apply error styling automatically (red borders, error text)
+- Show error messages below the component
+
+### State Management
+
+- Handle internal value state when necessary
+- Support both controlled and uncontrolled modes
+- Proper event handling and propagation
+
+## Interactive Component Patterns
+
+### Loading States
+
+- Include `isLoading` prop for async operations
+- Show loading spinner automatically
+- Disable interaction during loading
+- Use consistent spinner styling: `Loader2` with `w-4 h-4 animate-spin`
+
+### Variants and Sizes
+
+- Implement variant system for different visual styles
+- Include size variations (sm, default, lg)
+- Use consistent naming patterns across components
+
+## Best Practices
+
+1. **Type Safety**: All props must be explicitly typed
+2. **Consistency**: Use the same patterns across all components
+3. **Accessibility**: Include proper ARIA attributes and semantic HTML
+4. **Performance**: Optimize for re-rendering and bundle size
+5. **Maintainability**: Centralized styling makes updates easier
+6. **Developer Experience**: Clear props and comprehensive TypeScript support
+7. **Extensibility**: Design components to be easily extended with new props

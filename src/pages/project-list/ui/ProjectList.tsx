@@ -1,16 +1,23 @@
 'use client'
 
-import { useProjects, useProjectsRealtime } from "@/entities/project";
-import { CreateProjectModal, DeleteProjectModal } from "@/features/project-creation";
+import { useProjects, useProjectsRealtime, useCreateProject } from "@/entities/project";
+import { DeleteProjectModal } from "@/features/project-creation";
+import { ProjectCreateModal, type CreateProjectData } from "@/widgets/project-create-modal";
 import { Button } from "@/shared/components";
 import { Trash2 } from "lucide-react";
-import { useState } from "react";
+import { useState, useCallback } from "react";
+import { useQueryState } from 'nuqs';
 
 export default function ProjectList() {
   const { data: projectsData, isLoading, error } = useProjects();
+  const createProject = useCreateProject();
   
   // Подключаем realtime подписку для автоматического обновления
   useProjectsRealtime(true);
+  
+  // Управление модалкой создания проекта
+  const [createParam, setCreateParam] = useQueryState('create');
+  const isCreateModalOpen = createParam === 'project';
   
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [projectToDelete, setProjectToDelete] = useState<{
@@ -27,6 +34,14 @@ export default function ProjectList() {
     setDeleteModalOpen(false);
     setProjectToDelete(null);
   };
+
+  const handleCloseCreateModal = useCallback(() => {
+    setCreateParam(null);
+  }, [setCreateParam]);
+
+  const handleCreateProject = useCallback(async (data: CreateProjectData) => {
+    await createProject.mutateAsync(data);
+  }, [createProject]);
 
   if (isLoading) {
     return (
@@ -59,7 +74,12 @@ export default function ProjectList() {
 
   return (
     <>
-      <CreateProjectModal />
+      <ProjectCreateModal 
+        isOpen={isCreateModalOpen}
+        onClose={handleCloseCreateModal}
+        onSubmit={handleCreateProject}
+        isLoading={createProject.isPending}
+      />
       <DeleteProjectModal 
         isOpen={deleteModalOpen}
         onClose={handleCloseDeleteModal}
@@ -88,16 +108,17 @@ export default function ProjectList() {
                 </span>
                 <div className="flex items-center space-x-2">
                   <Button
-                    variant="ghost"
-                    size="sm"
+                    theme="ghost"
+                    size="m"
+                    Icon={Trash2}
                     onClick={() => handleDeleteProject(project.id, project.name)}
-                    className="text-red-600 hover:text-red-800 hover:bg-red-50 p-2"
+                  />
+                  <Button 
+                    theme="ghost" 
+                    size="m"
                   >
-                    <Trash2 className="w-4 h-4" />
-                  </Button>
-                  <button className="text-blue-600 hover:text-blue-800 font-medium">
                     Открыть →
-                  </button>
+                  </Button>
                 </div>
               </div>
             </div>

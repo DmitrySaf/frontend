@@ -3,10 +3,17 @@ import { Lock } from "lucide-react";
 import { cn } from "@/shared/utils";
 
 export interface SwitchProps {
+  // State
   checked?: boolean;
   onCheckedChange?: (checked: boolean) => void;
-  disabled?: boolean;
+  
+  // Styling
   className?: string;
+  
+  // Behavior
+  disabled?: boolean;
+  
+  // Accessibility
   id?: string;
 }
 

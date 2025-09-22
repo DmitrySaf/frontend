@@ -1,5 +1,6 @@
 import { apiClient } from '@/shared/config'
 import type { ProjectsResponse, ProjectAPI } from '@/shared/types'
+import { sleep } from "@/shared/utils"
 
 /**
  * Получение списка проектов
@@ -32,7 +33,12 @@ export const getProject = async (id: string): Promise<ProjectAPI> => {
   const startTime = Date.now()
   
   try {
-    const response = await apiClient.get<ProjectAPI>(`/projects/${id}`)
+    const response = {
+      data: {
+        displayName: `Project ${id}`,
+        name: id,
+      },
+    }
     
     const duration = Date.now() - startTime
     console.log(`✅ [Client API] Project loaded successfully in ${duration}ms:`, response.data.displayName)

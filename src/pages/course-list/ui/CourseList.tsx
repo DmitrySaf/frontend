@@ -131,7 +131,7 @@ export default function CourseList() {
                 <li>• Заполните их</li>
               </ul>
             </div>
-            <Button className="absolute bottom-4 right-4 bg-white/20 hover:bg-white/30 text-white border-white/30 rounded-xl">
+            <Button theme="ghost" size="m" className="absolute bottom-4 right-4">
               <Play className="w-4 h-4" />
             </Button>
           </div>
@@ -142,10 +142,18 @@ export default function CourseList() {
           <p className="text-gray-600 mb-4">ProFound University</p>
 
           <div className="flex space-x-4 mb-6">
-            <button className="pb-2 border-b-2 border-blue-500 text-blue-600 font-medium">
+            <Button 
+              theme="ghost"
+              size="m"
+            >
               Заметки
-            </button>
-            <button className="pb-2 text-gray-500 hover:text-gray-700">Курс</button>
+            </Button>
+            <Button 
+              theme="ghost"
+              size="m"
+            >
+              Курс
+            </Button>
           </div>
 
           <div className="space-y-4">

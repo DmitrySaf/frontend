@@ -1,9 +1,10 @@
 // UI Components exports
-export { Button, buttonVariants } from './button';
-export { Input } from './input';
-export { Textarea } from './textarea';
-export { Switch } from './switch';
-export { Separator } from './separator';
+export { Button, buttonVariants } from './Button';
+export { Tab, tabVariants } from './Tab';
+export { Input } from './Input';
+export { Textarea } from './Textarea';
+export { Switch } from './Switch';
+export { Separator } from './Separator';
 export {
   Dialog,
   DialogPortal,
@@ -15,7 +16,7 @@ export {
   DialogFooter,
   DialogTitle,
   DialogDescription,
-} from './dialog';
+} from './Dialog';
 export { QueryProvider } from './QueryProvider';
 export { HydrationBoundary } from './HydrationBoundary';
-export { Toaster } from './sonner';
+export { Toaster } from './Sonner';

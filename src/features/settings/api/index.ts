@@ -1,2 +1,1 @@
-// Settings API exports
-export * from './settingsApi';
+export { getUserSettings, updateUserSettings } from './api';

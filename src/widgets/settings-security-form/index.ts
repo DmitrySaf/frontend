@@ -1,3 +1,3 @@
-export * from "./ui";
-export * from "./model";
+export { SettingsSecurityForm } from "./ui";
+export type { SecuritySettingsData } from "./model";
 

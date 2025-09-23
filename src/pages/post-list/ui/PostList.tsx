@@ -1,10 +1,10 @@
 'use client'
 
-import { usePosts } from "@/entities/post";
+import { usePostsQuery } from "@/entities/post";
 import { Loader2 } from "lucide-react";
 
 export default function PostList() {
-  const { data: postsData, isLoading, error } = usePosts();
+  const { data: postsData, isLoading, error } = usePostsQuery();
 
   if (isLoading) {
     return (

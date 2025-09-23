@@ -1,3 +1,1 @@
-// Settings feature exports
-export * from './api';
-export * from './model';
+export { useUserSettings, useUpdateUserSettings } from './model';

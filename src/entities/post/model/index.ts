@@ -1,2 +1,1 @@
-// Post model exports
-export * from './useSSRPosts';
+// Model layer is empty - all hooks moved to api/queries.ts

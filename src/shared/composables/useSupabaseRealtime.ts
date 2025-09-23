@@ -2,16 +2,15 @@
 
 import { useEffect } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
-import { supabase } from '@/shared/config'
+import { createBrowserClient } from '@/shared/utils/supabase/client'
 import type { RealtimePostgresChangesPayload } from '@supabase/supabase-js'
 
 interface UseSupabaseRealtimeOptions<T extends Record<string, any> = Record<string, any>> {
   table: string
-  queryKeys: string[][]
+  queryKeys: readonly string[][]
   onInsert?: (payload: RealtimePostgresChangesPayload<T>) => void
   onUpdate?: (payload: RealtimePostgresChangesPayload<T>) => void
   onDelete?: (payload: RealtimePostgresChangesPayload<T>) => void
-  enabled?: boolean
 }
 
 /**
@@ -23,17 +22,14 @@ export const useSupabaseRealtime = <T extends Record<string, any> = Record<strin
   queryKeys,
   onInsert,
   onUpdate,
-  onDelete,
-  enabled = true
+  onDelete
 }: UseSupabaseRealtimeOptions<T>) => {
   const queryClient = useQueryClient()
 
   useEffect(() => {
-    if (!enabled) return
-
     console.log(`🔄 [Realtime] Setting up subscription for table: ${table}`)
 
-    const channel = supabase
+    const channel = createBrowserClient()
       .channel(`${table}-changes`)
       .on(
         'postgres_changes',
@@ -101,5 +97,5 @@ export const useSupabaseRealtime = <T extends Record<string, any> = Record<strin
       console.log(`🔌 [Realtime] Unsubscribing from table: ${table}`)
       channel.unsubscribe()
     }
-  }, [table, enabled, queryClient, onInsert, onUpdate, onDelete])
+  }, [table, queryClient, onInsert, onUpdate, onDelete])
 }

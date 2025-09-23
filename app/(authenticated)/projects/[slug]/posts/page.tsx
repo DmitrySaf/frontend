@@ -1,10 +1,10 @@
-import { useSSRPosts } from "@/entities/post";
+import { usePostsServerQuery } from "@/entities/post";
 import { HydrationBoundary } from "@/shared/components";
 import { PostList } from "@/pages/post-list";
 
 export default async function PostsPage() {
   // Используем новый SSR хук
-  const { dehydratedState } = await useSSRPosts();
+  const { dehydratedState } = await usePostsServerQuery();
 
   return (
     <HydrationBoundary state={dehydratedState}>

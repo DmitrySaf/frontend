@@ -1,4 +1,2 @@
-// Project model exports
-export * from './useSSRProjects';
-export * from './useProjectsRealtime';
-export * from './validation';
+export { createProjectSchema, type CreateProjectData } from './validation';
+export { transformProject } from './mappers';

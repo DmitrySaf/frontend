@@ -1,2 +1,1 @@
-// Project list page exports
-export * from './ui';
+export { ProjectList } from './ui';

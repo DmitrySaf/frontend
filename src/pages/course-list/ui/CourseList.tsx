@@ -1,11 +1,11 @@
 'use client'
 
 import { Button } from "@/shared/components";
-import { useCourses } from "@/entities/course";
+import { useCoursesQuery } from "@/entities/course";
 import { BookOpen, FileText, Play, Loader2 } from "lucide-react";
 
 export default function CourseList() {
-  const { data: coursesData, isLoading, error } = useCourses();
+  const { data: coursesData, isLoading, error } = useCoursesQuery();
 
   if (isLoading) {
     return (

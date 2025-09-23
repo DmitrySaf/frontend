@@ -2,17 +2,18 @@
 
 import { usePathname, useRouter } from "next/navigation";
 import { LogOut } from "lucide-react";
-import { useAuth } from "@/features/auth";
 import { SETTINGS_SECTIONS } from "@/pages/settings";
 import { Tab, Button } from "@/shared/components";
+import { createBrowserClient } from "@/shared/utils/supabase/client";
 
 export function SettingsSidebar() {
   const pathname = usePathname();
   const router = useRouter();
-  const { signOut } = useAuth();
+  const supabase = createBrowserClient();
 
   const handleLogout = async () => {
-    await signOut();
+    await supabase.auth.signOut();
+    router.push('/login');
   };
 
   return (
@@ -38,13 +39,11 @@ export function SettingsSidebar() {
             return (
               <Tab
                 key={section.id}
-                theme="primary"
-                active={pathname === `/settings/${section.id}`}
+                text={section.name}
+                isActive={pathname === `/settings/${section.id}`}
                 onClick={() => router.push(`/settings/${section.id}`)}
                 Icon={Icon}
-              >
-                {section.name}
-              </Tab>
+              />
             );
           })}
         </nav>
@@ -53,12 +52,11 @@ export function SettingsSidebar() {
       {/* Logout */}
       <div className="p-4">
         <Tab
-          theme="danger"
+          text="Выйти"
+          isNegative={true}
           onClick={handleLogout}
           Icon={LogOut}
-        >
-          Выйти
-        </Tab>
+        />
       </div>
     </div>
   );

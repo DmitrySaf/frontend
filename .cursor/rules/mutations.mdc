@@ -1,0 +1,98 @@
+---
+description: "Data mutations architecture and patterns"
+---
+
+# Data Actions & Mutations Architecture
+
+This document describes the unified approach to working with data mutations, notifications, and user actions.
+
+### Mutation Structure Example
+
+```typescript
+import { useMutation } from "@tanstack/react-query";
+import { toast } from "sonner";
+import { createEntity, type CreateEntityData } from "./api";
+import { useInvalidateEntities } from "./queries";
+
+export const useCreateEntity = () => {
+  const invalidateEntities = useInvalidateEntities();
+
+  return useMutation({
+    mutationFn: createEntity,
+    onSuccess: () => {
+      toast.success("Сущность создана успешно");
+      invalidateEntities();
+    },
+    onError: (error) => {
+      toast.error("Ошибка при создании сущности", {
+        description:
+          error instanceof Error ? error.message : "Попробуйте еще раз",
+      });
+    },
+  });
+};
+```
+
+## Mutation Rules
+
+### 1. Always Invalidate Cache Manually
+
+```typescript
+onSuccess: () => {
+  toast.success("Операция выполнена успешно");
+  invalidateEntities();
+};
+```
+
+### 2. Handle Errors via Toast
+
+```typescript
+onError: (error) => {
+  toast.error("Заголовок ошибки", {
+    description: error instanceof Error ? error.message : "Общее сообщение",
+  });
+};
+```
+
+## Notifications (Toast)
+
+### Toast Types
+
+```typescript
+// Success operations
+toast.success("Операция выполнена!");
+
+// Errors (shown in mutations)
+toast.error("Ошибка операции", {
+  description: "Описание ошибки или совет",
+});
+
+// Informational
+toast.info("Данные обновлены");
+```
+
+## Usage Examples
+
+### Entity Creation
+
+```typescript
+// In component
+const createEntity = useCreateEntity();
+
+const handleCreate = async (data) => {
+  try {
+    const result = await createEntity.mutateAsync(data);
+    onClose(); // Close form/modal
+    // Data will update automatically via realtime
+  } catch (error) {
+    // Error shown via toast in mutation
+  }
+};
+```
+
+## Checklist for New Mutations
+
+- [ ] Mutation uses `useMutation` from React Query
+- [ ] Invalidates cache manually using invalidation hooks
+- [ ] Shows success via `toast.success` without description
+- [ ] Shows errors via `toast.error` with description

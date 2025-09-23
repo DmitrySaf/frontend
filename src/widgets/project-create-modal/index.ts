@@ -1,3 +1,3 @@
-export * from "./ui";
-export * from "./model";
+export { ProjectCreateModal } from "./ui";
+export type { CreateProjectData } from "./model";
 

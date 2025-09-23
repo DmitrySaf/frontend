@@ -1,7 +1,6 @@
 "use client"
 
 import { useState, useCallback } from "react";
-import { useAuth } from "../model";
 import { useRouter } from "next/navigation";
 import { EmailForm } from "./EmailForm";
 import { ConfirmationForm } from "./ConfirmationForm";
@@ -12,9 +11,10 @@ import {
   type ConfirmationFormData 
 } from "../model/validation";
 import Link from "next/link";
+import { createBrowserClient } from "@/shared/utils/supabase/client";
 
 export default function Auth() {
-  const { signInWithEmail, verifyOtp } = useAuth();
+  const supabase = createBrowserClient();
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [isConfirmationStep, setIsConfirmationStep] = useState(false);
@@ -26,10 +26,15 @@ export default function Auth() {
     setCurrentEmail(data.email);
     
     try {
-      const result = await signInWithEmail(data.email);
+      const { error } = await supabase.auth.signInWithOtp({
+        email: data.email,
+        options: {
+          shouldCreateUser: true,
+        },
+      });
       
-      if (result.error) {
-        throw new Error(result.error.message || "Ошибка при отправке кода");
+      if (error) {
+        throw new Error(error.message || "Ошибка при отправке кода");
       }
       
       setIsConfirmationStep(true);
@@ -39,16 +44,20 @@ export default function Auth() {
     } finally {
       setIsLoading(false);
     }
-  }, [signInWithEmail]);
+  }, [supabase]);
 
   const handleConfirmationSubmit = useCallback(async (data: ConfirmationFormData) => {
     setIsLoading(true);
     setConfirmationError(undefined);
     
     try {
-      const result = await verifyOtp(data.email, data.confirmationCode);
+      const { error } = await supabase.auth.verifyOtp({
+        email: data.email,
+        token: data.confirmationCode,
+        type: 'email',
+      });
       
-      if (result.error) {
+      if (error) {
         setConfirmationError("Неверный код");
         return;
       }
@@ -61,7 +70,7 @@ export default function Auth() {
     } finally {
       setIsLoading(false);
     }
-  }, [verifyOtp, router]);
+  }, [supabase, router]);
 
   const handleBackToEmail = useCallback(() => {
     setIsConfirmationStep(false);
@@ -76,9 +85,14 @@ export default function Auth() {
     setConfirmationError(undefined);
     
     try {
-      const result = await signInWithEmail(currentEmail);
+      const { error } = await supabase.auth.signInWithOtp({
+        email: currentEmail,
+        options: {
+          shouldCreateUser: true,
+        },
+      });
       
-      if (result.error) {
+      if (error) {
         setConfirmationError("Не удалось отправить код повторно");
         return;
       }
@@ -88,7 +102,7 @@ export default function Auth() {
     } finally {
       setIsLoading(false);
     }
-  }, [currentEmail, signInWithEmail]);
+  }, [currentEmail, supabase]);
 
   return (
     <div className="space-y-6">
@@ -123,7 +137,7 @@ export default function Auth() {
             </div>
           </div>
 
-          {/* Социальные кнопки */}
+          {/* Социальные кнопки TODO: гугл */}
           <div className="grid grid-cols-2 gap-4">
             <Button
               theme="outline"

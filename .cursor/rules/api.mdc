@@ -1,0 +1,113 @@
+---
+description: "API layer files structure and patterns"
+---
+
+# API Layer Architecture
+
+This document describes the structure and patterns for API layer files in entities and features.
+
+## api.ts - Pure API Functions
+
+Contains only HTTP requests without React Query logic.
+
+### Patterns
+
+```typescript
+import { apiClient } from "@/shared/config";
+import type { EntityResponse, CreateEntityData } from "./types";
+
+/**
+ * Get entities list
+ */
+export const getEntities = async (): Promise<EntityResponse[]> => {
+  const { data } = await apiClient.get("/entities");
+  return data;
+};
+
+/**
+ * Get single entity
+ */
+export const getEntity = async (id: string): Promise<EntityResponse> => {
+  const { data } = await apiClient.get(`/entities/${id}`);
+  return data;
+};
+
+/**
+ * Create new entity
+ */
+export const createEntity = async (data: CreateEntityData): Promise<void> => {
+  await apiClient.post("/entities", data);
+};
+
+/**
+ * Delete entity
+ */
+export const deleteEntity = async (id: string): Promise<void> => {
+  await apiClient.delete(`/entities/${id}`);
+};
+```
+
+### Rules
+
+- Only HTTP requests, no React Query logic
+- Use `apiClient` from shared config
+- Import types from `./types`
+- Import validation types from `../model`
+- Return Promise with proper typing
+- Use async/await syntax
+
+## types.ts - API Types
+
+Contains interfaces for API requests and responses.
+
+### Patterns
+
+```typescript
+// Domain entity (for UI)
+export interface Entity {
+  displayName: string;
+  name: string;
+}
+
+// API response (from server)
+export interface EntityResponse {
+  id: string;
+  displayName: string;
+  name: string;
+  createdAt: string;
+  updatedAt: string;
+}
+```
+
+### Rules
+
+- Separate domain types from API types
+- Domain types (`Entity`) - minimal data for UI
+- Response types (`EntityResponse`) - full server response
+- Use clear naming: `EntityResponse`, `CreateEntityRequest`
+- Export interfaces, not classes
+
+## model/mappers.ts - Data Transformations
+
+Contains functions to transform API data to domain models.
+
+### Patterns
+
+```typescript
+import { Entity, EntityResponse } from "../api/types";
+
+export const transformEntity = (response: EntityResponse): Entity => {
+  return {
+    displayName: response.displayName,
+    name: response.name,
+  };
+};
+```
+
+### Rules
+
+- Transform API responses to domain models
+- Use clear function names: `transformEntity`, `transformEntities`
+- Import types from API layer
+- Keep transformations simple and pure
+- Export individual transform functions

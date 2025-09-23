@@ -1,15 +1,26 @@
-import { useQuery, QueryClient } from '@tanstack/react-query'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { courseQueryKeys } from './constants'
 import { getCourses, getCourse } from './api'
+import { useServerQuery } from '@/shared/composables'
 
 /**
  * Хук для получения списка курсов
  */
-export const useCourses = () => {
+export const useCoursesQuery = () => {
   return useQuery({
     queryKey: courseQueryKeys.courses,
     queryFn: getCourses,
     staleTime: 1000 * 60 * 5, // 5 минут
+  })
+}
+
+/**
+ * Серверный хук для предзагрузки курсов
+ */
+export const useCoursesServerQuery = () => {
+  return useServerQuery({
+    queryKey: courseQueryKeys.courses,
+    queryFn: getCourses
   })
 }
 
@@ -26,23 +37,22 @@ export const useCourse = (id: string) => {
 }
 
 /**
- * Предзагружает данные курсов в QueryClient
+ * Серверный хук для предзагрузки единичного курса
  */
-export const prefetchCoursesData = async (queryClient: QueryClient, data: any) => {
-  await queryClient.prefetchQuery({
-    queryKey: courseQueryKeys.courses,
-    queryFn: () => Promise.resolve(data),
-    staleTime: 1000 * 60 * 5,
+export const useCourseServerQuery = (id: string) => {
+  return useServerQuery({
+    queryKey: courseQueryKeys.course(id),
+    queryFn: () => getCourse(id)
   })
 }
 
 /**
- * Предзагружает данные единичного курса в QueryClient
+ * Хук для инвалидации кэша курсов
  */
-export const prefetchCourseData = async (queryClient: QueryClient, id: string, data: any) => {
-  await queryClient.prefetchQuery({
-    queryKey: courseQueryKeys.course(id),
-    queryFn: () => Promise.resolve(data),
-    staleTime: 1000 * 60 * 10,
-  })
+export const useInvalidateCourses = () => {
+  const queryClient = useQueryClient()
+  
+  return () => {
+    queryClient.invalidateQueries({ queryKey: courseQueryKeys.courses })
+  }
 }

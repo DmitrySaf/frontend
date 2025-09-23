@@ -1,3 +1,1 @@
-// Course entity exports
-export * from './api';
-export * from './model';
+export { getCourses, getCourse, useCoursesQuery, useCoursesServerQuery, useCourse, useCourseServerQuery, useInvalidateCourses, courseQueryKeys } from './api';

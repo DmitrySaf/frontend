@@ -39,14 +39,11 @@ export default function ProjectSidebar({ slug }: ProjectSidebarProps) {
             return (
               <Tab
                 key={item.id}
-                theme="secondary"
-                active={isActive}
+                text={item.name}
+                isActive={isActive}
                 onClick={() => router.push(href)}
                 Icon={Icon}
-                badge={item.badge}
-              >
-                {item.name}
-              </Tab>
+              />
             );
           })}
         </nav>
@@ -63,13 +60,11 @@ export default function ProjectSidebar({ slug }: ProjectSidebarProps) {
             return (
               <Tab
                 key={item.id}
-                theme="secondary"
-                active={isActive}
+                text={item.name}
+                isActive={isActive}
                 onClick={() => router.push(href)}
                 Icon={Icon}
-              >
-                {item.name}
-              </Tab>
+              />
             );
           })}
         </nav>

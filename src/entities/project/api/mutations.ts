@@ -1,23 +1,24 @@
 import { useMutation } from '@tanstack/react-query'
 import { toast } from 'sonner'
-import { createProject, deleteProject, CreateProjectData } from './api'
+import { createProject, deleteProject } from './api'
+import { useInvalidateProjects } from './queries'
 
 /**
  * Хук для создания нового проекта
  */
-export const useCreateProject = () => {
+export const useCreateProjectMutation = () => {
+  const invalidateProjects = useInvalidateProjects()
+
   return useMutation({
     mutationFn: createProject,
-    onSuccess: (data) => {
-      // Realtime подписка автоматически обновит кэш при INSERT
-      // Показываем успешное уведомление
-      console.log('✅ Project created successfully')
+    onSuccess: () => {
+      toast.success('Проект создан успешно')
+      invalidateProjects()
     },
     onError: (error) => {
       toast.error('Ошибка при создании проекта', {
         description: error instanceof Error ? error.message : 'Попробуйте еще раз'
       })
-      console.error('❌ Failed to create project:', error)
     }
   })
 }
@@ -25,19 +26,19 @@ export const useCreateProject = () => {
 /**
  * Хук для удаления проекта
  */
-export const useDeleteProject = () => {
+export const useDeleteProjectMutation = () => {
+  const invalidateProjects = useInvalidateProjects()
+
   return useMutation({
     mutationFn: deleteProject,
     onSuccess: () => {
-      // Realtime подписка автоматически обновит кэш при DELETE
-      // Показываем успешное уведомление
-      console.log('✅ Project deleted successfully')
+      toast.success('Проект удален успешно')
+      invalidateProjects()
     },
     onError: (error) => {
       toast.error('Ошибка при удалении проекта', {
         description: error instanceof Error ? error.message : 'Попробуйте еще раз'
       })
-      console.error('❌ Failed to delete project:', error)
     }
   })
 }

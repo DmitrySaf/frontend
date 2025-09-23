@@ -1,7 +1,19 @@
-// Project entity exports
-export * from './api';
-export * from './model';
-export * from './ui';
-
-// Re-export types for convenience
-export type { CreateProjectData } from './api';
+export { 
+  getProjects, 
+  getProject, 
+  createProject, 
+  deleteProject,
+  useProjectsQuery, 
+  useProjectsServerQuery, 
+  useProject, 
+  useProjectServerQuery, 
+  useInvalidateProjects,
+  useCreateProjectMutation, 
+  useDeleteProjectMutation,
+  projectQueryKeys,
+  useProjectsRealtime 
+} from './api';
+export { ProjectCard } from './ui';
+export { createProjectSchema } from './model';
+export type { CreateProjectData } from './model';
+export type { Project } from './api';

@@ -1,3 +1,2 @@
-// Settings model exports
-export * from './useSettings';
-export * from './queryKeys';
+export { useUserSettings, useUpdateUserSettings } from './useSettings';
+export { settingsQueryKeys } from './queryKeys';

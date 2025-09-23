@@ -9,7 +9,7 @@ import {
   DialogFooter,
   Button
 } from '@/shared/components'
-import { useDeleteProject } from '@/entities/project'
+import { useDeleteProjectMutation } from '@/entities/project'
 import { Loader2 } from 'lucide-react'
 
 interface DeleteProjectModalProps {
@@ -25,7 +25,7 @@ export default function DeleteProjectModal({
   projectId, 
   projectName 
 }: DeleteProjectModalProps) {
-  const deleteProject = useDeleteProject()
+  const deleteProject = useDeleteProjectMutation()
 
   const handleDelete = async () => {
     if (!projectName) return

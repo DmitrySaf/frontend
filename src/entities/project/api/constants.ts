@@ -1,5 +1,4 @@
-// Query keys для проектов
 export const projectQueryKeys = {
-  projects: ['projects'] as const,
-  project: (id: string) => ['projects', id] as const,
-} as const
+  projects: ['projects'],
+  project: (id: string) => ['projects', id],
+}

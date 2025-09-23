@@ -1,3 +1,1 @@
-// Post entity exports
-export * from './api';
-export * from './model';
+export { getPosts, getPost, usePostsQuery, usePostsServerQuery, usePost, usePostServerQuery, useInvalidatePosts, postQueryKeys } from './api';

@@ -1,6 +1,6 @@
 'use client'
 
-import { useProjects, useProjectsRealtime, useCreateProject } from "@/entities/project";
+import { useProjectsQuery, useProjectsRealtime, useCreateProjectMutation } from "@/entities/project";
 import { DeleteProjectModal } from "@/features/project-creation";
 import { ProjectCreateModal, type CreateProjectData } from "@/widgets/project-create-modal";
 import { Button } from "@/shared/components";
@@ -9,17 +9,14 @@ import { useState, useCallback } from "react";
 import { useQueryState } from 'nuqs';
 
 export default function ProjectList() {
-  const { data: projectsData, isLoading, error } = useProjects();
-  const createProject = useCreateProject();
-  
-  // Подключаем realtime подписку для автоматического обновления
-  useProjectsRealtime(true);
-  
-  // Управление модалкой создания проекта
+  const { data: projectsData, isLoading, error } = useProjectsQuery();
+  const createProject = useCreateProjectMutation();
+
+  useProjectsRealtime();
+
   const [createParam, setCreateParam] = useQueryState('create');
   const isCreateModalOpen = createParam === 'project';
-  
-  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+
   const [projectToDelete, setProjectToDelete] = useState<{
     id: string;
     name: string;
@@ -27,11 +24,9 @@ export default function ProjectList() {
 
   const handleDeleteProject = (projectId: string, projectName: string) => {
     setProjectToDelete({ id: projectId, name: projectName });
-    setDeleteModalOpen(true);
   };
 
   const handleCloseDeleteModal = () => {
-    setDeleteModalOpen(false);
     setProjectToDelete(null);
   };
 
@@ -81,7 +76,7 @@ export default function ProjectList() {
         isLoading={createProject.isPending}
       />
       <DeleteProjectModal 
-        isOpen={deleteModalOpen}
+        isOpen={projectToDelete !== null}
         onClose={handleCloseDeleteModal}
         projectId={projectToDelete?.id || null}
         projectName={projectToDelete?.name || null}

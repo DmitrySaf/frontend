@@ -1,27 +1,52 @@
-import { useQuery, useQueryClient, QueryClient } from '@tanstack/react-query'
+import { useQuery, useQueryClient, UseQueryResult } from '@tanstack/react-query'
 import { projectQueryKeys } from './constants'
 import { getProjects, getProject } from './api'
+import { useServerQuery } from '@/shared/composables'
+import { Project } from "./types"
+import { transformProject } from "../model"
 
 /**
  * Хук для получения списка проектов
  */
-export const useProjects = () => {
+export const useProjectsQuery = (): UseQueryResult<Project[]> => {
   return useQuery({
     queryKey: projectQueryKeys.projects,
     queryFn: getProjects,
     staleTime: 1000 * 60 * 5, // 5 минут
+    select: (data) => data.map(transformProject),
+  })
+}
+
+/**
+ * Серверный хук для предзагрузки проектов
+ */
+export const useProjectsServerQuery = () => {
+  return useServerQuery({
+    queryKey: projectQueryKeys.projects,
+    queryFn: getProjects
   })
 }
 
 /**
  * Хук для получения единичного проекта
  */
-export const useProject = (id: string) => {
+export const useProject = (id: string): UseQueryResult<Project> => {
   return useQuery({
     queryKey: projectQueryKeys.project(id),
     queryFn: () => getProject(id),
     enabled: !!id, // Запрос выполняется только если есть id
     staleTime: 1000 * 60 * 10, // 10 минут
+    select: (data) => transformProject(data),
+  })
+}
+
+/**
+ * Серверный хук для предзагрузки единичного проекта
+ */
+export const useProjectServerQuery = (id: string) => {
+  return useServerQuery({
+    queryKey: projectQueryKeys.project(id),
+    queryFn: () => getProject(id)
   })
 }
 
@@ -34,27 +59,5 @@ export const useInvalidateProjects = () => {
   return () => {
     queryClient.invalidateQueries({ queryKey: projectQueryKeys.projects })
   }
-}
-
-/**
- * Предзагружает данные проектов в QueryClient
- */
-export const prefetchProjectsData = async (queryClient: QueryClient, data: any) => {
-  await queryClient.prefetchQuery({
-    queryKey: projectQueryKeys.projects,
-    queryFn: () => Promise.resolve(data),
-    staleTime: 1000 * 60 * 5,
-  })
-}
-
-/**
- * Предзагружает данные единичного проекта в QueryClient
- */
-export const prefetchProjectData = async (queryClient: QueryClient, id: string, data: any) => {
-  await queryClient.prefetchQuery({
-    queryKey: projectQueryKeys.project(id),
-    queryFn: () => Promise.resolve(data),
-    staleTime: 1000 * 60 * 10,
-  })
 }
 

@@ -1,10 +1,11 @@
-import { useSSRProjects } from "@/entities/project";
+import { useProjectsServerQuery } from "@/entities/project";
 import { HydrationBoundary } from "@/shared/components";
 import { ProjectList } from "@/pages/project-list";
+import { createClient } from "@supabase/supabase-js";
+import { cookies } from "next/headers";
 
 export default async function ProjectsPage() {
-  // Используем новый SSR хук
-  const { dehydratedState } = await useSSRProjects();
+  const { dehydratedState } = await useProjectsServerQuery();
 
   return (
     <HydrationBoundary state={dehydratedState}>

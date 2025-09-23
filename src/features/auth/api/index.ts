@@ -1,1 +1,1 @@
-export { authApi } from "./api";
+// API теперь интегрирован напрямую в AuthContext через Supabase SSR

@@ -1,0 +1,82 @@
+---
+description: "Data fetching architecture and patterns"
+alwaysApply: false
+---
+
+# Data Fetching Architecture and Patterns
+
+This document describes patterns and usage examples for the data architecture in the project.
+
+## Implementation Examples
+
+### Query Keys
+
+```typescript
+// Query keys for typed caching
+export const entityQueryKeys = {
+  entities: ["entities"],
+  entity: (id: string) => ["entities", id],
+};
+```
+
+### React Query Hooks
+
+- for mapper transformEntity see [api](mdc:api.mdc)
+
+```typescript
+// Client hooks and server hooks in same file
+export const useEntitiesQuery = (): UseQueryResult<Entity[]> => {
+  return useQuery({
+    queryKey: entityQueryKeys.entities,
+    queryFn: getEntities,
+    select: (data) => data.map(transformEntity),
+  });
+};
+
+export const useEntitiesServerQuery = (): UseQueryResult<Entity> => {
+  return useServerQuery({
+    queryKey: entityQueryKeys.entities,
+    queryFn: getEntities,
+    select: (data) => transformEntity(data),
+  });
+};
+
+export const useInvalidateEntities = () => {
+  const queryClient = useQueryClient();
+
+  return () => {
+    queryClient.invalidateQueries({ queryKey: entityQueryKeys.entities });
+  };
+};
+```
+
+## Usage in Server Components
+
+```typescript
+// app/(authenticated)/entities/page.tsx
+import { useEntitiesServerQuery } from "@/entities/entity";
+
+export default async function EntitiesPage() {
+  const { dehydratedState } = await useEntitiesServerQuery();
+
+  return (
+    <HydrationBoundary state={dehydratedState}>
+      <EntityList />
+    </HydrationBoundary>
+  );
+}
+```
+
+## Usage in Client Components
+
+```typescript
+// pages/entity-list/ui/EntityList.tsx
+"use client";
+
+import { useEntitiesQuery } from "@/entities/entity";
+
+export default function EntityList() {
+  const { data, isLoading, error } = useEntitiesQuery();
+  // ...
+}
+```

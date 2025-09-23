@@ -1,3 +1,7 @@
-export { AuthProvider, useAuth } from "./AuthContext";
-export { default as withAuth } from "./withAuth";
-export * from "./validation";
+export { 
+  emailSchema, 
+  confirmationSchema, 
+  DEFAULT_EMAIL_VALUES, 
+  DEFAULT_CONFIRMATION_VALUES 
+} from "./validation";
+export type { EmailFormData, ConfirmationFormData } from "./validation";

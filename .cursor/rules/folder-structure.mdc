@@ -51,6 +51,7 @@ This project follows a modular architecture pattern for Next.js applications wit
 - In `app/` route segments, re-export page components from `src/pages` when appropriate (example: `export { EntityPage as default } from '@/pages/entity'`).
 - Absolute imports use the `@/*` alias pointing to `src/*`.
 - Cross-slice imports must go through each slice's public API (`index.ts`). No deep imports.
+- **No wildcard exports**: All `index.ts` files must use specific named exports. Never use `export * from`. Export only what is actually used in the project.
 - Co-locate code, styles, tests, types, and assets within their slice.
 - Promote code to lower layers only when it becomes reusable across domains, or when extracting oversized modules improves clarity.
 - Group by domain (feature/entity), not by technical type.
@@ -62,7 +63,7 @@ This project follows a modular architecture pattern for Next.js applications wit
 - Public API boundaries: expose only what is needed via each slice `index.ts`. Hide internals.
 - **Domain-specific logic placement**: All domain-specific logic (API functions, query keys, prefetch functions, hooks) MUST be placed in the corresponding domain slice (`entities/` or `features/`), NOT in `shared`.
 
-## Data Fetching Layer Structure
+## Entities Layer Structure
 
 Each entity (`entities/`) or feature (`features/`) must follow this structure for data management:
 
@@ -71,12 +72,16 @@ src/
   entities/
     {entity}/
       api/
-        api.ts          # Pure API functions (getCourses, getCourse)
-        queries.ts      # React Query hooks and prefetch functions
-        constants.ts    # Query keys for typed caching
+        api.ts          # Pure API functions - see api.mdc
+        types.ts        # API types and interfaces - see api.mdc
+        queries.ts      # React Query hooks (client + server) - see data-fetching.mdc
+        mutations.ts    # React Query mutations - see data-actions.mdc
+        constants.ts    # Query keys for typed caching - see data-fetching.mdc
+        realtime.ts     # Realtime subscriptions - see supabase-realtime.mdc
         index.ts        # API layer exports
       model/
-        useSSR{Entity}.ts  # SSR hooks for server components
+        mappers.ts      # Data transformation functions - see api.mdc
+        validation.ts   # Zod schemas and types
         index.ts        # Model layer exports
       ui/
         {Entity}Card.tsx   # UI components
@@ -84,38 +89,49 @@ src/
       index.ts          # Public entity API
 ```
 
-### Data Layer File Responsibilities
+### Entities File Responsibilities
 
 #### `api/api.ts` - Pure API Functions
 
 - Contains only API calls, no React Query logic
 - Same functions used for both server and client
-- Example: `getCourses()`, `getCourse(id)`
+- See [api](mdc:api.mdc) for details
 
-#### `api/constants.ts` - Query Keys
+#### `api/types.ts` - API Types and Interfaces
+
+- Domain types and API response types
+- Interfaces for requests and responses
+- See [api](mdc:api.mdc) for details
+
+#### `api/constants.ts` - Query Keys and Constants
 
 - Typed query keys for caching
-- Pattern: `{entity}QueryKeys = { items: ['items'] as const }`
+- Other constants
+- See [data-fetching](mdc:data-fetching.mdc) for details
 
 #### `api/queries.ts` - React Query Integration
 
-- Client-side hooks (`useCourses()`)
-- Server-side prefetch functions (`prefetchCoursesData()`)
-- All React Query logic centralized here
+- Client-side and server-side hooks in same file
+- Invalidation hooks for cache management
+- See [data-fetching](mdc:data-fetching.mdc) for details
 
-#### `model/useSSR{Entity}.ts` - SSR Hooks
+#### `api/mutations.ts` - React Query Mutations
 
-- Server-side hooks using `useSSRQuery` from shared
-- Domain-specific SSR logic
-- Used in server components for data prefetching
+- Mutation hooks with error handling and notifications
+- See [data-actions](mdc:data-actions.mdc) for details
+
+#### `api/realtime.ts` - Realtime Subscriptions
+
+- Domain-specific realtime hooks for automatic data updates
+- See [supabase-realtime](mdc:supabase-realtime.mdc) for details
+
+#### `model/mappers.ts` - Data Transformation Functions
+
+- Transform API responses to domain models
+- Pure transformation functions
+- See [api](mdc:api.mdc) for details
 
 ### Shared Layer for Data
-
-#### `shared/composables/useSSRQuery.ts`
-
-- Universal SSR hook to eliminate boilerplate
-- Takes API function and prefetch function as parameters
-- Returns dehydrated state for client hydration
 
 - **Shared layer imports**: Always import from `shared` through index.ts files, never directly from files:
   - ✅ `import { Button } from '@/shared/components'`

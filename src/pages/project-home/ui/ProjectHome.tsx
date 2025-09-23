@@ -1,6 +1,6 @@
 'use client'
 
-import { useProjects, useProject, useProjectsRealtime } from "@/entities/project";
+import { useProjectsQuery, useProject, useProjectsRealtime } from "@/entities/project";
 import { Loader2 } from "lucide-react";
 import { useParams } from "next/navigation";
 
@@ -8,7 +8,7 @@ export default function ProjectHome() {
   const params = useParams();
   const projectSlug = params?.slug as string;
   
-  const { data: projectsData } = useProjects();
+  const { data: projectsData } = useProjectsQuery();
   const { data: projectData, isLoading, error } = useProject(projectSlug);
   
   // Подключаем realtime подписку для автоматического обновления

@@ -23,7 +23,7 @@ export function EmailForm({ onSubmit }: EmailFormProps) {
     <Form methods={methods} onSubmit={onSubmit} className="space-y-4">
       <Input
         name="email"
-        size="m"
+        size="l"
         label="Почта"
         placeholder="example@gmail.com"
         error={errors.email?.message}

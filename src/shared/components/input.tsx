@@ -11,9 +11,30 @@ const inputVariants = cva(
   {
     variants: {
       size: {
-        l: "py-3.5 px-4 rounded-md",
+        l: "py-3.25 px-4 rounded-md",
         m: "py-3 px-3 rounded-md",
         s: "py-1.5 px-3 rounded-sm",
+      },
+      hasError: {
+        true: "border-danger focus:border-danger",
+        false: "",
+      },
+    },
+    defaultVariants: {
+      size: "m",
+      hasError: false,
+    },
+  }
+);
+
+const inputElemVariants = cva(
+  "flex-1 placeholder:text-gray-500 focus:outline-0",
+  {
+    variants: {
+      size: {
+        l: "text-base leading-5",
+        m: "text-[14px] leading-4.5",
+        s: "text-[14px] leading-4.5",
       },
       hasError: {
         true: "border-danger focus:border-danger",
@@ -107,7 +128,7 @@ const Input = ({
       placeholder={placeholder}
       maxLength={maxLength}
       autoComplete={autocomplete}
-      className="flex-1 leading-4.5 placeholder:text-gray-500 focus:outline-0 focus:border-black disabled:opacity-50 disabled:cursor-not-allowed"
+      className={cn(inputElemVariants({ size }))}
     />
   );
 

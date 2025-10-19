@@ -1,6 +1,7 @@
 import { useProjectServerQuery } from "@/entities/project";
 import { HydrationBoundary } from "@/shared/components";
 import { ProjectHome } from "@/pages/project-home";
+import { createServerClient } from "@/api/server-client";
 
 interface ProjectPageProps {
   params: Promise<{

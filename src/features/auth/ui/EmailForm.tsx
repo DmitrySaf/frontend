@@ -20,7 +20,7 @@ export function EmailForm({ onSubmit, isLoading }: EmailFormProps) {
     handleSubmit, 
     formState: { errors } 
   } = useForm<EmailFormData>({
-    resolver: zodResolver(emailSchema as any),
+    resolver: zodResolver(emailSchema),
     defaultValues: DEFAULT_EMAIL_VALUES,
   });
 

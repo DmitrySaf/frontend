@@ -1,4 +1,4 @@
-export const DEFAULT_PROJECT_VALUES = {
+export const DEFAULT_CREATE_PROJECT_VALUES = {
   displayName: '',
   name: ''
 };

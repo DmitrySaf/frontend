@@ -1,7 +1,7 @@
 'use client'
 
-import { useCallback, useEffect } from 'react'
-import { useForm, SubmitHandler } from 'react-hook-form'
+import { useEffect } from 'react'
+import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { 
   Dialog, 
@@ -17,18 +17,18 @@ import {
   createProjectSchema, 
   type CreateProjectData, 
   type ProjectCreateModalProps,
-  DEFAULT_PROJECT_VALUES
+  DEFAULT_CREATE_PROJECT_VALUES
 } from '../model'
 
 export function ProjectCreateModal({ 
   isOpen, 
-  onClose, 
+  onClose,
   onSubmit, 
   isLoading 
 }: ProjectCreateModalProps) {
   const { register, handleSubmit, formState: { errors }, reset, watch, setValue } = useForm<CreateProjectData>({
-    resolver: zodResolver(createProjectSchema as any),
-    defaultValues: DEFAULT_PROJECT_VALUES
+    resolver: zodResolver(createProjectSchema),
+    defaultValues: DEFAULT_CREATE_PROJECT_VALUES
   })
 
   const watchedDisplayName = watch('displayName')
@@ -66,26 +66,18 @@ export function ProjectCreateModal({
         </DialogHeader>
 
         <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4">
-          <div className="space-y-2">
-            <label className="block text-sm font-medium text-gray-700">
-              Название проекта
-            </label>
             <Input
               type="text"
+              label="Название проекта"
               placeholder="Введите название проекта"
               {...register("displayName")}
-              maxLength={50}
-              showCounter={true}
               error={errors.displayName?.message}
             />
-          </div>
 
-          <div className="space-y-2">
-            <label className="block text-sm font-medium text-gray-700">
-              Имя проекта (URL)
-            </label>
             <Input
               type="text"
+              label="Имя проекта"
+              description="Будет использоваться в URL проекта"
               placeholder="project-name"
               prefix="profound.com/"
               {...register("name")}
@@ -94,28 +86,16 @@ export function ProjectCreateModal({
               showCounter={true}
               error={errors.name?.message}
             />
-            <p className="text-xs text-gray-500">
-              Будет использоваться в URL проекта
-            </p>
-          </div>
 
           <DialogFooter>
             <Button
-              type="button"
-              theme="outline"
-              size="m"
-              onClick={handleClose}
-              disabled={isLoading}
-            >
-              Отмена
-            </Button>
-            <Button
               type="submit"
               theme="primary"
-              size="m"
-              disabled={isLoading}
+              size="l"
+              fluid
+              isLoading={isLoading}
             >
-              {isLoading ? 'Создание...' : 'Создать'}
+              Создать
             </Button>
           </DialogFooter>
         </form>

@@ -3,8 +3,3 @@ export interface Project {
   name: string
 }
 
-export interface ProjectResponse {
-  id: string
-  displayName: string
-  name: string
-}

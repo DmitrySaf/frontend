@@ -1,6 +1,6 @@
 'use client'
 
-import { useProjectsQuery, useProject, useProjectsRealtime } from "@/entities/project";
+import { useProjectsQuery, useProjectQuery, useProjectsRealtime } from "@/entities/project";
 import { Loader2 } from "lucide-react";
 import { useParams } from "next/navigation";
 
@@ -9,10 +9,10 @@ export default function ProjectHome() {
   const projectSlug = params?.slug as string;
   
   const { data: projectsData } = useProjectsQuery();
-  const { data: projectData, isLoading, error } = useProject(projectSlug);
+  const { data: projectData, isLoading, error } = useProjectQuery(projectSlug);
   
   // Подключаем realtime подписку для автоматического обновления
-  useProjectsRealtime(true);
+  useProjectsRealtime();
 
   console.log('🏠 Project Home - Projects list:', projectsData);
   console.log('🚀 Project Home - Current project:', projectData);
@@ -59,34 +59,7 @@ export default function ProjectHome() {
       <div className="space-y-6">
         <div className="bg-white rounded-xl border border-gray-200 p-6">
           <h2 className="text-xl font-semibold text-gray-900 mb-4">О проекте</h2>
-          <p className="text-gray-600 mb-4">
-            {projectData?.description || 'Добро пожаловать в ваш проект'}
-          </p>
-          
-          {projectData && (
-            <div className="space-y-2 text-sm text-gray-500">
-              <p>Статус: <span className="font-medium">{projectData.status}</span></p>
-              <p>Участников: <span className="font-medium">{projectData.members?.length || 0}</span></p>
-              <p>Создан: <span className="font-medium">
-                {projectData.createdAt ? new Date(projectData.createdAt).toLocaleDateString('ru-RU') : 'Не указано'}
-              </span></p>
-            </div>
-          )}
         </div>
-
-        {projectData?.members && (
-          <div className="bg-white rounded-xl border border-gray-200 p-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Участники проекта</h3>
-            <div className="space-y-2">
-              {projectData.members.map((member: any) => (
-                <div key={member.id} className="flex items-center justify-between p-2 bg-gray-50 rounded-lg">
-                  <span className="font-medium text-gray-900">{member.name}</span>
-                  <span className="text-sm text-gray-500 capitalize">{member.role}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
       </div>
     </div>
   );

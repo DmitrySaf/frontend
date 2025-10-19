@@ -1,4 +1,8 @@
-import { QueryClient, dehydrate, type QueryOptions } from '@tanstack/react-query'
+'use server'
+
+import { QueryClient, dehydrate, type QueryOptions, useQuery, type UseQueryResult } from '@tanstack/react-query'
+import { type TypedSupabaseClient } from '@/api'
+import { createServerClient } from '@/api/server-client'
 
 /**
  * Universal hook for SSR with TanStack Query
@@ -9,13 +13,15 @@ export const useServerQuery = async <TData>({
   queryFn
 }: {
   queryKey: NonNullable<QueryOptions['queryKey']>,
-  queryFn: QueryOptions['queryFn']
+  queryFn: (client: TypedSupabaseClient) => Promise<TData>
 }) => {
   const queryClient = new QueryClient()
 
+  const serverClient = await createServerClient()
+
   await queryClient.prefetchQuery({
     queryKey,
-    queryFn,
+    queryFn: () => queryFn(serverClient),
     staleTime: 1000 * 60 * 5,
   })
 

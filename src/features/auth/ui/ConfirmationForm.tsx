@@ -18,8 +18,6 @@ export function ConfirmationForm({ email, onSubmit, onBackToEmail, onResendCode,
   const [digits, setDigits] = useState<string[]>(Array(6).fill(""));
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
-  const code = digits.join("");
-
   const focusInput = useCallback((index: number) => {
     if (index >= 0 && index < inputRefs.current.length) {
       const input = inputRefs.current[index];
@@ -172,7 +170,7 @@ export function ConfirmationForm({ email, onSubmit, onBackToEmail, onResendCode,
         size="l"
         fluid
         onClick={onResendCode}
-        disabled={isLoading}
+        isDisabled={isLoading}
       >
         Отправить код повторно
       </Button>

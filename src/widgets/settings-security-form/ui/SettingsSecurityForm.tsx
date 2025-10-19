@@ -1,15 +1,14 @@
 "use client";
 
-import { useCallback, useEffect } from "react";
-import { useForm, SubmitHandler } from "react-hook-form";
+import { useEffect } from "react";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Switch, Button } from "@/shared/components";
 import { Loader2 } from "lucide-react";
 import { 
   securitySettingsSchema, 
   type SecuritySettingsData, 
-  type SettingsSecurityFormProps,
-  DEFAULT_SECURITY_SETTINGS
+  type SettingsSecurityFormProps
 } from "../model";
 
 export function SettingsSecurityForm({ 
@@ -19,7 +18,7 @@ export function SettingsSecurityForm({
   isDataLoading = false
 }: SettingsSecurityFormProps) {
   const { handleSubmit, formState: { errors }, reset, watch, setValue } = useForm<SecuritySettingsData>({
-    resolver: zodResolver(securitySettingsSchema as any),
+    resolver: zodResolver(securitySettingsSchema),
     defaultValues: initValues
   });
 

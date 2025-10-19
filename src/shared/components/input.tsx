@@ -142,7 +142,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
     return (
       <div className="space-y-2">
         {label && (
-          <label className="block text-sm font-medium text-gray-700">
+          <label className="block font-medium text-gray-700">
             {label}
           </label>
         )}
@@ -192,14 +192,12 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
         )}
         
         <div className="flex justify-between items-center">
-          <div className="space-y-1">
-            {description && (
-              <p className="text-sm text-gray-600">{description}</p>
-            )}
-            {error && (
-              <p className="text-sm text-red-500">{error}</p>
-            )}
-          </div>
+          {error && (
+            <p className="text-sm text-red-500">{error}</p>
+          )}
+          {description && !error && (
+            <p className="text-sm text-gray-600">{description}</p>
+          )}
           
           {showCounter && maxLength && !mask && (
             <div className="text-sm text-gray-500">

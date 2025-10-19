@@ -3,7 +3,7 @@ import { CreateProjectData } from "./validation";
 export interface ProjectCreateModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (data: CreateProjectData) => void;
+  onSubmit: (data: CreateProjectData) => Promise<void>;
   isLoading: boolean;
 }
 

@@ -1,21 +1,30 @@
-import { apiClient } from '@/shared/config'
+import { getProjects as _getProjects, getProject as _getProject, type ProjectResponse } from '@/api/projects'
+import { type TypedSupabaseClient } from "@/api"
 import type { CreateProjectData } from '../model'
-import type { ProjectResponse } from './types'
 
 /**
  * Получение списка проектов
  */
-export const getProjects = async (): Promise<ProjectResponse[]> => {
-  const { data } = await apiClient.get('/projects')
+export const getProjects = async (client: TypedSupabaseClient): Promise<ProjectResponse[]> => {
+  const { data, error } = await _getProjects(client)
 
-  return data
+
+  return data || []
 }
 
 /**
  * Получение единичного проекта
  */
-export const getProject = async (id: string): Promise<ProjectResponse> => {
-  const { data } = await apiClient.get(`/projects/${id}`)
+export const getProject = async (client: TypedSupabaseClient, name: string): Promise<ProjectResponse> => {
+  const { data, error } = await _getProject(client, name)
+
+  if (error) {
+    throw new Error(error.message)
+  }
+
+  if (!data) {
+    throw new Error('Project not found')
+  }
 
   return data
 }
@@ -24,12 +33,14 @@ export const getProject = async (id: string): Promise<ProjectResponse> => {
  * Создание нового проекта
  */
 export const createProject = async (data: CreateProjectData): Promise<void> => {
-  await apiClient.post('/projects', data)
+  // TODO: Implement with Supabase
+  throw new Error('Not implemented yet')
 }
 
 /**
  * Удаление проекта
  */
 export const deleteProject = async (name: string): Promise<void> => {
-  await apiClient.delete(`/projects/${name}`)
+  // TODO: Implement with Supabase
+  throw new Error('Not implemented yet')
 }

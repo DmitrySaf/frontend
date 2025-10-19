@@ -25,7 +25,12 @@
       "@/features/*": ["./src/features/*"],
       "@/widgets/*": ["./src/widgets/*"],
       "@/pages/*": ["./src/pages/*"],
-      "@/app/*": ["./app/*"]
+      "@/app/*": ["./app/*"],
+      "@/api": ["./supabase/api"],
+      "@/api/*": ["./supabase/api/*"],
+      "@/api/server-client": ["./supabase/api/utils/server.ts"],
+      "@/api/browser-client": ["./supabase/api/utils/client.ts"],
+      "@/api/middleware": ["./supabase/api/utils/middleware.ts"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],

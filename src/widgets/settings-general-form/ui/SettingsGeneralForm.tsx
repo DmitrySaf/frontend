@@ -1,15 +1,14 @@
 "use client";
 
-import { useCallback, useEffect } from "react";
-import { useForm, SubmitHandler } from "react-hook-form";
+import { useEffect } from "react";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button, Input, Textarea } from "@/shared/components";
 import { Loader2 } from "lucide-react";
 import { 
   userSettingsSchema, 
   type UserSettingsData, 
-  type SettingsGeneralFormProps,
-  DEFAULT_USER_SETTINGS
+  type SettingsGeneralFormProps
 } from "../model";
 
 export function SettingsGeneralForm({ 
@@ -19,7 +18,7 @@ export function SettingsGeneralForm({
   isDataLoading = false
 }: SettingsGeneralFormProps) {
   const { register, handleSubmit, formState: { errors }, reset } = useForm<UserSettingsData>({
-    resolver: zodResolver(userSettingsSchema as any),
+    resolver: zodResolver(userSettingsSchema),
     defaultValues: initValues
   });
 

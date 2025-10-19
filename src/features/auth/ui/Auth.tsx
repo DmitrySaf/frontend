@@ -11,7 +11,7 @@ import {
   type ConfirmationFormData 
 } from "../model/validation";
 import Link from "next/link";
-import { createBrowserClient } from "@/shared/utils/supabase/client";
+import { createBrowserClient } from "@/api/browser-client";
 
 export default function Auth() {
   const supabase = createBrowserClient();

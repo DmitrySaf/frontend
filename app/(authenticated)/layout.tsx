@@ -1,4 +1,4 @@
-import MainSidebar from "@/widgets/main-sidebar/ui/sidebar";
+import { MainSidebar } from "@/widgets/main-sidebar";
 
 export default function MainLayout({
   children,

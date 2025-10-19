@@ -4,7 +4,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { LogOut } from "lucide-react";
 import { SETTINGS_SECTIONS } from "@/pages/settings";
 import { Tab, Button } from "@/shared/components";
-import { createBrowserClient } from "@/shared/utils/supabase/client";
+import { createBrowserClient } from "@/api/browser-client";
 
 export function SettingsSidebar() {
   const pathname = usePathname();

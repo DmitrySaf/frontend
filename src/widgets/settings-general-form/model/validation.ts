@@ -17,8 +17,6 @@ export const userSettingsSchema = z.object({
   bio: z
     .string()
     .max(500, "Описание не должно превышать 500 символов")
-    .optional(),
 });
 
 export type UserSettingsData = z.infer<typeof userSettingsSchema>;
-

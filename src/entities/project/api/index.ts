@@ -1,5 +1,6 @@
 export { getProjects, getProject, createProject, deleteProject } from './api';
-export { useProjectsQuery, useProjectsServerQuery, useProject, useProjectServerQuery, useInvalidateProjects } from './queries';
+export { useProjectsServerQuery, useProjectServerQuery } from './queries.server';
+export { useProjectsQuery, useProjectQuery, useInvalidateProjects } from './queries.browser'
 export { useCreateProjectMutation, useDeleteProjectMutation } from './mutations';
 export { projectQueryKeys } from './constants';
 export { useProjectsRealtime } from './realtime';

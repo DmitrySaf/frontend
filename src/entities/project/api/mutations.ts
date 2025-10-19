@@ -1,7 +1,7 @@
 import { useMutation } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import { createProject, deleteProject } from './api'
-import { useInvalidateProjects } from './queries'
+import { useInvalidateProjects } from './queries.browser'
 
 /**
  * Хук для создания нового проекта

@@ -5,7 +5,7 @@ export {
   deleteProject,
   useProjectsQuery, 
   useProjectsServerQuery, 
-  useProject, 
+  useProjectQuery, 
   useProjectServerQuery, 
   useInvalidateProjects,
   useCreateProjectMutation, 

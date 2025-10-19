@@ -1,42 +1,25 @@
 'use client'
 
-import { useProjectsQuery, useProjectsRealtime, useCreateProjectMutation } from "@/entities/project";
+import { useProjectsQuery, useProjectsRealtime } from "@/entities/project";
 import { DeleteProjectModal } from "@/features/project-creation";
-import { ProjectCreateModal, type CreateProjectData } from "@/widgets/project-create-modal";
 import { Button } from "@/shared/components";
 import { Trash2 } from "lucide-react";
-import { useState, useCallback } from "react";
-import { useQueryState } from 'nuqs';
+import { useState } from "react";
 
 export default function ProjectList() {
   const { data: projectsData, isLoading, error } = useProjectsQuery();
-  const createProject = useCreateProjectMutation();
 
   useProjectsRealtime();
 
-  const [createParam, setCreateParam] = useQueryState('create');
-  const isCreateModalOpen = createParam === 'project';
+  const [projectToDelete, setProjectToDelete] = useState<string | null>(null);
 
-  const [projectToDelete, setProjectToDelete] = useState<{
-    id: string;
-    name: string;
-  } | null>(null);
-
-  const handleDeleteProject = (projectId: string, projectName: string) => {
-    setProjectToDelete({ id: projectId, name: projectName });
+  const handleDeleteProject = (projectName: string) => {
+    setProjectToDelete(projectName);
   };
 
   const handleCloseDeleteModal = () => {
     setProjectToDelete(null);
   };
-
-  const handleCloseCreateModal = useCallback(() => {
-    setCreateParam(null);
-  }, [setCreateParam]);
-
-  const handleCreateProject = useCallback(async (data: CreateProjectData) => {
-    await createProject.mutateAsync(data);
-  }, [createProject]);
 
   if (isLoading) {
     return (
@@ -69,44 +52,27 @@ export default function ProjectList() {
 
   return (
     <>
-      <ProjectCreateModal 
-        isOpen={isCreateModalOpen}
-        onClose={handleCloseCreateModal}
-        onSubmit={handleCreateProject}
-        isLoading={createProject.isPending}
-      />
       <DeleteProjectModal 
         isOpen={projectToDelete !== null}
         onClose={handleCloseDeleteModal}
-        projectId={projectToDelete?.id || null}
-        projectName={projectToDelete?.name || null}
+        projectName={projectToDelete}
       />
       <div className="min-h-screen bg-gray-50 p-6">
         <div className="max-w-6xl mx-auto">
           <h1 className="text-3xl font-bold text-gray-900 mb-8">Мои проекты</h1>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {projectsData?.map((project: any) => (
-            <div key={project.id} className="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-lg transition-shadow">
-              <h3 className="text-xl font-semibold text-gray-900 mb-3">{project.display_name}</h3>
-              <p className="text-gray-600 mb-4">{project.description}</p>
+        <div key="project-list" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {projectsData?.map((project) => (
+            <div key={project.name} className="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-lg transition-shadow">
+              <h3 className="text-xl font-semibold text-gray-900 mb-3">{project.displayName}</h3>
+              <p className="text-gray-600 mb-4">{project.name}</p>
               <div className="flex items-center justify-between">
-                <span className={`px-3 py-1 rounded-full text-sm font-medium ${
-                  project.status === 'active' 
-                    ? 'bg-green-100 text-green-800'
-                    : project.status === 'completed'
-                    ? 'bg-blue-100 text-blue-800' 
-                    : 'bg-yellow-100 text-yellow-800'
-                }`}>
-                  {project.status === 'active' ? 'Активный' : 
-                   project.status === 'completed' ? 'Завершен' : 'В процессе'}
-                </span>
                 <div className="flex items-center space-x-2">
                   <Button
                     theme="ghost"
                     size="m"
                     Icon={Trash2}
-                    onClick={() => handleDeleteProject(project.id, project.name)}
+                    onClick={() => handleDeleteProject(project.name)}
                   />
                   <Button 
                     theme="ghost" 

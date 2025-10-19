@@ -15,15 +15,13 @@ import { Loader2 } from 'lucide-react'
 interface DeleteProjectModalProps {
   isOpen: boolean
   onClose: () => void
-  projectId: string | null
   projectName: string | null
 }
 
 export default function DeleteProjectModal({ 
-  isOpen, 
-  onClose, 
-  projectId, 
-  projectName 
+  isOpen,
+  onClose,
+  projectName
 }: DeleteProjectModalProps) {
   const deleteProject = useDeleteProjectMutation()
 
@@ -54,7 +52,7 @@ export default function DeleteProjectModal({
             theme="outline"
             size="m"
             onClick={onClose}
-            disabled={deleteProject.isPending}
+            isDisabled={deleteProject.isPending}
           >
             Отмена
           </Button>
@@ -62,7 +60,7 @@ export default function DeleteProjectModal({
             theme="destructive"
             size="m"
             onClick={handleDelete}
-            disabled={deleteProject.isPending || !projectName}
+            isDisabled={deleteProject.isPending || !projectName}
           >
             {deleteProject.isPending ? (
               <>

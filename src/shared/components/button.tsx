@@ -52,15 +52,15 @@ export interface ButtonProps {
   // Behavior
   asChild?: boolean;
   isLoading?: boolean;
+  isDisabled?: boolean;
   
   // Standard HTML Button Props
   type?: "button" | "submit" | "reset";
-  disabled?: boolean;
   onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, theme, size, fluid, Icon, asChild = false, isLoading, children, disabled, ...props }, ref) => {
+  ({ className, theme, size, fluid, Icon, asChild = false, isLoading, children, isDisabled, ...props }, ref) => {
     const Comp = asChild ? Slot : "button";
     const iconOnly = !children && !!Icon;
     
@@ -75,7 +75,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       <Comp 
         className={cn(buttonVariants({ theme, size, fluid, iconOnly, className }))} 
         ref={ref} 
-        disabled={disabled || isLoading}
+        disabled={isDisabled || isLoading}
         {...props}
       >
         {isLoading ? (

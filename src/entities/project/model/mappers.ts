@@ -5,5 +5,5 @@ export const transformProject = (project: ProjectResponse): Project => {
   return {
     displayName: project.display_name,
     name: project.name,
-  }
-}
+  };
+};

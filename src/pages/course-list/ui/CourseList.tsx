@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import { Button } from "@/shared/components";
 import { useCoursesQuery } from "@/entities/course";
@@ -34,7 +34,7 @@ export default function CourseList() {
     );
   }
 
-  console.log('📚 Courses data:', coursesData);
+  console.log("📚 Courses data:", coursesData);
 
   return (
     <div className="flex-1 flex">
@@ -142,16 +142,10 @@ export default function CourseList() {
           <p className="text-gray-600 mb-4">ProFound University</p>
 
           <div className="flex space-x-4 mb-6">
-            <Button 
-              theme="ghost"
-              size="m"
-            >
+            <Button theme="ghost" size="m">
               Заметки
             </Button>
-            <Button 
-              theme="ghost"
-              size="m"
-            >
+            <Button theme="ghost" size="m">
               Курс
             </Button>
           </div>

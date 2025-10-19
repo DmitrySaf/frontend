@@ -1,11 +1,4 @@
-import {
-  BookOpen,
-  FileText,
-  Home,
-  MessageCircle,
-  Settings,
-  Users,
-} from "lucide-react";
+import { BookOpen, FileText, Home, MessageCircle, Settings, Users } from "lucide-react";
 
 export const SIDEBAR_ITEMS = [
   { id: "home", name: "Главная", icon: Home, path: "" },

@@ -5,5 +5,5 @@ export const SETTINGS_SECTIONS = [
   { id: "verification", name: "Верификация", icon: BadgeCheck },
   { id: "security", name: "Безопасность и приватность", icon: Shield },
   { id: "payment", name: "Способы оплаты", icon: CreditCard },
-  { id: "billing", name: "История платежей", icon: FileText }
+  { id: "billing", name: "История платежей", icon: FileText },
 ];

@@ -1,40 +1,40 @@
-'use client'
+"use client";
 
-import { 
-  Dialog, 
-  DialogContent, 
-  DialogHeader, 
-  DialogTitle, 
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
   DialogDescription,
   DialogFooter,
-  Button
-} from '@/shared/components'
-import { useDeleteProjectMutation } from '@/entities/project'
-import { Loader2 } from 'lucide-react'
+  Button,
+} from "@/shared/components";
+import { useDeleteProjectMutation } from "@/entities/project";
+import { Loader2 } from "lucide-react";
 
 interface DeleteProjectModalProps {
-  isOpen: boolean
-  onClose: () => void
-  projectName: string | null
+  isOpen: boolean;
+  onClose: () => void;
+  projectName: string | null;
 }
 
-export default function DeleteProjectModal({ 
+export default function DeleteProjectModal({
   isOpen,
   onClose,
-  projectName
+  projectName,
 }: DeleteProjectModalProps) {
-  const deleteProject = useDeleteProjectMutation()
+  const deleteProject = useDeleteProjectMutation();
 
   const handleDelete = async () => {
-    if (!projectName) return
+    if (!projectName) return;
 
     try {
-      await deleteProject.mutateAsync(projectName)
-      onClose()
+      await deleteProject.mutateAsync(projectName);
+      onClose();
     } catch (error) {
       // Ошибка обрабатывается в мутации через toast
     }
-  }
+  };
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -42,18 +42,13 @@ export default function DeleteProjectModal({
         <DialogHeader>
           <DialogTitle>Удалить проект</DialogTitle>
           <DialogDescription>
-            Вы уверены, что хотите удалить проект "{projectName}"? 
-            Это действие нельзя будет отменить.
+            Вы уверены, что хотите удалить проект "{projectName}"? Это действие нельзя будет
+            отменить.
           </DialogDescription>
         </DialogHeader>
 
         <DialogFooter>
-          <Button
-            theme="outline"
-            size="m"
-            onClick={onClose}
-            isDisabled={deleteProject.isPending}
-          >
+          <Button theme="outline" size="m" onClick={onClose} isDisabled={deleteProject.isPending}>
             Отмена
           </Button>
           <Button
@@ -68,11 +63,11 @@ export default function DeleteProjectModal({
                 Удаление...
               </>
             ) : (
-              'Удалить'
+              "Удалить"
             )}
           </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
-  )
+  );
 }

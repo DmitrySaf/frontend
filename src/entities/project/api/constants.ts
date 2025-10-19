@@ -1,4 +1,4 @@
 export const projectQueryKeys = {
-  projects: ['projects'],
-  project: (id: string) => ['projects', id],
-}
+  projects: ["projects"],
+  project: (id: string) => ["projects", id],
+};

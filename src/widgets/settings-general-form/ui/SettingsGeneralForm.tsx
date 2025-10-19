@@ -3,31 +3,32 @@
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button, Input, Textarea } from "@/shared/components";
+import { Button, Form, Input, Textarea } from "@/shared/components";
 import { Loader2 } from "lucide-react";
-import { 
-  userSettingsSchema, 
-  type UserSettingsData, 
-  type SettingsGeneralFormProps
-} from "../model";
+import { userSettingsSchema, type UserSettingsData } from "../model";
 
-export function SettingsGeneralForm({ 
-  initValues, 
-  onSubmit,
-  isLoading,
-  isDataLoading = false
-}: SettingsGeneralFormProps) {
-  const { register, handleSubmit, formState: { errors }, reset } = useForm<UserSettingsData>({
+interface SettingsGeneralFormProps {
+  initValues: UserSettingsData;
+  onSubmit: (data: UserSettingsData) => void;
+  isLoading: boolean;
+}
+
+export function SettingsGeneralForm({ initValues, onSubmit, isLoading }: SettingsGeneralFormProps) {
+  const methods = useForm<UserSettingsData>({
     resolver: zodResolver(userSettingsSchema),
-    defaultValues: initValues
+    defaultValues: initValues,
   });
+  const {
+    handleSubmit,
+    formState: { errors, isSubmitting },
+    reset,
+  } = methods;
 
-  // Обновляем данные формы когда загружаются настройки
   useEffect(() => {
     reset(initValues);
   }, [initValues, reset]);
 
-  if (isDataLoading) {
+  if (isLoading) {
     return (
       <div className="flex items-center justify-center p-8">
         <div className="text-center space-y-4">
@@ -39,44 +40,24 @@ export function SettingsGeneralForm({
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-        <Input
-          type="text"
-          label="Имя"
-          {...register("name")}
-          error={errors.name?.message}
-        />
+    <Form methods={methods} onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+      <Input name="name" size="m" label="Имя" error={errors.name?.message} />
 
-        <Input
-          type="text"
-          label="Имя пользователя"
-          {...register("username")}
-          error={errors.username?.message}
-        />
+      <Input name="username" size="m" label="Имя пользователя" error={errors.username?.message} />
 
-        <Input
-          type="email"
-          label="Email"
-          {...register("email")}
-        />
+      <Input name="email" size="m" label="Email" />
 
-        <Textarea
-          label="О себе"
-          placeholder="Расскажите о себе"
-          {...register("bio")}
-          rows={3}
-          error={errors.email?.message}
-        />
+      <Textarea
+        name="bio"
+        label="О себе"
+        placeholder="Расскажите о себе"
+        rows={3}
+        error={errors.email?.message}
+      />
 
-        <Button
-          type="submit"
-          theme="primary"
-          size="l"
-          isLoading={isLoading}
-          fluid
-        >
-          Сохранить
-        </Button>
-    </form>
+      <Button type="submit" theme="primary" size="l" isLoading={isSubmitting} fluid>
+        Сохранить
+      </Button>
+    </Form>
   );
 }

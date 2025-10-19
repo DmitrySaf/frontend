@@ -1,8 +1,8 @@
-'use client'
+"use client";
 
-import { useSupabaseRealtime } from '@/shared/composables'
-import { projectQueryKeys } from './constants'
-import type { Project } from './types'
+import { useSupabaseRealtime } from "@/shared/composables";
+import { projectQueryKeys } from "./constants";
+import type { Project } from "./types";
 
 // TODO: для проектов не нужно использовать realtime, но для примера оставил
 /**
@@ -11,9 +11,7 @@ import type { Project } from './types'
  */
 export const useProjectsRealtime = () => {
   useSupabaseRealtime<Project>({
-    table: 'projects',
-    queryKeys: [
-      projectQueryKeys.projects
-    ]
-  })
-}
+    table: "projects",
+    queryKeys: [projectQueryKeys.projects],
+  });
+};

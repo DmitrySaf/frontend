@@ -1,5 +1,7 @@
 export const DEFAULT_CREATE_PROJECT_VALUES = {
-  displayName: '',
-  name: ''
+  displayName: "",
+  name: "",
+  phone: "",
 };
 
+export const PROJECT_NAME_MAX_LENGTH = 30

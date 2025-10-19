@@ -1,2 +1,1 @@
-export { securitySettingsSchema } from "./validation";
-export type { SecuritySettingsData, SettingsSecurityFormProps } from "./types";
+export { securitySettingsSchema, type SecuritySettingsData } from "./validation";

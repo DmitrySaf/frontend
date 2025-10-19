@@ -1,10 +1,10 @@
-export type NavigationItemId = 
-  | "home" 
-  | "posts" 
-  | "courses" 
-  | "articles" 
-  | "chat" 
-  | "members" 
+export type NavigationItemId =
+  | "home"
+  | "posts"
+  | "courses"
+  | "articles"
+  | "chat"
+  | "members"
   | "settings";
 
 export interface NavigationItem {

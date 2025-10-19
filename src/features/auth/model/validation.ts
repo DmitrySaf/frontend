@@ -1,10 +1,7 @@
 import { z } from "zod";
 
 export const emailSchema = z.object({
-  email: z
-    .string()
-    .min(1, "Введите email")
-    .email("Введите корректный email адрес"),
+  email: z.string().min(1, "Введите email").email("Введите корректный email адрес"),
 });
 
 export const confirmationSchema = z.object({
@@ -18,7 +15,6 @@ export const confirmationSchema = z.object({
 
 export type EmailFormData = z.infer<typeof emailSchema>;
 export type ConfirmationFormData = z.infer<typeof confirmationSchema>;
-
 
 // Константы по умолчанию
 export const DEFAULT_EMAIL_VALUES = {

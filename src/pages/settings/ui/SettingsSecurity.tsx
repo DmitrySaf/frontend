@@ -8,10 +8,7 @@ interface SettingsSecurityProps {
   onSave?: (data: SecuritySettingsData) => void;
 }
 
-export function SettingsSecurity({ 
-  initialData = {}, 
-  onSave 
-}: SettingsSecurityProps) {
+export function SettingsSecurity({ initialData = {}, onSave }: SettingsSecurityProps) {
   const handleSubmit = useCallback(
     async (data: SecuritySettingsData) => {
       console.log("Настройки безопасности сохранены:", data);
@@ -30,7 +27,7 @@ export function SettingsSecurity({
   return (
     <div className="space-y-8">
       <h2 className="text-2xl font-bold text-gray-900 mb-6">Безопасность</h2>
-      
+
       <SettingsSecurityForm
         initValues={initValues}
         onSubmit={handleSubmit}

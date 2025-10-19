@@ -6,13 +6,13 @@ export interface SwitchProps {
   // State
   checked?: boolean;
   onCheckedChange?: (checked: boolean) => void;
-  
+
   // Styling
   className?: string;
-  
+
   // Behavior
   disabled?: boolean;
-  
+
   // Accessibility
   id?: string;
 }
@@ -43,9 +43,7 @@ const Switch = React.forwardRef<HTMLButtonElement, SwitchProps>(
             checked && !disabled ? "translate-x-6" : "translate-x-1"
           )}
         >
-          {disabled && (
-            <Lock className="h-2 w-2 text-gray-400" />
-          )}
+          {disabled && <Lock className="h-2 w-2 text-gray-400" />}
         </span>
       </button>
     );
@@ -54,4 +52,4 @@ const Switch = React.forwardRef<HTMLButtonElement, SwitchProps>(
 
 Switch.displayName = "Switch";
 
-export { Switch }; 
+export { Switch };

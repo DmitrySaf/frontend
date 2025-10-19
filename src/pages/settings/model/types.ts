@@ -1,9 +1,4 @@
-export type SettingsSectionId = 
-  | "general" 
-  | "verification" 
-  | "security" 
-  | "payment" 
-  | "billing";
+export type SettingsSectionId = "general" | "verification" | "security" | "payment" | "billing";
 
 export interface SettingsSection {
   id: SettingsSectionId;

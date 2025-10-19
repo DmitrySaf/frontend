@@ -1,1 +1,10 @@
-export { getCourses, getCourse, useCoursesQuery, useCoursesServerQuery, useCourse, useCourseServerQuery, useInvalidateCourses, courseQueryKeys } from './api';
+export {
+  getCourses,
+  getCourse,
+  useCoursesQuery,
+  useCoursesServerQuery,
+  useCourse,
+  useCourseServerQuery,
+  useInvalidateCourses,
+  courseQueryKeys,
+} from "./api";

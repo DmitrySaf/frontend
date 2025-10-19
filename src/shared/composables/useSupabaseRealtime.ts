@@ -1,16 +1,16 @@
-'use client'
+"use client";
 
-import { useEffect } from 'react'
-import { useQueryClient } from '@tanstack/react-query'
-import { createBrowserClient } from '@/api/browser-client'
-import type { RealtimePostgresChangesPayload } from '@supabase/supabase-js'
+import { useEffect } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import { createBrowserClient } from "@/api/browser-client";
+import type { RealtimePostgresChangesPayload } from "@supabase/supabase-js";
 
 interface UseSupabaseRealtimeOptions<T extends Record<string, any> = Record<string, any>> {
-  table: string
-  queryKeys: readonly string[][]
-  onInsert?: (payload: RealtimePostgresChangesPayload<T>) => void
-  onUpdate?: (payload: RealtimePostgresChangesPayload<T>) => void
-  onDelete?: (payload: RealtimePostgresChangesPayload<T>) => void
+  table: string;
+  queryKeys: readonly string[][];
+  onInsert?: (payload: RealtimePostgresChangesPayload<T>) => void;
+  onUpdate?: (payload: RealtimePostgresChangesPayload<T>) => void;
+  onDelete?: (payload: RealtimePostgresChangesPayload<T>) => void;
 }
 
 /**
@@ -22,80 +22,80 @@ export const useSupabaseRealtime = <T extends Record<string, any> = Record<strin
   queryKeys,
   onInsert,
   onUpdate,
-  onDelete
+  onDelete,
 }: UseSupabaseRealtimeOptions<T>) => {
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
 
   useEffect(() => {
-    console.log(`🔄 [Realtime] Setting up subscription for table: ${table}`)
+    console.log(`🔄 [Realtime] Setting up subscription for table: ${table}`);
 
     const channel = createBrowserClient()
       .channel(`${table}-changes`)
       .on(
-        'postgres_changes',
+        "postgres_changes",
         {
-          event: 'INSERT',
-          schema: 'public',
+          event: "INSERT",
+          schema: "public",
           table: table,
         },
         (payload: any) => {
-          console.log('✅ [Realtime] INSERT detected:', payload)
+          console.log("✅ [Realtime] INSERT detected:", payload);
 
           // Инвалидируем кэш
-          queryKeys.forEach(queryKey => {
-            queryClient.invalidateQueries({ queryKey })
-          })
+          queryKeys.forEach((queryKey) => {
+            queryClient.invalidateQueries({ queryKey });
+          });
 
           // Вызываем пользовательский обработчик
-          onInsert?.(payload)
+          onInsert?.(payload);
         }
       )
       .on(
-        'postgres_changes',
+        "postgres_changes",
         {
-          event: 'UPDATE',
-          schema: 'public',
+          event: "UPDATE",
+          schema: "public",
           table: table,
         },
         (payload: any) => {
-          console.log('🔄 [Realtime] UPDATE detected:', payload)
+          console.log("🔄 [Realtime] UPDATE detected:", payload);
 
           // Инвалидируем кэш
-          queryKeys.forEach(queryKey => {
-            queryClient.invalidateQueries({ queryKey })
-          })
+          queryKeys.forEach((queryKey) => {
+            queryClient.invalidateQueries({ queryKey });
+          });
 
           // Вызываем пользовательский обработчик
-          onUpdate?.(payload)
+          onUpdate?.(payload);
         }
       )
       .on(
-        'postgres_changes',
+        "postgres_changes",
         {
-          event: 'DELETE',
-          schema: 'public',
+          event: "DELETE",
+          schema: "public",
           table: table,
         },
         (payload: any) => {
-          console.log('🗑️ [Realtime] DELETE detected:', payload)
-          
+          console.log("🗑️ [Realtime] DELETE detected:", payload);
+
           // Инвалидируем кэш
-          queryKeys.forEach(queryKey => {
-            queryClient.invalidateQueries({ queryKey })
-          })
-          
+          queryKeys.forEach((queryKey) => {
+            queryClient.invalidateQueries({ queryKey });
+          });
+
           // Вызываем пользовательский обработчик
-          onDelete?.(payload)
+          onDelete?.(payload);
         }
       )
       .subscribe((status) => {
-        console.log(`📡 [Realtime] Subscription status for ${table}:`, status)
-      })
+        console.log(`📡 [Realtime] Subscription status for ${table}:`, status);
+      });
 
     // Очистка подписки при размонтировании
     return () => {
-      console.log(`🔌 [Realtime] Unsubscribing from table: ${table}`)
-      channel.unsubscribe()
-    }
-  }, [table, queryClient, onInsert, onUpdate, onDelete])
-}
+      console.log(`🔌 [Realtime] Unsubscribing from table: ${table}`);
+      channel.unsubscribe();
+    };
+  }, [table, queryClient, onInsert, onUpdate, onDelete]);
+};

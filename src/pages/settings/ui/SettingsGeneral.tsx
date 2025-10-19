@@ -9,10 +9,7 @@ interface SettingsGeneralProps {
   onSave?: (data: UserSettingsData) => void;
 }
 
-export function SettingsGeneral({ 
-  initialData = {}, 
-  onSave 
-}: SettingsGeneralProps) {
+export function SettingsGeneral({ initialData = {}, onSave }: SettingsGeneralProps) {
   const { data: settingsData, isLoading, error } = useUserSettings();
   const updateSettings = useUpdateUserSettings();
 
@@ -41,7 +38,7 @@ export function SettingsGeneral({
     );
   }
 
-  console.log('⚙️ Settings data:', settingsData);
+  console.log("⚙️ Settings data:", settingsData);
 
   // Подготавливаем данные для формы
   const initValues = {
@@ -58,12 +55,7 @@ export function SettingsGeneral({
         <h1 className="text-2xl font-bold text-gray-900 mb-6">Настройки аккаунта</h1>
       </div>
 
-      <SettingsGeneralForm
-        initValues={initValues}
-        onSubmit={handleSubmit}
-        isLoading={updateSettings.isPending}
-        isDataLoading={isLoading}
-      />
+      <SettingsGeneralForm initValues={initValues} onSubmit={handleSubmit} isLoading={isLoading} />
     </div>
   );
 }

@@ -13,7 +13,7 @@ export function SettingsSidebar() {
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
-    router.push('/login');
+    router.push("/login");
   };
 
   return (
@@ -51,12 +51,7 @@ export function SettingsSidebar() {
 
       {/* Logout */}
       <div className="p-4">
-        <Tab
-          text="Выйти"
-          isNegative={true}
-          onClick={handleLogout}
-          Icon={LogOut}
-        />
+        <Tab text="Выйти" isNegative={true} onClick={handleLogout} Icon={LogOut} />
       </div>
     </div>
   );

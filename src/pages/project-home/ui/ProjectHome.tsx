@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import { useProjectsQuery, useProjectQuery, useProjectsRealtime } from "@/entities/project";
 import { Loader2 } from "lucide-react";
@@ -7,15 +7,15 @@ import { useParams } from "next/navigation";
 export default function ProjectHome() {
   const params = useParams();
   const projectSlug = params?.slug as string;
-  
+
   const { data: projectsData } = useProjectsQuery();
   const { data: projectData, isLoading, error } = useProjectQuery(projectSlug);
-  
+
   // Подключаем realtime подписку для автоматического обновления
   useProjectsRealtime();
 
-  console.log('🏠 Project Home - Projects list:', projectsData);
-  console.log('🚀 Project Home - Current project:', projectData);
+  console.log("🏠 Project Home - Projects list:", projectsData);
+  console.log("🚀 Project Home - Current project:", projectData);
 
   if (isLoading) {
     return (
@@ -52,10 +52,8 @@ export default function ProjectHome() {
 
   return (
     <div className="flex-1 p-6">
-      <h1 className="text-2xl font-bold text-gray-900 mb-6">
-        {projectData?.name || 'Главная'}
-      </h1>
-      
+      <h1 className="text-2xl font-bold text-gray-900 mb-6">{projectData?.name || "Главная"}</h1>
+
       <div className="space-y-6">
         <div className="bg-white rounded-xl border border-gray-200 p-6">
           <h2 className="text-xl font-semibold text-gray-900 mb-4">О проекте</h2>

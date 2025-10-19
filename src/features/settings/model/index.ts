@@ -1,2 +1,2 @@
-export { useUserSettings, useUpdateUserSettings } from './useSettings';
-export { settingsQueryKeys } from './queryKeys';
+export { useUserSettings, useUpdateUserSettings } from "./useSettings";
+export { settingsQueryKeys } from "./queryKeys";

@@ -11,4 +11,3 @@ export const securitySettingsSchema = z.object({
 });
 
 export type SecuritySettingsData = z.infer<typeof securitySettingsSchema>;
-

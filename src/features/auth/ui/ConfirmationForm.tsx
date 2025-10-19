@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { useState, useRef, useEffect, useCallback } from "react";
 import { Button } from "@/shared/components";
@@ -14,7 +14,14 @@ interface ConfirmationFormProps {
   error?: string;
 }
 
-export function ConfirmationForm({ email, onSubmit, onBackToEmail, onResendCode, isLoading, error }: ConfirmationFormProps) {
+export function ConfirmationForm({
+  email,
+  onSubmit,
+  onBackToEmail,
+  onResendCode,
+  isLoading,
+  error,
+}: ConfirmationFormProps) {
   const [digits, setDigits] = useState<string[]>(Array(6).fill(""));
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
@@ -27,81 +34,89 @@ export function ConfirmationForm({ email, onSubmit, onBackToEmail, onResendCode,
     }
   }, []);
 
-  const handleInput = useCallback((value: string, index: number) => {
-    // Разрешаем только цифры
-    const digit = value.replace(/\D/g, '').slice(-1);
-    
-    setDigits(prev => {
-      const newDigits = [...prev];
-      newDigits[index] = digit;
-      
-      // Если это последняя ячейка и код полный, запускаем отправку
-      if (index === 5 && digit) {
-        const fullCode = newDigits.join('');
-        if (fullCode.length === 6) {
-          setTimeout(() => {
-            onSubmit({ email, confirmationCode: fullCode });
-          }, 100); // Небольшая задержка для визуального обновления
-        }
-      }
-      
-      return newDigits;
-    });
+  const handleInput = useCallback(
+    (value: string, index: number) => {
+      // Разрешаем только цифры
+      const digit = value.replace(/\D/g, "").slice(-1);
 
-    // Переходим к следующему инпуту если введена цифра
-    if (digit && index < 5) {
-      focusInput(index + 1);
-    }
-  }, [focusInput, onSubmit, email]);
-
-  const handleKeyDown = useCallback((event: React.KeyboardEvent<HTMLInputElement>, index: number) => {
-    if (event.key === 'Backspace') {
-      event.preventDefault();
-      
-      setDigits(prev => {
+      setDigits((prev) => {
         const newDigits = [...prev];
-        if (newDigits[index]) {
-          // Если в текущей ячейке есть значение, очищаем его
-          newDigits[index] = "";
-        } else if (index > 0) {
-          // Если текущая ячейка пустая, очищаем предыдущую и переходим к ней
-          newDigits[index - 1] = "";
-          focusInput(index - 1);
+        newDigits[index] = digit;
+
+        // Если это последняя ячейка и код полный, запускаем отправку
+        if (index === 5 && digit) {
+          const fullCode = newDigits.join("");
+          if (fullCode.length === 6) {
+            setTimeout(() => {
+              onSubmit({ email, confirmationCode: fullCode });
+            }, 100); // Небольшая задержка для визуального обновления
+          }
         }
+
         return newDigits;
       });
-    } else if (!isNaN(Number(event.key)) && digits[index]) {
-      // Если вводим цифру в заполненную ячейку, переходим к следующей
-      if (index < 5) {
+
+      // Переходим к следующему инпуту если введена цифра
+      if (digit && index < 5) {
         focusInput(index + 1);
       }
-    }
-  }, [digits, focusInput]);
+    },
+    [focusInput, onSubmit, email]
+  );
 
-  const handlePaste = useCallback((event: React.ClipboardEvent) => {
-    event.preventDefault();
-    const pasteData = event.clipboardData.getData('text').replace(/\D/g, '').slice(0, 6);
-    
-    const newDigits = Array(6).fill("");
-    pasteData.split('').forEach((char, i) => {
-      if (i < 6) newDigits[i] = char;
-    });
-    
-    setDigits(newDigits);
-    
-    // Если вставили полный код, запускаем отправку
-    if (pasteData.length === 6) {
-      setTimeout(() => {
-        onSubmit({ email, confirmationCode: pasteData });
-      }, 100);
-    } else {
-      // Фокусируемся на следующей пустой ячейке или последней заполненной
-      const nextEmptyIndex = newDigits.findIndex(digit => !digit);
-      const focusIndex = nextEmptyIndex !== -1 ? nextEmptyIndex : Math.min(pasteData.length, 5);
-      focusInput(focusIndex);
-    }
-  }, [focusInput, onSubmit, email]);
+  const handleKeyDown = useCallback(
+    (event: React.KeyboardEvent<HTMLInputElement>, index: number) => {
+      if (event.key === "Backspace") {
+        event.preventDefault();
 
+        setDigits((prev) => {
+          const newDigits = [...prev];
+          if (newDigits[index]) {
+            // Если в текущей ячейке есть значение, очищаем его
+            newDigits[index] = "";
+          } else if (index > 0) {
+            // Если текущая ячейка пустая, очищаем предыдущую и переходим к ней
+            newDigits[index - 1] = "";
+            focusInput(index - 1);
+          }
+          return newDigits;
+        });
+      } else if (!isNaN(Number(event.key)) && digits[index]) {
+        // Если вводим цифру в заполненную ячейку, переходим к следующей
+        if (index < 5) {
+          focusInput(index + 1);
+        }
+      }
+    },
+    [digits, focusInput]
+  );
+
+  const handlePaste = useCallback(
+    (event: React.ClipboardEvent) => {
+      event.preventDefault();
+      const pasteData = event.clipboardData.getData("text").replace(/\D/g, "").slice(0, 6);
+
+      const newDigits = Array(6).fill("");
+      pasteData.split("").forEach((char, i) => {
+        if (i < 6) newDigits[i] = char;
+      });
+
+      setDigits(newDigits);
+
+      // Если вставили полный код, запускаем отправку
+      if (pasteData.length === 6) {
+        setTimeout(() => {
+          onSubmit({ email, confirmationCode: pasteData });
+        }, 100);
+      } else {
+        // Фокусируемся на следующей пустой ячейке или последней заполненной
+        const nextEmptyIndex = newDigits.findIndex((digit) => !digit);
+        const focusIndex = nextEmptyIndex !== -1 ? nextEmptyIndex : Math.min(pasteData.length, 5);
+        focusInput(focusIndex);
+      }
+    },
+    [focusInput, onSubmit, email]
+  );
 
   // Автофокус на первый инпут при монтировании
   useEffect(() => {
@@ -138,7 +153,9 @@ export function ConfirmationForm({ email, onSubmit, onBackToEmail, onResendCode,
           {digits.map((digit, index) => (
             <input
               key={index}
-              ref={(el) => { inputRefs.current[index] = el; }}
+              ref={(el) => {
+                inputRefs.current[index] = el;
+              }}
               type="text"
               inputMode="numeric"
               maxLength={1}
@@ -159,11 +176,9 @@ export function ConfirmationForm({ email, onSubmit, onBackToEmail, onResendCode,
           ))}
         </div>
 
-        {error && (
-          <p className="text-sm text-red-500 text-center">{error}</p>
-        )}
+        {error && <p className="text-sm text-red-500 text-center">{error}</p>}
       </div>
-      
+
       <Button
         type="button"
         theme="ghost"

@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import { usePostsQuery } from "@/entities/post";
 import { Loader2 } from "lucide-react";
@@ -39,7 +39,7 @@ export default function PostList() {
     );
   }
 
-  console.log('📝 Posts data:', postsData);
+  console.log("📝 Posts data:", postsData);
 
   return (
     <div className="flex-1 p-6">
@@ -49,9 +49,7 @@ export default function PostList() {
           <div key={post.id} className="bg-white rounded-xl border border-gray-200 p-6">
             <h2 className="text-xl font-semibold text-gray-900 mb-2">{post.title}</h2>
             <p className="text-gray-600 mb-3">{post.content}</p>
-            <div className="text-sm text-gray-500">
-              Автор: {post.author}
-            </div>
+            <div className="text-sm text-gray-500">Автор: {post.author}</div>
           </div>
         )) || (
           <div className="bg-white rounded-xl border border-gray-200 p-6">

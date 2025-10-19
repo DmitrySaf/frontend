@@ -1,1 +1,1 @@
-export { getUserSettings, updateUserSettings } from './api';
+export { getUserSettings, updateUserSettings } from "./api";

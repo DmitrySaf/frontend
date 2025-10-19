@@ -37,31 +37,17 @@ This document outlines the universal standards and patterns for creating and usi
 
 ```tsx
 interface ComponentProps {
+  size?: "s" | "m" | "l";
   // Custom Props (component-specific functionality)
   label?: string;
   error?: string;
   isLoading?: boolean;
+  isDisabled?: boolean;
 
-  // Styling
-  className?: string;
-  variant?: "default" | "outline" | "ghost";
-  size?: "sm" | "default" | "lg";
-
-  // Standard HTML Props (only those actually used)
-  disabled?: boolean;
+  // Standard Event Props (only those actually used)
   onClick?: (event: React.MouseEvent<HTMLElement>) => void;
-
-  // Events (only those needed)
   onChange?: (event: React.ChangeEvent<HTMLElement>) => void;
   onFocus?: (event: React.FocusEvent<HTMLElement>) => void;
-
-  // Accessibility (when needed)
-  id?: string;
-  "aria-label"?: string;
-  "aria-describedby"?: string;
-
-  // Content
-  children?: React.ReactNode;
 }
 ```
 
@@ -114,47 +100,10 @@ interface ComponentProps {
 - [ ] forwardRef implementation (if needed)
 - [ ] Consistent label patterns (for form components)
 
-## Form Component Patterns
-
-### Label Integration
-
-- Form components should include built-in label support
-- Use consistent label styling: `block text-sm font-medium text-gray-700`
-- Render labels only when provided
-
-### Error Handling
-
-- Include `error` prop for error message display
-- Apply error styling automatically (red borders, error text)
-- Show error messages below the component
-
-### State Management
-
-- Handle internal value state when necessary
-- Support both controlled and uncontrolled modes
-- Proper event handling and propagation
-
 ## Interactive Component Patterns
-
-### Loading States
-
-- Include `isLoading` prop for async operations
-- Show loading spinner automatically
-- Disable interaction during loading
-- Use consistent spinner styling: `Loader2` with `w-4 h-4 animate-spin`
 
 ### Variants and Sizes
 
 - Implement variant system for different visual styles
-- Include size variations (sm, default, lg)
+- Include size variations (s, m, l)
 - Use consistent naming patterns across components
-
-## Best Practices
-
-1. **Type Safety**: All props must be explicitly typed
-2. **Consistency**: Use the same patterns across all components
-3. **Accessibility**: Include proper ARIA attributes and semantic HTML
-4. **Performance**: Optimize for re-rendering and bundle size
-5. **Maintainability**: Centralized styling makes updates easier
-6. **Developer Experience**: Clear props and comprehensive TypeScript support
-7. **Extensibility**: Design components to be easily extended with new props

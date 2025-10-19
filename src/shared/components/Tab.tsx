@@ -42,11 +42,7 @@ export interface TabProps {
 const Tab = React.forwardRef<HTMLButtonElement, TabProps>(
   ({ className, isActive, isNegative, Icon, text, ...props }, ref) => {
     return (
-      <button 
-        className={cn(tabVariants({ isActive, isNegative, className }))} 
-        ref={ref}
-        {...props}
-      >
+      <button className={cn(tabVariants({ isActive, isNegative, className }))} ref={ref} {...props}>
         {Icon && <Icon className="size-4 flex-shrink-0" />}
         <span>{text}</span>
       </button>

@@ -12,7 +12,7 @@ interface ProjectSidebarProps {
 export default function ProjectSidebar({ slug }: ProjectSidebarProps) {
   const pathname = usePathname();
   const router = useRouter();
-  
+
   return (
     <div className="w-64 bg-white border-r border-gray-200 flex flex-col">
       {/* Header */}
@@ -35,7 +35,7 @@ export default function ProjectSidebar({ slug }: ProjectSidebarProps) {
             const Icon = item.icon;
             const href = `/projects/${slug}${item.path}`;
             const isActive = pathname === href;
-            
+
             return (
               <Tab
                 key={item.id}
@@ -56,7 +56,7 @@ export default function ProjectSidebar({ slug }: ProjectSidebarProps) {
             const Icon = item.icon;
             const href = `/projects/${slug}${item.path}`;
             const isActive = pathname === href;
-            
+
             return (
               <Tab
                 key={item.id}
@@ -72,4 +72,3 @@ export default function ProjectSidebar({ slug }: ProjectSidebarProps) {
     </div>
   );
 }
-

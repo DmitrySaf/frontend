@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
@@ -6,10 +6,7 @@ import { EmailForm } from "./EmailForm";
 import { ConfirmationForm } from "./ConfirmationForm";
 import { Button, Separator } from "@/shared/components";
 import Image from "next/image";
-import { 
-  type EmailFormData, 
-  type ConfirmationFormData 
-} from "../model/validation";
+import { type EmailFormData, type ConfirmationFormData } from "../model/validation";
 import Link from "next/link";
 import { createBrowserClient } from "@/api/browser-client";
 
@@ -21,56 +18,62 @@ export default function Auth() {
   const [currentEmail, setCurrentEmail] = useState("");
   const [confirmationError, setConfirmationError] = useState<string | undefined>(undefined);
 
-  const handleEmailSubmit = useCallback(async (data: EmailFormData) => {
-    setIsLoading(true);
-    setCurrentEmail(data.email);
-    
-    try {
-      const { error } = await supabase.auth.signInWithOtp({
-        email: data.email,
-        options: {
-          shouldCreateUser: true,
-        },
-      });
-      
-      if (error) {
-        throw new Error(error.message || "Ошибка при отправке кода");
-      }
-      
-      setIsConfirmationStep(true);
-    } catch (error) {
-      console.error('Ошибка при отправке кода:', error);
-      throw error;
-    } finally {
-      setIsLoading(false);
-    }
-  }, [supabase]);
+  const handleEmailSubmit = useCallback(
+    async (data: EmailFormData) => {
+      setIsLoading(true);
+      setCurrentEmail(data.email);
 
-  const handleConfirmationSubmit = useCallback(async (data: ConfirmationFormData) => {
-    setIsLoading(true);
-    setConfirmationError(undefined);
-    
-    try {
-      const { error } = await supabase.auth.verifyOtp({
-        email: data.email,
-        token: data.confirmationCode,
-        type: 'email',
-      });
-      
-      if (error) {
-        setConfirmationError("Неверный код");
-        return;
+      try {
+        const { error } = await supabase.auth.signInWithOtp({
+          email: data.email,
+          options: {
+            shouldCreateUser: true,
+          },
+        });
+
+        if (error) {
+          throw new Error(error.message || "Ошибка при отправке кода");
+        }
+
+        setIsConfirmationStep(true);
+      } catch (error) {
+        console.error("Ошибка при отправке кода:", error);
+        throw error;
+      } finally {
+        setIsLoading(false);
       }
-      
-      // Успешная аутентификация - перенаправляем пользователя
-      router.push('/projects');
-    } catch (error) {
-      console.error('Ошибка при проверке кода:', error);
-      setConfirmationError("Произошла ошибка при проверке кода");
-    } finally {
-      setIsLoading(false);
-    }
-  }, [supabase, router]);
+    },
+    [supabase]
+  );
+
+  const handleConfirmationSubmit = useCallback(
+    async (data: ConfirmationFormData) => {
+      setIsLoading(true);
+      setConfirmationError(undefined);
+
+      try {
+        const { error } = await supabase.auth.verifyOtp({
+          email: data.email,
+          token: data.confirmationCode,
+          type: "email",
+        });
+
+        if (error) {
+          setConfirmationError("Неверный код");
+          return;
+        }
+
+        // Успешная аутентификация - перенаправляем пользователя
+        router.push("/projects");
+      } catch (error) {
+        console.error("Ошибка при проверке кода:", error);
+        setConfirmationError("Произошла ошибка при проверке кода");
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [supabase, router]
+  );
 
   const handleBackToEmail = useCallback(() => {
     setIsConfirmationStep(false);
@@ -80,10 +83,10 @@ export default function Auth() {
 
   const handleResendCode = useCallback(async () => {
     if (!currentEmail) return;
-    
+
     setIsLoading(true);
     setConfirmationError(undefined);
-    
+
     try {
       const { error } = await supabase.auth.signInWithOtp({
         email: currentEmail,
@@ -91,13 +94,13 @@ export default function Auth() {
           shouldCreateUser: true,
         },
       });
-      
+
       if (error) {
         setConfirmationError("Не удалось отправить код повторно");
         return;
       }
     } catch (error) {
-      console.error('Ошибка при повторной отправке кода:', error);
+      console.error("Ошибка при повторной отправке кода:", error);
       setConfirmationError("Не удалось отправить код повторно");
     } finally {
       setIsLoading(false);
@@ -107,7 +110,7 @@ export default function Auth() {
   return (
     <div className="space-y-6">
       {isConfirmationStep ? (
-        <ConfirmationForm 
+        <ConfirmationForm
           email={currentEmail}
           onSubmit={handleConfirmationSubmit}
           onBackToEmail={handleBackToEmail}
@@ -117,16 +120,13 @@ export default function Auth() {
         />
       ) : (
         <div className="space-y-6">
-        <div className="mt-4">
-          <p className="text-gray-600 text-base text-center">
-            Создайте аккаунт или войдите, чтобы открыть новые возможности для заработка.
-          </p>
-        </div>
+          <div className="mt-4">
+            <p className="text-gray-600 text-base text-center">
+              Создайте аккаунт или войдите, чтобы открыть новые возможности для заработка.
+            </p>
+          </div>
 
-          <EmailForm 
-            onSubmit={handleEmailSubmit}
-            isLoading={isLoading}
-          />
+          <EmailForm onSubmit={handleEmailSubmit} />
 
           <div className="relative">
             <div className="absolute inset-0 flex items-center">
@@ -139,19 +139,11 @@ export default function Auth() {
 
           {/* Социальные кнопки TODO: гугл */}
           <div className="grid grid-cols-2 gap-4">
-            <Button
-              theme="outline"
-              size="l"
-              fluid
-            >
+            <Button theme="outline" size="l" fluid>
               <Image src="/vk.svg" alt="VK" width={24} height={24} />
             </Button>
 
-            <Button
-              theme="outline"
-              size="l"
-              fluid
-            >
+            <Button theme="outline" size="l" fluid>
               <Image src="/yandex.svg" alt="Yandex" width={24} height={24} />
             </Button>
           </div>

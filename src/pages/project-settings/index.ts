@@ -1,1 +1,1 @@
-export { ProjectSettings } from './ui';
+export { ProjectSettings } from "./ui";

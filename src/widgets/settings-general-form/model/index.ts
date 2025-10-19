@@ -1,3 +1,1 @@
-export { userSettingsSchema } from "./validation";
-export type { UserSettingsData, SettingsGeneralFormProps } from "./types";
-
+export { userSettingsSchema, type UserSettingsData } from "./validation";

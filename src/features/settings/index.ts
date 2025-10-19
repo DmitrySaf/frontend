@@ -1,1 +1,1 @@
-export { useUserSettings, useUpdateUserSettings } from './model';
+export { useUserSettings, useUpdateUserSettings } from "./model";

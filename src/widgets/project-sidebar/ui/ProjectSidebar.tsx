@@ -18,7 +18,7 @@ export default function ProjectSidebar({ slug }: ProjectSidebarProps) {
       {/* Header */}
       <div className="p-4 border-b border-gray-200">
         <div className="flex items-center space-x-3">
-          <div className="w-8 h-8 bg-orange-500 rounded-xl flex items-center justify-center">
+          <div className="w-8 h-8 bg-orange-500 rounded-md flex items-center justify-center">
             <Image src="/lightbulb.svg" alt="ProFound" width={20} height={20} />
           </div>
           <div>

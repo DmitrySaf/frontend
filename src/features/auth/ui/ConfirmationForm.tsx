@@ -165,7 +165,7 @@ export function ConfirmationForm({
               onPaste={handlePaste}
               className={cn(
                 "w-10 h-12 text-center text-base font-medium",
-                "border border-gray-300 rounded-xl",
+                "border border-gray-300 rounded-md",
                 "focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent",
                 "transition-colors",
                 "disabled:opacity-50 disabled:cursor-not-allowed",

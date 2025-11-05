@@ -1,3 +1,5 @@
+"use client";
+
 import { SettingsGeneral } from "@/pages/settings";
 
 export default function GeneralPage() {

@@ -4,28 +4,16 @@ import { cva } from "class-variance-authority";
 import { cn } from "@/shared/utils";
 
 const tabVariants = cva(
-  "w-full flex items-center space-x-3 px-3 py-2 rounded-xl text-left transition-colors font-medium cursor-pointer",
+  "w-full flex items-center space-x-2.5 pl-3 pr-4 py-2.5 rounded-lg text-left transition-colors font-medium cursor-pointer font-semibold",
   {
     variants: {
       isActive: {
-        true: "bg-blue-50 text-blue-600",
-        false: "text-gray-700 hover:bg-gray-50",
-      },
-      isNegative: {
-        true: "text-red-600 hover:bg-red-50",
-        false: "",
+        true: "bg-[#D3D3D340] text-black ring-1 ring-[#D3D3D3]",
+        false: "text-[#404040] hover:bg-[#D3D3D325] hover:text-black",
       },
     },
-    compoundVariants: [
-      {
-        isActive: true,
-        isNegative: true,
-        class: "bg-red-50 text-red-600",
-      },
-    ],
     defaultVariants: {
       isActive: false,
-      isNegative: false,
     },
   }
 );
@@ -35,15 +23,14 @@ export interface TabProps {
   Icon?: any;
   className?: string;
   isActive?: boolean;
-  isNegative?: boolean;
   onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
 const Tab = React.forwardRef<HTMLButtonElement, TabProps>(
-  ({ className, isActive, isNegative, Icon, text, ...props }, ref) => {
+  ({ className, isActive, Icon, text, ...props }, ref) => {
     return (
-      <button className={cn(tabVariants({ isActive, isNegative, className }))} ref={ref} {...props}>
-        {Icon && <Icon className="size-4 flex-shrink-0" />}
+      <button className={cn(tabVariants({ isActive, className }))} ref={ref} {...props}>
+        {Icon && <Icon className="size-5 flex-shrink-0" />}
         <span>{text}</span>
       </button>
     );

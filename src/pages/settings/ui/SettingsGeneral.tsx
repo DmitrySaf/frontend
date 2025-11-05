@@ -46,6 +46,11 @@ export function SettingsGeneral({ initialData = {}, onSave }: SettingsGeneralPro
     email: settingsData?.user?.email || "arkadiy.parovozov01@gmail.com",
     bio: (settingsData?.user as any)?.bio || "",
     username: (settingsData?.user as any)?.username || "arkadiyparovozov",
+    telegram: (settingsData?.user as any)?.telegram || "",
+    vk: (settingsData?.user as any)?.vk || "",
+    instagram: (settingsData?.user as any)?.instagram || "",
+    youtube: (settingsData?.user as any)?.youtube || "",
+    customLinks: (settingsData?.user as any)?.customLinks || [{ url: "" }],
     ...initialData,
   };
 

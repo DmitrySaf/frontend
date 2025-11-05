@@ -9,7 +9,7 @@ export function Login() {
       <div className="bg-white rounded-[24px] shadow-xl w-full max-w-md p-8 z-10 relative">
         <div className="text-center space-y-4">
           <div className="flex items-center justify-center space-x-2">
-            <div className="bg-black p-2 rounded-lg">&#x267F;</div>
+            <div className="bg-black p-2 rounded-xl">&#x267F;</div>
             <span className="text-2xl font-bold text-gray-900">ProFound</span>
           </div>
         </div>

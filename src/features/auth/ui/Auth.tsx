@@ -28,6 +28,10 @@ export default function Auth() {
           email: data.email,
           options: {
             shouldCreateUser: true,
+            data: {
+              username: data.email.toUpperCase().split("@")[0],
+              display_name: data.email.toLowerCase().split("@")[0],
+            }
           },
         });
 
@@ -64,7 +68,7 @@ export default function Auth() {
         }
 
         // Успешная аутентификация - перенаправляем пользователя
-        router.push("/projects");
+        router.push("/settings");
       } catch (error) {
         console.error("Ошибка при проверке кода:", error);
         setConfirmationError("Произошла ошибка при проверке кода");
@@ -92,6 +96,10 @@ export default function Auth() {
         email: currentEmail,
         options: {
           shouldCreateUser: true,
+          data: {
+            username: currentEmail.toUpperCase().split("@")[0],
+            display_name: currentEmail.toLowerCase().split("@")[0],
+          }
         },
       });
 

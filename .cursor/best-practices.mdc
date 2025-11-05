@@ -1,0 +1,439 @@
+# Best Practices: Декомпозиция и Рефакторинг
+
+## Общие принципы декомпозиции
+
+### 1. Принцип единственной ответственности (SRP)
+
+Каждый модуль, компонент или функция должны иметь одну четко определенную задачу.
+
+**Примеры:**
+
+- Компонент отображает UI — логика управления состоянием выносится в хук
+- Функция извлекает домен из URL — не смешивается с логикой генерации URL favicon
+- Хук управляет массивом — не занимается валидацией или API-запросами
+
+### 2. Размер и сложность файлов
+
+- **Компонент > 200 строк** → рассмотреть декомпозицию на подкомпоненты
+- **Файл содержит несколько независимых сущностей** → разделить на отдельные файлы
+- **Повторяющаяся логика** → вынести в утилиты или хуки
+
+---
+
+## Структура Widget/Feature/Entity
+
+### Слой `model/`
+
+#### `constants.ts` - Константы и статические данные
+
+**Размещать здесь:**
+
+- Конфигурационные объекты (список социальных сетей, настройки)
+- Магические числа с семантическим значением (размеры, лимиты)
+- Enum-подобные структуры
+- TypeScript интерфейсы для константных данных
+
+**Пример:**
+
+```typescript
+export interface SocialNetwork {
+  key: "telegram" | "vk" | "instagram";
+  label: string;
+  baseUrl: string;
+  domain: string;
+}
+
+export const SOCIAL_NETWORKS: SocialNetwork[] = [
+  {
+    key: "telegram",
+    label: "Telegram",
+    baseUrl: "https://t.me/",
+    domain: "telegram.org",
+  },
+  // ...
+];
+
+export const FAVICON_SIZE = 64;
+export const FAVICON_DISPLAY_SIZE = 20;
+```
+
+#### `utils.ts` - Утилиты и чистые функции
+
+**Размещать здесь:**
+
+- Функции трансформации данных (парсинг, форматирование)
+- Вычислительные функции без побочных эффектов
+- Помощники для работы с данными домена
+
+**Требования:**
+
+- Функции должны быть **чистыми** (pure functions)
+- Обязательно JSDoc комментарии
+- Четкая типизация входов и выходов
+
+**Пример:**
+
+```typescript
+/**
+ * Извлекает доменное имя из URL
+ * @param url - полный URL или доменное имя
+ * @returns доменное имя без www. префикса или пустая строка при ошибке
+ */
+export const extractDomain = (url: string): string => {
+  try {
+    const urlObj = new URL(url.startsWith("http") ? url : `https://${url}`);
+    return urlObj.hostname.replace(/^www\./, "");
+  } catch {
+    return "";
+  }
+};
+```
+
+#### Кастомные хуки - Управление состоянием и логикой
+
+**Создавать отдельный хук когда:**
+
+- Логика управления состоянием используется в 2+ местах
+- Логика управления сложна (более 15-20 строк)
+- Нужна переиспользуемая бизнес-логика
+- **Нет встроенного решения** в используемых библиотеках
+
+**⚠️ Важно: Используйте встроенные решения библиотек**
+
+Перед созданием кастомного хука, проверьте документацию используемых библиотек:
+
+- **React Hook Form**: `useFieldArray`, `useWatch`, `useFormState`
+- **React Query**: хуки для запросов и мутаций
+- **React**: `useReducer`, `useContext`, `useSyncExternalStore`
+
+**Пример: Управление массивами в React Hook Form**
+
+❌ **Плохо** - создание кастомного хука:
+
+```typescript
+// Избыточный хук - дублирует функциональность useFieldArray
+const useCustomLinksManager = ({ methods }) => {
+  const [count, setCount] = useState(1);
+
+  const addLink = () => {
+    const current = methods.watch("customLinks");
+    methods.setValue("customLinks", [...current, { url: "" }]);
+    setCount((prev) => prev + 1);
+  };
+
+  return { count, addLink };
+};
+```
+
+✅ **Хорошо** - использование встроенного решения:
+
+```typescript
+// React Hook Form предоставляет useFieldArray
+const { fields, append, remove } = useFieldArray({
+  control,
+  name: "customLinks",
+});
+
+// Добавить элемент
+append({ url: "" });
+
+// Удалить элемент
+remove(index);
+```
+
+**Паттерны именования (для кастомных хуков):**
+
+- `use[ЧтоДелает]Manager` - для управления коллекциями
+- `use[Сущность][Действие]` - для операций с данными (useUserSettings)
+- `use[Функциональность]` - для абстрактной логики (useDebounce)
+
+**Структура кастомного хука:**
+
+```typescript
+interface UseDataManagerProps {
+  initialData?: Data[];
+}
+
+interface UseDataManagerReturn {
+  data: Data[];
+  addData: (item: Data) => void;
+  removeData: (id: string) => void;
+}
+
+/**
+ * Хук для управления специфической бизнес-логикой
+ * Используйте только когда встроенных решений недостаточно
+ */
+export const useDataManager = ({
+  initialData = [],
+}: UseDataManagerProps): UseDataManagerReturn => {
+  // Уникальная бизнес-логика
+};
+```
+
+---
+
+### Слой `ui/`
+
+#### Принципы создания отдельного компонента
+
+**Выносить в отдельный файл когда:**
+
+1. Компонент > 50 строк кода
+2. Компонент используется в 2+ местах
+3. Компонент имеет собственную сложную логику
+4. Улучшает читаемость родительского компонента
+
+**Паттерны именования файлов:**
+
+- `ComponentName.tsx` - PascalCase для компонентов
+- Один компонент = один файл
+- Имя файла совпадает с именем компонента
+
+**Структура компонента:**
+
+```typescript
+"use client"; // если требуется клиентская логика
+
+import /* deps */ "...";
+
+export interface ComponentNameProps {
+  // Обязательно экспортируемый интерфейс
+  prop1: string;
+  prop2?: number; // опциональные в конце
+  onAction?: () => void; // колбэки с префиксом on
+}
+
+/**
+ * JSDoc описание компонента
+ * Что делает, когда использовать
+ */
+export function ComponentName({ prop1, prop2, onAction }: ComponentNameProps) {
+  // Реализация
+}
+```
+
+#### Композиция компонентов
+
+**Главный компонент (контейнер):**
+
+- Управляет состоянием формы/страницы
+- Оркестрирует подкомпоненты
+- Содержит основную бизнес-логику
+- Размер: 80-150 строк (после декомпозиции)
+
+**Подкомпоненты (презентационные):**
+
+- Получают данные через props
+- Минимум внутреннего состояния
+- Фокус на отображении UI
+- Переиспользуемые или специфичные для контейнера
+
+**Пример композиции:**
+
+```typescript
+// SettingsGeneralForm.tsx - контейнер
+export function SettingsGeneralForm({ initValues, onSubmit, isLoading }) {
+  const methods = useForm();
+  const { customLinksCount, addCustomLink, removeCustomLink } =
+    useCustomLinksManager({ methods });
+
+  return (
+    <Form methods={methods}>
+      {/* Основные поля */}
+
+      {/* Секция с подкомпонентами */}
+      {SOCIAL_NETWORKS.map((social) => (
+        <SocialLinkInput key={social.key} {...social} />
+      ))}
+
+      {Array.from({ length: customLinksCount }).map((_, index) => (
+        <CustomLinkInput
+          key={index}
+          index={index}
+          onRemove={() => removeCustomLink(index)}
+        />
+      ))}
+    </Form>
+  );
+}
+```
+
+---
+
+## Публичные API (index.ts)
+
+### Принцип экспорта
+
+**Экспортировать только то, что используется снаружи слоя**
+
+#### `model/index.ts`
+
+```typescript
+// Валидация - всегда публична
+export { userSettingsSchema, type UserSettingsData } from "./validation";
+
+// Константы - если используются в других слоях
+export { SOCIAL_NETWORKS, type SocialNetwork } from "./constants";
+
+// Утилиты - только переиспользуемые
+export { getFaviconUrl, extractDomain } from "./utils";
+
+// Хуки - если используются вне виджета
+export { useCustomLinksManager } from "./useCustomLinksManager";
+```
+
+#### `ui/index.ts`
+
+```typescript
+// Главный компонент - всегда публичен
+export { SettingsGeneralForm } from "./SettingsGeneralForm";
+
+// Подкомпоненты - только если переиспользуются извне
+export { SocialLinkInput } from "./SocialLinkInput";
+export { CustomLinkInput } from "./CustomLinkInput";
+```
+
+#### Корневой `index.ts` виджета/фичи
+
+```typescript
+// Экспортируем только публичный API
+export { SettingsGeneralForm } from "./ui";
+export { type UserSettingsData } from "./model";
+```
+
+---
+
+## Критерии для рефакторинга
+
+### Когда декомпозировать компонент:
+
+- ✅ Файл > 200 строк
+- ✅ В компоненте 3+ внутренних компонента/функции
+- ✅ Сложная логика смешана с UI
+- ✅ Низкая читаемость (трудно понять за 2 минуты)
+
+### Когда выносить утилиты:
+
+- ✅ Функция используется 2+ раз
+- ✅ Функция > 15 строк
+- ✅ Чистая функция без зависимостей от компонента
+- ✅ Логика может быть покрыта юнит-тестами отдельно
+
+### Когда создавать хук:
+
+- ✅ Логика состояния повторяется
+- ✅ Сложная логика > 20 строк в компоненте
+- ✅ Нужна изоляция для тестирования
+- ✅ Связанные действия можно сгруппировать (add/remove/update)
+- ⚠️ **НЕТ встроенного решения** в используемых библиотеках
+
+### Когда НЕ декомпозировать:
+
+- ❌ Компонент < 100 строк и легко читается
+- ❌ Логика используется только в одном месте
+- ❌ Декомпозиция усложнит понимание (слишком много файлов)
+- ❌ Нет четкой ответственности для выделения
+
+---
+
+## Чеклист рефакторинга
+
+### Перед началом:
+
+- [ ] Определить границы ответственности
+- [ ] Выделить константы и типы
+- [ ] Найти переиспользуемую логику
+
+### Процесс:
+
+1. **Константы** → `model/constants.ts`
+2. **Утилиты** → `model/utils.ts`
+3. **Хуки** → `model/use[Name].ts`
+4. **Подкомпоненты** → `ui/ComponentName.tsx`
+5. **Обновить импорты** в главном компоненте
+6. **Обновить index.ts** для экспорта
+7. **Проверить линтер** на ошибки
+8. **Документация** JSDoc для публичного API
+
+### После рефакторинга:
+
+- [ ] Нет дублирования кода
+- [ ] Каждый файл < 200 строк
+- [ ] Понятная структура импортов
+- [ ] Публичный API через index.ts
+- [ ] Нет ошибок линтера
+
+---
+
+## Антипаттерны
+
+### ❌ Плохо: Всё в одном файле
+
+```typescript
+// SettingsGeneralForm.tsx - 500 строк
+const SOCIAL_NETWORKS = [...]; // константы
+const getFaviconUrl = (...) => {}; // утилиты
+function SocialLinkInput() {} // компоненты
+function CustomLinkInput() {}
+export function SettingsGeneralForm() {
+  const [count, setCount] = useState(1); // логика управления
+  // ...
+}
+```
+
+### ✅ Хорошо: Декомпозиция
+
+```typescript
+// model/constants.ts
+export const SOCIAL_NETWORKS = [...];
+
+// model/utils.ts
+export const getFaviconUrl = (...) => {};
+
+// model/useCustomLinksManager.ts
+export const useCustomLinksManager = (...) => {};
+
+// ui/SocialLinkInput.tsx
+export function SocialLinkInput() {}
+
+// ui/CustomLinkInput.tsx
+export function CustomLinkInput() {}
+
+// ui/SettingsGeneralForm.tsx
+export function SettingsGeneralForm() {
+  const { addCustomLink, removeCustomLink } = useCustomLinksManager();
+  // чистая композиция
+}
+```
+
+---
+
+## Примеры из практики
+
+### Пример 1: Работа с формами и массивами
+
+**Было:** Логика управления массивом внутри компонента (useState + setValue)
+**Стало:** Хук `useCustomLinksManager` с чистым API
+
+### Пример 2: Утилиты для работы с URL
+
+**Было:** Функции `getFaviconUrl` и `extractDomain` в компоненте
+**Стало:** Вынос в `model/utils.ts` с JSDoc и типизацией
+
+### Пример 3: Повторяющиеся компоненты
+
+**Было:** Два похожих блока JSX для статичных и кастомных ссылок
+**Стало:** Компоненты `SocialLinkInput` и `CustomLinkInput` с четкими props
+
+---
+
+## Финальные рекомендации
+
+1. **Читаемость > Абстракция**: Не создавайте слишком много мелких файлов
+2. **Контекст важен**: Декомпозируйте когда это улучшает понимание
+3. **Тестируемость**: Хорошая декомпозиция упрощает тестирование
+4. **Документация**: JSDoc для всех публичных функций и компонентов
+5. **Постепенность**: Рефакторьте по мере роста сложности, не заранее
+
+**Золотое правило**: Код должен быть понятен новому разработчику за 5 минут чтения.

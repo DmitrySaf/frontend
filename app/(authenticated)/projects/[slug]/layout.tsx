@@ -9,7 +9,7 @@ export default function ProjectLayout({
   params: { slug: string };
 }) {
   return (
-    <div className="min-h-screen bg-gray-50 flex">
+    <div className="bg-gray-50 flex">
       <ProjectSidebar slug={params.slug} />
       <div className="flex-1 flex flex-col">
         <ProjectHeader slug={params.slug} />

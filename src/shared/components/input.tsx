@@ -7,37 +7,16 @@ import { IMaskInput } from "react-imask";
 import { useFormContext } from "react-hook-form";
 
 const inputVariants = cva(
-  "w-full border border-gray rounded-xl transition-colors space-x-1 flex focus-within:outline-0 focus-within:border-black disabled:opacity-50 disabled:cursor-not-allowed",
+  "w-full inset-ring inset-ring-gray rounded-xl transition-colors space-x-1 flex focus-within:outline-0 focus-within:inset-ring-[#006EDB] focus-within:inset-ring-2 disabled:opacity-50 disabled:cursor-not-allowed",
   {
     variants: {
       size: {
-        l: "py-3.25 px-4 rounded-md",
-        m: "py-3 px-3 rounded-md",
-        s: "py-1.5 px-3 rounded-sm",
+        l: "py-3.5 px-4 rounded-xl text-base leading-5",
+        m: "py-3 px-3 rounded-xl text-[14px] leading-4.5",
+        s: "py-1.5 px-3 rounded-xl text-[14px] leading-4.5",
       },
       hasError: {
-        true: "border-danger focus:border-danger",
-        false: "",
-      },
-    },
-    defaultVariants: {
-      size: "m",
-      hasError: false,
-    },
-  }
-);
-
-const inputElemVariants = cva(
-  "flex-1 placeholder:text-gray-500 focus:outline-0",
-  {
-    variants: {
-      size: {
-        l: "text-base leading-5",
-        m: "text-[14px] leading-4.5",
-        s: "text-[14px] leading-4.5",
-      },
-      hasError: {
-        true: "border-danger focus:border-danger",
+        true: "inset-ring-danger focus-within:inset-ring-danger",
         false: "",
       },
     },
@@ -58,8 +37,10 @@ export interface InputProps {
   description?: string;
   maxLength?: number;
   prefix?: string;
+  prefixElement?: React.ReactNode;
   autocomplete?: string;
   isDisabled?: boolean;
+  onBlur?: () => void;
 
   /**
    * Маска для input. Примеры:
@@ -86,6 +67,7 @@ const Input = ({
   label,
   maxLength,
   prefix,
+  prefixElement,
   autocomplete = "off",
   error,
   description,
@@ -93,6 +75,7 @@ const Input = ({
   mask,
   maskOptions,
   placeholder,
+  onBlur: customOnBlur,
 }: InputProps) => {
   const { register, setValue, watch } = useFormContext();
 
@@ -100,7 +83,13 @@ const Input = ({
   const currentValue = watch(name) || "";
 
   // Получаем onBlur из register для корректной работы touched
-  const { onBlur } = useMemo(() => register(name), [register, name]);
+  const { onBlur: formOnBlur } = useMemo(() => register(name), [register, name]);
+
+  // Комбинируем оба onBlur
+  const handleBlur = (e: any) => {
+    formOnBlur(e);
+    customOnBlur?.();
+  };
 
   const inputElement = mask ? (
     <IMaskInput
@@ -114,11 +103,11 @@ const Input = ({
       onComplete={(val: string) => {
         setValue(name, val, { shouldValidate: true, shouldTouch: true });
       }}
-      onBlur={onBlur}
+      onBlur={handleBlur}
       placeholder={placeholder}
       disabled={isDisabled}
       autoComplete={autocomplete}
-      className="flex-1 leading-4.5 placeholder:text-gray-500 focus:outline-0 focus:border-black disabled:opacity-50 disabled:cursor-not-allowed"
+      className="flex-1 placeholder:text-gray-500 focus:outline-0"
     />
   ) : (
     <input
@@ -128,7 +117,8 @@ const Input = ({
       placeholder={placeholder}
       maxLength={maxLength}
       autoComplete={autocomplete}
-      className={cn(inputElemVariants({ size }))}
+      onBlur={handleBlur}
+      className="flex-1 placeholder:text-gray-500 focus:outline-0"
     />
   );
 
@@ -145,6 +135,7 @@ const Input = ({
             })
           )}
         >
+          {prefixElement && <div className="pointer-events-none flex items-center">{prefixElement}</div>}
           {prefix && <span className="leading-4.5 text-gray pointer-events-none">{prefix}</span>}
           {inputElement}
         </div>

@@ -1,9 +1,9 @@
-import { Slot } from "@radix-ui/react-slot";
 import { type VariantProps, cva } from "class-variance-authority";
 import * as React from "react";
 import { Loader2 } from "lucide-react";
 
 import { cn } from "@/shared/utils";
+import Link from "next/link";
 
 const buttonVariants = cva(
   "inline-flex cursor-pointer items-center justify-center gap-2 whitespace-nowrap text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0",
@@ -17,9 +17,9 @@ const buttonVariants = cva(
         ghost: "hover:bg-gray-hover active:bg-hover-focus",
       },
       size: {
-        s: "h-8 px-2 text-xs rounded-sm",
-        m: "h-11 px-3.5 text-sm rounded-md",
-        l: "h-12 px-4 text-base font-semibold rounded-md",
+        s: "h-8 px-2 text-xs rounded-xl",
+        m: "h-11 px-3.5 text-sm rounded-xl",
+        l: "h-12 px-4 text-base font-semibold rounded-xl",
       },
       iconOnly: {
         true: "aspect-square p-0",
@@ -27,7 +27,7 @@ const buttonVariants = cva(
       },
       fluid: {
         true: "w-full",
-        false: "w-auto",
+        false: "w-max",
       },
     },
     defaultVariants: {
@@ -38,7 +38,7 @@ const buttonVariants = cva(
   }
 );
 
-export interface ButtonProps {
+type BaseButtonProps = {
   // Content
   children?: React.ReactNode;
   // TODO: пофиксить
@@ -51,32 +51,41 @@ export interface ButtonProps {
   fluid?: boolean;
 
   // Behavior
-  asChild?: boolean;
   isLoading?: boolean;
   isDisabled?: boolean;
+};
 
-  // Standard HTML Button Props
+type ButtonAsButton = BaseButtonProps & {
+  href?: never;
   type?: "button" | "submit" | "reset";
   onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
-}
+};
 
-const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  (
-    {
+type ButtonAsLink = BaseButtonProps & {
+  href: string;
+  type?: never;
+  onClick?: never;
+};
+
+export type ButtonProps = ButtonAsButton | ButtonAsLink;
+
+const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonProps>(
+  (props, ref) => {
+    const {
+      href,
       className,
       theme,
       size,
       fluid,
       Icon,
-      asChild = false,
       isLoading,
       children,
       isDisabled,
-      ...props
-    },
-    ref
-  ) => {
-    const Comp = asChild ? Slot : "button";
+      type,
+      onClick,
+      ...restProps
+    } = props;
+
     const iconOnly = !children && !!Icon;
 
     // Icon size based on button size
@@ -86,21 +95,45 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       l: "size-6",
     };
 
-    return (
-      <Comp
-        className={cn(buttonVariants({ theme, size, fluid, iconOnly, className }))}
-        ref={ref}
-        disabled={isDisabled || isLoading}
-        {...props}
-      >
+    const content = (
+      <>
         {isLoading ? (
-          <Loader2 className={iconSize + " animate-spin"} />
+          <Loader2 className={`${iconSize[size]} animate-spin`} />
         ) : iconOnly ? (
           <Icon className={iconSize[size]} />
         ) : (
           children
         )}
-      </Comp>
+      </>
+    );
+
+    const classes = cn(buttonVariants({ theme, size, fluid, iconOnly, className }));
+
+    if (href) {
+      return (
+        <Link
+          className={classes}
+          ref={ref as React.ForwardedRef<HTMLAnchorElement>}
+          aria-disabled={isDisabled || isLoading}
+          {...restProps}
+          href={href}
+        >
+          {content}
+        </Link>
+      );
+    }
+
+    return (
+      <button
+        className={classes}
+        ref={ref as React.ForwardedRef<HTMLButtonElement>}
+        disabled={isDisabled || isLoading}
+        type={type}
+        onClick={onClick}
+        {...restProps}
+      >
+        {content}
+      </button>
     );
   }
 );

@@ -1,13 +1,17 @@
 "use client";
 
-import { CreateProjectData, useCreateProjectMutation } from "@/entities/project";
+import { useCreateProjectMutation, useProjectsQuery } from "@/entities/project";
 import { Button } from "@/shared/components";
-import { ProjectCreateModal } from "@/widgets/project-create-modal";
-import { Home, Plus, Search } from "lucide-react";
+import { ProjectCreateModal, type CreateProjectData } from "@/widgets/project-create-modal";
+import { MessageCircleMore, Plus, Search } from "lucide-react";
+import Image from "next/image";
 import { useQueryState } from "nuqs";
 import { useCallback } from "react";
+import ProfileButton from "./ProfileButton";
 
 export default function MainSidebar() {
+  const { data: projects, isLoading, error } = useProjectsQuery();
+  
   const [createParam, setCreateParam] = useQueryState("create");
   const isCreateModalOpen = createParam === "project";
 
@@ -31,32 +35,33 @@ export default function MainSidebar() {
         onClose={handleCloseCreateModal}
         onSubmit={handleCreateProject}
       />
-      <div className="w-16 bg-white border-r border-gray-200 flex flex-col items-center py-4">
-        {/* Logo */}
-        <div className="w-8 h-8 bg-black rounded-lg flex items-center justify-center mb-6">
-          &#x267F;
+      <div className="w-15 flex flex-col">
+        <div className="flex-1 flex flex-col gap-3 w-12 self-center">
+          <Image src="/logo.svg" alt="VK" width={48} height={48} />
+          <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-1">
+              <Button
+                theme="ghost"
+                size="l"
+                Icon={MessageCircleMore}
+              />
+              <Button
+                theme="ghost"
+                size="l"
+                Icon={Search}
+              />
+            </div>
+            {projects?.map((project) => (<div key={project.name} className="bg-white w-12 h-12 rounded-xl flex items-center justify-center">🐼</div>))}
+            <Button
+              theme="primary"
+              size="l"
+              Icon={Plus}
+              onClick={() => setCreateParam("project")}
+            />
+          </div>
         </div>
-
-        {/* Add Project Button */}
-        <Button
-          theme="primary"
-          size="m"
-          Icon={Plus}
-          onClick={() => setCreateParam("project")}
-          className="mb-6"
-        />
-
-        {/* Navigation Icons */}
-        <div className="flex flex-col space-y-4">
-          <Button theme="ghost" size="m" Icon={Home} />
-
-          <Button theme="ghost" size="m" Icon={Search} />
-        </div>
-
-        {/* User Avatar */}
-        <div className="w-10 h-10 bg-gray-200 rounded-xl flex items-center justify-center">
-          <span className="text-lg">🐼</span>
-        </div>
+        
+        <ProfileButton />
       </div>
     </>
   );

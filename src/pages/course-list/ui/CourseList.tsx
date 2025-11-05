@@ -42,7 +42,7 @@ export default function CourseList() {
       <div className="flex-1 bg-white border-r border-gray-200">
         <div className="p-6 border-b border-gray-200">
           <div className="flex items-center space-x-3">
-            <div className="w-8 h-8 bg-orange-500 rounded-xl flex items-center justify-center">
+            <div className="w-8 h-8 bg-orange-500 rounded-md flex items-center justify-center">
               <BookOpen className="w-4 h-4 text-white" />
             </div>
             <div>
@@ -67,7 +67,7 @@ export default function CourseList() {
             ].map((lesson, index) => (
               <div
                 key={index}
-                className="flex items-center space-x-3 p-3 hover:bg-gray-50 rounded-xl cursor-pointer"
+                className="flex items-center space-x-3 p-3 hover:bg-gray-50 rounded-md cursor-pointer"
               >
                 <div
                   className={`w-5 h-5 rounded-full flex items-center justify-center ${
@@ -97,7 +97,7 @@ export default function CourseList() {
               ].map((lesson, index) => (
                 <div
                   key={index}
-                  className="flex items-center space-x-3 p-3 hover:bg-gray-50 rounded-xl cursor-pointer"
+                  className="flex items-center space-x-3 p-3 hover:bg-gray-50 rounded-md cursor-pointer"
                 >
                   <div
                     className={`w-5 h-5 rounded-full flex items-center justify-center ${
@@ -120,7 +120,7 @@ export default function CourseList() {
 
       {/* Video Player Area */}
       <div className="w-2/3 bg-gray-50">
-        <div className="h-80 bg-black relative rounded-xl m-6">
+        <div className="h-80 bg-black relative rounded-md m-6">
           <div className="absolute inset-0 flex items-center justify-center">
             <div className="text-center text-white space-y-4">
               <h2 className="text-2xl font-bold">КАК СОЗДАТЕЛЬ:</h2>

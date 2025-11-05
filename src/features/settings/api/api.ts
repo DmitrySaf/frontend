@@ -35,7 +35,7 @@ export const getUserSettings = async () => {
         features: ["basic_projects", "limited_storage"],
       },
     },
-    { delay: 500, successRate: 0.98 }
+    { delay: 1500, successRate: 0.98 }
   );
 };
 

@@ -1,7 +1,7 @@
-import { type TypedSupabaseClient } from "../types";
-import { Database } from "../types/database";
 
-export type ProjectRow = Database['public']['Tables']['projects']['Row'];
-export type ProjectInsert = Database['public']['Tables']['projects']['Insert'];
-export type ProjectUpdate = Database['public']['Tables']['projects']['Update'];
+import { Tables, TablesInsert, TablesUpdate } from "../types/database";
+
+export type ProjectRow = Tables<'projects'>;
+export type ProjectInsert = TablesInsert<'projects'>;
+export type ProjectUpdate = TablesUpdate<'projects'>;
 export type ProjectResponse = ProjectRow;

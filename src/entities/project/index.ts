@@ -14,6 +14,4 @@ export {
   useProjectsRealtime,
 } from "./api";
 export { ProjectCard } from "./ui";
-export { createProjectSchema } from "./model";
-export type { CreateProjectData } from "./model";
 export type { Project } from "./api";

@@ -46,44 +46,27 @@ export function SettingsSecurityForm({
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-      <div>
-        <h3 className="text-lg font-medium text-gray-900 mb-2">Подключение номера телефона</h3>
-        <p className="text-sm text-gray-600 mb-6">
-          Подключите номер телефона, чтобы использовать двухфакторную аутентификацию.
-        </p>
-        {/* TODO: Добавить форму для номера телефона */}
-      </div>
+    <div className="pt-6 border-t border-gray-200">
+      <h2 className="text-2xl font-bold text-gray-900 mb-6">Приватность</h2>
 
-      <div className="pt-6 border-t border-gray-200">
-        <h3 className="text-lg font-medium text-gray-900 mb-2">Приватность</h3>
-        <p className="text-sm text-gray-600 mb-6">
-          Все, что вы скроете здесь, не будет видно другим — и вы тоже не увидите это в их профилях.
-        </p>
+      <div className="space-y-4">
+        <div className="flex items-center justify-between">
+          <span className="text-gray-900 font-medium">Участие в проектах</span>
+          <Switch
+            checked={watch("joinedVisible")}
+            disabled
+            onCheckedChange={(checked) => setValue("joinedVisible", checked)}
+          />
+        </div>
 
-        <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <span className="text-gray-900 font-medium">Участие в проектах</span>
-            <Switch
-              checked={watch("joinedVisible")}
-              disabled
-              onCheckedChange={(checked) => setValue("joinedVisible", checked)}
-            />
-          </div>
-
-          <div className="flex items-center justify-between">
-            <span className="text-gray-900 font-medium">Созданные проекты</span>
-            <Switch
-              checked={watch("ownedVisible")}
-              onCheckedChange={(checked) => setValue("ownedVisible", checked)}
-            />
-          </div>
+        <div className="flex items-center justify-between">
+          <span className="text-gray-900 font-medium">Созданные проекты</span>
+          <Switch
+            checked={watch("ownedVisible")}
+            onCheckedChange={(checked) => setValue("ownedVisible", checked)}
+          />
         </div>
       </div>
-
-      <Button type="submit" theme="primary" size="l" isLoading={isLoading} fluid>
-        Сохранить
-      </Button>
-    </form>
+    </div>
   );
 }

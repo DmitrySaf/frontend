@@ -1,3 +1,5 @@
+"use client";
+
 import { useFormContext } from "react-hook-form";
 import { cn } from "@/shared/utils";
 import { cva } from "class-variance-authority";
@@ -7,7 +9,7 @@ export interface TextareaProps {
   name: string;
 
   // Custom Props
-  size?: "l" | "m" | "s";
+  size: "l" | "m" | "s";
   label?: string;
   error?: string;
   description?: string;
@@ -24,13 +26,13 @@ export interface TextareaProps {
 }
 
 const textareaVariants = cva(
-  "w-full text-base border focus:outline-none focus:ring-2 focus:border-transparent transition-colors resize-none disabled:opacity-50 disabled:cursor-not-allowed",
+  "w-full text-base border focus:outline-none focus:border-black transition-colors resize-none disabled:opacity-50 disabled:cursor-not-allowed",
   {
     variants: {
       size: {
-        l: "py-3.5 px-4 rounded-md",
-        m: "py-3 px-3 rounded-md",
-        s: "py-1.5 px-3 rounded-sm",
+        l: "py-3.5 px-4 rounded-xl",
+        m: "py-3 px-3 rounded-xl",
+        s: "py-1.5 px-3 rounded-xl",
       },
       hasError: {
         true: "border-red-300 focus:ring-red-500",
@@ -48,7 +50,7 @@ const Textarea = ({
   name,
   className,
   label,
-  size = "m",
+  size,
   maxLength,
   showCounter,
   error,
@@ -61,8 +63,8 @@ const Textarea = ({
   const currentValue = watch(name) || "";
 
   return (
-    <div className="space-y-2">
-      {label && <label className="block text-sm font-medium text-gray-700">{label}</label>}
+    <div className="space-y-1">
+      {label && <label className="block font-medium text-gray-700">{label}</label>}
       <textarea
         {...register(name)}
         disabled={disabled}

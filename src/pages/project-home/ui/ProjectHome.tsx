@@ -21,7 +21,7 @@ export default function ProjectHome() {
     return (
       <div className="flex-1 p-6">
         <h1 className="text-2xl font-bold text-gray-900 mb-6">Главная</h1>
-        <div className="bg-white rounded-xl border border-gray-200 p-6 flex items-center justify-center">
+        <div className="bg-white rounded-md border border-gray-200 p-6 flex items-center justify-center">
           <div className="text-center space-y-4">
             <Loader2 className="w-8 h-8 animate-spin mx-auto text-blue-500" />
             <p className="text-gray-600">Загружаем проект...</p>
@@ -35,7 +35,7 @@ export default function ProjectHome() {
     return (
       <div className="flex-1 p-6">
         <h1 className="text-2xl font-bold text-gray-900 mb-6">Главная</h1>
-        <div className="bg-white rounded-xl border border-gray-200 p-6 flex items-center justify-center">
+        <div className="bg-white rounded-md border border-gray-200 p-6 flex items-center justify-center">
           <div className="text-center space-y-4">
             <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mx-auto">
               <span className="text-red-500 text-xl">⚠️</span>
@@ -55,7 +55,7 @@ export default function ProjectHome() {
       <h1 className="text-2xl font-bold text-gray-900 mb-6">{projectData?.name || "Главная"}</h1>
 
       <div className="space-y-6">
-        <div className="bg-white rounded-xl border border-gray-200 p-6">
+        <div className="bg-white rounded-md border border-gray-200 p-6">
           <h2 className="text-xl font-semibold text-gray-900 mb-4">О проекте</h2>
         </div>
       </div>

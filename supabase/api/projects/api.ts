@@ -19,3 +19,12 @@ export async function getProject(client: TypedSupabaseClient, name: string): Pro
   
   return result;
 }
+
+export async function deleteProject(client: TypedSupabaseClient, name: string): Promise<{ data: ProjectRow | null, error: any }> {
+  const result = await client
+    .from(PROJECTS_TABLE)
+    .delete()
+    .eq('name', name)
+  
+  return result;
+}

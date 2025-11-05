@@ -21,7 +21,7 @@ export default function ProjectHeader({ slug }: ProjectHeaderProps) {
             <input
               type="text"
               placeholder="Поиск..."
-              className="pl-10 pr-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
             <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-xs text-gray-400">
               ⌘K

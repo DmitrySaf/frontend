@@ -37,7 +37,7 @@ export async function updateSession(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser()
 
-  const isAuthenticatedRoute = request.nextUrl.pathname.startsWith('/projects') || 
+  const isAuthenticatedRoute = request.nextUrl.pathname.startsWith('/communities') || 
                                request.nextUrl.pathname.startsWith('/settings')
 
   if (!user && isAuthenticatedRoute) {
@@ -50,7 +50,7 @@ export async function updateSession(request: NextRequest) {
   if (user && request.nextUrl.pathname === '/login') {
     // Редиректим авторизованных пользователей с страницы логина
     const url = request.nextUrl.clone()
-    url.pathname = '/projects'
+    url.pathname = '/communities'
     return NextResponse.redirect(url)
   }
 
@@ -69,6 +69,7 @@ export async function updateSession(request: NextRequest) {
 
   return supabaseResponse
 }
+
 
 
 

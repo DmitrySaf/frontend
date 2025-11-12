@@ -1,98 +1,182 @@
 "use client";
 
-import { useCallback } from "react";
-import { SettingsSecurityForm, type SecuritySettingsData } from "@/widgets/settings-security-form";
-import { Input } from "@/shared/components/Input";
-import { Form } from "@/shared/components";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { securitySettingsSchema } from "@/widgets/settings-security-form/model/validation";
+import { useCallback, useMemo } from "react";
 import { useForm } from "react-hook-form";
-import { Button } from "@/shared/components/Button";
+import {
+  useProfileQuery,
+  useUpdateProfileMutation,
+  useAuthUserQuery,
+  useUpdateAuthUserMutation,
+  transformPrivacySettingsToApi,
+} from "@/entities/profile";
+import { SettingsSecurityForm } from "@/widgets/settings-security-form";
+import { Button, Input, Form } from "@/shared/components";
 
-{/* <div className="flex items-center gap-2">
-        <div className="p-2 bg-gray-100 hover:bg-gray-200 rounded-lg shadow-[0_0_0_1px_#00000020_inset,0px_1px_2px_0px_#00000026,0px_-1px_1px_1px_#00000014_inset,0px_1px_1px_1px_#ffffff40_inset] cursor-pointer font-semibold px-3 flex items-center gap-2">
-          <img src="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://youtube.com&size=64" className="w-7 h-7 rounded-[6px] " />
-            <span>YouTube</span>
-          </div>
-          <div className="p-2 bg-gray-100 hover:bg-gray-200 rounded-lg shadow-[0_0_0_1px_#00000020_inset,0px_1px_2px_0px_#00000026,0px_-1px_1px_1px_#00000014_inset,0px_1px_1px_1px_#ffffff40_inset] cursor-pointer">
-            <img src="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://youtube.com&size=64" className="w-7 h-7 rounded-[6px] " />
-          </div>
-        </div>
-         */}
-interface SettingsSecurityProps {
-  initialData?: Partial<SecuritySettingsData>;
-  onSave?: (data: SecuritySettingsData) => void;
+interface PrivacyFormData {
+  joinedVisible?: boolean;
+  ownedVisible?: boolean;
+  messagingAllowed?: boolean;
 }
 
-export function SettingsSecurity({ initialData = {}, onSave }: SettingsSecurityProps) {
-  const methods = useForm<SecuritySettingsData>({
-    resolver: zodResolver(securitySettingsSchema),
-    defaultValues: initialData,
+interface EmailPhoneFormData {
+  email: string;
+  phone: string;
+}
+
+export function SettingsSecurity() {
+  const { data: profile, isLoading: isLoadingProfile } = useProfileQuery();
+  const { data: authUser, isLoading: isLoadingAuth } = useAuthUserQuery();
+  const updateProfile = useUpdateProfileMutation();
+  const updateAuthUser = useUpdateAuthUserMutation();
+
+  const emailPhoneMethods = useForm<EmailPhoneFormData>({
+    defaultValues: {
+      email: "",
+      phone: "",
+    },
   });
 
-  const {
-    formState: { errors, isSubmitting },
-  } = methods;
+  const isLoading = isLoadingProfile || isLoadingAuth;
 
-  const handleSubmit = useCallback(
-    async (data: SecuritySettingsData) => {
-      console.log("Настройки безопасности сохранены:", data);
-      onSave?.(data);
+  const handlePrivacySubmit = useCallback(
+    async (data: PrivacyFormData) => {
+      try {
+        await updateProfile.mutateAsync({
+          privacy_settings: transformPrivacySettingsToApi({
+            showOwnedCommunities: data.ownedVisible,
+            showSubscriptions: data.joinedVisible,
+            allowMessaging: data.messagingAllowed,
+          }),
+        });
+      } catch (error) {
+        console.error("Error saving privacy settings:", error);
+      }
     },
-    [onSave]
+    [updateProfile]
   );
 
-  const initValues = {
-    phone: "",
-    joinedVisible: true,
-    ownedVisible: true,
-    ...initialData,
-  };
+  const handleEmailUpdate = useCallback(async () => {
+    const email = emailPhoneMethods.getValues("email");
+    if (!email || !email.trim()) return;
+    
+    try {
+      await updateAuthUser.mutateAsync({ email });
+      emailPhoneMethods.setValue("email", "");
+    } catch (error) {
+      console.error("Error updating email:", error);
+    }
+  }, [emailPhoneMethods, updateAuthUser]);
+
+  const handlePhoneUpdate = useCallback(async () => {
+    const phone = emailPhoneMethods.getValues("phone");
+    if (!phone || !phone.trim()) return;
+    
+    try {
+      await updateAuthUser.mutateAsync({ phone });
+      emailPhoneMethods.setValue("phone", "");
+    } catch (error) {
+      console.error("Error updating phone:", error);
+    }
+  }, [emailPhoneMethods, updateAuthUser]);
+
+  const initPrivacyValues = useMemo(() => {
+    return {
+      joinedVisible: profile?.privacySettings.showSubscriptions,
+      ownedVisible: profile?.privacySettings.showOwnedCommunities,
+      messagingAllowed: profile?.privacySettings.allowMessaging,
+      phone: "",
+    };
+  }, [profile]);
 
   return (
     <div className="space-y-6">
       <div className="space-y-2">
         <h2 className="text-2xl font-bold text-gray-900">Безопасность</h2>
-        <p className="text-sm text-gray-600">
-          Данные для входа в систему.
-        </p>
+        <p className="text-sm text-gray-600">Данные для входа в систему.</p>
       </div>
 
-      <Form methods={methods} onSubmit={handleSubmit} className="space-y-4">
-        <div className="flex items-center gap-2">
-          <div className="w-1/2">
-            <Input name="email" label="Почта" size="l" />
+      {/* Email Section */}
+      <div className="space-y-4">
+        <div>
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">Email</h3>
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-gray-700">Текущий email</label>
+            <div className="px-4 py-2.5 bg-gray-100 border border-gray-200 rounded-lg text-gray-700">
+              {authUser?.email || "Не указан"}
+            </div>
           </div>
-          <Button
-            theme="primary"
-            size="l"
-            isLoading={false}
-            isDisabled={false}
-            className="mt-6"
-          >
-            Подтвердить
-          </Button>
+          
+          <Form methods={emailPhoneMethods} onSubmit={(e) => e.preventDefault()}>
+            <div className="mt-4 flex items-end gap-2">
+              <div className="flex-1">
+                <Input
+                  name="email"
+                  label="Новый email"
+                  size="l"
+                  placeholder="example@email.com"
+                />
+              </div>
+              <Button
+                type="button"
+                theme="primary"
+                size="l"
+                onClick={handleEmailUpdate}
+                isDisabled={!emailPhoneMethods.watch("email") || updateAuthUser.isPending}
+                isLoading={updateAuthUser.isPending}
+              >
+                Изменить
+              </Button>
+            </div>
+          </Form>
+          <p className="text-xs text-gray-500 mt-2">
+            После изменения на новый email будет отправлено письмо с подтверждением
+          </p>
         </div>
-        <div className="flex items-center gap-2">
-          <div className="w-1/2">
-            <Input name="phone" label="Номер телефона" size="l" mask="+7 (000) 000-00-00" />
-          </div>
-          <Button
-            theme="primary"
-            size="l"
-            isLoading={false}
-            isDisabled={false}
-            className="mt-6"
-          >
-            Подтвердить
-          </Button>
-        </div>
-      </Form>
 
+        {/* Phone Section */}
+        <div>
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">Телефон</h3>
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-gray-700">Текущий номер</label>
+            <div className="px-4 py-2.5 bg-gray-100 border border-gray-200 rounded-lg text-gray-700">
+              {authUser?.phone || "Не указан"}
+            </div>
+          </div>
+          
+          <Form methods={emailPhoneMethods} onSubmit={(e) => e.preventDefault()}>
+            <div className="mt-4 flex items-end gap-2">
+              <div className="flex-1">
+                <Input
+                  name="phone"
+                  label="Новый номер телефона"
+                  size="l"
+                  placeholder="+7 (999) 123-45-67"
+                  mask="+7 (000) 000-00-00"
+                />
+              </div>
+              <Button
+                type="button"
+                theme="primary"
+                size="l"
+                onClick={handlePhoneUpdate}
+                isDisabled={!emailPhoneMethods.watch("phone") || updateAuthUser.isPending}
+                isLoading={updateAuthUser.isPending}
+              >
+                Изменить
+              </Button>
+            </div>
+          </Form>
+          <p className="text-xs text-gray-500 mt-2">
+            После изменения на новый номер будет отправлен код подтверждения
+          </p>
+        </div>
+      </div>
+
+      {/* Privacy Settings Section */}
       <SettingsSecurityForm
-        initValues={initValues}
-        onSubmit={handleSubmit}
-        isLoading={false} // Пока нет мутации для настроек безопасности
+        initValues={initPrivacyValues}
+        onSubmit={handlePrivacySubmit}
+        isLoading={isLoading}
       />
     </div>
   );

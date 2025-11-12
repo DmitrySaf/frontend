@@ -14,7 +14,7 @@ export type Database = {
   }
   public: {
     Tables: {
-      projects: {
+      communities: {
         Row: {
           created_at: string | null
           display_name: string
@@ -41,18 +41,103 @@ export type Database = {
         }
         Relationships: []
       }
+      profile_social_links: {
+        Row: {
+          created_at: string | null
+          id: string
+          label: string | null
+          link: string
+          platform: Database["public"]["Enums"]["social_platform"]
+          profile_id: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          label?: string | null
+          link: string
+          platform: Database["public"]["Enums"]["social_platform"]
+          profile_id: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          label?: string | null
+          link?: string
+          platform?: Database["public"]["Enums"]["social_platform"]
+          profile_id?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "profile_social_links_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          bio: string | null
+          created_at: string
+          display_name: string
+          id: string
+          privacy_settings: Json
+          updated_at: string
+          username: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          bio?: string | null
+          created_at?: string
+          display_name: string
+          id: string
+          privacy_settings?: Json
+          updated_at?: string
+          username: string
+        }
+        Update: {
+          avatar_url?: string | null
+          bio?: string | null
+          created_at?: string
+          display_name?: string
+          id?: string
+          privacy_settings?: Json
+          updated_at?: string
+          username?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      update_profile_with_social_links: {
+        Args: {
+          p_avatar_url?: string
+          p_bio?: string
+          p_display_name?: string
+          p_privacy_settings?: Json
+          p_social_links?: Json
+          p_username?: string
+        }
+        Returns: undefined
+      }
     }
     Enums: {
-      [_ in never]: never
+      social_platform: "instagram" | "telegram" | "vk" | "youtube" | "website"
     }
     CompositeTypes: {
-      [_ in never]: never
+      social_link_data: {
+        platform: Database["public"]["Enums"]["social_platform"] | null
+        label: string | null
+        link: string | null
+      }
     }
   }
 }
@@ -176,6 +261,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      social_platform: ["instagram", "telegram", "vk", "youtube", "website"],
+    },
   },
 } as const

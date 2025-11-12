@@ -26,7 +26,7 @@ const nextConfig: NextConfig = {
       // Basic redirect
       {
         source: '/settings',
-        destination: '/settings/general',
+        destination: '/settings/profile',
         permanent: true,
       },
     ]

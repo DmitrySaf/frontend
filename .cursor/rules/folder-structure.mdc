@@ -2,7 +2,7 @@
 alwaysApply: true
 ---
 
-# Next.js Firebase Template - Project Structure
+# Next.js Supabase Template - Project Structure
 
 This project follows a modular architecture pattern for Next.js applications with Firebase integration and Material-UI components.
 
@@ -52,6 +52,7 @@ This project follows a modular architecture pattern for Next.js applications wit
 - Absolute imports use the `@/*` alias pointing to `src/*`.
 - Cross-slice imports must go through each slice's public API (`index.ts`). No deep imports.
 - **No wildcard exports**: All `index.ts` files must use specific named exports. Never use `export * from`. Export only what is actually used in the project.
+- **No type re-exports from lower layers**: Inside `entities/` and `features/`, use types from `@/api` directly via imports. Do not re-export API types through entity/feature `index.ts`. This reduces indirection and makes type sources clear.
 - Co-locate code, styles, tests, types, and assets within their slice.
 - Promote code to lower layers only when it becomes reusable across domains, or when extracting oversized modules improves clarity.
 - Group by domain (feature/entity), not by technical type.
@@ -219,7 +220,7 @@ Example:
 ```
 settings/
   ui/
-    SettingsGeneral.tsx
+    SettingsProfile.tsx
     SettingsSecurity.tsx
     SettingsPayment.tsx
     index.ts
@@ -231,4 +232,4 @@ Guidelines:
 - Keep tabs focused and independent; pass only required props.
 - In `app/**`, re-export components from `src/pages/**` for each tab route.
 - Re-export public components from `ui/index.ts` for clean imports.
-- For abstract areas, use the pattern `{Area}{TabName}.tsx` (e.g., `SettingsGeneral.tsx`).
+- For abstract areas, use the pattern `{Area}{TabName}.tsx` (e.g., `SettingsProfile.tsx`).

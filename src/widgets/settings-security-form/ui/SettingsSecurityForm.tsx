@@ -53,17 +53,33 @@ export function SettingsSecurityForm({
         <div className="flex items-center justify-between">
           <span className="text-gray-900 font-medium">Участие в проектах</span>
           <Switch
-            checked={watch("joinedVisible")}
-            disabled
-            onCheckedChange={(checked) => setValue("joinedVisible", checked)}
+            checked={watch("joinedVisible") ?? true}
+            onCheckedChange={(checked) => {
+              setValue("joinedVisible", checked);
+              handleSubmit(onSubmit)();
+            }}
           />
         </div>
 
         <div className="flex items-center justify-between">
           <span className="text-gray-900 font-medium">Созданные проекты</span>
           <Switch
-            checked={watch("ownedVisible")}
-            onCheckedChange={(checked) => setValue("ownedVisible", checked)}
+            checked={watch("ownedVisible") ?? true}
+            onCheckedChange={(checked) => {
+              setValue("ownedVisible", checked);
+              handleSubmit(onSubmit)();
+            }}
+          />
+        </div>
+
+        <div className="flex items-center justify-between">
+          <span className="text-gray-900 font-medium">Сообщения от пользователей</span>
+          <Switch
+            checked={watch("messagingAllowed") ?? true}
+            onCheckedChange={(checked) => {
+              setValue("messagingAllowed", checked);
+              handleSubmit(onSubmit)();
+            }}
           />
         </div>
       </div>

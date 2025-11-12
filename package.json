@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "biome lint .",
     "format": "biome format . --write",
-    "check": "biome check . --write"
+    "check": "biome check . --write",
+    "gen-supabase-types": "supabase gen types typescript --project-id 'wdovcmofzrulksuefser' --schema public > supabase/api/types/database.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",

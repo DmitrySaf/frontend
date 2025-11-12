@@ -1,4 +1,5 @@
 export { Button, buttonVariants } from "./Button";
+export { DeleteDialog } from "./DeleteDialog";
 export {
   Dialog,
   DialogContent,
@@ -14,5 +15,5 @@ export { Input } from "./Input";
 export { Separator } from "./Separator";
 export { Toaster } from "./Sonner";
 export { Switch } from "./Switch";
-export { Tab, tabVariants } from "./Tab";
+export { Tabs, type TabItem, type TabsProps } from "./Tabs";
 export { Textarea } from "./Textarea";

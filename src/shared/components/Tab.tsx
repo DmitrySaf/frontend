@@ -1,4 +1,5 @@
 import * as React from "react";
+import Link from "next/link";
 import { cva } from "class-variance-authority";
 
 import { cn } from "@/shared/utils";
@@ -20,19 +21,24 @@ const tabVariants = cva(
 
 export interface TabProps {
   text: string;
+  href: string;
   Icon?: any;
   className?: string;
   isActive?: boolean;
-  onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
-const Tab = React.forwardRef<HTMLButtonElement, TabProps>(
-  ({ className, isActive, Icon, text, ...props }, ref) => {
+const Tab = React.forwardRef<HTMLAnchorElement, TabProps>(
+  ({ className, isActive, Icon, text, href, ...props }, ref) => {
     return (
-      <button className={cn(tabVariants({ isActive, className }))} ref={ref} {...props}>
+      <Link 
+        href={href}
+        className={cn(tabVariants({ isActive, className }))} 
+        ref={ref} 
+        {...props}
+      >
         {Icon && <Icon className="size-5 flex-shrink-0" />}
         <span>{text}</span>
-      </button>
+      </Link>
     );
   }
 );

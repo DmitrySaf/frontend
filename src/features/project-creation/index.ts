@@ -1,2 +1,2 @@
-// Project creation feature exports
-export { default as DeleteProjectModal } from "./ui/DeleteProjectModal";
+// Community creation feature exports
+export { default as DeleteCommunityModal } from "./ui/DeleteCommunityModal";

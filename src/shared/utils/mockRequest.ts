@@ -43,8 +43,8 @@ export const mockRequest = async <T>(data: T, options: MockRequestOptions = {}):
     ...(data && typeof data === "object" && "length" in data
       ? { length: (data as any).length }
       : {}),
-    ...(data && typeof data === "object" && "projects" in data
-      ? { projectsCount: (data as any).projects?.length }
+    ...(data && typeof data === "object" && "communities" in data
+      ? { communitiesCount: (data as any).communities?.length }
       : {}),
   });
 

@@ -56,6 +56,28 @@ export const deleteEntity = async (id: string): Promise<void> => {
 - Return Promise with proper typing
 - Use async/await syntax
 
+### Supabase Select Rules
+
+**NEVER use `select('*')`** in Supabase queries. Always specify exact fields needed:
+
+```typescript
+// ❌ BAD - Don't use select('*')
+return client.from('users').select('*')
+
+// ✅ GOOD - Specify fields explicitly, exclude 'id' when not needed
+return client.from('users').select('username, email, created_at')
+
+// ✅ GOOD - Include 'id' only when absolutely necessary for operations
+return client.from('users').select('id, username').eq('username', name)
+```
+
+**Rules for select:**
+- Always list specific field names
+- Exclude `id` field unless it's needed for updates/deletes/references
+- Use snake_case for database field names (e.g., `created_at`, not `createdAt`)
+- List fields in logical order (data fields first, then timestamps)
+- For RLS policies and relationships, id is handled by Supabase internally
+
 ## types.ts - API Types
 
 Contains interfaces for API requests and responses.

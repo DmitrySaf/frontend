@@ -36,3 +36,7 @@ SET privacy_settings = '{
 }'::jsonb
 WHERE privacy_settings IS NULL;
 
+
+
+
+

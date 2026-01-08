@@ -4,12 +4,11 @@ import { useEffect } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button, Form, Input, Textarea } from "@/shared/components";
-import { Loader2, Plus } from "lucide-react";
+import { Globe, Loader2, Plus } from "lucide-react";
 import { userSettingsSchema, type UserSettingsData, SOCIAL_NETWORKS } from "../model";
-import { SocialLinkInput } from "./SocialLinkInput";
-import { CustomLinkInput } from "./CustomLinkInput";
 import { UnsavedChangesBar } from "./UnsavedChangesBar";
 import { cn } from "@/shared/utils";
+import Image from "next/image";
 
 interface SettingsProfileFormProps {
   initValues: UserSettingsData;
@@ -75,29 +74,42 @@ export function SettingsProfileForm({ initValues, onSubmit, isLoading }: Setting
         />
 
         {/* Social Links Section */}
-        <div className="space-y-4">
+        <div className="space-y-2">
           <h2 className="text-2xl font-semibold">Социальные сети</h2>
 
           {/* Static social networks */}
+          <div className="space-y-2">
           {SOCIAL_NETWORKS.map((social) => (
-            <SocialLinkInput
-              key={social.key}
-              name={social.key}
-              label={social.label}
-              domain={social.domain}
-              prefix={social.baseUrl}
-              error={errors[social.key]?.message}
+            <Input
+              name={social.id}
+              size="m"
+              prefix={social.prefix}
+              prefixElement={
+                <div className="flex items-center justify-center w-8 h-8 border border-gray-400 rounded-[10px] shadow">
+                  <Image
+                    src={social.icon}
+                    alt={social.id}
+                    width={24}
+                    height={24}
+                    unoptimized
+                  />
+                </div>
+              }
+              error={errors[social.id]?.message}
             />
-          ))}
-          {fields.map((field, index) => (
-            <CustomLinkInput
-              key={field.id}
-              index={index}
-              error={errors.customLinks?.[index]?.url?.message}
-              onRemove={() => remove(index)}
-              showRemove={fields.length > 1}
+            ))}
+            <Input
+              name="website"
+              size="m"
+              prefix="https://"
+              prefixElement={
+                <div className="flex items-center justify-center w-8 h-8 border border-gray-400 rounded-[10px]">
+                  <Globe className="w-6 h-6" />
+                </div>
+              }
+              error={errors.customLinks?.[0]?.url?.message}
             />
-          ))}
+          </div>
         </div>
         <UnsavedChangesBar
           isVisible={isDirty}

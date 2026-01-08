@@ -1,35 +1,47 @@
 "use client";
 
 import { useMemo } from "react";
-import { cva } from "class-variance-authority";
-import { cn } from "@/shared/utils";
+import { tv } from "tailwind-variants";
 import { IMaskInput } from "react-imask";
 import { useFormContext } from "react-hook-form";
 
-const inputVariants = cva(
-  "w-full inset-ring inset-ring-gray rounded-xl transition-colors space-x-1 flex focus-within:outline-0 focus-within:inset-ring-[#006EDB] focus-within:inset-ring-2 disabled:opacity-50 disabled:cursor-not-allowed",
-  {
-    variants: {
-      size: {
-        l: "py-3.5 px-4 rounded-xl text-base leading-5",
-        m: "py-3 px-3 rounded-xl text-[14px] leading-4.5",
-        s: "py-1.5 px-3 rounded-xl text-[14px] leading-4.5",
+const inputVariants = tv({
+  slots: {
+    inputWrapper: "w-full inset-ring inset-ring-gray-200 transition-all flex focus-within:outline-0 focus-within:inset-ring-primary-500 focus-within:inset-ring-2 disabled:opacity-50",
+    inputContainer: "flex-1",
+    helperText: "text-sm",
+  },
+  variants: {
+    size: {
+      l: {
+        inputWrapper: "h-12 rounded-xl text-base",
+        inputContainer: "py-3.5 px-4",
       },
-      hasError: {
-        true: "inset-ring-danger focus-within:inset-ring-danger",
-        false: "",
+      m: {
+        inputWrapper: "h-10 rounded-lg text-sm",
+        inputContainer: "py-3 px-3",
+      }
+    },
+    hasError: {
+      true: {
+        inputWrapper: "inset-ring-danger focus-within:inset-ring-danger",
+        helperText: "text-danger",
       },
+      false: {
+        helperText: "text-gray-500",
+      }
     },
-    defaultVariants: {
-      size: "m",
-      hasError: false,
-    },
+    hasPrefixElement: {
+      true: {
+        inputContainer: "pl-1",
+      }
+    }
   }
-);
+});
 
 export interface InputProps {
   name: string;
-  size: "l" | "m" | "s";
+  size: "l" | "m";
   // Custom Props
   label?: string;
   placeholder?: string;
@@ -91,6 +103,12 @@ const Input = ({
     customOnBlur?.();
   };
 
+  const styles = inputVariants({
+    size,
+    hasError: !!error,
+    hasPrefixElement: !!prefixElement,
+  });
+
   const inputElement = mask ? (
     <IMaskInput
       name={name}
@@ -107,7 +125,7 @@ const Input = ({
       placeholder={placeholder}
       disabled={isDisabled}
       autoComplete={autocomplete}
-      className="flex-1 placeholder:text-gray-500 focus:outline-0"
+      className="placeholder:text-gray-500 focus:outline-0 w-full"
     />
   ) : (
     <input
@@ -118,7 +136,7 @@ const Input = ({
       maxLength={maxLength}
       autoComplete={autocomplete}
       onBlur={handleBlur}
-      className="flex-1 placeholder:text-gray-500 focus:outline-0"
+      className="placeholder:text-gray-500 focus:outline-0 w-full"
     />
   );
 
@@ -127,30 +145,27 @@ const Input = ({
       <label className="space-y-1 block">
         {label && <div>{label}</div>}
 
-        <div
-          className={cn(
-            inputVariants({
-              size,
-              hasError: !!error,
-            })
+        <div className={styles.inputWrapper()}>
+          {prefixElement && (
+            <div className="flex items-center pl-1">{prefixElement}</div>
           )}
-        >
-          {prefixElement && <div className="pointer-events-none flex items-center">{prefixElement}</div>}
-          {prefix && <span className="leading-4.5 text-gray pointer-events-none">{prefix}</span>}
-          {inputElement}
+          <div className={styles.inputContainer()}>
+            {prefix && <span className="pointer-events-none">{prefix}</span>}
+            {inputElement}
+          </div>
         </div>
       </label>
 
       {(error || description || (!mask && maxLength)) && (
         <div className="flex justify-between gap-2">
           {error ? (
-            <p className="text-[14px] leading-4.5 text-danger">{error}</p>
+            <p className={styles.helperText()}>{error}</p>
           ) : (
-            description && <p className="text-[14px] leading-4.5 text-gray-500">{description}</p>
+            description && <p className={styles.helperText()}>{description}</p>
           )}
 
           {!mask && maxLength && (
-            <div className="text-[14px] leading-4.5 text-gray-500 ml-auto whitespace-nowrap">
+            <div className="text-sm text-gray-500 ml-auto whitespace-nowrap">
               {currentValue.length} / {maxLength}
             </div>
           )}

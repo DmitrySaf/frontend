@@ -1,17 +1,14 @@
+import { SocialPlatform } from "@/api";
+
 export interface SocialNetwork {
-  key: "telegram" | "vk" | "instagram" | "youtube";
-  label: string;
-  baseUrl: string;
-  domain: string;
+  id: Omit<SocialPlatform, "website">;
+  prefix: string;
+  icon: string;
 }
 
 export const SOCIAL_NETWORKS: SocialNetwork[] = [
-  { key: "telegram", label: "Telegram", baseUrl: "t.me/", domain: "telegram.org" },
-  { key: "vk", label: "VK", baseUrl: "vk.com/", domain: "vk.com" },
-  { key: "instagram", label: "Instagram", baseUrl: "instagram.com/", domain: "instagram.com" },
-  { key: "youtube", label: "YouTube", baseUrl: "youtube.com/@", domain: "youtube.com" },
+  { id: "telegram", prefix: "t.me/", icon: "/socials/telegram/regular.svg" },
+  { id: "vk", prefix: "vk.com/", icon: "/socials/vk/regular.svg" },
+  { id: "instagram", prefix: "instagram.com/", icon: "/socials/instagram/regular.svg" },
+  { id: "youtube", prefix: "youtube.com/@", icon: "/socials/youtube/regular.svg" }
 ];
-
-export const FAVICON_SIZE = 64;
-export const FAVICON_DISPLAY_SIZE = 20;
-

@@ -7,7 +7,7 @@ import { useServerQuery } from "@/shared/composables";
 import { TypedSupabaseClient } from "@/api";
 
 /**
- * Серверный хук для предзагрузки проектов
+ * Серверный хук для предзагрузки сообществ
  */
 export const useCommunitiesServerQuery = async () => {
   return useServerQuery({
@@ -17,7 +17,7 @@ export const useCommunitiesServerQuery = async () => {
 };
 
 /**
- * Серверный хук для предзагрузки единичного проекта
+ * Серверный хук для предзагрузки единичного сообщества
  */
 export const useCommunityServerQuery = async (name: string) => {
   return useServerQuery({

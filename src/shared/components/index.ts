@@ -9,11 +9,21 @@ export {
   DialogTitle,
   DialogTrigger,
 } from "./Dialog";
+export {
+  Dropdown,
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  type DropdownProps,
+  type DropdownItemConfig,
+} from "./Dropdown";
 export { Form } from "./Form";
 export { HydrationBoundary } from "./HydrationBoundary";
 export { Input } from "./Input";
 export { Separator } from "./Separator";
 export { Toaster } from "./Sonner";
 export { Switch } from "./Switch";
-export { Tabs, type TabItem, type TabsProps } from "./Tabs";
+export { Tabs, type TabItem, type TabsProps, Tab, tabVariants, type TabProps } from "./Tabs";
 export { Textarea } from "./Textarea";

@@ -1,1 +1,1 @@
-export { CommunityHome } from "./ui";
+export { CommunityHome, CommunityTabContent } from "./ui";

@@ -1,14 +1,19 @@
-import { BookOpen, FileText, Home, MessageCircle, Settings, Users } from "lucide-react";
+import { BookOpen, Home, Folder } from "lucide-react";
+import type { SidebarTab, SidebarSection } from "./types";
 
-export const SIDEBAR_ITEMS = [
+// Main tabs (not in any group)
+export const MAIN_TABS: SidebarTab[] = [
   { id: "home", name: "Главная", icon: Home, path: "" },
-  { id: "posts", name: "Посты", icon: FileText, path: "/posts" },
-  { id: "courses", name: "Курсы", icon: BookOpen, path: "/courses" },
-  { id: "articles", name: "Статьи", icon: FileText, path: "/articles" },
-  { id: "chat", name: "Чат", icon: MessageCircle, badge: 3, path: "/chat" },
 ];
 
-export const BOTTOM_ITEMS = [
-  { id: "members", name: "Участники", icon: Users, path: "/members" },
-  { id: "settings", name: "Настройки", icon: Settings, path: "/settings" },
+// Collapsible sections with nested tabs
+export const SIDEBAR_SECTIONS: SidebarSection[] = [
+  {
+    id: "test-section",
+    title: "Тест",
+    icon: Folder,
+    tabs: [
+      { id: "course", name: "Курс", icon: BookOpen, path: "/test-course-slug-123" },
+    ],
+  },
 ];

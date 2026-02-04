@@ -5,7 +5,7 @@ import { useBrowserQuery } from "@/shared/composables";
 import { transformCommunity } from "../model";
 
 /**
- * Хук для получения списка проектов
+ * Хук для получения списка сообществ
  */
 export const useCommunitiesQuery = () => {
   return useBrowserQuery({
@@ -17,7 +17,7 @@ export const useCommunitiesQuery = () => {
 };
 
 /**
- * Хук для получения единичного проекта
+ * Хук для получения единичного сообществф
  */
 export const useCommunityQuery = (name: string) => {
   return useBrowserQuery({
@@ -30,7 +30,7 @@ export const useCommunityQuery = (name: string) => {
 };
 
 /**
- * Хук для инвалидации кэша проектов
+ * Хук для инвалидации кэша сообществ
  */
 export const useInvalidateCommunities = () => {
   const queryClient = useQueryClient();

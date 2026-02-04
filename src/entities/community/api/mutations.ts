@@ -4,7 +4,7 @@ import { createCommunity, deleteCommunity } from "./api";
 import { useInvalidateCommunities } from "./queries.browser";
 
 /**
- * Хук для создания нового проекта
+ * Хук для создания нового сообщества
  */
 export const useCreateCommunityMutation = () => {
   const invalidateCommunities = useInvalidateCommunities();
@@ -12,11 +12,11 @@ export const useCreateCommunityMutation = () => {
   return useMutation({
     mutationFn: createCommunity,
     onSuccess: () => {
-      toast.success("Проект создан успешно");
+      toast.success("Сообщество создано успешно");
       invalidateCommunities();
     },
     onError: (error) => {
-      toast.error("Ошибка при создании проекта", {
+      toast.error("Ошибка при создании сообщества", {
         description: error instanceof Error ? error.message : "Попробуйте еще раз",
       });
     },
@@ -24,7 +24,7 @@ export const useCreateCommunityMutation = () => {
 };
 
 /**
- * Хук для удаления проекта
+ * Хук для удаления сообщества
  */
 export const useDeleteCommunityMutation = () => {
   const invalidateCommunities = useInvalidateCommunities();
@@ -32,11 +32,11 @@ export const useDeleteCommunityMutation = () => {
   return useMutation({
     mutationFn: deleteCommunity,
     onSuccess: () => {
-      toast.success("Проект удален успешно");
+      toast.success("Сообщество удалено успешно");
       invalidateCommunities();
     },
     onError: (error) => {
-      toast.error("Ошибка при удалении проекта", {
+      toast.error("Ошибка при удалении сообщества", {
         description: error instanceof Error ? error.message : "Попробуйте еще раз",
       });
     },

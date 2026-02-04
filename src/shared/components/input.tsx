@@ -8,7 +8,7 @@ import { useFormContext } from "react-hook-form";
 const inputVariants = tv({
   slots: {
     inputWrapper: "w-full inset-ring inset-ring-gray-200 transition-all flex focus-within:outline-0 focus-within:inset-ring-primary-500 focus-within:inset-ring-2 disabled:opacity-50",
-    inputContainer: "flex-1",
+    inputContainer: "flex-1 flex",
     helperText: "text-sm",
   },
   variants: {

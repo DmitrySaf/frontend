@@ -28,8 +28,8 @@ export default function DeleteCommunityModal({
       isOpen={isOpen}
       onClose={onClose}
       onDelete={handleDelete}
-      title="Удалить проект"
-      description={`Вы уверены, что хотите удалить проект "${communityName}"? Это действие нельзя будет отменить.`}
+      title="Удалить сообщество"
+      description={`Вы уверены, что хотите удалить сообщество "${communityName}"? Это действие нельзя будет отменить.`}
     />
   );
 }

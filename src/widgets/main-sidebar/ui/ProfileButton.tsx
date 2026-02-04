@@ -20,11 +20,11 @@ export default function ProfileButton() {
       className="relative overflow-visible"
     >
       <div
-        className="bg-white rounded-[18px] ring ring-gray flex items-center overflow-hidden transition-all duration-300 ease-out w-15 group hover:w-[300px] h-15 hover:shadow-md p-1 gap-1.5"
+        className="bg-white rounded-[18px] ring ring-gray-200 flex items-center overflow-hidden transition-all duration-300 ease-out w-15 group hover:w-[300px] h-15 hover:shadow-md p-1 gap-1.5"
       >
         {/* Аватар + Username/DisplayName - общий hover блок */}
         <div
-          className="flex items-center min-w-0 flex-1 cursor-pointer transition-colors rounded-xl hover:bg-gray-hover p-1"
+          className="flex items-center min-w-0 flex-1 cursor-pointer transition-colors rounded-xl hover:bg-gray-100 p-1"
         >
           {/* Аватар */}
           <div className="flex-shrink-0">

@@ -24,7 +24,7 @@ export default function CommunityHome() {
         <div className="bg-white rounded-md border border-gray-200 p-6 flex items-center justify-center">
           <div className="text-center space-y-4">
             <Loader2 className="w-8 h-8 animate-spin mx-auto text-blue-500" />
-            <p className="text-gray-600">Загружаем проект...</p>
+            <p className="text-gray-600">Загружаем сообщество...</p>
           </div>
         </div>
       </div>
@@ -42,7 +42,7 @@ export default function CommunityHome() {
             </div>
             <div>
               <h2 className="text-lg font-semibold text-gray-900">Ошибка загрузки</h2>
-              <p className="text-gray-600">Не удалось загрузить проект</p>
+              <p className="text-gray-600">Не удалось загрузить сообщество</p>
             </div>
           </div>
         </div>
@@ -56,7 +56,7 @@ export default function CommunityHome() {
 
       <div className="space-y-6">
         <div className="bg-white rounded-md border border-gray-200 p-6">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">О проекте</h2>
+          <h2 className="text-xl font-semibold text-gray-900 mb-4">О сообществе</h2>
         </div>
       </div>
     </div>

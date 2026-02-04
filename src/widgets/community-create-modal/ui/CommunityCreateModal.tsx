@@ -14,9 +14,8 @@ import {
   Form,
 } from "@/shared/components";
 import { transliterate } from "@/shared/utils";
+import { createCommunitySchema, type CreateCommunityData } from "@/entities/community";
 import {
-  createCommunitySchema,
-  type CreateCommunityData,
   type CommunityCreateModalProps,
   DEFAULT_CREATE_PROJECT_VALUES,
   PROJECT_NAME_MAX_LENGTH
@@ -58,15 +57,15 @@ export function CommunityCreateModal({ isOpen, onClose, onSubmit }: CommunityCre
     <Dialog open={isOpen} onOpenChange={handleClose}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Создать новый проект</DialogTitle>
+          <DialogTitle>Создать новое сообщество</DialogTitle>
         </DialogHeader>
 
         <Form methods={methods} onSubmit={handleSubmit} className="space-y-4">
           <Input
             name="displayName"
             size="l"
-            label="Название проекта"
-            placeholder="Введите название проекта"
+            label="Название сообщества"
+            placeholder="Введите название сообщества"
             error={errors.displayName?.message}
           />
 

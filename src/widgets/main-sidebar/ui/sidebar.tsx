@@ -1,17 +1,21 @@
 "use client";
 
-import { useCreateCommunityMutation, useCommunitiesQuery } from "@/entities/community";
+import { useCreateCommunityMutation, useCommunitiesQuery, type CreateCommunityData } from "@/entities/community";
 import { Button } from "@/shared/components";
-import { CommunityCreateModal, type CreateCommunityData } from "@/widgets/community-create-modal";
+import { CommunityCreateModal } from "@/widgets/community-create-modal";
 import { MessageCircleMore, Plus, Search } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
+import { useParams } from "next/navigation";
 import { useQueryState } from "nuqs";
 import { useCallback } from "react";
 import ProfileButton from "./ProfileButton";
 
 export default function MainSidebar() {
   const { data: communities, isLoading, error } = useCommunitiesQuery();
-  
+  const params = useParams();
+  const activeCommunitySlug = params?.slug as string | undefined;
+
   const [createParam, setCreateParam] = useQueryState("create");
   const isCreateModalOpen = createParam === "community";
 
@@ -51,7 +55,23 @@ export default function MainSidebar() {
                 Icon={Search}
               />
             </div>
-            {communities?.map((community) => (<div key={community.name} className="bg-white w-12 h-12 rounded-xl flex items-center justify-center">🐼</div>))}
+            {communities?.map((community) => {
+              const isActive = activeCommunitySlug === community.name;
+              return (
+                <Link
+                  key={community.name}
+                  href={`/communities/${community.name}`}
+                  className="relative"
+                >
+                  <div className="bg-white w-12 h-12 rounded-xl flex items-center justify-center hover:opacity-80 transition-opacity cursor-pointer">
+                    🐼
+                  </div>
+                  {isActive && (
+                    <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1 w-1 h-3 bg-black rounded-r-[4px]" />
+                  )}
+                </Link>
+              );
+            })}
             <Button
               theme="primary"
               size="l"

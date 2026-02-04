@@ -51,7 +51,7 @@ export function SettingsSecurityForm({
 
       <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <span className="text-gray-900 font-medium">Участие в проектах</span>
+          <span className="text-gray-900 font-medium">Участие в сообществах</span>
           <Switch
             checked={watch("joinedVisible") ?? true}
             onCheckedChange={(checked) => {
@@ -62,7 +62,7 @@ export function SettingsSecurityForm({
         </div>
 
         <div className="flex items-center justify-between">
-          <span className="text-gray-900 font-medium">Созданные проекты</span>
+          <span className="text-gray-900 font-medium">Созданные сообщества</span>
           <Switch
             checked={watch("ownedVisible") ?? true}
             onCheckedChange={(checked) => {

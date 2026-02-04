@@ -14,3 +14,4 @@ export {
   useCommunitiesRealtime,
 } from "./api";
 export type { Community } from "./api";
+export { transformCommunity, createCommunitySchema, type CreateCommunityData } from "./model";

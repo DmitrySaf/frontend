@@ -18,6 +18,21 @@ export async function getCommunity(client: TypedSupabaseClient, name: string): P
     .single();
 }
 
+export async function createCommunity(
+  client: TypedSupabaseClient,
+  data: { name: string; display_name: string; owner_id: string }
+): Promise<{ data: Community | null, error: any }> {
+  return client
+    .from(COMMUNITIES_TABLE)
+    .insert({
+      name: data.name,
+      display_name: data.display_name,
+      owner_id: data.owner_id,
+    })
+    .select('display_name, name, created_at, updated_at')
+    .single();
+}
+
 export async function deleteCommunity(client: TypedSupabaseClient, name: string): Promise<{ data: Community | null, error: any }> {
   return client
     .from(COMMUNITIES_TABLE)

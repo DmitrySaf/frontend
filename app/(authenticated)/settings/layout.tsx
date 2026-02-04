@@ -8,8 +8,7 @@ export default function SettingsLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex flex-col h-full">
-      <div className="flex rounded-md bg-white border border-solid border-gray-200 flex-1 h-full">
+    <div className="">
         <div className="flex w-full">
           <div className="flex flex-col items-end flex-1 flex-shrink-0 basis-[230px] pr-8">
             <SettingsSidebar />
@@ -20,7 +19,6 @@ export default function SettingsLayout({
             </div>
           </div>
         </div>
-      </div>
     </div>
   );
 } 

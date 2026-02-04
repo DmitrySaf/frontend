@@ -17,6 +17,46 @@ triggers:
 
 Universal standards and patterns for creating and using UI components.
 
+## ⚠️ CRITICAL: Component Usage Priority
+
+### ALWAYS Use Existing UI Kit Components
+
+**Before creating any new component or using native HTML elements, ALWAYS:**
+
+1. **Check if a UI kit component exists** in `src/shared/components/`
+2. **Use the existing component** instead of native HTML elements
+   - ❌ DON'T use `<button>` - use `<Button>` from UI kit
+   - ❌ DON'T use `<input>` - use `<Input>` from UI kit
+   - ❌ DON'T create custom dropdowns - use `<Dropdown>` from UI kit
+   - ✅ DO use `<Button theme="ghost" size="s" Icon={IconName} />`
+
+### Creating New UI Components: Use shadcn as Foundation
+
+**When creating NEW components for the UI kit:**
+
+1. **ALWAYS use shadcn as the base** (https://ui.shadcn.com)
+2. **Install the shadcn component** first using `pnpm dlx shadcn@latest add <component-name>`
+3. **Build on top of Radix UI primitives** (already used by shadcn)
+4. **Adapt styling** to match the project's design system
+5. **Never reinvent the wheel** - shadcn provides production-ready, accessible components
+
+**Example: Creating a Dropdown**
+```tsx
+// ✅ CORRECT: Use @radix-ui/react-dropdown-menu (shadcn base)
+import * as DropdownMenuPrimitive from "@radix-ui/react-dropdown-menu";
+
+// ❌ WRONG: Custom implementation with useState and click handlers
+const [isOpen, setIsOpen] = useState(false);
+```
+
+### Why This Matters
+
+- **Accessibility**: shadcn/Radix UI components are fully accessible by default
+- **Consistency**: Using UI kit ensures consistent look and feel
+- **Maintainability**: Less custom code = easier to maintain
+- **Best Practices**: shadcn follows React best practices and patterns
+- **Time Savings**: Don't reinvent solved problems
+
 ## Core Principles
 
 ### 1. Component Naming

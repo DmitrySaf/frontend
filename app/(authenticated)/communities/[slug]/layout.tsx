@@ -1,18 +1,20 @@
 import { CommunitySidebar } from "@/widgets/community-sidebar";
 import { CommunityHeader } from "@/widgets/community-header";
 
-export default function CommunityLayout({
+export default async function CommunityLayout({
   children,
   params,
 }: {
   children: React.ReactNode;
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }) {
+  const { slug } = await params;
+
   return (
-    <div className="bg-gray-50 flex">
-      <CommunitySidebar slug={params.slug} />
+    <div className="bg-gray-50 flex w-full">
+      <CommunitySidebar slug={slug} />
       <div className="flex-1 flex flex-col">
-        <CommunityHeader slug={params.slug} />
+        <CommunityHeader slug={slug} />
         {children}
       </div>
     </div>

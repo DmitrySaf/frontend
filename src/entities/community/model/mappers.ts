@@ -1,7 +1,7 @@
 import { Community } from "../api/types";
-import { type CommunityResponse } from "@/api/communities";
+import { type Community as CommunityRecord } from "@/api/communities";
 
-export const transformCommunity = (community: CommunityResponse): Community => {
+export const transformCommunity = (community: CommunityRecord): Community => {
   return {
     displayName: community.display_name,
     name: community.name,

@@ -1,7 +1,7 @@
 import { SocialPlatform } from "@/api";
 
 export interface SocialNetwork {
-  id: Omit<SocialPlatform, "website">;
+  id: Exclude<SocialPlatform, "website">;
   prefix: string;
   icon: string;
 }

@@ -3,7 +3,7 @@ import {
   getCommunity as _getCommunity,
   createCommunity as _createCommunity,
   deleteCommunity as _deleteCommunity,
-  type CommunityResponse,
+  type Community as CommunityRecord,
 } from "@/api/communities";
 import { getAuthUser } from "@/api/auth";
 import { type TypedSupabaseClient } from "@/api";
@@ -13,7 +13,7 @@ import type { CreateCommunityData } from "../model";
 /**
  * Получение списка сообществ
  */
-export const getCommunities = async (client: TypedSupabaseClient): Promise<CommunityResponse[]> => {
+export const getCommunities = async (client: TypedSupabaseClient): Promise<CommunityRecord[]> => {
   const { data, error } = await _getCommunities(client);
 
   return data || [];
@@ -25,7 +25,7 @@ export const getCommunities = async (client: TypedSupabaseClient): Promise<Commu
 export const getCommunity = async (
   client: TypedSupabaseClient,
   name: string
-): Promise<CommunityResponse> => {
+): Promise<CommunityRecord> => {
   const { data, error } = await _getCommunity(client, name);
 
   if (error) {

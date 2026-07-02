@@ -30,7 +30,7 @@ export function EmailForm({ onSubmit }: EmailFormProps) {
       />
 
       <Button type="submit" theme="primary" size="l" isLoading={isSubmitting} fluid>
-        Продолжить
+        {isSubmitting ? "Отправляем код…" : "Продолжить"}
       </Button>
     </Form>
   );

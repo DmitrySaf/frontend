@@ -1,5 +1,8 @@
 import { MainSidebar } from "@/widgets/main-sidebar";
 
+// Аутентифицированная зона зависит от сессии (cookies) — статический пререндер не имеет смысла
+export const dynamic = "force-dynamic";
+
 export default function MainLayout({
   children,
 }: {

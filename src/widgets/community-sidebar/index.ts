@@ -1,2 +1,2 @@
 export { default as CommunitySidebar } from "./ui/CommunitySidebar";
-export { SIDEBAR_ITEMS, BOTTOM_ITEMS, type NavigationItemId } from "./model";
+export type { NavigationItemId } from "./model";

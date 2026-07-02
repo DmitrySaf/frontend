@@ -73,8 +73,8 @@ export function CommunityCreateModal({ isOpen, onClose, onSubmit }: CommunityCre
             name="name"
             size="l"
             label="URL"
-            description="Уникальное имя"
-            prefix="profound.com/"
+            description="Уникальное имя — подставляется автоматически"
+            prefix="bean.com/"
             maxLength={PROJECT_NAME_MAX_LENGTH}
             error={errors.name?.message}
           />

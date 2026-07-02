@@ -1,3 +1,4 @@
+export { Avatar } from "./Avatar";
 export { Button, buttonVariants } from "./Button";
 export { DeleteDialog } from "./DeleteDialog";
 export {
@@ -27,3 +28,4 @@ export { Toaster } from "./Sonner";
 export { Switch } from "./Switch";
 export { Tabs, type TabItem, type TabsProps, Tab, tabVariants, type TabProps } from "./Tabs";
 export { Textarea } from "./Textarea";
+export { Tooltip } from "./Tooltip";

@@ -10,7 +10,7 @@ const buttonVariants = cva(
   {
     variants: {
       theme: {
-        primary: "bg-primary-500 text-white shadow hover:bg-primary-500-hover active:bg-primary-500-focus",
+        primary: "bg-primary-600 text-white shadow hover:bg-primary-500 active:bg-primary-400",
         outline:
           "border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground",
         destructive: "bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90",
@@ -98,7 +98,10 @@ const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonPro
     const content = (
       <>
         {isLoading ? (
-          <Loader2 className={`${iconSize[size]} animate-spin`} />
+          <>
+            <Loader2 className={`${iconSize[size]} animate-spin`} />
+            {children}
+          </>
         ) : iconOnly ? (
           <Icon className={iconSize[size]} />
         ) : (

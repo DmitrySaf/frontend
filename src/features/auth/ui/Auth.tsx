@@ -4,10 +4,8 @@ import { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { EmailForm } from "./EmailForm";
 import { ConfirmationForm } from "./ConfirmationForm";
-import { Button, Separator } from "@/shared/components";
-import Image from "next/image";
-import { type EmailFormData, type ConfirmationFormData } from "../model/validation";
 import Link from "next/link";
+import { type EmailFormData, type ConfirmationFormData } from "../model/validation";
 import { createBrowserClient } from "@/api/browser-client";
 
 export default function Auth() {
@@ -67,8 +65,8 @@ export default function Auth() {
           return;
         }
 
-        // Успешная аутентификация - перенаправляем пользователя
-        router.push("/settings");
+        // Успешная аутентификация — резолвер выберет сообщество или покажет пустое состояние
+        router.push("/communities");
       } catch (error) {
         console.error("Ошибка при проверке кода:", error);
         setConfirmationError("Произошла ошибка при проверке кода");
@@ -135,26 +133,6 @@ export default function Auth() {
           </div>
 
           <EmailForm onSubmit={handleEmailSubmit} />
-
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center">
-              <Separator className="w-full" />
-            </div>
-            <div className="relative flex justify-center">
-              <span className="px-2 bg-white text-gray-500 text-xs">или</span>
-            </div>
-          </div>
-
-          {/* Социальные кнопки TODO: гугл */}
-          <div className="grid grid-cols-2 gap-4">
-            <Button theme="outline" size="l" fluid>
-              <Image src="/vk.svg" alt="VK" width={24} height={24} />
-            </Button>
-
-            <Button theme="outline" size="l" fluid>
-              <Image src="/yandex.svg" alt="Yandex" width={24} height={24} />
-            </Button>
-          </div>
 
           <p className="text-xs text-gray-500 text-center">
             Регистрируясь, вы соглашаетесь с нашими{" "}

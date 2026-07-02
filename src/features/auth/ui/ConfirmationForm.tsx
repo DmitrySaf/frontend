@@ -5,6 +5,9 @@ import { Button } from "@/shared/components";
 import { cn } from "@/shared/utils";
 import { ChevronLeft } from "lucide-react";
 
+const CODE_LENGTH = 6;
+const RESEND_COOLDOWN_SECONDS = 60;
+
 interface ConfirmationFormProps {
   email: string;
   onSubmit: (data: { email: string; confirmationCode: string }) => void;
@@ -22,42 +25,50 @@ export function ConfirmationForm({
   isLoading,
   error,
 }: ConfirmationFormProps) {
-  const [digits, setDigits] = useState<string[]>(Array(6).fill(""));
+  const [digits, setDigits] = useState<string[]>(Array(CODE_LENGTH).fill(""));
+  const [focusedIndex, setFocusedIndex] = useState<number | null>(null);
+  const [cooldown, setCooldown] = useState(RESEND_COOLDOWN_SECONDS);
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
   const focusInput = useCallback((index: number) => {
     if (index >= 0 && index < inputRefs.current.length) {
-      const input = inputRefs.current[index];
-      if (input) {
-        input.focus();
-      }
+      inputRefs.current[index]?.focus();
     }
   }, []);
 
+  useEffect(() => {
+    if (cooldown <= 0) return;
+    const timer = setInterval(() => setCooldown((s) => s - 1), 1000);
+    return () => clearInterval(timer);
+  }, [cooldown]);
+
+  const handleResend = useCallback(() => {
+    if (cooldown > 0) return;
+    setCooldown(RESEND_COOLDOWN_SECONDS);
+    onResendCode();
+  }, [cooldown, onResendCode]);
+
   const handleInput = useCallback(
     (value: string, index: number) => {
-      // Разрешаем только цифры
       const digit = value.replace(/\D/g, "").slice(-1);
 
       setDigits((prev) => {
         const newDigits = [...prev];
         newDigits[index] = digit;
 
-        // Если это последняя ячейка и код полный, запускаем отправку
-        if (index === 5 && digit) {
+        if (index === CODE_LENGTH - 1 && digit) {
           const fullCode = newDigits.join("");
-          if (fullCode.length === 6) {
+          if (fullCode.length === CODE_LENGTH) {
             setTimeout(() => {
               onSubmit({ email, confirmationCode: fullCode });
-            }, 100); // Небольшая задержка для визуального обновления
+            }, 100);
           }
         }
 
         return newDigits;
       });
 
-      // Переходим к следующему инпуту если введена цифра
-      if (digit && index < 5) {
+      if (digit && index < CODE_LENGTH - 1) {
         focusInput(index + 1);
       }
     },
@@ -72,18 +83,15 @@ export function ConfirmationForm({
         setDigits((prev) => {
           const newDigits = [...prev];
           if (newDigits[index]) {
-            // Если в текущей ячейке есть значение, очищаем его
             newDigits[index] = "";
           } else if (index > 0) {
-            // Если текущая ячейка пустая, очищаем предыдущую и переходим к ней
             newDigits[index - 1] = "";
             focusInput(index - 1);
           }
           return newDigits;
         });
       } else if (!isNaN(Number(event.key)) && digits[index]) {
-        // Если вводим цифру в заполненную ячейку, переходим к следующей
-        if (index < 5) {
+        if (index < CODE_LENGTH - 1) {
           focusInput(index + 1);
         }
       }
@@ -94,31 +102,32 @@ export function ConfirmationForm({
   const handlePaste = useCallback(
     (event: React.ClipboardEvent) => {
       event.preventDefault();
-      const pasteData = event.clipboardData.getData("text").replace(/\D/g, "").slice(0, 6);
+      const pasteData = event.clipboardData
+        .getData("text")
+        .replace(/\D/g, "")
+        .slice(0, CODE_LENGTH);
 
-      const newDigits = Array(6).fill("");
+      const newDigits = Array(CODE_LENGTH).fill("");
       pasteData.split("").forEach((char, i) => {
-        if (i < 6) newDigits[i] = char;
+        if (i < CODE_LENGTH) newDigits[i] = char;
       });
 
       setDigits(newDigits);
 
-      // Если вставили полный код, запускаем отправку
-      if (pasteData.length === 6) {
+      if (pasteData.length === CODE_LENGTH) {
         setTimeout(() => {
           onSubmit({ email, confirmationCode: pasteData });
         }, 100);
       } else {
-        // Фокусируемся на следующей пустой ячейке или последней заполненной
         const nextEmptyIndex = newDigits.findIndex((digit) => !digit);
-        const focusIndex = nextEmptyIndex !== -1 ? nextEmptyIndex : Math.min(pasteData.length, 5);
+        const focusIndex =
+          nextEmptyIndex !== -1 ? nextEmptyIndex : Math.min(pasteData.length, CODE_LENGTH - 1);
         focusInput(focusIndex);
       }
     },
     [focusInput, onSubmit, email]
   );
 
-  // Автофокус на первый инпут при монтировании
   useEffect(() => {
     const timer = setTimeout(() => {
       focusInput(0);
@@ -126,10 +135,9 @@ export function ConfirmationForm({
     return () => clearTimeout(timer);
   }, [focusInput]);
 
-  // Очищаем поля при ошибке
   useEffect(() => {
     if (error) {
-      setDigits(Array(6).fill(""));
+      setDigits(Array(CODE_LENGTH).fill(""));
       focusInput(0);
     }
   }, [error, focusInput]);
@@ -145,9 +153,14 @@ export function ConfirmationForm({
       />
 
       <div className="space-y-4 mt-4">
-        <p className="text-sm text-gray-600 text-center">
-          Мы отправили код подтверждения на адрес {email}
-        </p>
+        <div className="space-y-1.5">
+          <p className="text-base font-semibold text-black text-center">
+            Введите код подтверждения
+          </p>
+          <p className="text-sm text-gray-600 text-center">
+            Мы отправили код на <span className="font-medium text-black">{email}</span>
+          </p>
+        </div>
 
         <div className="flex justify-center gap-2">
           {digits.map((digit, index) => (
@@ -160,35 +173,46 @@ export function ConfirmationForm({
               inputMode="numeric"
               maxLength={1}
               value={digit}
+              placeholder={focusedIndex === index ? "" : "·"}
               onChange={(e) => handleInput(e.target.value, index)}
               onKeyDown={(e) => handleKeyDown(e, index)}
               onPaste={handlePaste}
+              onFocus={() => setFocusedIndex(index)}
+              onBlur={() => setFocusedIndex(null)}
               className={cn(
-                "w-10 h-12 text-center text-base font-medium",
-                "border border-gray-300 rounded-md",
-                "focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent",
-                "transition-colors",
+                "w-12 h-14 text-center text-2xl font-mono text-black caret-primary-500",
+                "bg-white rounded-[14px] inset-ring inset-ring-gray-200 border-0",
+                "placeholder:text-gray-400",
+                "focus:outline-none focus:inset-ring-2 focus:inset-ring-primary-500",
+                "transition-shadow",
                 "disabled:opacity-50 disabled:cursor-not-allowed",
-                error && "border-red-300 focus:ring-red-500"
+                error && "inset-ring-[1.5px] inset-ring-danger focus:inset-ring-danger"
               )}
               disabled={isLoading}
             />
           ))}
         </div>
 
-        {error && <p className="text-sm text-red-500 text-center">{error}</p>}
+        {error && <p className="text-sm text-danger text-center">{error}</p>}
       </div>
 
-      <Button
-        type="button"
-        theme="ghost"
-        size="l"
-        fluid
-        onClick={onResendCode}
-        isDisabled={isLoading}
-      >
-        Отправить код повторно
-      </Button>
+      <p className="text-sm text-gray-600 text-center">
+        Не получили код?{" "}
+        {cooldown > 0 ? (
+          <span className="text-gray-500">
+            Отправить заново через {cooldown} с
+          </span>
+        ) : (
+          <button
+            type="button"
+            onClick={handleResend}
+            disabled={isLoading}
+            className="font-semibold text-black hover:underline disabled:opacity-50 cursor-pointer"
+          >
+            Отправить заново
+          </button>
+        )}
+      </p>
     </div>
   );
 }

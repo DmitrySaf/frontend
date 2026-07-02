@@ -3,6 +3,7 @@
 import { Loader2 } from "lucide-react";
 import { CHANNEL_TYPE_META, useCommunityStructureQuery, type Channel } from "@/entities/channel";
 import { ChannelTitleBar } from "./ChannelTitleBar";
+import { ChatScreen } from "./chat/ChatScreen";
 
 interface CommunityChannelPageProps {
   slug: string;
@@ -13,7 +14,7 @@ function CenteredState({ children }: { children: React.ReactNode }) {
   return <div className="flex-1 flex items-center justify-center">{children}</div>;
 }
 
-// Плейсхолдеры контента по типу таба — заменяются на этапах 5 (чат), 6 (посты), 7 (курсы)
+// Плейсхолдеры контента по типу таба — заменяются на этапах 6 (посты), 7 (курсы)
 function ChannelContentPlaceholder({ channel }: { channel: Channel }) {
   const meta = CHANNEL_TYPE_META[channel.type];
   const Icon = meta.icon;
@@ -68,7 +69,11 @@ export function CommunityChannelPage({ slug, tabSlug }: CommunityChannelPageProp
   return (
     <div className="flex-1 flex flex-col min-h-0">
       <ChannelTitleBar channel={channel} />
-      <ChannelContentPlaceholder channel={channel} />
+      {channel.type === "chat" ? (
+        <ChatScreen channel={channel} />
+      ) : (
+        <ChannelContentPlaceholder channel={channel} />
+      )}
     </div>
   );
 }

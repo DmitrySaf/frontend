@@ -1,81 +1,142 @@
 "use client";
 
-import { usePathname } from "next/navigation";
-import { Tab } from "@/shared/components";
-import { MAIN_TABS, SIDEBAR_SECTIONS } from "../model";
-import CollapsibleSection from "./CollapsibleSection";
+import { useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { useCommunityQuery } from "@/entities/community";
+import {
+  useCommunityStructureQuery,
+  useCreateChannelMutation,
+  type CreateChannelFormData,
+} from "@/entities/channel";
+import { DeleteDialog } from "@/shared/components";
+import { ChannelCreateModal } from "@/widgets/channel-create-modal";
+import CategorySection from "./CategorySection";
+import ChannelRow from "./ChannelRow";
 import CommunityBanner from "./CommunityBanner";
+import InviteDialog from "./InviteDialog";
 
 interface CommunitySidebarProps {
   slug: string;
 }
 
+function StructureSkeleton() {
+  return (
+    <div className="p-3 space-y-3 animate-pulse">
+      <div className="h-3 w-20 rounded bg-gray-100" />
+      <div className="h-8 rounded-[9px] bg-gray-100" />
+      <div className="h-8 rounded-[9px] bg-gray-100" />
+    </div>
+  );
+}
+
 export default function CommunitySidebar({ slug }: CommunitySidebarProps) {
   const pathname = usePathname();
+  const router = useRouter();
 
-  // Mock data - some communities have preview, some don't
-  const hasPreview = slug === "profound-university"; // Example condition
-  const mockPreviewUrl = "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800&h=400&fit=crop";
+  const { data: community } = useCommunityQuery(slug);
+  const { data: structure, isLoading } = useCommunityStructureQuery(slug);
+  const createChannel = useCreateChannelMutation();
+
+  // TODO(этап 11): роль из community_members; пока все пользователи — владельцы
+  const isAdmin = true;
+  const canLeave = false;
+
+  const [isInviteOpen, setIsInviteOpen] = useState(false);
+  const [isLeaveOpen, setIsLeaveOpen] = useState(false);
+  const [createChannelCategoryId, setCreateChannelCategoryId] = useState<string | null>(null);
+
+  const activeTabSlug = pathname?.split("/")[3];
+
+  const handleCreateChannel = async (data: CreateChannelFormData) => {
+    const channel = await createChannel.mutateAsync({
+      communitySlug: slug,
+      type: data.type,
+      name: data.name,
+      categoryId: data.categoryId,
+      newCategoryName: data.newCategoryName?.trim() || undefined,
+    });
+    router.push(`/communities/${slug}/${channel.slug}`);
+  };
+
+  const handleLeave = async () => {
+    // TODO(этап 9): удаление membership из mock-store
+    toast.success("Вы покинули сообщество");
+    router.push("/communities");
+  };
 
   return (
-    <div className="w-64 bg-white border-r border-gray-200 flex flex-col h-screen">
-      {/* Community Banner */}
+    <div className="w-64 shrink-0 bg-white border-r border-gray-200 flex flex-col h-full">
       <CommunityBanner
-        name="ProFound University"
-        description="Only the elite allowed."
-        previewUrl={hasPreview ? mockPreviewUrl : undefined}
+        name={community?.displayName ?? slug}
+        isAdmin={isAdmin}
+        canLeave={canLeave}
+        onOpenAdminSection={(section) => router.push(`/communities/${slug}/admin/${section}`)}
+        onInvite={() => setIsInviteOpen(true)}
+        onLeave={() => setIsLeaveOpen(true)}
       />
 
-      {/* Navigation Content */}
-      <div className="flex-1 overflow-y-auto">
-        <div className="p-4 space-y-4">
-          {/* Main Tabs (not in groups) */}
-          <nav className="space-y-1">
-            {MAIN_TABS.map((tab) => {
-              const Icon = tab.icon;
-              const href = `/communities/${slug}${tab.path}`;
-              const isActive = pathname === href;
-
-              return (
-                <Tab
-                  key={tab.id}
-                  text={tab.name}
-                  isActive={isActive}
-                  href={href}
-                  Icon={Icon}
-                />
-              );
-            })}
-          </nav>
-
-          {/* Collapsible Sections */}
-          {SIDEBAR_SECTIONS.map((section) => (
-            <CollapsibleSection
-              key={section.id}
-              title={section.title}
-              icon={section.icon}
-            >
-              <nav className="space-y-1">
-                {section.tabs.map((tab) => {
-                  const Icon = tab.icon;
-                  const href = `/communities/${slug}${tab.path}`;
-                  const isActive = pathname === href;
-
-                  return (
-                    <Tab
-                      key={tab.id}
-                      text={tab.name}
-                      isActive={isActive}
-                      href={href}
-                      Icon={Icon}
-                    />
-                  );
-                })}
+      <div className="flex-1 overflow-y-auto px-2.5 pb-3">
+        {isLoading || !structure ? (
+          <StructureSkeleton />
+        ) : (
+          <>
+            {structure.uncategorized.length > 0 && (
+              <nav className="pt-2 space-y-0.5">
+                {structure.uncategorized.map((channel) => (
+                  <ChannelRow
+                    key={channel.id}
+                    channel={channel}
+                    communitySlug={slug}
+                    isActive={channel.slug === activeTabSlug}
+                  />
+                ))}
               </nav>
-            </CollapsibleSection>
-          ))}
-        </div>
+            )}
+
+            {structure.categories.map((category) => (
+              <CategorySection
+                key={category.id}
+                name={category.name}
+                canAddChannel={isAdmin}
+                onAddChannel={() => setCreateChannelCategoryId(category.id)}
+              >
+                {category.channels.map((channel) => (
+                  <ChannelRow
+                    key={channel.id}
+                    channel={channel}
+                    communitySlug={slug}
+                    isActive={channel.slug === activeTabSlug}
+                  />
+                ))}
+              </CategorySection>
+            ))}
+          </>
+        )}
       </div>
+
+      <InviteDialog
+        isOpen={isInviteOpen}
+        onClose={() => setIsInviteOpen(false)}
+        communitySlug={slug}
+      />
+
+      <DeleteDialog
+        isOpen={isLeaveOpen}
+        onClose={() => setIsLeaveOpen(false)}
+        onDelete={handleLeave}
+        title="Покинуть сообщество?"
+        description="Вы потеряете доступ к контенту сообщества. Вернуться можно будет по приглашению или через публичную страницу."
+        confirmText="Покинуть"
+      />
+
+      <ChannelCreateModal
+        isOpen={createChannelCategoryId !== null}
+        onClose={() => setCreateChannelCategoryId(null)}
+        onSubmit={handleCreateChannel}
+        categories={structure?.categories ?? []}
+        defaultCategoryId={createChannelCategoryId ?? undefined}
+      />
     </div>
   );
 }

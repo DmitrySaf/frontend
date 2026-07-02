@@ -19,6 +19,7 @@ export {
   DropdownMenuSeparator,
   type DropdownProps,
   type DropdownItemConfig,
+  type DropdownNoteConfig,
 } from "./Dropdown";
 export { Form } from "./Form";
 export { HydrationBoundary } from "./HydrationBoundary";

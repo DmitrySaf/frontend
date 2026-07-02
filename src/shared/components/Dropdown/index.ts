@@ -6,4 +6,4 @@ export {
   DropdownMenuItem,
   DropdownMenuSeparator,
 } from "./Dropdown";
-export type { DropdownProps, DropdownItemConfig } from "./Dropdown";
+export type { DropdownProps, DropdownItemConfig, DropdownNoteConfig } from "./Dropdown";

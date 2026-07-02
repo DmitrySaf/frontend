@@ -1,7 +1,4 @@
-import { useCommunityServerQuery } from "@/entities/community";
-import { HydrationBoundary } from "@/shared/components";
-import { CommunityTabContent } from "@/pages/community-home";
-import { createServerClient } from "@/api/server-client";
+import { CommunityChannelPage } from "@/pages/community-channel";
 
 interface CommunityTabPageProps {
   params: Promise<{
@@ -13,11 +10,5 @@ interface CommunityTabPageProps {
 export default async function CommunityTabPage({ params }: CommunityTabPageProps) {
   const { slug, tabSlug } = await params;
 
-  const { dehydratedState } = await useCommunityServerQuery(slug);
-
-  return (
-    <HydrationBoundary state={dehydratedState}>
-      <CommunityTabContent tabSlug={tabSlug} />
-    </HydrationBoundary>
-  );
+  return <CommunityChannelPage slug={slug} tabSlug={tabSlug} />;
 }

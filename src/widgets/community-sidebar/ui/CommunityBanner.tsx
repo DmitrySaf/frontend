@@ -1,131 +1,102 @@
 "use client";
 
-import * as React from "react";
 import Image from "next/image";
-import { ChevronDown, LogOut, UserPlus } from "lucide-react";
-import { Button, Dropdown, type DropdownItemConfig } from "@/shared/components";
+import {
+  ChevronDown,
+  LayoutDashboard,
+  LogOut,
+  Palette,
+  Settings,
+  UserPlus,
+} from "lucide-react";
+import {
+  Avatar,
+  Button,
+  Dropdown,
+  type DropdownItemConfig,
+  type DropdownNoteConfig,
+} from "@/shared/components";
 import { cn } from "@/shared/utils";
 
 interface CommunityBannerProps {
   name: string;
-  description?: string;
-  previewUrl?: string;
-  logoUrl?: string;
+  coverUrl?: string | null;
+  logoUrl?: string | null;
+  isAdmin: boolean;
+  onOpenAdminSection: (section: "settings" | "appearance" | "dashboard") => void;
+  onInvite: () => void;
+  onLeave: () => void;
+  /** Владелец не может покинуть сообщество — пункт скрыт */
+  canLeave: boolean;
   className?: string;
 }
 
 export default function CommunityBanner({
   name,
-  description,
-  previewUrl,
-  logoUrl = "/lightbulb.svg",
+  coverUrl,
+  logoUrl,
+  isAdmin,
+  onOpenAdminSection,
+  onInvite,
+  onLeave,
+  canLeave,
   className,
 }: CommunityBannerProps) {
-  const handleInvite = () => {
-    console.log("Invite to community");
-  };
+  const adminItems: (DropdownItemConfig | DropdownNoteConfig | "separator")[] = isAdmin
+    ? [
+        { note: "только для админа" },
+        { icon: Settings, label: "Настройки сообщества", onClick: () => onOpenAdminSection("settings") },
+        { icon: Palette, label: "Внешний вид", onClick: () => onOpenAdminSection("appearance") },
+        { icon: LayoutDashboard, label: "Дашборд", onClick: () => onOpenAdminSection("dashboard") },
+        "separator",
+      ]
+    : [];
 
-  const handleLeave = () => {
-    console.log("Leave community");
-  };
-
-  const dropdownItems: (DropdownItemConfig | "separator")[] = [
-    {
-      icon: UserPlus,
-      label: "Пригласить в сообщество",
-      onClick: handleInvite,
-    },
-    {
-      icon: LogOut,
-      label: "Покинуть сообщество",
-      onClick: handleLeave,
-      variant: "danger",
-    },
+  const memberItems: (DropdownItemConfig | "separator")[] = [
+    { icon: UserPlus, label: "Пригласить в сообщество", onClick: onInvite },
+    ...(canLeave
+      ? [{ icon: LogOut, label: "Покинуть сообщество", onClick: onLeave, variant: "danger" as const }]
+      : []),
   ];
 
-  // Variant with preview image
-  if (previewUrl) {
+  const menu = (
+    <Dropdown
+      trigger={
+        <Button theme="ghost" size="s" Icon={ChevronDown} aria-label="Меню сообщества" />
+      }
+      items={[...adminItems, ...memberItems]}
+      align="end"
+      className="w-60"
+    />
+  );
+
+  // Вариант с обложкой: 132px фото + затемнение
+  if (coverUrl) {
     return (
-      <div className={cn("relative h-40", className)}>
-        {/* Preview Image */}
-        <div className="absolute inset-0">
-          <Image
-            src={previewUrl}
-            alt={name}
-            fill
-            className="object-cover"
-          />
-          {/* Darkening overlay */}
-          <div className="absolute inset-0 bg-black/50" />
-        </div>
+      <div className={cn("relative h-[132px] shrink-0 border-b border-gray-200", className)}>
+        <Image src={coverUrl} alt={name} fill className="object-cover" />
+        <div className="absolute inset-0 bg-black/40" />
 
-        {/* Content */}
-        <div className="relative z-10 h-full flex flex-col justify-end p-1.5">
-          <div className="flex items-end justify-between">
-            <div className="flex items-center space-x-3">
-              {/* Logo */}
-              <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center shadow-lg flex-shrink-0">
-                🐼
-                {/* <Image src={logoUrl} alt={name} width={28} height={28} /> */}
-              </div>
-
-              {/* Name & Description */}
-              <div className="flex-1 min-w-0">
-                <h1 className="font-bold text-white text-base truncate drop-shadow-md">
-                  {name}
-                </h1>
-              </div>
-            </div>
-
-            {/* Dropdown */}
-            <Dropdown
-              trigger={
-                <Button
-                  theme="ghost"
-                  size="s"
-                  Icon={ChevronDown}
-                  aria-label="Меню сообщества"
-                />
-              }
-              items={dropdownItems}
-              align="end"
-            />
+        <div className="absolute inset-x-0 bottom-0 flex items-center justify-between gap-2 p-2.5">
+          <div className="flex items-center gap-2 min-w-0">
+            <Avatar name={name} src={logoUrl} size="m" shape="square" />
+            <span className="text-sm font-bold text-white truncate drop-shadow-md">{name}</span>
           </div>
+          <div className="shrink-0 rounded-[9px] bg-white">{menu}</div>
         </div>
       </div>
     );
   }
 
-  // Variant without preview (simple header)
+  // Плоский вариант без обложки
   return (
-    <div className={cn("h-15 bg-white border-b border-gray-200", className)}>
-      <div className="h-full flex items-center justify-between px-1.5">
-        <div className="flex items-center space-x-3 flex-1 min-w-0">
-          {/* Logo */}
-          <div className="w-12 h-12 bg-orange-500 rounded-xl flex items-center justify-center flex-shrink-0">
-            🐼
-          {/* <Image src={logoUrl} alt={name} width={28} height={28} /> */}
-          </div>
-
-          {/* Name */}
-          <div className="flex-1 min-w-0">
-            <h1 className="font-bold text-gray-900 text-base truncate">{name}</h1>
-          </div>
+    <div className={cn("h-15 shrink-0 border-b border-gray-200", className)}>
+      <div className="h-full flex items-center justify-between gap-2 px-2.5">
+        <div className="flex items-center gap-2 min-w-0">
+          <Avatar name={name} src={logoUrl} size="m" shape="square" />
+          <span className="text-sm font-bold text-black truncate">{name}</span>
         </div>
-
-        {/* Dropdown */}
-        <Dropdown
-          trigger={
-            <Button
-              theme="ghost"
-              size="s"
-              Icon={ChevronDown}
-              aria-label="Меню сообщества"
-            />
-          }
-          items={dropdownItems}
-          align="end"
-        />
+        {menu}
       </div>
     </div>
   );

@@ -69,9 +69,13 @@ interface DropdownItemConfig {
   disabled?: boolean;
 }
 
+interface DropdownNoteConfig {
+  note: string;
+}
+
 interface DropdownProps {
   trigger: React.ReactNode;
-  items: (DropdownItemConfig | "separator")[];
+  items: (DropdownItemConfig | DropdownNoteConfig | "separator")[];
   align?: "start" | "center" | "end";
   side?: "top" | "right" | "bottom" | "left";
   className?: string;
@@ -87,6 +91,14 @@ function Dropdown({ trigger, items, align = "end", side = "bottom", className }:
             return <DropdownMenuSeparator key={`separator-${index}`} />;
           }
 
+          if ("note" in item) {
+            return (
+              <div key={`note-${index}`} className="px-2 pt-1.5 pb-0.5 text-[11px] font-medium uppercase tracking-wide text-gray-500">
+                {item.note}
+              </div>
+            );
+          }
+
           const Icon = item.icon;
           return (
             <DropdownMenuItem
@@ -95,11 +107,11 @@ function Dropdown({ trigger, items, align = "end", side = "bottom", className }:
               disabled={item.disabled}
               className={cn(
                 item.variant === "danger" &&
-                  "text-red-600 hover:bg-red-50 hover:text-red-700 focus:bg-red-50 focus:text-red-700"
+                  "text-danger hover:bg-danger/10 hover:text-danger focus:bg-danger/10 focus:text-danger"
               )}
             >
               {Icon && (
-                <Icon className={cn("mr-2 h-4 w-4", item.variant === "danger" && "text-red-600")} />
+                <Icon className={cn("mr-2 h-4 w-4", item.variant === "danger" && "text-danger")} />
               )}
               <span>{item.label}</span>
             </DropdownMenuItem>
@@ -118,4 +130,4 @@ export {
   DropdownMenuItem,
   DropdownMenuSeparator,
 };
-export type { DropdownProps, DropdownItemConfig };
+export type { DropdownProps, DropdownItemConfig, DropdownNoteConfig };

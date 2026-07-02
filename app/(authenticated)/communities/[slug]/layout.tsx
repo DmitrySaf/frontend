@@ -1,5 +1,4 @@
 import { CommunitySidebar } from "@/widgets/community-sidebar";
-import { CommunityHeader } from "@/widgets/community-header";
 import { CommunityVisitTracker } from "@/entities/community";
 
 export default async function CommunityLayout({
@@ -12,13 +11,10 @@ export default async function CommunityLayout({
   const { slug } = await params;
 
   return (
-    <div className="bg-gray-50 flex w-full">
+    <div className="flex w-full h-full">
       <CommunityVisitTracker slug={slug} />
       <CommunitySidebar slug={slug} />
-      <div className="flex-1 flex flex-col">
-        <CommunityHeader slug={slug} />
-        {children}
-      </div>
+      <div className="flex-1 flex flex-col min-w-0">{children}</div>
     </div>
   );
 }

@@ -2,13 +2,96 @@ import {
   getCommunities as _getCommunities,
   getCommunity as _getCommunity,
   createCommunity as _createCommunity,
+  updateCommunity as _updateCommunity,
   deleteCommunity as _deleteCommunity,
   type Community as CommunityRecord,
 } from "@/api/communities";
 import { getAuthUser } from "@/api/auth";
 import { type TypedSupabaseClient } from "@/api";
 import { createBrowserClient } from "@/api/browser-client";
+import { createMockCollection } from "@/shared/utils";
 import type { CreateCommunityData } from "../model";
+import type {
+  CommunityExtrasRecord,
+  CommunityProfile,
+  UpdateCommunityProfileInput,
+} from "./types";
+
+// Расширенные поля сообщества (описание, оформление, видимость) — mock до этапа БД
+const communityExtras = createMockCollection<CommunityExtrasRecord>("communities_extras");
+
+const DEFAULT_EXTRAS: Omit<CommunityExtrasRecord, "id"> = {
+  description: "",
+  cover_url: null,
+  logo_url: null,
+  visibility: "public",
+};
+
+export const getCommunityExtras = async (slug: string): Promise<CommunityExtrasRecord> => {
+  const all = await communityExtras.list();
+  return all.find((record) => record.id === slug) ?? { id: slug, ...DEFAULT_EXTRAS };
+};
+
+/** Карта slug → extras для всех сообществ (логотипы в rail) */
+export const getAllCommunityExtras = async (): Promise<CommunityExtrasRecord[]> => {
+  return communityExtras.list();
+};
+
+/**
+ * Полный профиль сообщества: базовые поля из Supabase + расширенные из mock
+ */
+export const getCommunityProfile = async (
+  client: TypedSupabaseClient,
+  slug: string
+): Promise<CommunityProfile> => {
+  const [community, extras] = await Promise.all([
+    getCommunity(client, slug),
+    getCommunityExtras(slug),
+  ]);
+
+  return {
+    name: community.name,
+    displayName: community.display_name,
+    description: extras.description,
+    coverUrl: extras.cover_url,
+    logoUrl: extras.logo_url,
+    visibility: extras.visibility,
+  };
+};
+
+/**
+ * Обновление профиля сообщества: display_name — в Supabase, остальное — в mock extras
+ */
+export const updateCommunityProfile = async (
+  input: UpdateCommunityProfileInput
+): Promise<void> => {
+  const client = createBrowserClient();
+
+  if (input.displayName !== undefined) {
+    const { error } = await _updateCommunity(client, input.slug, {
+      display_name: input.displayName,
+    });
+    if (error) {
+      throw new Error(error.message || "Ошибка при сохранении названия");
+    }
+  }
+
+  const current = await getCommunityExtras(input.slug);
+  const next: CommunityExtrasRecord = {
+    ...current,
+    description: input.description ?? current.description,
+    cover_url: input.coverUrl !== undefined ? input.coverUrl : current.cover_url,
+    logo_url: input.logoUrl !== undefined ? input.logoUrl : current.logo_url,
+    visibility: input.visibility ?? current.visibility,
+  };
+
+  const all = await communityExtras.list();
+  if (all.some((record) => record.id === input.slug)) {
+    await communityExtras.update(input.slug, next);
+  } else {
+    await communityExtras.insert(next);
+  }
+};
 
 /**
  * Получение списка сообществ

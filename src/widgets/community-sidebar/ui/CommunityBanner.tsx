@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import {
   ChevronDown,
   LayoutDashboard,
@@ -74,7 +73,9 @@ export default function CommunityBanner({
   if (coverUrl) {
     return (
       <div className={cn("relative h-[132px] shrink-0 border-b border-gray-200", className)}>
-        <Image src={coverUrl} alt={name} fill className="object-cover" />
+        {/* Обложка может быть dataURL из мок-хранилища — next/image их не поддерживает */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={coverUrl} alt={name} className="absolute inset-0 size-full object-cover" />
         <div className="absolute inset-0 bg-black/40" />
 
         <div className="absolute inset-x-0 bottom-0 flex items-center justify-between gap-2 p-2.5">

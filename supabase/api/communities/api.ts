@@ -33,6 +33,19 @@ export async function createCommunity(
     .single();
 }
 
+export async function updateCommunity(
+  client: TypedSupabaseClient,
+  name: string,
+  data: { display_name?: string }
+): Promise<{ data: Community | null, error: any }> {
+  return client
+    .from(COMMUNITIES_TABLE)
+    .update(data)
+    .eq('name', name)
+    .select('display_name, name, created_at, updated_at')
+    .single();
+}
+
 export async function deleteCommunity(client: TypedSupabaseClient, name: string): Promise<{ data: Community | null, error: any }> {
   return client
     .from(COMMUNITIES_TABLE)

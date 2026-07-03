@@ -1,4 +1,4 @@
-import { AdminStubPage } from "@/pages/community-admin";
+import { AppearancePage } from "@/pages/community-admin";
 
 export default async function AdminAppearancePage({
   params,
@@ -6,5 +6,5 @@ export default async function AdminAppearancePage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  return <AdminStubPage slug={slug} title="Внешний вид" />;
+  return <AppearancePage slug={slug} />;
 }

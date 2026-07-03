@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { useCommunityQuery } from "@/entities/community";
+import { useCommunityProfileQuery } from "@/entities/community";
 import {
   useCommunityStructureQuery,
   useCreateChannelMutation,
@@ -34,7 +34,7 @@ export default function CommunitySidebar({ slug }: CommunitySidebarProps) {
   const pathname = usePathname();
   const router = useRouter();
 
-  const { data: community } = useCommunityQuery(slug);
+  const { data: community } = useCommunityProfileQuery(slug);
   const { data: structure, isLoading } = useCommunityStructureQuery(slug);
   const createChannel = useCreateChannelMutation();
 
@@ -69,6 +69,8 @@ export default function CommunitySidebar({ slug }: CommunitySidebarProps) {
     <div className="w-64 shrink-0 bg-white border-r border-gray-200 flex flex-col h-full">
       <CommunityBanner
         name={community?.displayName ?? slug}
+        coverUrl={community?.coverUrl}
+        logoUrl={community?.logoUrl}
         isAdmin={isAdmin}
         canLeave={canLeave}
         onOpenAdminSection={(section) => router.push(`/communities/${slug}/admin/${section}`)}

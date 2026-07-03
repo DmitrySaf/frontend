@@ -1,4 +1,4 @@
-import { AdminStubPage } from "@/pages/community-admin";
+import { CommunitySettingsPage } from "@/pages/community-admin";
 
 export default async function AdminSettingsPage({
   params,
@@ -6,5 +6,5 @@ export default async function AdminSettingsPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  return <AdminStubPage slug={slug} title="Настройки сообщества" />;
+  return <CommunitySettingsPage slug={slug} />;
 }

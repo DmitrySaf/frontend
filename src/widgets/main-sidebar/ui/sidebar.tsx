@@ -1,6 +1,11 @@
 "use client";
 
-import { useCreateCommunityMutation, useCommunitiesQuery, type CreateCommunityData } from "@/entities/community";
+import {
+  useCreateCommunityMutation,
+  useCommunitiesQuery,
+  useCommunityLogosQuery,
+  type CreateCommunityData,
+} from "@/entities/community";
 import { Avatar, Button, Tooltip } from "@/shared/components";
 import { CommunityCreateModal } from "@/widgets/community-create-modal";
 import { Plus } from "lucide-react";
@@ -13,6 +18,7 @@ import ProfileButton from "./ProfileButton";
 
 export default function MainSidebar() {
   const { data: communities } = useCommunitiesQuery();
+  const { data: communityLogos } = useCommunityLogosQuery();
   const params = useParams();
   const router = useRouter();
   const activeCommunitySlug = params?.slug as string | undefined;
@@ -54,6 +60,7 @@ export default function MainSidebar() {
                   <Link href={`/communities/${community.name}`} className="relative block">
                     <Avatar
                       name={community.displayName}
+                      src={communityLogos?.[community.name]}
                       size="l"
                       shape="square"
                       className="shadow-sm transition-opacity hover:opacity-80"

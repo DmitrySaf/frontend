@@ -1,4 +1,4 @@
-import { AdminStubPage } from "@/pages/community-admin";
+import { DashboardPage } from "@/pages/community-admin";
 
 export default async function AdminDashboardPage({
   params,
@@ -6,5 +6,5 @@ export default async function AdminDashboardPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  return <AdminStubPage slug={slug} title="Дашборд" />;
+  return <DashboardPage slug={slug} />;
 }

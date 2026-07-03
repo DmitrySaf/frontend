@@ -1,1 +1,8 @@
-// Model layer is empty - all hooks moved to api/queries.ts
+export { DEMO_VIDEO_URL } from "./constants";
+export { transformCourse } from "./mappers";
+export {
+  lessonFormSchema,
+  LESSON_TITLE_MAX_LENGTH,
+  MODULE_TITLE_MAX_LENGTH,
+  type LessonFormData,
+} from "./validation";

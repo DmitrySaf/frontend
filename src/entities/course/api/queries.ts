@@ -1,58 +1,27 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { getCourse } from "./api";
 import { courseQueryKeys } from "./constants";
-import { getCourses, getCourse } from "./api";
-import { useServerQuery } from "@/shared/composables";
+import { transformCourse } from "../model/mappers";
 
 /**
- * Хук для получения списка курсов
+ * Курс канала. Мок-хранилище в localStorage — хук только клиентский.
  */
-export const useCoursesQuery = () => {
+export const useCourseQuery = (channelId: string, channelName: string) => {
   return useQuery({
-    queryKey: courseQueryKeys.courses,
-    queryFn: getCourses,
-    staleTime: 1000 * 60 * 5, // 5 минут
+    queryKey: courseQueryKeys.course(channelId),
+    queryFn: () => getCourse(channelId, channelName),
+    enabled: !!channelId,
+    select: transformCourse,
   });
 };
 
 /**
- * Серверный хук для предзагрузки курсов
+ * Хук для инвалидации курса
  */
-export const useCoursesServerQuery = () => {
-  return useServerQuery({
-    queryKey: courseQueryKeys.courses,
-    queryFn: getCourses,
-  });
-};
-
-/**
- * Хук для получения единичного курса
- */
-export const useCourse = (id: string) => {
-  return useQuery({
-    queryKey: courseQueryKeys.course(id),
-    queryFn: () => getCourse(id),
-    enabled: !!id, // Запрос выполняется только если есть id
-    staleTime: 1000 * 60 * 10, // 10 минут
-  });
-};
-
-/**
- * Серверный хук для предзагрузки единичного курса
- */
-export const useCourseServerQuery = (id: string) => {
-  return useServerQuery({
-    queryKey: courseQueryKeys.course(id),
-    queryFn: () => getCourse(id),
-  });
-};
-
-/**
- * Хук для инвалидации кэша курсов
- */
-export const useInvalidateCourses = () => {
+export const useInvalidateCourse = () => {
   const queryClient = useQueryClient();
 
-  return () => {
-    queryClient.invalidateQueries({ queryKey: courseQueryKeys.courses });
+  return (channelId: string) => {
+    queryClient.invalidateQueries({ queryKey: courseQueryKeys.course(channelId) });
   };
 };

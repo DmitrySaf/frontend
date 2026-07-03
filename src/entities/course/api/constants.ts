@@ -1,5 +1,4 @@
-// Query keys для курсов
+// Query keys для типизированного кэширования
 export const courseQueryKeys = {
-  courses: ["courses"] as const,
-  course: (id: string) => ["courses", id] as const,
-} as const;
+  course: (channelId: string) => ["course", channelId],
+};

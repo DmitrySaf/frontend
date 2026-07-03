@@ -24,6 +24,7 @@ export {
 export { Form } from "./Form";
 export { HydrationBoundary } from "./HydrationBoundary";
 export { Input } from "./Input";
+export { SegmentedControl } from "./SegmentedControl";
 export { Separator } from "./Separator";
 export { Toaster } from "./Sonner";
 export { Switch } from "./Switch";

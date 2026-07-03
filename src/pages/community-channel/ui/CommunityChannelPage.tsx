@@ -4,6 +4,7 @@ import { Loader2 } from "lucide-react";
 import { CHANNEL_TYPE_META, useCommunityStructureQuery, type Channel } from "@/entities/channel";
 import { ChannelTitleBar } from "./ChannelTitleBar";
 import { ChatScreen } from "./chat/ChatScreen";
+import { PostsScreen } from "./posts/PostsScreen";
 
 interface CommunityChannelPageProps {
   slug: string;
@@ -71,6 +72,8 @@ export function CommunityChannelPage({ slug, tabSlug }: CommunityChannelPageProp
       <ChannelTitleBar channel={channel} />
       {channel.type === "chat" ? (
         <ChatScreen channel={channel} />
+      ) : channel.type === "posts" ? (
+        <PostsScreen channel={channel} />
       ) : (
         <ChannelContentPlaceholder channel={channel} />
       )}

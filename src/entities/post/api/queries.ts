@@ -1,58 +1,40 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { getPosts } from "./api";
 import { postQueryKeys } from "./constants";
-import { getPosts, getPost } from "./api";
-import { useServerQuery } from "@/shared/composables";
+import { transformPosts, transformComments } from "../model";
 
 /**
- * Хук для получения списка постов
+ * Посты канала. Мок-хранилище в localStorage — хук только клиентский.
  */
-export const usePostsQuery = () => {
+export const usePostsQuery = (channelId: string) => {
   return useQuery({
-    queryKey: postQueryKeys.posts,
-    queryFn: getPosts,
-    staleTime: 1000 * 60 * 3, // 3 минуты
+    queryKey: postQueryKeys.posts(channelId),
+    queryFn: () => getPosts(channelId),
+    enabled: !!channelId,
+    select: transformPosts,
   });
 };
 
 /**
- * Серверный хук для предзагрузки постов
+ * Комментарии поста — берутся из того же запроса постов канала (в моках всё в одном ответе)
  */
-export const usePostsServerQuery = () => {
-  return useServerQuery({
-    queryKey: postQueryKeys.posts,
-    queryFn: getPosts,
-  });
-};
-
-/**
- * Хук для получения единичного поста
- */
-export const usePost = (id: string) => {
+export const usePostCommentsQuery = (channelId: string, postId: string, enabled: boolean) => {
   return useQuery({
-    queryKey: postQueryKeys.post(id),
-    queryFn: () => getPost(id),
-    enabled: !!id, // Запрос выполняется только если есть id
-    staleTime: 1000 * 60 * 5, // 5 минут
+    queryKey: postQueryKeys.posts(channelId),
+    queryFn: () => getPosts(channelId),
+    enabled: !!channelId && enabled,
+    select: (data) =>
+      transformComments(data.comments.filter((comment) => comment.post_id === postId)),
   });
 };
 
 /**
- * Серверный хук для предзагрузки единичного поста
- */
-export const usePostServerQuery = (id: string) => {
-  return useServerQuery({
-    queryKey: postQueryKeys.post(id),
-    queryFn: () => getPost(id),
-  });
-};
-
-/**
- * Хук для инвалидации кэша постов
+ * Хук для инвалидации постов канала
  */
 export const useInvalidatePosts = () => {
   const queryClient = useQueryClient();
 
-  return () => {
-    queryClient.invalidateQueries({ queryKey: postQueryKeys.posts });
+  return (channelId: string) => {
+    queryClient.invalidateQueries({ queryKey: postQueryKeys.posts(channelId) });
   };
 };

@@ -4,19 +4,18 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Loader2 } from "lucide-react";
 import {
   CURRENT_USER_ID,
-  getMockMember,
   useMessagesQuery,
   useSendMessageMutation,
   useUpdateMessageMutation,
   useDeleteMessageMutation,
   type Message,
 } from "@/entities/message";
-import { useProfileQuery } from "@/entities/profile";
 import type { Channel } from "@/entities/channel";
 import { DeleteDialog } from "@/shared/components";
 import { dayKey, formatDayLabel } from "@/shared/utils";
+import { useAuthorView } from "../useAuthorView";
 import { ChatComposer } from "./ChatComposer";
-import { ChatMessageItem, type MessageAuthorView } from "./ChatMessageItem";
+import { ChatMessageItem } from "./ChatMessageItem";
 
 // Сообщения одного автора в пределах 5 минут собираются в группу (Discord-style)
 const GROUP_WINDOW_MS = 5 * 60 * 1000;
@@ -64,7 +63,7 @@ function DayDivider({ label }: { label: string }) {
 
 export function ChatScreen({ channel }: { channel: Channel }) {
   const { data: messages, isLoading } = useMessagesQuery(channel.id);
-  const { data: profile } = useProfileQuery();
+  const resolveAuthor = useAuthorView();
 
   const sendMessage = useSendMessageMutation();
   const updateMessage = useUpdateMessageMutation();
@@ -85,21 +84,6 @@ export function ChatScreen({ channel }: { channel: Channel }) {
       container.scrollTop = container.scrollHeight;
     }
   }, [messagesCount, channel.id]);
-
-  const resolveAuthor = (authorId: string): MessageAuthorView => {
-    if (authorId === CURRENT_USER_ID) {
-      return {
-        displayName: profile?.displayName ?? "Вы",
-        avatarUrl: profile?.avatarUrl,
-        isCommunityOwner: true,
-      };
-    }
-    const member = getMockMember(authorId);
-    return {
-      displayName: member?.displayName ?? "Участник",
-      isCommunityOwner: false,
-    };
-  };
 
   return (
     <div className="flex-1 flex flex-col min-h-0">

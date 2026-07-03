@@ -1,5 +1,5 @@
-// Query keys для постов
+// Query keys для типизированного кэширования
 export const postQueryKeys = {
-  posts: ["posts"] as const,
-  post: (id: string) => ["posts", id] as const,
-} as const;
+  posts: (channelId: string) => ["posts", channelId],
+  comments: (postId: string) => ["post-comments", postId],
+};

@@ -18,9 +18,8 @@ interface PrivacyFormData {
   messagingAllowed?: boolean;
 }
 
-interface EmailPhoneFormData {
+interface EmailFormData {
   email: string;
-  phone: string;
 }
 
 export function SettingsSecurity() {
@@ -29,10 +28,9 @@ export function SettingsSecurity() {
   const updateProfile = useUpdateProfileMutation();
   const updateAuthUser = useUpdateAuthUserMutation();
 
-  const emailPhoneMethods = useForm<EmailPhoneFormData>({
+  const emailMethods = useForm<EmailFormData>({
     defaultValues: {
       email: "",
-      phone: "",
     },
   });
 
@@ -56,35 +54,22 @@ export function SettingsSecurity() {
   );
 
   const handleEmailUpdate = useCallback(async () => {
-    const email = emailPhoneMethods.getValues("email");
+    const email = emailMethods.getValues("email");
     if (!email || !email.trim()) return;
     
     try {
       await updateAuthUser.mutateAsync({ email });
-      emailPhoneMethods.setValue("email", "");
+      emailMethods.setValue("email", "");
     } catch (error) {
       console.error("Error updating email:", error);
     }
-  }, [emailPhoneMethods, updateAuthUser]);
-
-  const handlePhoneUpdate = useCallback(async () => {
-    const phone = emailPhoneMethods.getValues("phone");
-    if (!phone || !phone.trim()) return;
-    
-    try {
-      await updateAuthUser.mutateAsync({ phone });
-      emailPhoneMethods.setValue("phone", "");
-    } catch (error) {
-      console.error("Error updating phone:", error);
-    }
-  }, [emailPhoneMethods, updateAuthUser]);
+  }, [emailMethods, updateAuthUser]);
 
   const initPrivacyValues = useMemo(() => {
     return {
       joinedVisible: profile?.privacySettings.showSubscriptions,
       ownedVisible: profile?.privacySettings.showOwnedCommunities,
       messagingAllowed: profile?.privacySettings.allowMessaging,
-      phone: "",
     };
   }, [profile]);
 
@@ -106,7 +91,7 @@ export function SettingsSecurity() {
             </div>
           </div>
           
-          <Form methods={emailPhoneMethods} onSubmit={(e) => e.preventDefault()}>
+          <Form methods={emailMethods} onSubmit={(e) => e.preventDefault()}>
             <div className="mt-4 flex items-end gap-2">
               <div className="flex-1">
                 <Input
@@ -121,7 +106,7 @@ export function SettingsSecurity() {
                 theme="primary"
                 size="l"
                 onClick={handleEmailUpdate}
-                isDisabled={!emailPhoneMethods.watch("email") || updateAuthUser.isPending}
+                isDisabled={!emailMethods.watch("email") || updateAuthUser.isPending}
                 isLoading={updateAuthUser.isPending}
               >
                 Изменить
@@ -133,43 +118,6 @@ export function SettingsSecurity() {
           </p>
         </div>
 
-        {/* Phone Section */}
-        <div>
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Телефон</h3>
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-700">Текущий номер</label>
-            <div className="px-4 py-2.5 bg-gray-100 border border-gray-200 rounded-lg text-gray-700">
-              {authUser?.phone || "Не указан"}
-            </div>
-          </div>
-          
-          <Form methods={emailPhoneMethods} onSubmit={(e) => e.preventDefault()}>
-            <div className="mt-4 flex items-end gap-2">
-              <div className="flex-1">
-                <Input
-                  name="phone"
-                  label="Новый номер телефона"
-                  size="l"
-                  placeholder="+7 (999) 123-45-67"
-                  mask="+7 (000) 000-00-00"
-                />
-              </div>
-              <Button
-                type="button"
-                theme="primary"
-                size="l"
-                onClick={handlePhoneUpdate}
-                isDisabled={!emailPhoneMethods.watch("phone") || updateAuthUser.isPending}
-                isLoading={updateAuthUser.isPending}
-              >
-                Изменить
-              </Button>
-            </div>
-          </Form>
-          <p className="text-xs text-gray-500 mt-2">
-            После изменения на новый номер будет отправлен код подтверждения
-          </p>
-        </div>
       </div>
 
       {/* Privacy Settings Section */}

@@ -82,6 +82,57 @@ export const getCommunityMembersCount = async (communitySlug: string): Promise<n
   return allSubscriptions.filter((record) => record.community_id === communitySlug).length;
 };
 
+// Сид пары выплат для истории транзакций (одноразово)
+const payoutSeeded = createMockCollection<{ id: string }>("payouts_seeded");
+
+/**
+ * Транзакции текущего пользователя: поступления по его сообществам + его выплаты.
+ * При первом открытии сидируются две демо-выплаты.
+ */
+export const getMyTransactions = async (
+  ownedCommunitySlugs: string[]
+): Promise<TransactionRecord[]> => {
+  const seeded = await payoutSeeded.list();
+  if (seeded.length === 0 && ownedCommunitySlugs.length > 0) {
+    const now = Date.now();
+    const dayMs = 24 * 60 * 60 * 1000;
+    await transactions.insertMany([
+      {
+        id: crypto.randomUUID(),
+        user_id: CURRENT_USER_ID,
+        community_id: null,
+        type: "payout",
+        amount_kopeks: 2_000_000,
+        status: "pending",
+        metadata: {},
+        created_at: new Date(now - dayMs).toISOString(),
+      },
+      {
+        id: crypto.randomUUID(),
+        user_id: CURRENT_USER_ID,
+        community_id: null,
+        type: "payout",
+        amount_kopeks: 3_500_000,
+        status: "succeeded",
+        metadata: {},
+        created_at: new Date(now - 14 * dayMs).toISOString(),
+      },
+    ]);
+    await payoutSeeded.insert({ id: "seeded" });
+  }
+
+  const all = await transactions.list();
+  return all
+    .filter(
+      (tx) =>
+        (tx.type === "subscription" &&
+          tx.community_id !== null &&
+          ownedCommunitySlugs.includes(tx.community_id)) ||
+        (tx.type === "payout" && tx.user_id === CURRENT_USER_ID)
+    )
+    .sort((a, b) => b.created_at.localeCompare(a.created_at));
+};
+
 export interface CommunitySales {
   subscriptions: SubscriptionRecord[];
   transactions: TransactionRecord[];

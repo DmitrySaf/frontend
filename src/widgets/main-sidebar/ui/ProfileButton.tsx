@@ -1,15 +1,18 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { Settings, MoreHorizontal, LogOut } from "lucide-react";
+import { BadgeCheck, Settings, MoreHorizontal, LogOut } from "lucide-react";
 import { Avatar, Button, Dropdown } from "@/shared/components";
 import { useProfileQuery } from "@/entities/profile";
+import { useMyVerificationQuery } from "@/entities/verification";
 import { createBrowserClient } from "@/api/browser-client";
 
 export default function ProfileButton() {
   const router = useRouter();
   const supabase = createBrowserClient();
   const { data: profile } = useProfileQuery();
+  const { data: verification } = useMyVerificationQuery();
+  const isVerified = verification?.status === "approved";
 
   const displayName = profile?.displayName ?? "Профиль";
   const username = profile?.username ? `@${profile.username}` : "";
@@ -37,7 +40,10 @@ export default function ProfileButton() {
           />
 
           <div className="flex flex-col items-start min-w-0 flex-1 px-2 transition-opacity duration-300 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto">
-            <span className="text-sm font-semibold text-gray-900 truncate">{displayName}</span>
+            <span className="flex items-center gap-1 text-sm font-semibold text-gray-900 truncate">
+              {displayName}
+              {isVerified && <BadgeCheck className="size-3.5 shrink-0 text-primary-600" />}
+            </span>
             {username && <span className="text-xs text-gray-500 truncate">{username}</span>}
           </div>
         </button>

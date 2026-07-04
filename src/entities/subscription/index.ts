@@ -5,6 +5,7 @@ export {
   subscriptionQueryKeys,
   useCommunityStatsQuery,
   useCommunityMembersCountQuery,
+  useMyTransactionsQuery,
   useInvalidateCommunitySales,
 } from "./api";
 export type {
@@ -18,4 +19,5 @@ export type {
   TransactionType,
   TransactionStatus,
 } from "./api";
-export { transformCommunityStats, formatRub } from "./model";
+export { transformCommunityStats, transformTransactions, formatRub } from "./model";
+export type { TransactionItem } from "./model";

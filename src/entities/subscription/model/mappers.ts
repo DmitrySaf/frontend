@@ -114,3 +114,37 @@ export const transformCommunityStats = (sales: CommunitySales): CommunityStats =
 };
 
 export { formatRub };
+
+export interface TransactionItem {
+  id: string;
+  type: "subscription" | "payout";
+  title: string;
+  createdAt: string;
+  amountKopeks: number;
+  /** true — деньги пришли, false — ушли */
+  isIncoming: boolean;
+  statusLabel: string;
+}
+
+const STATUS_LABELS: Record<string, string> = {
+  succeeded: "Завершено",
+  pending: "В обработке",
+  failed: "Ошибка",
+};
+
+export const transformTransactions = (
+  records: import("../api/types").TransactionRecord[]
+): TransactionItem[] => {
+  return records.map((record) => ({
+    id: record.id,
+    type: record.type,
+    title:
+      record.type === "payout"
+        ? "Вывод средств на карту"
+        : `Подписка — ${String(record.metadata?.tier_name ?? "тариф")}`,
+    createdAt: record.created_at,
+    amountKopeks: record.amount_kopeks,
+    isIncoming: record.type === "subscription",
+    statusLabel: STATUS_LABELS[record.status] ?? record.status,
+  }));
+};

@@ -1,7 +1,7 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { getCommunitySales, getCommunityMembersCount } from "./api";
+import { getCommunitySales, getCommunityMembersCount, getMyTransactions } from "./api";
 import { subscriptionQueryKeys } from "./constants";
-import { transformCommunityStats } from "../model/mappers";
+import { transformCommunityStats, transformTransactions } from "../model/mappers";
 
 /**
  * Статистика дашборда сообщества. Мок-хранилище в localStorage — хук клиентский.
@@ -23,6 +23,18 @@ export const useCommunityMembersCountQuery = (communitySlug: string) => {
     queryKey: subscriptionQueryKeys.membersCount(communitySlug),
     queryFn: () => getCommunityMembersCount(communitySlug),
     enabled: !!communitySlug,
+  });
+};
+
+/**
+ * История транзакций текущего пользователя (поступления + выводы)
+ */
+export const useMyTransactionsQuery = (ownedCommunitySlugs: string[], enabled: boolean) => {
+  return useQuery({
+    queryKey: [...subscriptionQueryKeys.myTransactions, ...ownedCommunitySlugs],
+    queryFn: () => getMyTransactions(ownedCommunitySlugs),
+    enabled,
+    select: transformTransactions,
   });
 };
 

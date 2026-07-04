@@ -1,0 +1,100 @@
+<!-- @dsCard group="Components" -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="../colors_and_type.css">
+<link rel="stylesheet" href="_dscard.css">
+<style>
+  .row { display: flex; gap: 24px; align-items: flex-start; flex-wrap: wrap; }
+
+  /* dimmed backdrop frame each dialog sits on */
+  .scrim { background: rgba(10,12,20,.32); border-radius: 18px; padding: 26px; }
+
+  .dialog { background: #fff; border-radius: 24px; box-shadow: var(--shadow-pop); box-sizing: border-box; }
+
+  /* create-community modal */
+  .create { width: 380px; padding: 26px; }
+  .dhead { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+  .dtitle { margin: 0; font-size: 19px; font-weight: 700; color: var(--text-primary); letter-spacing: -0.01em; }
+  .x { color: var(--gray-500); cursor: pointer; display: inline-flex; }
+  .x i { width: 20px; height: 20px; }
+  .stack { display: flex; flex-direction: column; gap: 15px; }
+  .field { display: flex; flex-direction: column; gap: 7px; }
+  .lbl { font-size: 13px; font-weight: 500; color: var(--text-primary); }
+  .upload { height: 84px; border-radius: 16px; background: var(--bg-light-secondary); border: 1.5px dashed var(--gray-300);
+            display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; color: var(--gray-500); }
+  .upload i { width: 22px; height: 22px; }
+  .upload span { font-size: 12px; }
+  .inp { display: flex; align-items: center; gap: 2px; background: #fff; box-shadow: inset 0 0 0 1px var(--gray-200);
+         border-radius: 14px; padding: 0 14px; height: 44px; font-size: 14px; }
+  .inp .ph { color: var(--gray-500); }
+  .inp .pre { color: var(--gray-500); font-family: var(--font-mono); }
+  .inp .val { color: var(--text-primary); font-family: var(--font-mono); }
+  .help { font-size: 12px; color: var(--text-tertiary); }
+  .btn { border: 0; border-radius: 16px; font-family: var(--font-sans); font-weight: 600; cursor: pointer; }
+  .btn.primary { background: var(--primary-600); color: #fff; height: 48px; font-size: 16px; width: 100%; box-shadow: var(--shadow-sm); }
+
+  /* danger confirm dialog */
+  .confirm { width: 330px; padding: 24px; text-align: left; }
+  .ci { width: 46px; height: 46px; border-radius: 14px; background: var(--danger-soft); display: grid; place-items: center; margin-bottom: 14px; }
+  .ci i { width: 23px; height: 23px; color: var(--danger); }
+  .confirm h3 { margin: 0 0 8px; font-size: 18px; font-weight: 700; color: var(--text-primary); }
+  .confirm p { margin: 0 0 20px; font-size: 14px; line-height: 1.5; color: var(--text-secondary); }
+  .actions { display: flex; gap: 10px; }
+  .btn.outline { flex: 1; background: #fff; box-shadow: inset 0 0 0 1px var(--input); color: var(--text-primary); height: 44px; font-size: 14px; }
+  .btn.dgr { flex: 1; background: var(--danger); color: #fff; height: 44px; font-size: 14px; }
+  .note { font-size: 13px; color: var(--text-tertiary); max-width: 220px; line-height: 1.55; align-self: center; }
+  .note b { color: var(--text-secondary); }
+</style>
+</head>
+<body>
+  <div class="ds-head">
+    <h2 class="ds-title">Modals &amp; dialogs</h2>
+    <p class="ds-sub">Центрированная белая карта над scrim <code>rgba(10,12,20,.32)</code> · радиус 2xl · shadow-pop. Две формы: <b>form-модалка</b> (действие full-width) и <b>destructive confirm</b> (outline + destructive).</p>
+  </div>
+  <hr class="ds-rule">
+  <div class="row">
+    <div class="scrim">
+      <div class="dialog create">
+        <div class="dhead">
+          <h2 class="dtitle">Создать новое сообщество</h2>
+          <span class="x"><i data-lucide="x"></i></span>
+        </div>
+        <div class="stack">
+          <div class="field">
+            <span class="lbl">Логотип</span>
+            <div class="upload"><i data-lucide="image-plus"></i><span>необязательно</span></div>
+          </div>
+          <div class="field">
+            <span class="lbl">Название сообщества</span>
+            <div class="inp"><span class="ph">Введите название сообщества</span></div>
+          </div>
+          <div class="field">
+            <span class="lbl">URL</span>
+            <div class="inp"><span class="pre">bean.com/</span><span class="val">profound-university</span></div>
+            <span class="help">Уникальное имя — подставляется автоматически</span>
+          </div>
+          <button class="btn primary">Создать</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="scrim">
+      <div class="dialog confirm">
+        <div class="ci"><i data-lucide="log-out"></i></div>
+        <h3>Покинуть сообщество?</h3>
+        <p>Вы потеряете доступ к курсам и постам. Вернуться можно будет, оформив подписку заново.</p>
+        <div class="actions">
+          <button class="btn outline">Отмена</button>
+          <button class="btn dgr">Покинуть</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="note">Centered white card over a dimmed scrim. Header = sentence-case title + <b>x</b> close (gray-500). Body actions stack full-width (creation) or split <b>outline + destructive</b> (confirm). Destructive dialogs lead with a danger-soft icon tile.</div>
+  </div>
+<script src="https://unpkg.com/lucide@latest"></script>
+<script>lucide.createIcons();</script>
+</body>
+</html>

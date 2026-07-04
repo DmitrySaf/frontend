@@ -9,6 +9,7 @@ export const transformTier = (record: TierRecord): Tier => {
     periodMonths: record.period_months,
     discountPercent: record.discount_percent,
     isActive: record.is_active,
+    isHidden: record.is_hidden ?? false,
     position: record.position,
   };
 };

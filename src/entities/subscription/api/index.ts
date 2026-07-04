@@ -1,6 +1,7 @@
-export { getCommunitySales, purchaseTier } from "./api";
+export { getCommunitySales, getCommunityMembersCount, purchaseTier } from "./api";
 export { subscriptionQueryKeys } from "./constants";
-export { useCommunityStatsQuery, useInvalidateCommunitySales } from "./queries";
+export { useCommunityStatsQuery,
+  useCommunityMembersCountQuery, useInvalidateCommunitySales } from "./queries";
 export type {
   CommunityStats,
   MonthPoint,

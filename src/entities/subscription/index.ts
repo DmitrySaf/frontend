@@ -1,8 +1,10 @@
 export {
   getCommunitySales,
+  getCommunityMembersCount,
   purchaseTier,
   subscriptionQueryKeys,
   useCommunityStatsQuery,
+  useCommunityMembersCountQuery,
   useInvalidateCommunitySales,
 } from "./api";
 export type {

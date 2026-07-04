@@ -1,0 +1,43 @@
+<!-- @dsCard group="Colors" -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  body { margin: 0; font-family: var(--font-sans); background: #fff; padding: 22px 24px; color: var(--text-primary); }
+  .grp { font-size: 12px; font-weight: 600; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: .04em; margin: 0 0 12px; }
+  .grp small { text-transform: none; letter-spacing: 0; font-weight: 500; color: var(--gray-400); }
+  .grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; margin-bottom: 22px; }
+  .item .chip { height: 52px; border-radius: var(--radius-md); border: 1px solid rgba(0,0,0,.06); }
+  .item b { display: block; font-size: 11.5px; font-weight: 600; margin-top: 7px; }
+  .item span { display: block; font-family: var(--font-mono); font-size: 10px; color: var(--text-tertiary); }
+</style>
+</head>
+<body>
+  <div class="grp">Surfaces &amp; text — neutrals</div>
+  <div class="grid">
+    <div class="item"><div class="chip" style="background:#fff;border:1px solid #e2e2e2"></div><b>background</b><span>#FFFFFF</span></div>
+    <div class="item"><div class="chip" style="background:#f5f5f5"></div><b>gutter</b><span>#F5F5F5</span></div>
+    <div class="item"><div class="chip" style="background:#f2f2f2"></div><b>accent</b><span>#F2F2F2</span></div>
+    <div class="item"><div class="chip" style="background:#e2e2e2"></div><b>border</b><span>#E2E2E2</span></div>
+    <div class="item"><div class="chip" style="background:#1c1c1c"></div><b>text (black)</b><span>#1C1C1C</span></div>
+    <div class="item"><div class="chip" style="background:#8f8f8f"></div><b>muted</b><span>#8F8F8F</span></div>
+  </div>
+
+  <div class="grp">Destructive <small>— the only status color tokenised in code (<code>--danger</code>)</small></div>
+  <div class="grid" style="grid-template-columns:repeat(3,1fr)">
+    <div class="item"><div class="chip" style="background:#d8400c"></div><b>danger</b><span>#D8400C</span></div>
+    <div class="item"><div class="chip" style="background:#fbede8"></div><b>danger / hover</b><span>#D8400C13</span></div>
+    <div class="item"><div class="chip" style="background:#f6d9cf"></div><b>danger / press</b><span>#D8400C33</span></div>
+  </div>
+
+  <div class="grp">Ad-hoc Tailwind <small>— used in product but NOT tokenised; prefer the tokens above</small></div>
+  <div class="grid">
+    <div class="item"><div class="chip" style="background:#2563eb"></div><b>blue-600</b><span>switch on · spinner</span></div>
+    <div class="item"><div class="chip" style="background:#dbeafe"></div><b>blue-100</b><span>badge fill</span></div>
+    <div class="item"><div class="chip" style="background:#1d4ed8"></div><b>blue-700</b><span>badge text</span></div>
+    <div class="item"><div class="chip" style="background:#f9fafb;border:1px solid #e2e2e2"></div><b>gray-50</b><span>preview bg</span></div>
+  </div>
+</body>
+</html>

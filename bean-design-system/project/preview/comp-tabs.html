@@ -1,0 +1,88 @@
+<!-- @dsCard group="Components" -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="../colors_and_type.css">
+<link rel="stylesheet" href="_dscard.css">
+<style>
+  /* ---- base = medium · 36px tall ---- */
+  .tab { display: flex; align-items: center; gap: 8px; height: 36px; padding: 0 10px; border-radius: 14px;
+         font-size: 16px; font-weight: 600; color: var(--text-secondary); white-space: nowrap; box-sizing: border-box; }
+  .tab i, .tab svg { width: 20px; height: 20px; flex: none; }
+
+  /* count badge — red fill, white text */
+  .tab .ct { margin-left: auto; min-width: 20px; height: 20px; padding: 0 6px; border-radius: 9999px;
+             display: inline-flex; align-items: center; justify-content: center;
+             background: var(--danger); color: #fff; font-size: 11px; font-weight: 700;
+             line-height: 1; font-variant-numeric: tabular-nums; }
+
+  /* states */
+  .tab.hover  { background: var(--tab-hover); color: #000; }
+  .tab.active { background: var(--tab-active); color: #000; box-shadow: inset 0 0 0 1px var(--tab-active-ring); }
+  .tab.dis    { opacity: .4; }
+
+  /* ---- large · 40px tall ---- */
+  .tab.lg { gap: 10px; height: 40px; padding: 0 12px; border-radius: 16px; font-size: 16px; }
+  .tab.lg i, .tab.lg svg { width: 24px; height: 24px; }
+  .tab.lg .ct { min-width: 22px; height: 22px; font-size: 12px; }
+
+  .grid-one { display: grid; grid-template-columns: 78px repeat(5, minmax(140px,1fr)); gap: 16px; align-items: center; max-width: 920px; }
+  .ctx { display: flex; gap: 44px; align-items: flex-start; }
+  .navlist { display: flex; flex-direction: column; gap: 4px; width: 232px; }
+  .div { height: 1px; background: var(--gray-200); margin: 8px 4px; }
+</style>
+</head>
+<body>
+  <div class="ds-head">
+    <h2 class="ds-title">Nav tabs</h2>
+    <p class="ds-sub">Вертикальный навигационный таб — общий для настроек и сайдбара сообщества. Иконка size-5, semibold, радиус r-lg. <b>Active</b> = серая заливка + hairline-кольцо + чёрный текст. Счётчик — красный pill с белым текстом. Два размера: <b>M (36px)</b> и <b>L (40px)</b>.</p>
+  </div>
+  <hr class="ds-rule">
+
+  <!-- SIZE × STATE MATRIX -->
+  <div class="ds-block">
+    <div class="ds-sect">Размер × состояние <span class="meta">— строки: размер · столбцы: состояние · последний — со счётчиком</span></div>
+    <div class="grid-one">
+      <span></span>
+      <span class="ds-clab">Default</span><span class="ds-clab">Hover</span><span class="ds-clab">Active</span><span class="ds-clab">Disabled</span><span class="ds-clab">+ Счётчик</span>
+
+      <span class="ds-rlab">M · 36</span>
+      <span><div class="tab"><i data-lucide="user"></i>Профиль</div></span>
+      <span><div class="tab hover"><i data-lucide="user"></i>Профиль</div></span>
+      <span><div class="tab active"><i data-lucide="user"></i>Профиль</div></span>
+      <span><div class="tab dis"><i data-lucide="user"></i>Профиль</div></span>
+      <span><div class="tab"><i data-lucide="bell"></i>Уведомления<span class="ct">12</span></div></span>
+
+      <span class="ds-rlab">L · 40</span>
+      <span><div class="tab lg"><i data-lucide="user"></i>Профиль</div></span>
+      <span><div class="tab lg hover"><i data-lucide="user"></i>Профиль</div></span>
+      <span><div class="tab lg active"><i data-lucide="user"></i>Профиль</div></span>
+      <span><div class="tab lg dis"><i data-lucide="user"></i>Профиль</div></span>
+      <span><div class="tab lg"><i data-lucide="bell"></i>Уведомления<span class="ct">24</span></div></span>
+    </div>
+  </div>
+
+  <!-- IN CONTEXT -->
+  <div class="ds-block">
+    <div class="ds-sect">В контексте <span class="meta">— сайдбар настроек аккаунта</span></div>
+    <div class="ctx">
+      <div>
+        <div class="navlist">
+          <div class="tab active"><i data-lucide="user"></i>Профиль</div>
+          <div class="tab"><i data-lucide="bell"></i>Уведомления<span class="ct">12</span></div>
+          <div class="tab"><i data-lucide="shield"></i>Конфиденциальность</div>
+          <div class="tab"><i data-lucide="badge-check"></i>Верификация</div>
+          <div class="tab"><i data-lucide="credit-card"></i>Вывод средств</div>
+          <div class="tab"><i data-lucide="receipt-text"></i>Транзакции</div>
+        </div>
+      </div>
+      <div class="ds-note" style="margin-top:0;max-width:260px;">
+        Active заливается <code>#D3D3D340</code> + кольцо <code>#D3D3D3</code>. Inactive — <code>#404040</code>, hover — лёгкий серый wash. Счётчик непрочитанного — красный pill <code>#D8400C</code> с белым текстом.
+      </div>
+    </div>
+  </div>
+<script src="https://unpkg.com/lucide@latest"></script>
+<script>lucide.createIcons();</script>
+</body>
+</html>

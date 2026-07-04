@@ -1,0 +1,25 @@
+<!-- @dsCard group="Spacing" -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  body { margin: 0; font-family: var(--font-sans); background: #fff; padding: 28px 24px; color: var(--text-primary); }
+  .cap { font-size: 15px; font-weight: 600; margin-bottom: 24px; }
+  .row { display: flex; gap: 30px; }
+  .item { text-align: center; flex: 1; }
+  .box { height: 70px; border-radius: 12px; background: #fff; }
+  .item b { display: block; font-size: 12.5px; font-weight: 600; margin-top: 16px; }
+  .item span { font-family: var(--font-mono); font-size: 10px; color: var(--text-tertiary); }
+</style>
+</head>
+<body>
+  <div class="cap">Elevation / shadows</div>
+  <div class="row">
+    <div class="item"><div class="box" style="box-shadow:var(--shadow-sm)"></div><b>sm</b><span>subtle / inputs</span></div>
+    <div class="item"><div class="box" style="box-shadow:var(--shadow-card)"></div><b>card</b><span>0 4 6 / 0 12 16</span></div>
+    <div class="item"><div class="box" style="box-shadow:var(--shadow-pop)"></div><b>pop</b><span>menus / dialogs</span></div>
+  </div>
+</body>
+</html>

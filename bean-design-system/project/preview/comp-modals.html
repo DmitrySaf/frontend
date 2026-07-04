@@ -1,0 +1,814 @@
+<!-- @dsCard group="Components" -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="../colors_and_type.css">
+<link rel="stylesheet" href="_dscard.css">
+<style>
+  /* ============================================================
+     MODAL SYSTEM — shared base
+     Card r-2xl(24) · shadow-pop · over scrim rgba(10,12,20,.32)
+     ============================================================ */
+  .ds-block { margin-bottom: 46px; }
+
+  /* scrim = the dimmed plate a dialog floats on */
+  .scrim { background: rgba(10,12,20,.34); border-radius: 20px; padding: 30px;
+           display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; }
+  .scrim.tall { padding: 36px 30px; }
+  /* faint app texture behind the scrim so dialogs read as overlays */
+  .scrim::before { content: ""; position: absolute; inset: 0;
+    background:
+      radial-gradient(120% 90% at 12% 0%, rgba(255,255,255,.05), transparent 60%),
+      repeating-linear-gradient(135deg, rgba(255,255,255,.02) 0 22px, rgba(255,255,255,0) 22px 44px);
+    pointer-events: none; }
+
+  .sheet { position: relative; background: #fff; border-radius: var(--radius-2xl); box-shadow: var(--shadow-pop);
+           box-sizing: border-box; width: 100%; overflow: hidden; }
+  /* width tiers */
+  .w-xs { max-width: 320px; } .w-s { max-width: 380px; } .w-m { max-width: 460px; }
+  .w-l  { max-width: 560px; } .w-xl { max-width: 720px; }
+
+  /* header */
+  .mhead { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+  .mtitle { margin: 0; font-size: 19px; font-weight: 700; color: var(--text-primary); letter-spacing: -0.015em; line-height: 1.25; }
+  .msub { margin: 5px 0 0; font-size: 13.5px; color: var(--text-secondary); line-height: 1.5; }
+  .x { color: var(--gray-500); cursor: default; display: inline-flex; flex: none; margin: -2px -2px 0 0;
+       width: 30px; height: 30px; border-radius: 9px; align-items: center; justify-content: center; }
+  .x:hover { background: var(--gray-100); }
+  .x i { width: 19px; height: 19px; }
+
+  /* body bits */
+  .mpad { padding: 24px; } .mpad-lg { padding: 28px; } .mpad-sm { padding: 20px; }
+  .stack { display: flex; flex-direction: column; }
+  .gap-3 { gap: 12px; } .gap-4 { gap: 16px; } .gap-5 { gap: 20px; }
+  .mbody { font-size: 14px; line-height: 1.55; color: var(--text-secondary); }
+  .mbody b { color: var(--text-primary); font-weight: 600; }
+
+  /* leading semantic icon tile */
+  .itile { width: 46px; height: 46px; border-radius: 14px; display: grid; place-items: center; flex: none; }
+  .itile i { width: 23px; height: 23px; }
+  .itile.danger  { background: var(--danger-soft);  } .itile.danger  i { color: var(--danger); }
+  .itile.warn    { background: var(--warning-fill);  box-shadow: inset 0 0 0 1px var(--warning-border); } .itile.warn i { color: var(--warning); }
+  .itile.info    { background: var(--info-fill);     box-shadow: inset 0 0 0 1px var(--info-border); }    .itile.info i { color: var(--info); }
+  .itile.success { background: var(--success-fill);  box-shadow: inset 0 0 0 1px var(--success-border); } .itile.success i { color: var(--success); }
+  .itile.lime    { background: var(--brand-lime); } .itile.lime i { color: #2f5d00; }
+  .itile.round   { border-radius: 999px; }
+
+  /* footer action rows */
+  .mfoot { display: flex; gap: 10px; }
+  .mfoot.end    { justify-content: flex-end; }
+  .mfoot.split > * { flex: 1; }
+  .mfoot.stack  { flex-direction: column; }
+  .mfoot.spread { justify-content: space-between; align-items: center; }
+  .mfoot.bar    { padding: 16px 24px; border-top: 1px solid var(--border); background: var(--bg-light); }
+
+  /* ---- buttons (subset of DS button card) ---- */
+  .btn { font-family: var(--font-sans); font-weight: 600; border: 0; cursor: default; display: inline-flex;
+         align-items: center; justify-content: center; gap: 8px; white-space: nowrap; line-height: 1; }
+  .btn i, .btn svg { flex: none; }
+  .btn.xl { height: 48px; padding: 0 18px; font-size: 16px; border-radius: 16px; }
+  .btn.l  { height: 44px; padding: 0 18px; font-size: 15px; border-radius: 14px; }
+  .btn.m  { height: 38px; padding: 0 15px; font-size: 14px; border-radius: 12px; }
+  .btn.s  { height: 32px; padding: 0 12px; font-size: 13px; border-radius: 12px; gap: 6px; }
+  .btn.l i { width: 19px; height: 19px; } .btn.m i { width: 18px; height: 18px; } .btn.s i { width: 16px; height: 16px; }
+  .btn.fluid { width: 100%; }
+  .btn.primary     { background: var(--primary-600); color: #fff; box-shadow: var(--shadow-sm); }
+  .btn.outline     { background: #fff; color: var(--text-primary); box-shadow: inset 0 0 0 1px var(--input), var(--shadow-sm); }
+  .btn.ghost       { background: transparent; color: var(--text-secondary); }
+  .btn.ghost:hover { background: var(--gray-100); }
+  .btn.destructive { background: var(--danger); color: #fff; box-shadow: var(--shadow-sm); }
+  .btn.dgr-ghost   { background: transparent; color: var(--danger); box-shadow: inset 0 0 0 1px var(--error-border); }
+  .btn.lime        { background: var(--brand-lime); color: #244a00; box-shadow: var(--shadow-sm); }
+  .btn.disabled    { opacity: .4; box-shadow: none; }
+
+  /* ---- inputs (subset of DS input card) ---- */
+  .inp { display: flex; align-items: center; gap: 8px; width: 100%; background: #fff;
+         box-shadow: inset 0 0 0 1px var(--gray-200); border-radius: 14px; padding: 0 14px; height: 44px;
+         font-size: 14px; color: var(--gray-500); }
+  .inp .val { color: var(--text-primary); } .inp .pfx { color: var(--text-tertiary); flex: none; }
+  .inp.focus { box-shadow: inset 0 0 0 2px var(--primary-500); color: var(--text-primary); }
+  .inp.danger { box-shadow: inset 0 0 0 2px var(--danger); }
+  .inp .car { width: 1.5px; height: 18px; background: var(--primary-600); display: inline-block; margin-left: -2px; animation: bl 1s steps(1) infinite; }
+  .inp.danger .car { background: var(--danger); }
+  @keyframes bl { 50% { opacity: 0; } }
+  .field { display: flex; flex-direction: column; gap: 7px; }
+  .lbl { font-size: 13px; font-weight: 500; color: var(--text-primary); display: flex; justify-content: space-between; }
+  .lbl .cnt { color: var(--gray-500); font-weight: 400; font-variant-numeric: tabular-nums; }
+  .help { font-size: 12px; color: var(--text-tertiary); line-height: 1.45; }
+  .help.err { color: var(--danger); }
+  .upload { height: 96px; border-radius: 16px; background: var(--bg-light-secondary); border: 1.5px dashed var(--gray-300);
+            display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; color: var(--gray-500); }
+  .upload i { width: 22px; height: 22px; } .upload span { font-size: 12px; }
+
+  /* layout helpers for the doc */
+  .lab-strip { display: flex; align-items: baseline; gap: 10px; margin-bottom: 13px; }
+  .lab-strip .n { font-size: 13px; font-weight: 600; color: var(--text-primary); }
+  .lab-strip .d { font-size: 12px; color: var(--text-tertiary); }
+  .variants { display: flex; gap: 22px; flex-wrap: wrap; align-items: flex-start; }
+  .vcol { display: flex; flex-direction: column; gap: 10px; }
+  .vtag { display: inline-flex; align-items: center; gap: 7px; font-size: 11.5px; font-weight: 600; color: var(--text-secondary); }
+  .vtag .k { font-family: var(--font-mono); font-size: 10.5px; font-weight: 500; color: var(--text-tertiary);
+             background: var(--accent); border-radius: 6px; padding: 2px 6px; }
+  .vmeta { font-size: 11.5px; color: var(--text-tertiary); line-height: 1.5; max-width: 360px; }
+
+  /* image / media placeholder */
+  .ph-img { background: var(--bg-light-secondary);
+            background-image: repeating-linear-gradient(135deg, rgba(0,0,0,.035) 0 8px, rgba(0,0,0,0) 8px 16px);
+            display: grid; place-items: center; color: var(--gray-500); font-family: var(--font-mono); font-size: 11px; }
+
+  /* ---------- SIZE RULER ---------- */
+  .ruler { display: flex; flex-direction: column; gap: 12px; }
+  .rrow { display: grid; grid-template-columns: 56px 1fr; gap: 18px; align-items: center; }
+  .rrow .tier { font-family: var(--font-mono); font-size: 13px; font-weight: 600; color: var(--text-primary); }
+  .rbar { height: 40px; border-radius: 12px; background: var(--accent); box-shadow: inset 0 0 0 1px var(--border);
+          display: flex; align-items: center; padding: 0 14px; gap: 12px; }
+  .rbar .px { font-family: var(--font-mono); font-size: 12px; color: var(--text-primary); font-weight: 600; }
+  .rbar .uc { font-size: 12px; color: var(--text-secondary); }
+
+  /* ---------- ANATOMY ---------- */
+  .anat-wrap { display: grid; grid-template-columns: 460px 1fr; gap: 40px; align-items: center; }
+  .callout { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 16px; }
+  .callout li { display: grid; grid-template-columns: 26px 1fr; gap: 12px; align-items: start; }
+  .callout .num { width: 24px; height: 24px; border-radius: 999px; background: var(--primary-600); color: #fff;
+                  font-size: 12px; font-weight: 700; display: grid; place-items: center; font-variant-numeric: tabular-nums; }
+  .callout .ttl { font-size: 13.5px; font-weight: 600; color: var(--text-primary); }
+  .callout .dsc { font-size: 12.5px; color: var(--text-tertiary); line-height: 1.5; margin-top: 2px; }
+  .callout code { font-family: var(--font-mono); font-size: 11.5px; color: var(--text-secondary); }
+  .pin { position: absolute; width: 22px; height: 22px; border-radius: 999px; background: var(--primary-600);
+         color: #fff; font-size: 11px; font-weight: 700; display: grid; place-items: center; z-index: 3;
+         box-shadow: 0 0 0 3px #fff; }
+
+  /* divider used inside sheets */
+  .mdiv { height: 1px; background: var(--border); }
+
+  /* checkbox row */
+  .ckrow { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--text-secondary); }
+  .ckbox { width: 18px; height: 18px; border-radius: 6px; box-shadow: inset 0 0 0 1.5px var(--gray-300); flex: none; display: grid; place-items: center; }
+  .ckbox.on { background: var(--primary-600); box-shadow: none; }
+  .ckbox.on i { width: 13px; height: 13px; color: #fff; }
+
+  /* stepper */
+  .stepper { display: flex; align-items: center; gap: 8px; }
+  .step { display: flex; align-items: center; gap: 8px; }
+  .sdot { width: 24px; height: 24px; border-radius: 999px; font-size: 12px; font-weight: 700; display: grid; place-items: center;
+          font-variant-numeric: tabular-nums; box-shadow: inset 0 0 0 1.5px var(--gray-300); color: var(--gray-500); }
+  .sdot.done { background: var(--primary-600); color: #fff; box-shadow: none; }
+  .sdot.now  { box-shadow: inset 0 0 0 2px var(--primary-600); color: var(--primary-600); }
+  .sname { font-size: 12.5px; color: var(--text-tertiary); font-weight: 500; }
+  .sname.now { color: var(--text-primary); font-weight: 600; }
+  .sline { width: 22px; height: 2px; background: var(--border); border-radius: 2px; }
+  .sline.done { background: var(--primary-600); }
+
+  /* two-pane settings */
+  .pane-nav { width: 184px; background: var(--bg-light-secondary); padding: 16px 12px; display: flex; flex-direction: column; gap: 2px; }
+  .pane-nav .grp { font-size: 10.5px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; color: var(--text-tertiary); padding: 8px 10px 4px; }
+  .pn-item { display: flex; align-items: center; gap: 10px; padding: 9px 10px; border-radius: 10px; font-size: 13px; color: var(--text-secondary); font-weight: 500; }
+  .pn-item i { width: 17px; height: 17px; color: var(--gray-500); }
+  .pn-item.on { background: #fff; color: var(--text-primary); box-shadow: var(--shadow-sm); }
+  .pn-item.on i { color: var(--primary-600); }
+
+  /* list/select rows (invite roles, member rows) */
+  .lrow { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 12px; box-shadow: inset 0 0 0 1px var(--border); }
+  .lrow .av { width: 36px; height: 36px; border-radius: 999px; flex: none; }
+  .lrow .nm { font-size: 13.5px; font-weight: 600; color: var(--text-primary); }
+  .lrow .mt { font-size: 12px; color: var(--text-tertiary); }
+  .pill-sel { display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 10px; border-radius: 999px;
+              box-shadow: inset 0 0 0 1px var(--border); font-size: 12.5px; font-weight: 600; color: var(--text-secondary); }
+  .pill-sel i { width: 15px; height: 15px; color: var(--gray-500); }
+
+  /* toast-ish bottom sheet handle */
+  .grab { width: 40px; height: 4px; border-radius: 999px; background: var(--gray-200); margin: 0 auto; }
+
+  /* anchored popover */
+  .anchor-demo { position: relative; display: inline-flex; padding-top: 52px; }
+  .anchor-btn { position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+                display: inline-flex; align-items: center; gap: 7px; height: 36px; padding: 0 12px; border-radius: 12px;
+                background: #fff; box-shadow: inset 0 0 0 1px var(--input), var(--shadow-sm); font-size: 13px; font-weight: 600; color: var(--text-primary); }
+  .anchor-btn i { width: 16px; height: 16px; color: var(--gray-600); }
+  .pop-tip { position: absolute; top: 44px; left: 50%; width: 12px; height: 12px; background: #fff; transform: translateX(-50%) rotate(45deg);
+             box-shadow: -2px -2px 4px rgba(16,24,40,.04); z-index: 1; }
+
+  /* receipt rows */
+  .rcpt { display: flex; justify-content: space-between; font-size: 13.5px; }
+  .rcpt .k { color: var(--text-tertiary); } .rcpt .v { color: var(--text-primary); font-weight: 600; font-variant-numeric: tabular-nums; }
+  .rcpt.total .k { color: var(--text-primary); font-weight: 600; } .rcpt.total .v { font-size: 16px; }
+</style>
+</head>
+<body>
+  <div class="ds-head">
+    <h2 class="ds-title">Modals &amp; dialogs — система</h2>
+    <p class="ds-sub">Полный разбор модальных окон Bean: единая <b>анатомия</b>, 5 размеров, и по <b>3 варианта</b> на каждый тип — подтверждение, удаление, создание, крупные многошаговые действия, мелкие действия и завершение. Всё на токенах ДС: карта <code>r-2xl 24px</code> · <code>shadow-pop</code> над scrim <code>rgba(10,12,20,.34)</code> · шрифт Geist · синий primary, lime-бренд, danger.</p>
+  </div>
+  <hr class="ds-rule">
+
+  <!-- ============================================================
+       0 · ANATOMY
+       ============================================================ -->
+  <div class="ds-block">
+    <div class="ds-sect">Анатомия <span class="meta">— общая структура любой модалки</span></div>
+    <div class="anat-wrap">
+      <div class="scrim tall">
+        <!-- pins -->
+        <div class="pin" style="top:22px; left:18px;">1</div>
+        <div class="pin" style="top:54px; right:30px;">3</div>
+        <div class="pin" style="top:50px; left:18px;">2</div>
+        <div class="pin" style="top:140px; left:18px;">4</div>
+        <div class="pin" style="bottom:30px; left:18px;">5</div>
+        <div class="sheet w-m">
+          <div class="mpad-lg stack gap-5">
+            <div class="mhead">
+              <div>
+                <h3 class="mtitle">Заголовок действия</h3>
+                <p class="msub">Короткое пояснение: что произойдёт и почему это важно.</p>
+              </div>
+              <span class="x"><i data-lucide="x"></i></span>
+            </div>
+            <div class="field">
+              <span class="lbl">Поле</span>
+              <div class="inp focus"><span class="val">Значение</span><span class="car"></span></div>
+            </div>
+            <div class="mfoot end">
+              <button class="btn l ghost">Отмена</button>
+              <button class="btn l primary">Подтвердить</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <ol class="callout">
+        <li><span class="num">1</span><div><div class="ttl">Scrim</div><div class="dsc">Затемнение <code>rgba(10,12,20,.34)</code>, blur по желанию. Клик по scrim закрывает немодальные диалоги.</div></div></li>
+        <li><span class="num">2</span><div><div class="ttl">Card</div><div class="dsc">Белая карта <code>r-2xl (24px)</code> + <code>shadow-pop</code>. Внутренний паддинг 20–28px по размеру.</div></div></li>
+        <li><span class="num">3</span><div><div class="ttl">Header</div><div class="dsc">Заголовок (sentence-case, 700) + опц. подзаголовок. Close <code>x</code> — ghost icon, gray-500.</div></div></li>
+        <li><span class="num">4</span><div><div class="ttl">Body</div><div class="dsc">Текст, поля, списки. Скролл внутри тела при длинном контенте; header/footer закреплены.</div></div></li>
+        <li><span class="num">5</span><div><div class="ttl">Footer</div><div class="dsc">Действия: <b>end</b> (вторичное+основное справа), <b>split</b> 50/50, или <b>stack</b> на всю ширину.</div></div></li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       SIZES
+       ============================================================ -->
+  <div class="ds-block">
+    <div class="ds-sect">Размеры <span class="meta">— 5 ступеней ширины · высота от контента</span></div>
+    <div class="ruler">
+      <div class="rrow"><span class="tier">XS</span><div class="rbar" style="max-width:320px;"><span class="px">320px</span><span class="uc">микро-подтверждение · 1 действие</span></div></div>
+      <div class="rrow"><span class="tier">S</span><div class="rbar" style="max-width:380px;"><span class="px">380px</span><span class="uc">confirm · destructive · короткая форма</span></div></div>
+      <div class="rrow"><span class="tier">M</span><div class="rbar" style="max-width:460px;"><span class="px">460px</span><span class="uc">создание · форма с 2–4 полями</span></div></div>
+      <div class="rrow"><span class="tier">L</span><div class="rbar" style="max-width:560px;"><span class="px">560px</span><span class="uc">расширенная форма · списки · приглашения</span></div></div>
+      <div class="rrow"><span class="tier">XL</span><div class="rbar" style="max-width:720px;"><span class="px">720px</span><span class="uc">мастер · 2-панельные настройки · обзор</span></div></div>
+    </div>
+    <div class="ds-note" style="margin-top:20px;">
+      Ширина фиксирована по ступени, высота — по контенту (с внутренним скроллом тела после ~70vh). На мобильном XS–M центрируются с полями 16px; L–XL превращаются в <b>bottom sheet</b> на всю ширину. Радиус карты всегда <code>r-2xl</code>, кроме full-screen takeover (радиус 0).
+    </div>
+  </div>
+
+  <!-- ============================================================
+       1 · DESTRUCTIVE CONFIRM
+       ============================================================ -->
+  <div class="ds-block">
+    <div class="ds-sect">Тип 1 · Удаление / необратимое действие <span class="meta">— scrim · danger · подтверждение обязательно</span></div>
+    <div class="variants">
+
+      <!-- A: icon-led -->
+      <div class="vcol">
+        <div class="lab-strip"><span class="n">A — Icon-led</span><span class="d">стандарт · средний риск</span></div>
+        <div class="scrim" style="width:380px;">
+          <div class="sheet w-s">
+            <div class="mpad stack gap-4">
+              <div class="itile danger"><i data-lucide="log-out"></i></div>
+              <div class="stack gap-3">
+                <h3 class="mtitle">Покинуть сообщество?</h3>
+                <p class="mbody">Вы потеряете доступ к курсам и постам. Вернуться можно будет, оформив подписку заново.</p>
+              </div>
+              <div class="mfoot split">
+                <button class="btn l outline">Отмена</button>
+                <button class="btn l destructive">Покинуть</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <p class="vmeta">Ведущая danger-soft плитка. Действия split 50/50. Применять, когда последствия объяснимы, но обратимы условно.</p>
+      </div>
+
+      <!-- B: type-to-confirm -->
+      <div class="vcol">
+        <div class="lab-strip"><span class="n">B — Type-to-confirm</span><span class="d">высокий риск · необратимо</span></div>
+        <div class="scrim" style="width:400px;">
+          <div class="sheet w-s">
+            <div class="mpad stack gap-4">
+              <div class="mhead">
+                <div>
+                  <h3 class="mtitle">Удалить сообщество</h3>
+                  <p class="msub">Это действие <b>необратимо</b>. Все курсы, посты и 1 248 участников будут удалены навсегда.</p>
+                </div>
+                <span class="x"><i data-lucide="x"></i></span>
+              </div>
+              <div class="field">
+                <span class="lbl" style="display:block;">Введите <b>profound-university</b> для подтверждения</span>
+                <div class="inp danger"><span class="val">profound-univer</span><span class="car"></span></div>
+              </div>
+              <div class="mfoot stack">
+                <button class="btn l destructive fluid">Удалить навсегда</button>
+                <button class="btn l ghost fluid">Отмена</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <p class="vmeta">Ввод точного имени разблокирует destructive-кнопку. Для удаления аккаунтов, сообществ, биллинга — там, где нужна осознанность.</p>
+      </div>
+
+      <!-- C: compact inline -->
+      <div class="vcol">
+        <div class="lab-strip"><span class="n">C — Compact</span><span class="d">низкий риск · быстрое</span></div>
+        <div class="scrim" style="width:360px;">
+          <div class="sheet w-xs">
+            <div class="mpad-sm stack gap-4">
+              <p class="mbody">Удалить пост «<b>Как выйти на 100k</b>»? Его нельзя будет восстановить.</p>
+              <div class="mfoot end">
+                <button class="btn m ghost">Отмена</button>
+                <button class="btn m destructive">Удалить</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <p class="vmeta">Без иконки и заголовка — одна строка + действия справа. Для удаления одиночных элементов из списка (пост, комментарий, файл).</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       2 · NEUTRAL CONFIRM
+       ============================================================ -->
+  <div class="ds-block">
+    <div class="ds-sect">Тип 2 · Подтверждение действия <span class="meta">— нейтральное · без риска данных</span></div>
+    <div class="variants">
+
+      <!-- A: simple discard -->
+      <div class="vcol">
+        <div class="lab-strip"><span class="n">A — Простое</span><span class="d">да / нет</span></div>
+        <div class="scrim" style="width:380px;">
+          <div class="sheet w-s">
+            <div class="mpad stack gap-4">
+              <div class="itile warn"><i data-lucide="alert-triangle"></i></div>
+              <div class="stack gap-3">
+                <h3 class="mtitle">Выйти без сохранения?</h3>
+                <p class="mbody">В черновике есть несохранённые изменения. Они будут потеряны.</p>
+              </div>
+              <div class="mfoot split">
+                <button class="btn l outline">Остаться</button>
+                <button class="btn l primary">Выйти</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <p class="vmeta">Warning-плитка вместо danger: данные не удаляются безвозвратно. Основное действие — обычный primary.</p>
+      </div>
+
+      <!-- B: with don't-ask-again -->
+      <div class="vcol">
+        <div class="lab-strip"><span class="n">B — С «не спрашивать»</span><span class="d">повторяемое</span></div>
+        <div class="scrim" style="width:400px;">
+          <div class="sheet w-s">
+            <div class="mpad stack gap-4">
+              <div class="mhead">
+                <div>
+                  <h3 class="mtitle">Опубликовать пост?</h3>
+                  <p class="msub">Пост увидят все 1 248 участников сообщества и придёт уведомление.</p>
+                </div>
+                <span class="x"><i data-lucide="x"></i></span>
+              </div>
+              <label class="ckrow"><span class="ckbox on"><i data-lucide="check"></i></span>Больше не спрашивать</label>
+              <div class="mfoot end">
+                <button class="btn l ghost">Отмена</button>
+                <button class="btn l primary">Опубликовать</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <p class="vmeta">Чекбокс гасит будущие подтверждения для частых рутинных действий. Действия выровнены вправо (end).</p>
+      </div>
+
+      <!-- C: three-way -->
+      <div class="vcol">
+        <div class="lab-strip"><span class="n">C — Три исхода</span><span class="d">save / discard / cancel</span></div>
+        <div class="scrim" style="width:420px;">
+          <div class="sheet w-m">
+            <div class="mpad stack gap-4">
+              <div class="stack gap-3">
+                <h3 class="mtitle">Сохранить изменения?</h3>
+                <p class="mbody">Вы изменили настройки тарифа. Сохранить их перед выходом?</p>
+              </div>
+              <div class="mfoot spread">
+                <button class="btn l ghost">Не сохранять</button>
+                <div class="mfoot" style="gap:10px;">
+                  <button class="btn l outline">Отмена</button>
+                  <button class="btn l primary">Сохранить</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <p class="vmeta">Деструктивный «не сохранять» отделён слева (ghost), безопасная пара справа. Три полноценных исхода без ловушек.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       3 · CREATION / FORM
+       ============================================================ -->
+  <div class="ds-block">
+    <div class="ds-sect">Тип 3 · Создание / форма <span class="meta">— ввод данных · основное действие full-width</span></div>
+    <div class="variants">
+
+      <!-- A: single column -->
+      <div class="vcol">
+        <div class="lab-strip"><span class="n">A — Одна колонка</span><span class="d">2–4 поля</span></div>
+        <div class="scrim" style="width:420px;">
+          <div class="sheet w-m">
+            <div class="mpad-lg stack gap-5">
+              <div class="mhead">
+                <h3 class="mtitle">Создать новое сообщество</h3>
+                <span class="x"><i data-lucide="x"></i></span>
+              </div>
+              <div class="stack gap-4">
+                <div class="field">
+                  <span class="lbl">Логотип</span>
+                  <div class="upload"><i data-lucide="image-plus"></i><span>необязательно · 1:1, до 5 МБ</span></div>
+                </div>
+                <div class="field">
+                  <span class="lbl">Название сообщества</span>
+                  <div class="inp focus"><span class="val">Profound University</span><span class="car"></span></div>
+                </div>
+                <div class="field">
+                  <span class="lbl">URL</span>
+                  <div class="inp"><span class="pfx" style="font-family:var(--font-mono)">bean.com/</span><span class="val" style="font-family:var(--font-mono)">profound-university</span></div>
+                  <span class="help">Подставляется автоматически из названия</span>
+                </div>
+              </div>
+              <button class="btn xl primary fluid">Создать</button>
+            </div>
+          </div>
+        </div>
+        <p class="vmeta">Базовая форм-модалка. Основное действие — XL full-width внизу. Close только в header.</p>
+      </div>
+
+      <!-- B: hero cover -->
+      <div class="vcol">
+        <div class="lab-strip"><span class="n">B — С обложкой</span><span class="d">визуальная сущность</span></div>
+        <div class="scrim" style="width:420px;">
+          <div class="sheet w-m">
+            <div class="ph-img" style="height:120px; position:relative;">cover 16:6
+              <span class="itile lime round" style="position:absolute; left:24px; bottom:-22px; width:56px; height:56px; box-shadow:0 0 0 4px #fff;"><i data-lucide="image-plus"></i></span>
+            </div>
+            <div class="mpad-lg stack gap-4" style="padding-top:34px;">
+              <div class="field">
+                <span class="lbl">Название</span>
+                <div class="inp"><span class="val">Курс по дизайну</span></div>
+              </div>
+              <div class="field">
+                <span class="lbl">Описание <span class="cnt">0 / 140</span></span>
+                <div class="inp" style="height:auto; padding:12px 14px; align-items:flex-start;"><span>Коротко о чём сообщество…</span></div>
+              </div>
+              <div class="mfoot end">
+                <button class="btn l ghost">Отмена</button>
+                <button class="btn l primary">Создать сообщество</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <p class="vmeta">Hero-обложка + наложенная плитка логотипа. Для сущностей с сильной визуальной идентичностью. Footer — end.</p>
+      </div>
+
+      <!-- C: invite -->
+      <div class="vcol">
+        <div class="lab-strip"><span class="n">C — Приглашение</span><span class="d">список + роль</span></div>
+        <div class="scrim" style="width:460px;">
+          <div class="sheet w-l">
+            <div class="mpad-lg stack gap-4">
+              <div class="mhead">
+                <div>
+                  <h3 class="mtitle">Пригласить в команду</h3>
+                  <p class="msub">Приглашённые получат письмо со ссылкой.</p>
+                </div>
+                <span class="x"><i data-lucide="x"></i></span>
+              </div>
+              <div class="field">
+                <span class="lbl">Email</span>
+                <div class="inp focus"><span class="val">alina@studio.co</span><span class="car"></span></div>
+              </div>
+              <div class="stack gap-3">
+                <div class="lrow">
+                  <span class="av" style="background:var(--brand-lime);"></span>
+                  <div style="flex:1;"><div class="nm">Дима Орлов</div><div class="mt">dima@studio.co</div></div>
+                  <span class="pill-sel">Редактор<i data-lucide="chevron-down"></i></span>
+                </div>
+                <div class="lrow">
+                  <span class="av" style="background:var(--primary-50);"></span>
+                  <div style="flex:1;"><div class="nm">Катя Лис</div><div class="mt">katya@studio.co</div></div>
+                  <span class="pill-sel">Админ<i data-lucide="chevron-down"></i></span>
+                </div>
+              </div>
+              <div class="mfoot end">
+                <button class="btn l ghost">Отмена</button>
+                <button class="btn l primary">Отправить 2 приглашения</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <p class="vmeta">L-ширина: email-поле + накопительный список с выбором роли на строку. Счётчик в основной кнопке.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       4 · LARGE / MULTI-STEP
+       ============================================================ -->
+  <div class="ds-block">
+    <div class="ds-sect">Тип 4 · Крупные многошаговые действия <span class="meta">— мастер · 2-панель · takeover · footer-bar</span></div>
+    <div class="stack gap-5">
+
+      <!-- A: wizard -->
+      <div class="vcol">
+        <div class="lab-strip"><span class="n">A — Мастер (wizard)</span><span class="d">stepper · шаги · sticky footer</span></div>
+        <div class="scrim" style="max-width:760px;">
+          <div class="sheet w-xl">
+            <div class="mpad-lg stack gap-5" style="padding-bottom:0;">
+              <div class="mhead">
+                <div class="stepper">
+                  <div class="step"><span class="sdot done"><i data-lucide="check"></i></span><span class="sname">Основное</span></div>
+                  <span class="sline done"></span>
+                  <div class="step"><span class="sdot now">2</span><span class="sname now">Тариф</span></div>
+                  <span class="sline"></span>
+                  <div class="step"><span class="sdot">3</span><span class="sname">Запуск</span></div>
+                </div>
+                <span class="x"><i data-lucide="x"></i></span>
+              </div>
+              <div class="stack gap-3">
+                <h3 class="mtitle">Настройте тариф подписки</h3>
+                <p class="mbody">Сколько участники платят за доступ. Изменить можно в любой момент.</p>
+              </div>
+              <div class="variants" style="gap:14px;">
+                <div class="lrow" style="flex:1; box-shadow:inset 0 0 0 2px var(--primary-600);">
+                  <div style="flex:1;"><div class="nm">Месячный</div><div class="mt">регулярные платежи</div></div>
+                  <div class="nm" style="font-family:var(--font-mono);">1 490 ₽</div>
+                </div>
+                <div class="lrow" style="flex:1;">
+                  <div style="flex:1;"><div class="nm">Разовый</div><div class="mt">пожизненный доступ</div></div>
+                  <div class="nm" style="font-family:var(--font-mono);">12 900 ₽</div>
+                </div>
+              </div>
+            </div>
+            <div class="mfoot spread bar" style="margin-top:24px;">
+              <button class="btn l ghost"><i data-lucide="arrow-left"></i>Назад</button>
+              <div class="mfoot" style="gap:10px;"><span class="sname" style="align-self:center;">Шаг 2 из 3</span><button class="btn l primary">Далее<i data-lucide="arrow-right"></i></button></div>
+            </div>
+          </div>
+        </div>
+        <p class="vmeta">XL-ширина · stepper в header · sticky footer-bar с «Назад / Далее» и счётчиком шага. Для онбординга и настройки в несколько этапов.</p>
+      </div>
+
+      <!-- B: two-pane settings -->
+      <div class="vcol">
+        <div class="lab-strip"><span class="n">B — Двухпанельные настройки</span><span class="d">nav + контент</span></div>
+        <div class="scrim" style="max-width:760px;">
+          <div class="sheet w-xl" style="display:flex; min-height:340px;">
+            <div class="pane-nav">
+              <div class="grp">Сообщество</div>
+              <div class="pn-item on"><i data-lucide="settings-2"></i>Общие</div>
+              <div class="pn-item"><i data-lucide="credit-card"></i>Тарифы</div>
+              <div class="pn-item"><i data-lucide="users"></i>Участники</div>
+              <div class="grp">Аккаунт</div>
+              <div class="pn-item"><i data-lucide="bell"></i>Уведомления</div>
+              <div class="pn-item"><i data-lucide="shield"></i>Доступ</div>
+            </div>
+            <div style="flex:1; display:flex; flex-direction:column;">
+              <div class="mpad-lg stack gap-4" style="flex:1;">
+                <div class="mhead">
+                  <h3 class="mtitle">Общие настройки</h3>
+                  <span class="x"><i data-lucide="x"></i></span>
+                </div>
+                <div class="field">
+                  <span class="lbl">Название сообщества</span>
+                  <div class="inp"><span class="val">Profound University</span></div>
+                </div>
+                <div class="field">
+                  <span class="lbl">Описание</span>
+                  <div class="inp" style="height:auto; padding:12px 14px; align-items:flex-start;"><span class="val">Платное сообщество для дизайнеров</span></div>
+                </div>
+              </div>
+              <div class="mfoot end bar">
+                <button class="btn l ghost">Отмена</button>
+                <button class="btn l primary">Сохранить</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <p class="vmeta">Левый recessed-nav + правый контент. Для разделов настроек, где много категорий. Footer-bar закреплён под контентом.</p>
+      </div>
+
+      <!-- C: full-screen takeover -->
+      <div class="vcol">
+        <div class="lab-strip"><span class="n">C — Full-screen takeover</span><span class="d">сложный контент · радиус 0</span></div>
+        <div class="scrim" style="max-width:760px; padding:0; background:var(--bg-light-secondary);">
+          <div class="sheet" style="max-width:none; width:100%; border-radius:0; box-shadow:none;">
+            <div class="mfoot spread" style="padding:14px 20px; border-bottom:1px solid var(--border);">
+              <button class="btn m ghost"><i data-lucide="x"></i>Закрыть</button>
+              <span class="sname now" style="font-size:14px;">Редактор курса</span>
+              <button class="btn m primary">Сохранить и выйти</button>
+            </div>
+            <div style="display:grid; grid-template-columns:1fr 240px; gap:0; min-height:240px;">
+              <div class="ph-img" style="margin:20px; border-radius:14px;">область редактирования</div>
+              <div class="stack gap-3" style="padding:20px 20px 20px 0;">
+                <div class="lrow"><div style="flex:1;"><div class="nm">Модуль 1</div><div class="mt">4 урока</div></div></div>
+                <div class="lrow"><div style="flex:1;"><div class="nm">Модуль 2</div><div class="mt">3 урока</div></div></div>
+                <button class="btn m outline fluid"><i data-lucide="plus"></i>Добавить модуль</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <p class="vmeta">Полноэкранный режим (радиус 0): свой top-bar с close слева и основным действием справа. Для редакторов и долгих задач, где scrim мешает.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       5 · SMALL ACTIONS
+       ============================================================ -->
+  <div class="ds-block">
+    <div class="ds-sect">Тип 5 · Мелкие действия <span class="meta">— переименовать · быстрый выбор · мобильный sheet</span></div>
+    <div class="variants">
+
+      <!-- A: rename inline -->
+      <div class="vcol">
+        <div class="lab-strip"><span class="n">A — Переименование</span><span class="d">одно поле</span></div>
+        <div class="scrim" style="width:360px;">
+          <div class="sheet w-xs">
+            <div class="mpad-sm stack gap-4">
+              <div class="field">
+                <span class="lbl">Название модуля</span>
+                <div class="inp focus"><span class="val">Введение в дизайн</span><span class="car"></span></div>
+              </div>
+              <div class="mfoot end">
+                <button class="btn m ghost">Отмена</button>
+                <button class="btn m primary">Сохранить</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <p class="vmeta">XS · одно поле + пара действий. Поле в фокусе при открытии. Для inline-переименования и быстрых правок.</p>
+      </div>
+
+      <!-- B: anchored popover -->
+      <div class="vcol">
+        <div class="lab-strip"><span class="n">B — Anchored popover</span><span class="d">без scrim · у триггера</span></div>
+        <div class="scrim" style="width:360px; background:var(--bg-light-secondary); align-items:flex-start;">
+          <div class="anchor-demo">
+            <span class="anchor-btn"><i data-lucide="more-horizontal"></i>Действия</span>
+            <span class="pop-tip"></span>
+            <div class="sheet" style="width:208px; box-shadow:var(--shadow-card); border-radius:16px;">
+              <div class="stack" style="padding:6px;">
+                <div class="pn-item"><i data-lucide="pencil"></i>Переименовать</div>
+                <div class="pn-item"><i data-lucide="copy"></i>Дублировать</div>
+                <div class="pn-item"><i data-lucide="share-2"></i>Поделиться</div>
+                <div class="mdiv" style="margin:4px 6px;"></div>
+                <div class="pn-item" style="color:var(--danger);"><i data-lucide="trash-2" style="color:var(--danger);"></i>Удалить</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <p class="vmeta">Привязан к триггеру, без scrim, со стрелкой. Меню действий / мелкие подтверждения рядом с местом клика. <code>shadow-card</code>, не pop.</p>
+      </div>
+
+      <!-- C: mobile bottom sheet -->
+      <div class="vcol">
+        <div class="lab-strip"><span class="n">C — Bottom sheet</span><span class="d">мобильный · снизу</span></div>
+        <div class="scrim" style="width:300px; padding:0; align-items:flex-end; min-height:300px;">
+          <div class="sheet" style="max-width:none; width:100%; border-radius:24px 24px 0 0;">
+            <div class="stack gap-4" style="padding:12px 20px 22px;">
+              <div class="grab"></div>
+              <div class="stack gap-3" style="margin-top:6px;">
+                <h3 class="mtitle">Поделиться сообществом</h3>
+                <p class="mbody">Отправьте ссылку или скопируйте её.</p>
+              </div>
+              <div class="inp"><span class="pfx" style="font-family:var(--font-mono)">bean.com/profound</span><i data-lucide="copy" style="margin-left:auto; width:18px; height:18px; color:var(--gray-600);"></i></div>
+              <button class="btn l primary fluid">Скопировать ссылку</button>
+            </div>
+          </div>
+        </div>
+        <p class="vmeta">Прижат к низу, верх со скруглением + grab-handle, тянется по высоте контента. Базовая мобильная форма для XS–M на телефоне.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       6 · FEEDBACK / COMPLETION
+       ============================================================ -->
+  <div class="ds-block">
+    <div class="ds-sect">Тип 6 · Завершение / результат <span class="meta">— успех · праздничный · сводка</span></div>
+    <div class="variants">
+
+      <!-- A: success -->
+      <div class="vcol">
+        <div class="lab-strip"><span class="n">A — Успех</span><span class="d">подтверждение результата</span></div>
+        <div class="scrim" style="width:380px;">
+          <div class="sheet w-s">
+            <div class="mpad stack gap-4" style="align-items:center; text-align:center;">
+              <div class="itile success round" style="width:56px; height:56px;"><i data-lucide="check" style="width:28px; height:28px;"></i></div>
+              <div class="stack gap-3">
+                <h3 class="mtitle">Выплата отправлена</h3>
+                <p class="mbody">28 400 ₽ поступят на карту •• 4417 в течение 1–3 дней.</p>
+              </div>
+              <button class="btn l primary fluid">Готово</button>
+            </div>
+          </div>
+        </div>
+        <p class="vmeta">Центрированная success-плитка + одно действие full-width. Закрывает успешный сценарий.</p>
+      </div>
+
+      <!-- B: celebratory -->
+      <div class="vcol">
+        <div class="lab-strip"><span class="n">B — Праздничный</span><span class="d">веха · lime-бренд</span></div>
+        <div class="scrim" style="width:380px;">
+          <div class="sheet w-s">
+            <div class="ph-img" style="height:128px; background:var(--brand-lime); background-image:none; color:#2f5d00; font-weight:600;"><i data-lucide="party-popper" style="width:40px; height:40px;"></i></div>
+            <div class="mpad stack gap-4" style="align-items:center; text-align:center;">
+              <div class="stack gap-3">
+                <h3 class="mtitle">Сообщество опубликовано! 🎉</h3>
+                <p class="mbody">«Profound University» теперь в каталоге. Поделитесь ссылкой, чтобы привлечь первых участников.</p>
+              </div>
+              <div class="mfoot stack" style="width:100%;">
+                <button class="btn l lime fluid"><i data-lucide="share-2"></i>Поделиться</button>
+                <button class="btn l ghost fluid">Перейти к сообществу</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <p class="vmeta">Lime-hero для брендовых вех (запуск, первая выплата). Основное действие — lime, вторичное — ghost.</p>
+      </div>
+
+      <!-- C: receipt summary -->
+      <div class="vcol">
+        <div class="lab-strip"><span class="n">C — Сводка / чек</span><span class="d">детали операции</span></div>
+        <div class="scrim" style="width:400px;">
+          <div class="sheet w-s">
+            <div class="mpad stack gap-4">
+              <div class="mhead">
+                <div class="stack gap-3" style="gap:8px;">
+                  <span class="itile success" style="width:40px; height:40px;"><i data-lucide="receipt" style="width:20px; height:20px;"></i></span>
+                  <h3 class="mtitle">Подписка оформлена</h3>
+                </div>
+                <span class="x"><i data-lucide="x"></i></span>
+              </div>
+              <div class="stack gap-3">
+                <div class="rcpt"><span class="k">Тариф</span><span class="v">Месячный</span></div>
+                <div class="rcpt"><span class="k">Сообщество</span><span class="v">Profound University</span></div>
+                <div class="rcpt"><span class="k">Следующее списание</span><span class="v">3 июля 2026</span></div>
+                <div class="mdiv"></div>
+                <div class="rcpt total"><span class="k">Итого</span><span class="v">1 490 ₽</span></div>
+              </div>
+              <div class="mfoot split">
+                <button class="btn l outline"><i data-lucide="download"></i>Чек</button>
+                <button class="btn l primary">Готово</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <p class="vmeta">Список «ключ → значение» с итогом моноширинным. Для чеков, сводок заказа, итогов операции.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       BEHAVIOR / MOTION / A11Y
+       ============================================================ -->
+  <div class="ds-block">
+    <div class="ds-sect">Поведение · движение · доступность</div>
+    <div class="ds-legend" style="gap:18px 26px;">
+      <span class="it"><span class="sw" style="background:var(--primary-600);"></span>primary — основное действие</span>
+      <span class="it"><span class="sw" style="background:var(--danger);"></span>destructive — необратимое</span>
+      <span class="it"><span class="sw" style="background:var(--warning);"></span>warning — потеря несохранённого</span>
+      <span class="it"><span class="sw" style="background:var(--success);"></span>success — результат</span>
+      <span class="it"><span class="sw" style="background:var(--brand-lime);"></span>lime — брендовые вехи</span>
+    </div>
+    <div class="ds-note" style="margin-top:22px;">
+      <b>Иерархия действий.</b> Одно primary на модалку, справа (end) или внизу (stack). Деструктивное всегда отделено от безопасного — split 50/50, либо разнесено по краям (spread). Никогда не ставьте две solid-кнопки рядом.<br>
+      <b>Движение.</b> Появление: scrim fade 120ms; карта — opacity + <code>translateY 8px → 0</code> + <code>scale .98 → 1</code>, 180ms, ease-out. Bottom sheet — slide снизу 220ms. Закрытие — обратно, 140ms. При <code>prefers-reduced-motion</code> остаётся только fade.<br>
+      <b>Закрытие.</b> Esc и клик по scrim закрывают нейтральные диалоги; destructive и формы с вводом — только явными кнопками (защита от случайной потери). Full-screen — кнопкой Закрыть.<br>
+      <b>Доступность.</b> <code>role="dialog"</code> + <code>aria-modal</code>, focus trap внутри карты, фокус возвращается на триггер. Первый фокус — на основное поле (формы) или на безопасную кнопку (confirm). Контраст текста ≥ 4.5:1, hit-target кнопок ≥ 44px.
+    </div>
+  </div>
+
+<template id="__bundler_thumbnail" data-bg-color="#0071e3">
+  <svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+    <rect x="340" y="250" width="520" height="300" rx="42" fill="#ffffff"/>
+    <rect x="392" y="316" width="240" height="26" rx="13" fill="#0f1729"/>
+    <rect x="392" y="366" width="360" height="16" rx="8" fill="#c3ccda"/>
+    <rect x="392" y="398" width="300" height="16" rx="8" fill="#c3ccda"/>
+    <rect x="392" y="470" width="150" height="44" rx="16" fill="#eef1f6"/>
+    <rect x="560" y="470" width="150" height="44" rx="16" fill="#0071e3"/>
+  </svg>
+</template>
+<script src="https://unpkg.com/lucide@latest"></script>
+<script>lucide.createIcons();</script>
+</body>
+</html>

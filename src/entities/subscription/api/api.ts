@@ -74,6 +74,14 @@ async function seedSalesHistory(communitySlug: string): Promise<void> {
   await seededCommunities.insert({ id: communitySlug });
 }
 
+/**
+ * Число участников без сид-эффекта (для публичной витрины чужого сообщества)
+ */
+export const getCommunityMembersCount = async (communitySlug: string): Promise<number> => {
+  const allSubscriptions = await subscriptions.list();
+  return allSubscriptions.filter((record) => record.community_id === communitySlug).length;
+};
+
 export interface CommunitySales {
   subscriptions: SubscriptionRecord[];
   transactions: TransactionRecord[];

@@ -24,12 +24,22 @@ const DEFAULT_EXTRAS: Omit<CommunityExtrasRecord, "id"> = {
   description: "",
   cover_url: null,
   logo_url: null,
-  visibility: "public",
+  visibility: "hidden",
 };
+
+/** Миграция значений старой модели видимости (public/private → live/hidden) */
+function normalizeVisibility(value: string): CommunityExtrasRecord["visibility"] {
+  if (value === "public") return "live";
+  if (value === "private") return "hidden";
+  if (value === "unlisted" || value === "live") return value;
+  return "hidden";
+}
 
 export const getCommunityExtras = async (slug: string): Promise<CommunityExtrasRecord> => {
   const all = await communityExtras.list();
-  return all.find((record) => record.id === slug) ?? { id: slug, ...DEFAULT_EXTRAS };
+  const found = all.find((record) => record.id === slug);
+  if (!found) return { id: slug, ...DEFAULT_EXTRAS };
+  return { ...found, visibility: normalizeVisibility(found.visibility) };
 };
 
 /** Карта slug → extras для всех сообществ (логотипы в rail) */

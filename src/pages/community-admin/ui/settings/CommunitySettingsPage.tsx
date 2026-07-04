@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Globe, Loader2, Lock, Pencil, Plus, Trash2 } from "lucide-react";
+import { EyeOff, Globe, Link2, Loader2, Pencil, Plus, Trash2 } from "lucide-react";
 import {
   clearLastVisitedCommunity,
   useCommunityProfileQuery,
@@ -49,8 +49,24 @@ const VISIBILITY_OPTIONS: {
   title: string;
   description: string;
 }[] = [
-  { value: "public", icon: Globe, title: "Публичное", description: "Видно всем, открыта витрина" },
-  { value: "private", icon: Lock, title: "Закрытое", description: "Только по приглашению" },
+  {
+    value: "hidden",
+    icon: EyeOff,
+    title: "Скрытое",
+    description: "По прямой ссылке — 404, вход только по приглашению",
+  },
+  {
+    value: "unlisted",
+    icon: Link2,
+    title: "По ссылке",
+    description: "Витрину видит любой, у кого есть ссылка",
+  },
+  {
+    value: "live",
+    icon: Globe,
+    title: "Открытое",
+    description: "Витрина доступна всем",
+  },
 ];
 
 export function CommunitySettingsPage({ slug }: { slug: string }) {
@@ -75,7 +91,7 @@ export function CommunitySettingsPage({ slug }: { slug: string }) {
     handleSubmit,
   } = methods;
 
-  const [visibility, setVisibility] = useState<CommunityVisibility>("public");
+  const [visibility, setVisibility] = useState<CommunityVisibility>("hidden");
 
   const [tierModal, setTierModal] = useState<{ open: boolean; tier: Tier | null }>({
     open: false,

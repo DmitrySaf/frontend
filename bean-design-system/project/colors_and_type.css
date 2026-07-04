@@ -1,0 +1,233 @@
+/* ============================================================
+   BEAN — Design System foundations
+   Colors + Typography tokens (base + semantic)
+   Brand: Bean — creator COMMUNITIES / courses + monetization
+   Fonts: Geist (UI), Geist Mono (code/numeric)
+
+   ⚠️ Source of truth = the live codebase (Next.js + Tailwind v4).
+   Values below mirror `app/globals.css` `@theme` + the shadcn
+   "new-york" components. Where the code uses a raw oklch/hsl, the
+   hex in the comment is an approximation for reference only.
+   ============================================================ */
+
+/* Geist Mono stays on CDN (no local files uploaded); Geist is self-hosted below. */
+@import url('https://fonts.googleapis.com/css2?family=Geist+Mono:wght@300;400;500;600;700&display=swap');
+
+/* ---- Geist (self-hosted brand font) ---- */
+@font-face { font-family: "Geist"; font-weight: 100; font-style: normal; font-display: swap; src: url("fonts/Geist-Thin.ttf") format("truetype"); }
+@font-face { font-family: "Geist"; font-weight: 100; font-style: italic; font-display: swap; src: url("fonts/Geist-ThinItalic.ttf") format("truetype"); }
+@font-face { font-family: "Geist"; font-weight: 200; font-style: normal; font-display: swap; src: url("fonts/Geist-ExtraLight.ttf") format("truetype"); }
+@font-face { font-family: "Geist"; font-weight: 200; font-style: italic; font-display: swap; src: url("fonts/Geist-ExtraLightItalic.ttf") format("truetype"); }
+@font-face { font-family: "Geist"; font-weight: 300; font-style: normal; font-display: swap; src: url("fonts/Geist-Light.ttf") format("truetype"); }
+@font-face { font-family: "Geist"; font-weight: 300; font-style: italic; font-display: swap; src: url("fonts/Geist-LightItalic.ttf") format("truetype"); }
+@font-face { font-family: "Geist"; font-weight: 400; font-style: normal; font-display: swap; src: url("fonts/Geist-Regular.ttf") format("truetype"); }
+@font-face { font-family: "Geist"; font-weight: 400; font-style: italic; font-display: swap; src: url("fonts/Geist-Italic.ttf") format("truetype"); }
+@font-face { font-family: "Geist"; font-weight: 500; font-style: normal; font-display: swap; src: url("fonts/Geist-Medium.ttf") format("truetype"); }
+@font-face { font-family: "Geist"; font-weight: 500; font-style: italic; font-display: swap; src: url("fonts/Geist-MediumItalic.ttf") format("truetype"); }
+@font-face { font-family: "Geist"; font-weight: 600; font-style: normal; font-display: swap; src: url("fonts/Geist-SemiBold.ttf") format("truetype"); }
+@font-face { font-family: "Geist"; font-weight: 600; font-style: italic; font-display: swap; src: url("fonts/Geist-SemiBoldItalic.ttf") format("truetype"); }
+@font-face { font-family: "Geist"; font-weight: 700; font-style: normal; font-display: swap; src: url("fonts/Geist-Bold.ttf") format("truetype"); }
+@font-face { font-family: "Geist"; font-weight: 700; font-style: italic; font-display: swap; src: url("fonts/Geist-BoldItalic.ttf") format("truetype"); }
+@font-face { font-family: "Geist"; font-weight: 800; font-style: normal; font-display: swap; src: url("fonts/Geist-ExtraBold.ttf") format("truetype"); }
+@font-face { font-family: "Geist"; font-weight: 800; font-style: italic; font-display: swap; src: url("fonts/Geist-ExtraBoldItalic.ttf") format("truetype"); }
+@font-face { font-family: "Geist"; font-weight: 900; font-style: normal; font-display: swap; src: url("fonts/Geist-Black.ttf") format("truetype"); }
+@font-face { font-family: "Geist"; font-weight: 900; font-style: italic; font-display: swap; src: url("fonts/Geist-BlackItalic.ttf") format("truetype"); }
+
+:root {
+  /* ---- Font families ---- */
+  --font-sans: "Geist", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "Geist Mono", ui-monospace, "SF Mono", Menlo, monospace;
+
+  /* ============================================================
+     CORE — mirrors app/globals.css @theme (light theme)
+     ============================================================ */
+  --background: #ffffff;          /* oklch(1 0 0)        page background */
+  --foreground: #0a0a0a;          /* oklch(.04 0 0)      foreground / ring */
+  --black: #1c1c1c;               /* oklch(.193 0 0)     DEFAULT body text (`text-black`) */
+  --white: #ffffff;
+  --accent: #f2f2f2;              /* oklch(.96 0 0)      recessed / hover surface */
+  --muted-foreground: #6b6b6b;    /* oklch(.45 0 0)      muted copy */
+  --border: #e2e2e2;              /* oklch(.9 0 0)       hairline borders + input ring */
+  --input: #e2e2e2;               /* oklch(.9 0 0) */
+  --ring: #0a0a0a;                /* oklch(.04 0 0)      focus ring base */
+
+  /* ============================================================
+     COLOR — BASE TOKENS
+     ============================================================ */
+
+  /* Primary — BLUE (interactive / actions). HSL(210 100%), main = 600.
+     The ramp varies only in LIGHTNESS (49%→40%): one confident blue. */
+  --primary-100: hsl(210 100% 49%);
+  --primary-200: hsl(210 100% 48%);
+  --primary-300: hsl(210 100% 47%);
+  --primary-400: hsl(210 100% 46%);  /* button :active */
+  --primary-500: hsl(210 100% 45%);  /* button :hover, input focus ring */
+  --primary-600: #0071e3;            /* hsl(210 100% 43%) — MAIN (button bg) */
+  --primary-700: hsl(210 100% 42%);
+  --primary-800: hsl(210 100% 41%);
+  --primary-900: hsl(210 100% 40%);
+  --primary-50:  #e8f1fd;            /* bg-primary-50 — selected pricing tier fill */
+
+  /* Secondary — LIME. Brand identity / logo tile / positive accents. */
+  --brand-lime: #defcad;             /* exact logo.svg tile fill (rx16) */
+  --secondary-600: #defcad;          /* alias — the Bean lime */
+  --secondary-700: #d4fb90;
+  --secondary-500: #e6fdc2;
+
+  /* Gray — neutral scale. HSL(0 0%), pure neutral. main = 600 */
+  --gray-100: #dbdbdb;  /* 86% */
+  --gray-200: #cccccc;  /* 80% — input ring, switch-off track */
+  --gray-300: #bdbdbd;  /* 74% */
+  --gray-400: #adadad;  /* 68% */
+  --gray-500: #9e9e9e;  /* 62% — placeholder / helper text */
+  --gray-600: #8f8f8f;  /* 56% — main */
+  --gray-700: #808080;  /* 50% */
+  --gray-800: #707070;  /* 44% */
+  --gray-900: #616161;  /* 38% — strong neutral text */
+
+  /* Destructive — the ONE status color actually tokenised in code.
+     `--danger` (shadcn) = oklch(.5896 .1962 36.09) ≈ a warm orange-red.
+     Used for: log out, leave community, input errors. */
+  --danger: #d8400c;                       /* oklch(.5896 .1962 36.09) */
+  --danger-soft: rgba(216, 64, 12, 0.075); /* #D8400C13 — destructive hover wash */
+  --danger-press: rgba(216, 64, 12, 0.2);  /* #D8400C33 — destructive active wash */
+
+  /* ---- DS-proposed SEMANTIC STATUS palette ----
+     Not in the codebase yet (code only tokenises `--danger`). Added here so
+     alerts / validation / badges share ONE harmonious set instead of ad-hoc
+     Tailwind values. All tuned to sit beside the blue + lime + danger.
+     fill = soft 50-tint surface · main = icon/text · border = hairline. */
+  --info:    #0071e3;  --info-fill:    #e8f1fd;  --info-border:    #bcd9fb;  /* = primary blue */
+  --success: #1e9e57;  --success-fill: #e6f6ec;  --success-border: #b8e6c8;  /* green, lime-adjacent */
+  --warning: #b7791f;  --warning-fill: #fbf3e2;  --warning-border: #f0ddb4;  /* amber */
+  --error:   #d8400c;  --error-fill:   #fbeae4;  --error-border:   #f3cab8;  /* = danger */
+
+  /* Ad-hoc Tailwind colors the product reaches for (NOT tokenised in code).
+     Documented so recreations match what ships, but prefer the tokens above. */
+  --tw-blue-600: #2563eb;  /* Switch "on" track + loader spinners */
+  --tw-blue-100: #dbeafe;  /* discount / ⌘K badge fill */
+  --tw-blue-700: #1d4ed8;  /* discount / ⌘K badge text */
+  --tw-gray-50:  #f9fafb;  /* public community-preview page bg */
+
+  /* ============================================================
+     LEGACY SEMANTIC ALIASES — kept stable for existing artifacts
+     (preview cards + ui_kit). Map onto the core tokens above.
+     ============================================================ */
+  --bg-light: #ffffff;            /* primary surface */
+  --bg-light-secondary: #f5f5f5;  /* app gutter / recessed fill (layout p-2 bg) */
+  --bg-outline: #e2e2e2;          /* hairline borders */
+  --text-primary: #141414;        /* near-black headings/body */
+  --text-secondary: #404040;      /* secondary copy */
+  --text-tertiary: #8f8f8f;       /* muted / placeholder-ish */
+  --text-on-primary: #ffffff;     /* text over blue */
+  --primary-1000: #0067cf;        /* extra-dark blue (ui_kit hover) */
+
+  /* Icon / tab state overlays (used by ghost items + nav tabs) */
+  --icon-hover: rgba(226, 226, 226, 0.5);
+  --icon-focus: rgba(226, 226, 226, 0.7);
+  --tab-active: rgba(211, 211, 211, 0.25);   /* #D3D3D340 active tab fill */
+  --tab-active-ring: #d3d3d3;                /* active tab ring */
+  --tab-hover: rgba(211, 211, 211, 0.15);    /* #D3D3D325 tab hover */
+
+  /* ============================================================
+     ELEVATION / RADII / SPACING
+     ============================================================ */
+  --shadow-card: 0px 4px 6px -2px rgba(16, 24, 40, 0.03),
+                 0px 12px 16px -4px rgba(16, 24, 40, 0.08);
+  --shadow-sm: 0px 1px 2px rgba(16, 24, 40, 0.06);
+  --shadow-pop: 0px 8px 24px rgba(0, 0, 0, 0.12);
+
+  /* Radii — mirrors Tailwind @theme (--radius-md/lg/xl) + the arbitrary
+     values the app uses. NOTE: this differs from the old DS (8/16/18/24). */
+  --radius-md: 12px;     /* @theme md (.75rem) — chips, S buttons, app panels, community avatar */
+  --radius-lg: 14px;     /* @theme lg (.875rem) — M inputs, nav tabs */
+  --radius-xl: 16px;     /* @theme xl (1rem) — BASE: M/L buttons, L inputs, cards, logo tile */
+  --radius-profile: 18px;/* expanding profile button in the rail */
+  --radius-2xl: 24px;    /* auth card + dialogs */
+  --radius-full: 9999px; /* pills, badges, toggles, avatars */
+  --radius-sm: 8px;      /* legacy alias (older swatch cards) */
+
+  /* 4px base spacing scale */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+
+  /* ============================================================
+     TYPOGRAPHY — TAILWIND SCALE (mirrors @theme --text-*)
+     The app styles type with Tailwind utilities, not bespoke tokens.
+     ============================================================ */
+  --text-xs: 12px;   --text-xs-line: 16px;
+  --text-sm: 14px;   --text-sm-line: 18px;   /* form labels, helper, tabs */
+  --text-base: 16px; --text-base-line: 20px; /* body workhorse */
+  --text-lg: 18px;   --text-lg-line: 28px;   /* section sub-heads */
+  --text-xl: 20px;   --text-xl-line: 28px;
+  --text-2xl: 24px;  --text-2xl-line: 32px;  /* PAGE titles (`text-2xl font-bold`) */
+  --text-3xl: 28px;  --text-3xl-line: 36px;
+  --text-4xl: 30px;
+  --text-5xl: 32px;
+  --text-6xl: 36px;  --text-6xl-line: 110%;
+  --text-7xl: 40px;  --text-7xl-line: 110%;
+
+  /* ---- Legacy semantic type tokens (kept for older preview cards) ---- */
+  --h1-size: 36px;   --h1-weight: 700; --h1-line: 110%;
+  --h2-size: 28px;   --h2-weight: 600; --h2-line: 120%;
+  --h3-size: 22px;   --h3-weight: 600; --h3-line: 130%;
+  --h4-size: 18px;   --h4-weight: 500; --h4-line: 130%;
+  --title-m-size: 24px; --title-m-weight: 600; --title-m-line: 125%;
+  --title-s-size: 20px; --title-s-weight: 500; --title-s-line: 130%;
+  --body-l-size: 18px;  --body-l-line: 130%;
+  --body-m-size: 16px;  --body-m-line: 130%;
+  --body-s-size: 14px;  --body-s-line: 130%;
+  --body-xs-size: 12px; --body-xs-line: 130%;
+  --input-label-size: 14px;  --input-label-weight: 500; --input-label-line: 130%;
+  --input-helper-size: 12px; --input-helper-weight: 400; --input-helper-line: 130%;
+  --caption-m-size: 12px; --caption-m-weight: 500; --caption-m-line: 140%;
+}
+
+/* ============================================================
+   DARK THEME — present in the codebase (`.dark`). Recreations
+   that need it should toggle `class="dark"` on a wrapper.
+   ============================================================ */
+.dark {
+  --background: #0a0a0a;        /* oklch(.04 0 0) */
+  --foreground: #fafafa;        /* oklch(.98 0 0) */
+  --black: #fafafa;             /* text flips to light */
+  --accent: #262626;            /* oklch(.15 0 0) */
+  --muted-foreground: #a3a3a3;  /* oklch(.64 0 0) */
+  --border: #262626;            /* oklch(.15 0 0) */
+  --input: #262626;
+  --ring: #d4d4d4;              /* oklch(.83 0 0) */
+  --primary-500: #2f7df0;       /* oklch(.5629 .1933 256.16) */
+  --bg-light: #0a0a0a;
+  --bg-light-secondary: #141414;
+  --bg-outline: #262626;
+  --text-primary: #fafafa;
+  --text-secondary: #d4d4d4;
+  --text-tertiary: #a3a3a3;
+}
+
+/* ============================================================
+   SEMANTIC TYPE CLASSES — apply directly in markup
+   ============================================================ */
+.bean-h1 { font-family: var(--font-sans); font-weight: var(--h1-weight); font-size: var(--h1-size); line-height: var(--h1-line); color: var(--text-primary); letter-spacing: -0.02em; }
+.bean-h2 { font-family: var(--font-sans); font-weight: var(--h2-weight); font-size: var(--h2-size); line-height: var(--h2-line); color: var(--text-primary); letter-spacing: -0.01em; }
+.bean-h3 { font-family: var(--font-sans); font-weight: var(--h3-weight); font-size: var(--h3-size); line-height: var(--h3-line); color: var(--text-primary); }
+.bean-h4 { font-family: var(--font-sans); font-weight: var(--h4-weight); font-size: var(--h4-size); line-height: var(--h4-line); color: var(--text-primary); }
+/* Page title as the app actually renders it: text-2xl / 700 */
+.bean-page-title { font-family: var(--font-sans); font-weight: 700; font-size: var(--text-2xl); line-height: var(--text-2xl-line); color: var(--black); }
+.bean-title-m { font-family: var(--font-sans); font-weight: var(--title-m-weight); font-size: var(--title-m-size); line-height: var(--title-m-line); color: var(--text-primary); }
+.bean-title-s { font-family: var(--font-sans); font-weight: var(--title-s-weight); font-size: var(--title-s-size); line-height: var(--title-s-line); color: var(--text-primary); }
+.bean-body-l { font-family: var(--font-sans); font-weight: 400; font-size: var(--body-l-size); line-height: var(--body-l-line); color: var(--text-secondary); }
+.bean-body-m { font-family: var(--font-sans); font-weight: 400; font-size: var(--body-m-size); line-height: var(--body-m-line); color: var(--text-secondary); }
+.bean-body-s { font-family: var(--font-sans); font-weight: 400; font-size: var(--body-s-size); line-height: var(--body-s-line); color: var(--text-secondary); }
+.bean-label { font-family: var(--font-sans); font-weight: var(--input-label-weight); font-size: var(--input-label-size); line-height: var(--input-label-line); color: var(--text-primary); }
+.bean-helper { font-family: var(--font-sans); font-weight: var(--input-helper-weight); font-size: var(--input-helper-size); line-height: var(--input-helper-line); color: var(--text-tertiary); }
+.bean-caption { font-family: var(--font-sans); font-weight: var(--caption-m-weight); font-size: var(--caption-m-size); line-height: var(--caption-m-line); color: var(--text-tertiary); }
+.bean-mono { font-family: var(--font-mono); }

@@ -7,10 +7,16 @@ import {
   useCommunityProfileQuery,
   useUpdateCommunityProfileMutation,
 } from "@/entities/community";
+import {
+  useStorefrontQuery,
+  useUpdateStorefrontMutation,
+  type Storefront,
+} from "@/entities/storefront";
 import { useCommunityStatsQuery } from "@/entities/subscription";
 import { Avatar, Button } from "@/shared/components";
 import { fileToDataUrl } from "@/shared/utils";
 import { AdminShell } from "../AdminShell";
+import { StorefrontEditor } from "./StorefrontEditor";
 
 interface UploadFieldProps {
   label: string;
@@ -65,13 +71,18 @@ function UploadField({ label, hint, value, height, maxWidth, onChange }: UploadF
   );
 }
 
+const EMPTY_STOREFRONT: Storefront = { description: "", media: [], features: [] };
+
 export function AppearancePage({ slug }: { slug: string }) {
   const { data: profile, isLoading } = useCommunityProfileQuery(slug);
+  const { data: storefront } = useStorefrontQuery(slug);
   const { data: stats } = useCommunityStatsQuery(slug);
   const updateProfile = useUpdateCommunityProfileMutation();
+  const updateStorefront = useUpdateStorefrontMutation(slug);
 
   const [coverUrl, setCoverUrl] = useState<string | null>(null);
   const [logoUrl, setLogoUrl] = useState<string | null>(null);
+  const [storefrontDraft, setStorefrontDraft] = useState<Storefront>(EMPTY_STOREFRONT);
 
   useEffect(() => {
     if (profile) {
@@ -80,11 +91,28 @@ export function AppearancePage({ slug }: { slug: string }) {
     }
   }, [profile]);
 
-  const isDirty =
+  useEffect(() => {
+    if (storefront) {
+      setStorefrontDraft(storefront);
+    }
+  }, [storefront]);
+
+  const isAppearanceDirty =
     !!profile && (coverUrl !== profile.coverUrl || logoUrl !== profile.logoUrl);
+  const isStorefrontDirty =
+    !!storefront && JSON.stringify(storefrontDraft) !== JSON.stringify(storefront);
+  const isDirty = isAppearanceDirty || isStorefrontDirty;
 
   const handleSave = () => {
-    updateProfile.mutate({ slug, coverUrl, logoUrl });
+    if (isAppearanceDirty) {
+      updateProfile.mutate({ slug, coverUrl, logoUrl });
+    }
+    if (isStorefrontDirty) {
+      updateStorefront.mutate({
+        ...storefrontDraft,
+        features: storefrontDraft.features.filter((feature) => feature.text.trim()),
+      });
+    }
   };
 
   const membersCount = stats?.cards[1]?.value ?? "0";
@@ -93,14 +121,14 @@ export function AppearancePage({ slug }: { slug: string }) {
     <AdminShell
       slug={slug}
       title="Внешний вид"
-      subtitle="Обложка и логотип сообщества"
+      subtitle="Оформление и витрина сообщества"
       actions={
         <Button
           theme="primary"
           size="s"
           onClick={handleSave}
           isDisabled={!isDirty}
-          isLoading={updateProfile.isPending}
+          isLoading={updateProfile.isPending || updateStorefront.isPending}
         >
           Сохранить
         </Button>
@@ -131,9 +159,18 @@ export function AppearancePage({ slug }: { slug: string }) {
               onChange={setLogoUrl}
             />
             <p className="text-xs text-gray-500">
-              Обложка показывается в баннере сообщества и на публичной странице, логотип — в
-              списке сообществ и в баннере.
+              Обложка показывается в баннере сообщества, логотип — в списке сообществ и в
+              баннере.
             </p>
+
+            <div className="pt-2 border-t border-gray-200 space-y-1">
+              <p className="text-[15px] font-bold text-black">Витрина</p>
+              <p className="text-xs text-gray-500">
+                Публичная страница для гостей — оформляется отдельно; из сообщества берутся
+                только название и логотип.
+              </p>
+            </div>
+            <StorefrontEditor value={storefrontDraft} onChange={setStorefrontDraft} />
           </div>
 
           {/* Live-превью публичной карточки */}

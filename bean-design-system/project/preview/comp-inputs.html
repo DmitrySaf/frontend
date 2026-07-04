@@ -1,0 +1,121 @@
+<!-- @dsCard group="Components" -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="../colors_and_type.css">
+<link rel="stylesheet" href="_dscard.css">
+<style>
+  .inp { display: flex; align-items: center; gap: 8px; width: 100%;
+         background: #fff; box-shadow: inset 0 0 0 1px var(--gray-200);
+         border-radius: 16px; padding: 0 14px; height: 48px; color: var(--gray-500); }
+  .inp .val { color: var(--text-primary); }
+  .inp .pfx { color: var(--text-tertiary); flex: none; }
+  .inp i.ic { width: 18px; height: 18px; flex: none; color: var(--text-tertiary); }
+  .inp i.ic.ok { color: var(--success); }
+  /* size M */
+  .inp.m { height: 40px; border-radius: 14px; font-size: 14px; }
+  .inp.l { font-size: 16px; }
+  /* states */
+  .inp.hover { box-shadow: inset 0 0 0 1px var(--gray-300); }
+  .inp.focus { box-shadow: inset 0 0 0 2px var(--primary-500); }
+  .inp.focus .car { width: 1.5px; height: 18px; background: var(--primary-600); display: inline-block; margin-left: -2px; animation: bl 1s steps(1) infinite; }
+  @keyframes bl { 50% { opacity: 0; } }
+  .inp.filled { box-shadow: inset 0 0 0 1px var(--gray-200); }
+  .inp.disabled { background: var(--accent); box-shadow: inset 0 0 0 1px var(--border); color: var(--gray-400); cursor: not-allowed; }
+  .inp.error { box-shadow: inset 0 0 0 1.5px var(--danger); }
+  .inp.success { box-shadow: inset 0 0 0 1.5px var(--success); }
+  /* prefix tile (32x32 brand-icon) */
+  .tile { width: 32px; height: 32px; border-radius: 10px; box-shadow: inset 0 0 0 1px var(--border), var(--shadow-sm); display: grid; place-items: center; flex: none; }
+  .tile i { width: 17px; height: 17px; color: var(--text-primary); }
+
+  .grid-s { display: grid; grid-template-columns: 56px repeat(5, minmax(150px,1fr)); gap: 16px 16px; align-items: center; }
+  .lab { font-size: 13px; font-weight: 500; margin-bottom: 7px; color: var(--text-primary); display: flex; justify-content: space-between; }
+  .lab .cnt { color: var(--gray-500); font-weight: 400; font-variant-numeric: tabular-nums; }
+  .help { font-size: 12px; color: var(--text-tertiary); margin-top: 6px; }
+  .help.err { color: var(--danger); }
+  .help.ok { color: var(--success); }
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+  .field { max-width: 100%; }
+</style>
+</head>
+<body>
+  <div class="ds-head">
+    <h2 class="ds-title">Inputs</h2>
+    <p class="ds-sub">Белая заливка с <b>inset-ring</b>. 2 размера (<b>L / M</b>). Фокус — 2px синее кольцо; ошибка / успех — цветное кольцо + helper. Плейсхолдер моделирует ответ. Лейбл сверху, helper/счётчик снизу.</p>
+  </div>
+  <hr class="ds-rule">
+
+  <!-- SIZES × STATES -->
+  <div class="ds-block">
+    <div class="ds-sect">Размеры × состояния</div>
+    <div class="grid-s">
+      <span></span>
+      <span class="ds-clab">Default</span><span class="ds-clab">Hover</span><span class="ds-clab">Focus</span><span class="ds-clab">Filled</span><span class="ds-clab">Disabled</span>
+      <span class="ds-rlab">L</span>
+      <span><div class="inp l">Введите имя</div></span>
+      <span><div class="inp l hover">Введите имя</div></span>
+      <span><div class="inp l focus"><span class="val">Алина</span><span class="car"></span></div></span>
+      <span><div class="inp l filled"><span class="val">Алина Тсуми</span></div></span>
+      <span><div class="inp l disabled">Недоступно</div></span>
+      <span class="ds-rlab">M</span>
+      <span><div class="inp m">Введите имя</div></span>
+      <span><div class="inp m hover">Введите имя</div></span>
+      <span><div class="inp m focus"><span class="val">Алина</span><span class="car"></span></div></span>
+      <span><div class="inp m filled"><span class="val">Алина Тсуми</span></div></span>
+      <span><div class="inp m disabled">Недоступно</div></span>
+    </div>
+  </div>
+
+  <!-- VALIDATION -->
+  <div class="ds-block">
+    <div class="ds-sect">Валидация <span class="meta">— error / success c helper</span></div>
+    <div class="two">
+      <div class="field">
+        <div class="lab">Почта</div>
+        <div class="inp l error"><span class="val">example@</span></div>
+        <div class="help err">Введите корректный адрес</div>
+      </div>
+      <div class="field">
+        <div class="lab">Имя пользователя</div>
+        <div class="inp l success"><span class="pfx">@</span><span class="val">tsumi</span><i data-lucide="check" class="ic ok"></i></div>
+        <div class="help ok">Имя свободно</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PREFIXES & CONTENT -->
+  <div class="ds-block">
+    <div class="ds-sect">Префиксы и контент <span class="meta">— @ · url · brand-tile · счётчик</span></div>
+    <div class="two">
+      <div class="field">
+        <div class="lab">URL сообщества</div>
+        <div class="inp l filled"><span class="pfx">profound.com/</span><span class="val">tsumi</span></div>
+        <div class="help">Автотранслитерация из названия</div>
+      </div>
+      <div class="field">
+        <div class="lab">Телефон</div>
+        <div class="inp l"><span class="pfx">+7</span><span>(999) 123-45-67</span></div>
+      </div>
+      <div class="field">
+        <div class="lab">Telegram</div>
+        <div class="inp l"><span class="tile"><i data-lucide="send"></i></span><span class="pfx">t.me/</span><span>xtsumi</span></div>
+        <div class="help">prefixElement — 32×32 bordered brand-tile</div>
+      </div>
+      <div class="field">
+        <div class="lab">О себе <span class="cnt">48 / 160</span></div>
+        <div class="inp l filled" style="height:auto; padding:12px 14px; align-items:flex-start;"><span class="val" style="line-height:1.4;">Помогаю авторам запускать платные сообщества</span></div>
+        <div class="help">Счётчик появляется при заданном maxLength</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ds-note">
+    Размеры: <span class="ds-pill">L — r-xl, text-base</span> <span class="ds-pill">M — r-lg, text-sm</span>.
+    Hover слегка усиливает hairline; focus заменяет его на 2px синее кольцо с мигающим каретом; disabled — recessed-заливка.
+    Ошибка использует <code>--danger</code>, успех — DS-палитру <code>--success</code> (расширение, в коде ещё нет).
+  </div>
+<script src="https://unpkg.com/lucide@latest"></script>
+<script>lucide.createIcons();</script>
+</body>
+</html>

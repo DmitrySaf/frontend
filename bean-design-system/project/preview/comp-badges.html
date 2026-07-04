@@ -1,0 +1,132 @@
+<!-- @dsCard group="Components" -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="../colors_and_type.css">
+<link rel="stylesheet" href="_dscard.css">
+<style>
+  .bdg { display: inline-flex; align-items: center; gap: 5px; border-radius: 9999px;
+         font-size: 12px; font-weight: 600; padding: 4px 10px; line-height: 1; white-space: nowrap; }
+  .bdg i, .bdg svg { width: 20px; height: 20px; }
+  .bdg .dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; flex: none; }
+  .bdg .x { display: inline-flex; opacity: .65; margin-left: 1px; margin-right: -3px; cursor: pointer; border-radius: 50%; padding: 1px; transition: opacity .12s, background .12s; }
+  .bdg .x:hover { opacity: 1; background: rgba(0,0,0,.08); }
+  .bdg .x i, .bdg .x svg { width: 20px; height: 20px; }
+  .bdg .count { font-variant-numeric: tabular-nums; font-weight: 700; opacity: .55;
+                margin-left: 1px; }
+  /* sizes */
+  .bdg.s { font-size: 11px; padding: 3px 8px; gap: 4px; }
+  .bdg.s i, .bdg.s svg { width: 16px; height: 16px; }
+  .bdg.s .dot { width: 6px; height: 6px; }
+  .bdg.s .x i, .bdg.s .x svg { width: 16px; height: 16px; }
+  .bdg.l { font-size: 14px; padding: 6px 14px; gap: 6px; }
+  .bdg.l i, .bdg.l svg { width: 24px; height: 24px; }
+  .bdg.l .dot { width: 8px; height: 8px; }
+  .bdg.l .x i, .bdg.l .x svg { width: 24px; height: 24px; }
+
+  /* color × style */
+  .soft.neutral { background: var(--accent); color: var(--text-secondary); }
+  .solid.neutral { background: var(--text-primary); color: #fff; }
+  .outline.neutral { background: #fff; box-shadow: inset 0 0 0 1px var(--border); color: var(--text-secondary); }
+  .soft.info { background: var(--info-fill); color: var(--info); }
+  .solid.info { background: var(--info); color: #fff; }
+  .outline.info { background: #fff; box-shadow: inset 0 0 0 1px var(--info-border); color: var(--info); }
+  .soft.success { background: var(--success-fill); color: var(--success); }
+  .solid.success { background: var(--success); color: #fff; }
+  .outline.success { background: #fff; box-shadow: inset 0 0 0 1px var(--success-border); color: var(--success); }
+  .soft.warning { background: var(--warning-fill); color: var(--warning); }
+  .solid.warning { background: var(--warning); color: #fff; }
+  .outline.warning { background: #fff; box-shadow: inset 0 0 0 1px var(--warning-border); color: var(--warning); }
+  .soft.error { background: var(--error-fill); color: var(--error); }
+  .solid.error { background: var(--error); color: #fff; }
+  .outline.error { background: #fff; box-shadow: inset 0 0 0 1px var(--error-border); color: var(--error); }
+  .soft.brand { background: rgba(222,252,173,.55); color: #3a5012; }
+  .solid.brand { background: var(--brand-lime); color: #2c3d0c; }
+  .outline.brand { background: #fff; box-shadow: inset 0 0 0 1px var(--secondary-700); color: #3a5012; }
+
+  .grid-cs { display: grid; grid-template-columns: 88px repeat(3, 1fr); gap: 16px 14px; align-items: center; max-width: 560px; }
+  .row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+  .grid-var { display: grid; grid-template-columns: 110px repeat(3, 1fr); gap: 18px 14px; align-items: center; max-width: 560px; }
+</style>
+</head>
+<body>
+  <div class="ds-head">
+    <h2 class="ds-title">Badges</h2>
+    <p class="ds-sub">Статус-индикаторы — отличаются от <b>Tags</b> (метки контента). Pill-форма. 6 семантик × 3 стиля (<b>soft / solid / outline</b>). Семантические цвета — DS-палитра статусов (расширение поверх кода, где токенизирован только <code>danger</code>).</p>
+  </div>
+  <hr class="ds-rule">
+
+  <div class="ds-block">
+    <div class="ds-sect">Цвет × стиль</div>
+    <div class="grid-cs">
+      <span></span>
+      <span class="ds-clab">Soft</span><span class="ds-clab">Solid</span><span class="ds-clab">Outline</span>
+      <span class="ds-rlab">Neutral</span>
+      <span><span class="bdg soft neutral">Черновик</span></span>
+      <span><span class="bdg solid neutral">Черновик</span></span>
+      <span><span class="bdg outline neutral">Черновик</span></span>
+      <span class="ds-rlab">Info</span>
+      <span><span class="bdg soft info">Скидка 10%</span></span>
+      <span><span class="bdg solid info">Скидка 10%</span></span>
+      <span><span class="bdg outline info">Скидка 10%</span></span>
+      <span class="ds-rlab">Success</span>
+      <span><span class="bdg soft success">Активен</span></span>
+      <span><span class="bdg solid success">Активен</span></span>
+      <span><span class="bdg outline success">Активен</span></span>
+      <span class="ds-rlab">Warning</span>
+      <span><span class="bdg soft warning">Ожидает</span></span>
+      <span><span class="bdg solid warning">Ожидает</span></span>
+      <span><span class="bdg outline warning">Ожидает</span></span>
+      <span class="ds-rlab">Error</span>
+      <span><span class="bdg soft error">Отклонён</span></span>
+      <span><span class="bdg solid error">Отклонён</span></span>
+      <span><span class="bdg outline error">Отклонён</span></span>
+      <span class="ds-rlab">Brand</span>
+      <span><span class="bdg soft brand">Новое</span></span>
+      <span><span class="bdg solid brand">Новое</span></span>
+      <span><span class="bdg outline brand">Новое</span></span>
+    </div>
+  </div>
+
+  <div class="ds-block">
+    <div class="ds-sect">Варианты <span class="meta">— dot / icon / counter / closable</span></div>
+    <div class="grid-var">
+      <span></span>
+      <span class="ds-clab">S</span><span class="ds-clab">M</span><span class="ds-clab">L</span>
+
+      <span class="ds-rlab">Без иконки</span>
+      <span><span class="bdg s soft neutral">Черновик</span></span>
+      <span><span class="bdg soft neutral">Черновик</span></span>
+      <span><span class="bdg l soft neutral">Черновик</span></span>
+
+      <span class="ds-rlab">Dot</span>
+      <span><span class="bdg s soft success"><span class="dot"></span>Онлайн</span></span>
+      <span><span class="bdg soft success"><span class="dot"></span>Онлайн</span></span>
+      <span><span class="bdg l soft success"><span class="dot"></span>Онлайн</span></span>
+
+      <span class="ds-rlab">Icon</span>
+      <span><span class="bdg s soft info"><i data-lucide="info"></i>Инфо</span></span>
+      <span><span class="bdg soft info"><i data-lucide="info"></i>Инфо</span></span>
+      <span><span class="bdg l soft info"><i data-lucide="info"></i>Инфо</span></span>
+
+      <span class="ds-rlab">Counter</span>
+      <span><span class="bdg s soft brand">Сообщения<span class="count">12</span></span></span>
+      <span><span class="bdg soft brand">Сообщения<span class="count">12</span></span></span>
+      <span><span class="bdg l soft brand">Сообщения<span class="count">12</span></span></span>
+
+      <span class="ds-rlab">Closable</span>
+      <span><span class="bdg s soft warning">Фильтр<span class="x"><i data-lucide="x"></i></span></span></span>
+      <span><span class="bdg soft warning">Фильтр<span class="x"><i data-lucide="x"></i></span></span></span>
+      <span><span class="bdg l soft warning">Фильтр<span class="x"><i data-lucide="x"></i></span></span></span>
+    </div>
+  </div>
+
+  <div class="ds-note">
+    Badges <b>сигнализируют состояние</b> (статус подписки, верификация, скидка). Для тем и категорий контента используйте <b>Tags</b>.
+    Dot / icon / counter / closable — модификаторы контента, работают с любой семантикой и любым размером (S / M / L).
+  </div>
+<script src="https://unpkg.com/lucide@latest"></script>
+<script>lucide.createIcons();</script>
+</body>
+</html>

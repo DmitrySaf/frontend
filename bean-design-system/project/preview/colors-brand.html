@@ -1,0 +1,36 @@
+<!-- @dsCard group="Colors" -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  body { margin: 0; font-family: var(--font-sans); background: #fff; padding: 24px; color: var(--text-primary); }
+  .cap { font-size: 15px; font-weight: 600; margin-bottom: 16px; }
+  .pair { display: flex; gap: 16px; align-items: stretch; }
+  .big { flex: 1; height: 120px; border-radius: var(--radius-lg); display: flex; flex-direction: column; justify-content: space-between; padding: 14px; box-sizing: border-box; }
+  .big .n { font-weight: 600; font-size: 14px; }
+  .big .h { font-family: var(--font-mono); font-size: 12px; opacity: .9; }
+  .logo { width: 44px; height: 44px; border-radius: 12px; background: var(--secondary-600); display: grid; place-items: center; }
+</style>
+</head>
+<body>
+  <div class="cap">Brand pairing — lime identity, blue action</div>
+  <div class="pair">
+    <div class="big" style="background:#cfff81;color:#2c3d12">
+      <div class="logo"><i data-lucide="bean" style="width:26px;height:26px;color:#141414"></i></div>
+      <div><div class="n">Secondary / Lime</div><div class="h">#CFFF81</div></div>
+    </div>
+    <div class="big" style="background:#0071e3;color:#fff">
+      <div style="font-weight:600">Сохранить</div>
+      <div><div class="n">Primary / Blue</div><div class="h">#0071E3</div></div>
+    </div>
+    <div class="big" style="background:#141414;color:#fff">
+      <div></div>
+      <div><div class="n">Text / Black</div><div class="h">#141414</div></div>
+    </div>
+  </div>
+<script src="https://unpkg.com/lucide@latest"></script>
+<script>lucide.createIcons();</script>
+</body>
+</html>

@@ -1,0 +1,297 @@
+<!-- @dsCard group="Components" -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="../colors_and_type.css">
+<link rel="stylesheet" href="_dscard.css">
+<style>
+  /* ---- Button base ---- */
+  .btn { font-family: var(--font-sans); font-weight: 600; border: 0; cursor: default;
+         display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+         white-space: nowrap; border-radius: 16px; line-height: 1; }
+  .btn i, .btn svg { flex: none; }
+  /* sizes — height · icon: XL 48·24 · L 40·20 · M 36·20 · S 32·16 */
+  .btn.xl { height: 48px; padding: 0 18px; font-size: 16px; border-radius: 16px; }
+  .btn.xl i, .btn.xl svg { width: 24px; height: 24px; }
+  .btn.l { height: 40px; padding: 0 16px; font-size: 14px; border-radius: 14px; }
+  .btn.l i, .btn.l svg { width: 20px; height: 20px; }
+  .btn.m { height: 36px; padding: 0 14px; font-size: 14px; border-radius: 12px; }
+  .btn.m i, .btn.m svg { width: 20px; height: 20px; }
+  .btn.s { height: 32px; padding: 0 12px; font-size: 13px; border-radius: 12px; gap: 6px; }
+  .btn.s i, .btn.s svg { width: 16px; height: 16px; }
+  .btn.io { padding: 0; }
+  .btn.xl.io { width: 48px; } .btn.l.io { width: 40px; } .btn.m.io { width: 36px; } .btn.s.io { width: 32px; }
+  /* primary */
+  .btn.primary { background: var(--primary-600); color: #fff; box-shadow: var(--shadow-sm); }
+  .btn.primary.h { background: var(--primary-500); }
+  .btn.primary.a { background: var(--primary-400); }
+  .btn.primary.f { box-shadow: 0 0 0 2px #fff, 0 0 0 4px var(--primary-500); }
+  .btn.primary.d { opacity: .38; box-shadow: none; }
+  /* outline */
+  .btn.outline { background: #fff; color: var(--text-primary); box-shadow: inset 0 0 0 1px var(--input), var(--shadow-sm); }
+  .btn.outline.h { background: var(--accent); }
+  .btn.outline.a { background: var(--gray-100); }
+  .btn.outline.f { box-shadow: inset 0 0 0 1px var(--input), 0 0 0 2px #fff, 0 0 0 4px var(--primary-500); }
+  .btn.outline.d { opacity: .45; }
+  /* ghost */
+  .btn.ghost { background: transparent; color: var(--text-secondary); box-shadow: none; }
+  .btn.ghost.h { background: var(--gray-100); }
+  .btn.ghost.a { background: var(--gray-200); }
+  .btn.ghost.f { box-shadow: 0 0 0 2px #fff, 0 0 0 4px var(--primary-500); }
+  .btn.ghost.d { opacity: .4; }
+  /* destructive */
+  .btn.destructive { background: var(--danger); color: #fff; box-shadow: var(--shadow-sm); }
+  .btn.destructive.h { background: #c23a0b; }
+  .btn.destructive.a { background: #a73108; }
+  .btn.destructive.f { box-shadow: 0 0 0 2px #fff, 0 0 0 4px rgba(216,64,12,.55); }
+  .btn.destructive.d { opacity: .4; box-shadow: none; }
+  /* ghost-danger (log out / leave) */
+  .btn.danger-ghost { background: transparent; color: var(--danger); box-shadow: none; }
+  .btn.danger-ghost.h { background: var(--danger-soft); }
+  .btn.danger-ghost.a { background: var(--danger-press); }
+  .btn.danger-ghost.f { box-shadow: 0 0 0 2px #fff, 0 0 0 4px rgba(216,64,12,.5); }
+  .btn.danger-ghost.d { opacity: .4; }
+
+  /* matrix: row label + 5 states */
+  .states { display: grid; grid-template-columns: 64px repeat(5, minmax(96px,1fr)); gap: 16px 18px; align-items: center; }
+  .states .ds-cell { justify-content: flex-start; }
+  /* dedicated size grid */
+  .sizes { display: grid; grid-template-columns: 52px 168px 64px 1fr; gap: 16px 22px; align-items: center; }
+  .sizes .ds-cell { justify-content: flex-start; }
+  .sizes .dim { font-family: var(--font-mono); font-size: 12.5px; color: var(--text-secondary); }
+  .sizes .dim b { color: var(--text-primary); font-weight: 600; }
+  .sizes .dim .sep { color: var(--gray-400); margin: 0 7px; }
+  /* icon-treatment matrix: theme rows × content cols */
+  .icons { display: grid; grid-template-columns: 86px repeat(4, minmax(120px,1fr)); gap: 18px; align-items: center; }
+  .fluidwrap { max-width: 420px; }
+  .btn.fluid { width: 100%; }
+</style>
+</head>
+<body>
+  <div class="ds-head">
+    <h2 class="ds-title">Buttons</h2>
+    <p class="ds-sub">4 темы · 4 размера (<b>XL / L / M / S</b>) · 5 состояний · контент с иконками и icon-only. Радиус растёт с размером. Кнопки <b>никогда не делаются полностью круглыми (pill)</b>.</p>
+  </div>
+  <hr class="ds-rule">
+
+  <!-- SIZES -->
+  <div class="ds-block">
+    <div class="ds-sect">Размеры <span class="meta">— 4 ступени · высота кнопки / размер иконки</span></div>
+    <div class="sizes">
+      <span class="ds-clab">Size</span><span class="ds-clab">С иконкой</span><span class="ds-clab">Icon-only</span><span class="ds-clab">Высота / иконка</span>
+      <span class="ds-rlab">XL</span>
+      <span class="ds-cell"><button class="btn xl primary"><i data-lucide="plus"></i>Создать</button></span>
+      <span class="ds-cell"><button class="btn xl io primary"><i data-lucide="plus"></i></button></span>
+      <span class="dim"><b>48px</b><span class="sep">·</span>icon 24</span>
+      <span class="ds-rlab">L</span>
+      <span class="ds-cell"><button class="btn l primary"><i data-lucide="plus"></i>Создать</button></span>
+      <span class="ds-cell"><button class="btn l io primary"><i data-lucide="plus"></i></button></span>
+      <span class="dim"><b>40px</b><span class="sep">·</span>icon 20</span>
+      <span class="ds-rlab">M</span>
+      <span class="ds-cell"><button class="btn m primary"><i data-lucide="plus"></i>Создать</button></span>
+      <span class="ds-cell"><button class="btn m io primary"><i data-lucide="plus"></i></button></span>
+      <span class="dim"><b>36px</b><span class="sep">·</span>icon 20</span>
+      <span class="ds-rlab">S</span>
+      <span class="ds-cell"><button class="btn s primary"><i data-lucide="plus"></i>Создать</button></span>
+      <span class="ds-cell"><button class="btn s io primary"><i data-lucide="plus"></i></button></span>
+      <span class="dim"><b>32px</b><span class="sep">·</span>icon 16</span>
+    </div>
+  </div>
+
+  <!-- PRIMARY -->
+  <div class="ds-block">
+    <div class="ds-sect">Primary <span class="meta">— основное действие · solid blue</span></div>
+    <div class="states">
+      <span></span>
+      <span class="ds-clab">Default</span><span class="ds-clab">Hover</span><span class="ds-clab">Focus</span><span class="ds-clab">Active</span><span class="ds-clab">Disabled</span>
+      <span class="ds-rlab">L</span>
+      <span class="ds-cell"><button class="btn l primary">Создать</button></span>
+      <span class="ds-cell"><button class="btn l primary h">Создать</button></span>
+      <span class="ds-cell"><button class="btn l primary f">Создать</button></span>
+      <span class="ds-cell"><button class="btn l primary a">Создать</button></span>
+      <span class="ds-cell"><button class="btn l primary d">Создать</button></span>
+      <span class="ds-rlab">M</span>
+      <span class="ds-cell"><button class="btn m primary">Сохранить</button></span>
+      <span class="ds-cell"><button class="btn m primary h">Сохранить</button></span>
+      <span class="ds-cell"><button class="btn m primary f">Сохранить</button></span>
+      <span class="ds-cell"><button class="btn m primary a">Сохранить</button></span>
+      <span class="ds-cell"><button class="btn m primary d">Сохранить</button></span>
+      <span class="ds-rlab">S</span>
+      <span class="ds-cell"><button class="btn s primary">Готово</button></span>
+      <span class="ds-cell"><button class="btn s primary h">Готово</button></span>
+      <span class="ds-cell"><button class="btn s primary f">Готово</button></span>
+      <span class="ds-cell"><button class="btn s primary a">Готово</button></span>
+      <span class="ds-cell"><button class="btn s primary d">Готово</button></span>
+    </div>
+  </div>
+
+  <!-- OUTLINE -->
+  <div class="ds-block">
+    <div class="ds-sect">Outline <span class="meta">— вторичное действие · белый + hairline</span></div>
+    <div class="states">
+      <span></span>
+      <span class="ds-clab">Default</span><span class="ds-clab">Hover</span><span class="ds-clab">Focus</span><span class="ds-clab">Active</span><span class="ds-clab">Disabled</span>
+      <span class="ds-rlab">L</span>
+      <span class="ds-cell"><button class="btn l outline">Отмена</button></span>
+      <span class="ds-cell"><button class="btn l outline h">Отмена</button></span>
+      <span class="ds-cell"><button class="btn l outline f">Отмена</button></span>
+      <span class="ds-cell"><button class="btn l outline a">Отмена</button></span>
+      <span class="ds-cell"><button class="btn l outline d">Отмена</button></span>
+      <span class="ds-rlab">M</span>
+      <span class="ds-cell"><button class="btn m outline">Изменить</button></span>
+      <span class="ds-cell"><button class="btn m outline h">Изменить</button></span>
+      <span class="ds-cell"><button class="btn m outline f">Изменить</button></span>
+      <span class="ds-cell"><button class="btn m outline a">Изменить</button></span>
+      <span class="ds-cell"><button class="btn m outline d">Изменить</button></span>
+      <span class="ds-rlab">S</span>
+      <span class="ds-cell"><button class="btn s outline">Сбросить</button></span>
+      <span class="ds-cell"><button class="btn s outline h">Сбросить</button></span>
+      <span class="ds-cell"><button class="btn s outline f">Сбросить</button></span>
+      <span class="ds-cell"><button class="btn s outline a">Сбросить</button></span>
+      <span class="ds-cell"><button class="btn s outline d">Сбросить</button></span>
+    </div>
+  </div>
+
+  <!-- GHOST -->
+  <div class="ds-block">
+    <div class="ds-sect">Ghost <span class="meta">— третичное · прозрачный · паттерн rail/header</span></div>
+    <div class="states">
+      <span></span>
+      <span class="ds-clab">Default</span><span class="ds-clab">Hover</span><span class="ds-clab">Focus</span><span class="ds-clab">Active</span><span class="ds-clab">Disabled</span>
+      <span class="ds-rlab">L</span>
+      <span class="ds-cell"><button class="btn l ghost">Подробнее</button></span>
+      <span class="ds-cell"><button class="btn l ghost h">Подробнее</button></span>
+      <span class="ds-cell"><button class="btn l ghost f">Подробнее</button></span>
+      <span class="ds-cell"><button class="btn l ghost a">Подробнее</button></span>
+      <span class="ds-cell"><button class="btn l ghost d">Подробнее</button></span>
+      <span class="ds-rlab">M</span>
+      <span class="ds-cell"><button class="btn m ghost">Пропустить</button></span>
+      <span class="ds-cell"><button class="btn m ghost h">Пропустить</button></span>
+      <span class="ds-cell"><button class="btn m ghost f">Пропустить</button></span>
+      <span class="ds-cell"><button class="btn m ghost a">Пропустить</button></span>
+      <span class="ds-cell"><button class="btn m ghost d">Пропустить</button></span>
+      <span class="ds-rlab">S</span>
+      <span class="ds-cell"><button class="btn s ghost">Ещё</button></span>
+      <span class="ds-cell"><button class="btn s ghost h">Ещё</button></span>
+      <span class="ds-cell"><button class="btn s ghost f">Ещё</button></span>
+      <span class="ds-cell"><button class="btn s ghost a">Ещё</button></span>
+      <span class="ds-cell"><button class="btn s ghost d">Ещё</button></span>
+    </div>
+  </div>
+
+  <!-- DESTRUCTIVE -->
+  <div class="ds-block">
+    <div class="ds-sect">Destructive <span class="meta">— необратимое действие · solid danger</span></div>
+    <div class="states">
+      <span></span>
+      <span class="ds-clab">Default</span><span class="ds-clab">Hover</span><span class="ds-clab">Focus</span><span class="ds-clab">Active</span><span class="ds-clab">Disabled</span>
+      <span class="ds-rlab">L</span>
+      <span class="ds-cell"><button class="btn l destructive">Удалить</button></span>
+      <span class="ds-cell"><button class="btn l destructive h">Удалить</button></span>
+      <span class="ds-cell"><button class="btn l destructive f">Удалить</button></span>
+      <span class="ds-cell"><button class="btn l destructive a">Удалить</button></span>
+      <span class="ds-cell"><button class="btn l destructive d">Удалить</button></span>
+      <span class="ds-rlab">M</span>
+      <span class="ds-cell"><button class="btn m destructive">Удалить</button></span>
+      <span class="ds-cell"><button class="btn m destructive h">Удалить</button></span>
+      <span class="ds-cell"><button class="btn m destructive f">Удалить</button></span>
+      <span class="ds-cell"><button class="btn m destructive a">Удалить</button></span>
+      <span class="ds-cell"><button class="btn m destructive d">Удалить</button></span>
+      <span class="ds-rlab">S</span>
+      <span class="ds-cell"><button class="btn s destructive">Удалить</button></span>
+      <span class="ds-cell"><button class="btn s destructive h">Удалить</button></span>
+      <span class="ds-cell"><button class="btn s destructive f">Удалить</button></span>
+      <span class="ds-cell"><button class="btn s destructive a">Удалить</button></span>
+      <span class="ds-cell"><button class="btn s destructive d">Удалить</button></span>
+    </div>
+  </div>
+
+  <!-- GHOST DANGER -->
+  <div class="ds-block">
+    <div class="ds-sect">Ghost · danger <span class="meta">— «Выйти из аккаунта», «Покинуть сообщество»</span></div>
+    <div class="states">
+      <span></span>
+      <span class="ds-clab">Default</span><span class="ds-clab">Hover</span><span class="ds-clab">Focus</span><span class="ds-clab">Active</span><span class="ds-clab">Disabled</span>
+      <span class="ds-rlab">M</span>
+      <span class="ds-cell"><button class="btn m danger-ghost"><i data-lucide="log-out"></i>Выйти</button></span>
+      <span class="ds-cell"><button class="btn m danger-ghost h"><i data-lucide="log-out"></i>Выйти</button></span>
+      <span class="ds-cell"><button class="btn m danger-ghost f"><i data-lucide="log-out"></i>Выйти</button></span>
+      <span class="ds-cell"><button class="btn m danger-ghost a"><i data-lucide="log-out"></i>Выйти</button></span>
+      <span class="ds-cell"><button class="btn m danger-ghost d"><i data-lucide="log-out"></i>Выйти</button></span>
+    </div>
+  </div>
+
+  <!-- ICON TREATMENTS -->
+  <div class="ds-block">
+    <div class="ds-sect">Контент: иконки <span class="meta">— размер M · none / prefix / suffix / icon-only</span></div>
+    <div class="icons">
+      <span></span>
+      <span class="ds-clab">None</span><span class="ds-clab">Prefix</span><span class="ds-clab">Suffix</span><span class="ds-clab">Icon-only</span>
+      <span class="ds-rlab">Primary</span>
+      <span class="ds-cell"><button class="btn m primary">Создать</button></span>
+      <span class="ds-cell"><button class="btn m primary"><i data-lucide="plus"></i>Создать</button></span>
+      <span class="ds-cell"><button class="btn m primary">Далее<i data-lucide="arrow-right"></i></button></span>
+      <span class="ds-cell"><button class="btn m io primary"><i data-lucide="plus"></i></button></span>
+      <span class="ds-rlab">Outline</span>
+      <span class="ds-cell"><button class="btn m outline">Фильтры</button></span>
+      <span class="ds-cell"><button class="btn m outline"><i data-lucide="sliders-horizontal"></i>Фильтры</button></span>
+      <span class="ds-cell"><button class="btn m outline">Меню<i data-lucide="chevron-down"></i></button></span>
+      <span class="ds-cell"><button class="btn m io outline"><i data-lucide="search"></i></button></span>
+      <span class="ds-rlab">Ghost</span>
+      <span class="ds-cell"><button class="btn m ghost">Настройки</button></span>
+      <span class="ds-cell"><button class="btn m ghost"><i data-lucide="settings"></i>Настройки</button></span>
+      <span class="ds-cell"><button class="btn m ghost">Помощь<i data-lucide="help-circle"></i></button></span>
+      <span class="ds-cell"><button class="btn m io ghost"><i data-lucide="bell"></i></button></span>
+      <span class="ds-rlab">Destructive</span>
+      <span class="ds-cell"><button class="btn m destructive">Удалить</button></span>
+      <span class="ds-cell"><button class="btn m destructive"><i data-lucide="trash-2"></i>Удалить</button></span>
+      <span class="ds-cell"><button class="btn m destructive">Выйти<i data-lucide="log-out"></i></button></span>
+      <span class="ds-cell"><button class="btn m io destructive"><i data-lucide="trash-2"></i></button></span>
+    </div>
+  </div>
+
+  <!-- ICON-ONLY across sizes & states -->
+  <div class="ds-block">
+    <div class="ds-sect">Icon-only <span class="meta">— квадрат · 3 размера × состояния (ghost)</span></div>
+    <div class="states">
+      <span></span>
+      <span class="ds-clab">Default</span><span class="ds-clab">Hover</span><span class="ds-clab">Focus</span><span class="ds-clab">Active</span><span class="ds-clab">Disabled</span>
+      <span class="ds-rlab">L</span>
+      <span class="ds-cell"><button class="btn l io ghost"><i data-lucide="search"></i></button></span>
+      <span class="ds-cell"><button class="btn l io ghost h"><i data-lucide="search"></i></button></span>
+      <span class="ds-cell"><button class="btn l io ghost f"><i data-lucide="search"></i></button></span>
+      <span class="ds-cell"><button class="btn l io ghost a"><i data-lucide="search"></i></button></span>
+      <span class="ds-cell"><button class="btn l io ghost d"><i data-lucide="search"></i></button></span>
+      <span class="ds-rlab">M</span>
+      <span class="ds-cell"><button class="btn m io ghost"><i data-lucide="bell"></i></button></span>
+      <span class="ds-cell"><button class="btn m io ghost h"><i data-lucide="bell"></i></button></span>
+      <span class="ds-cell"><button class="btn m io ghost f"><i data-lucide="bell"></i></button></span>
+      <span class="ds-cell"><button class="btn m io ghost a"><i data-lucide="bell"></i></button></span>
+      <span class="ds-cell"><button class="btn m io ghost d"><i data-lucide="bell"></i></button></span>
+      <span class="ds-rlab">S</span>
+      <span class="ds-cell"><button class="btn s io ghost"><i data-lucide="more-horizontal"></i></button></span>
+      <span class="ds-cell"><button class="btn s io ghost h"><i data-lucide="more-horizontal"></i></button></span>
+      <span class="ds-cell"><button class="btn s io ghost f"><i data-lucide="more-horizontal"></i></button></span>
+      <span class="ds-cell"><button class="btn s io ghost a"><i data-lucide="more-horizontal"></i></button></span>
+      <span class="ds-cell"><button class="btn s io ghost d"><i data-lucide="more-horizontal"></i></button></span>
+    </div>
+  </div>
+
+  <!-- WIDTH -->
+  <div class="ds-block">
+    <div class="ds-sect">Ширина <span class="meta">— fluid тянется на всю ширину контейнера (формы, модалки)</span></div>
+    <div class="fluidwrap">
+      <button class="btn l primary fluid">Присоединиться</button>
+    </div>
+  </div>
+
+  <div class="ds-note">
+    Размеры: <span class="ds-pill">XL — 48px, r-xl</span> <span class="ds-pill">L — 40px, r-lg</span> <span class="ds-pill">M — 36px, r-md</span> <span class="ds-pill">S — 32px, r-md</span>. Иконки по размерам: 24 / 20 / 20 / 16. Матрицы состояний показаны на L / M / S — XL виден в сетке размеров выше.
+    Hover у solid-тем затемняет фон; focus добавляет смещённое синее кольцо; active темнее hover; disabled — приглушённая прозрачность без тени.
+    Ghost/outline на hover заливаются нейтральным washes. Иконки наследуют цвет текста.
+  </div>
+<script src="https://unpkg.com/lucide@latest"></script>
+<script>lucide.createIcons();</script>
+</body>
+</html>

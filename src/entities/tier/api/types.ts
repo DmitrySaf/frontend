@@ -12,6 +12,8 @@ export interface TierRecord {
   period_months: number | null;
   discount_percent: number | null;
   is_active: boolean;
+  /** Скрытый тариф — виден только по invite-ссылке (замена bypass-флагам) */
+  is_hidden: boolean;
   position: number;
   created_at: string;
 }
@@ -25,6 +27,7 @@ export interface Tier {
   periodMonths: number | null;
   discountPercent: number | null;
   isActive: boolean;
+  isHidden: boolean;
   position: number;
 }
 

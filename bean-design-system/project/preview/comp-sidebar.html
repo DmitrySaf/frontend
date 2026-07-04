@@ -1,0 +1,61 @@
+<!-- @dsCard group="Components" -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  body { margin: 0; font-family: var(--font-sans); background: #f5f5f5; color: var(--text-primary); height: 420px; display: flex; gap: 14px; padding: 16px; box-sizing: border-box; align-items: stretch; }
+  .rail { width: 60px; background: transparent; display: flex; flex-direction: column; align-items: center; gap: 12px; }
+  .logo { width: 48px; height: 48px; border-radius: 16px; background: var(--secondary-600); display: grid; place-items: center; flex:none; }
+  .logo svg { width: 30px; height: 30px; }
+  .gbtn { width: 48px; height: 48px; border-radius: 16px; display: grid; place-items: center; color: var(--text-secondary); }
+  .gbtn:hover { background: var(--gray-100); }
+  .gbtn i { width: 24px; height: 24px; }
+  .av { position: relative; width: 48px; height: 48px; border-radius: 12px; background: var(--primary-600); color:#fff; box-shadow: var(--shadow-sm); display: grid; place-items: center; font-size: 17px; font-weight: 600; }
+  .av.lime { background: var(--brand-lime); color:#2c3d0c; }
+  .av.hover { box-shadow: 0 0 0 2px var(--gray-200), var(--shadow-sm); }
+  .av .bar { position:absolute; right:-9px; top:50%; transform:translateY(-50%); width:3px; height:18px; background:#000; border-radius:4px 0 0 4px; }
+  .add { width: 48px; height: 48px; border-radius: 16px; background: var(--primary-600); color:#fff; display:grid; place-items:center; box-shadow: var(--shadow-sm); }
+  .add i { width: 24px; height: 24px; }
+  .spacer { flex: 1; }
+  /* expanded profile button */
+  .profile { width: 300px; height: 60px; background:#fff; border-radius:18px; box-shadow: inset 0 0 0 1px var(--gray-200), var(--shadow-card); display:flex; align-items:center; padding:4px; gap:6px; }
+  .profile .pa { width:44px; height:44px; border-radius:50%; overflow:hidden; display:grid; place-items:center; background: var(--gray-300); color: var(--text-secondary); font-weight:600; font-size:15px; }
+  .profile .meta { flex:1; min-width:0; padding:0 4px; }
+  .profile .meta .n { font-size:14px; font-weight:600; }
+  .profile .meta .h { font-size:12px; color: var(--gray-500); }
+  .profile .ic { width:44px; height:44px; border-radius:16px; display:grid; place-items:center; color: var(--text-secondary); }
+  .profile .ic:hover { background: var(--gray-100); }
+  .profile .ic i { width:24px; height:24px; }
+  .note { align-self: center; max-width: 220px; font-size: 13px; color: var(--text-tertiary); line-height: 1.55; }
+  .note b { color: var(--text-secondary); }
+</style>
+</head>
+<body>
+  <div class="rail">
+    <div class="logo">__LOGO__</div>
+    <div class="gbtn"><i data-lucide="message-circle-more"></i></div>
+    <div class="gbtn"><i data-lucide="search"></i></div>
+    <div class="av">АТ<span class="bar"></span></div>
+    <div class="av hover">МК</div>
+    <div class="av lime">СД</div>
+    <div class="add"><i data-lucide="plus"></i></div>
+    <div class="spacer"></div>
+  </div>
+  <div style="display:flex;flex-direction:column;justify-content:flex-end">
+    <div class="profile">
+      <div class="pa">СА</div>
+      <div class="meta"><div class="n">Super Admin</div><div class="h">@super_admin</div></div>
+      <div class="ic"><i data-lucide="more-horizontal"></i></div>
+      <div class="ic"><i data-lucide="settings"></i></div>
+    </div>
+  </div>
+  <div class="note">Рейл 60px: логотип Bean → сообщения + поиск → <b>аватары сообществ</b> (состояния: <b>active</b> = чёрная полоска справа, <b>hover</b> = кольцо, default) → <b>+</b> создать. Нижняя <b>кнопка профиля</b> раскрывается влево по hover.</div>
+<script src="https://unpkg.com/lucide@latest"></script>
+<script>
+  fetch('../assets/logo.svg').then(r=>r.text()).then(s=>{document.querySelector('.logo').innerHTML=s;});
+  lucide.createIcons();
+</script>
+</body>
+</html>

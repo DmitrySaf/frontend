@@ -1,96 +1,101 @@
 "use client";
 
-import { useState } from "react";
 import { Users } from "lucide-react";
+import { formatTierPrice, type Tier } from "@/entities/tier";
 import { Button } from "@/shared/components";
-import type { PricingTier } from "../model";
 import { cn } from "@/shared/utils";
 
 interface PricingCardProps {
-  isFree: boolean;
-  pricingTiers?: PricingTier[];
-  memberCount: number;
-  onJoin: (selectedTierId?: string) => void;
+  tiers: Tier[];
+  selectedTierId: string | null;
+  onSelectTier: (tierId: string) => void;
+  isMember: boolean;
+  membersCount: number;
+  onJoin: () => void;
+  onOpenCommunity: () => void;
+  isJoining: boolean;
 }
 
-const formatInterval = (interval: PricingTier["interval"]): string => {
-  switch (interval) {
-    case "month":
-      return "/ month";
-    case "6months":
-      return "/ 6 months";
-    case "year":
-      return "/ year";
-    default:
-      return "";
-  }
-};
-
-const formatPrice = (price: number): string => {
-  return `$${price.toFixed(2)}`;
-};
-
-export const PricingCard = ({ isFree, pricingTiers, memberCount, onJoin }: PricingCardProps) => {
-  const [selectedTierId, setSelectedTierId] = useState<string | undefined>(
-    pricingTiers?.[0]?.id
-  );
-
-  const handleJoin = () => {
-    onJoin(isFree ? undefined : selectedTierId);
-  };
-
-  const formatMemberCount = (count: number): string => {
-    if (count >= 1000) {
-      return `${(count / 1000).toFixed(1).replace(/\.0$/, "")}K`;
-    }
-    return count.toString();
-  };
+export function PricingCard({
+  tiers,
+  selectedTierId,
+  onSelectTier,
+  isMember,
+  membersCount,
+  onJoin,
+  onOpenCommunity,
+  isJoining,
+}: PricingCardProps) {
+  const isFree = tiers.length === 0;
 
   return (
-    <div className="rounded-2xl border border-gray-200 bg-white p-5">
-      {!isFree && pricingTiers && pricingTiers.length > 0 && (
-        <div className="mb-4 space-y-2">
-          {pricingTiers.map((tier) => (
-            <label
-              key={tier.id}
-              className={cn(
-                "flex cursor-pointer items-center gap-3 rounded-xl border-2 p-3 transition-colors",
-                selectedTierId === tier.id
-                  ? "border-primary-500 bg-primary-50"
-                  : "border-gray-200 hover:border-gray-300"
-              )}
-            >
-              <input
-                type="radio"
-                name="pricing"
-                value={tier.id}
-                checked={selectedTierId === tier.id}
-                onChange={() => setSelectedTierId(tier.id)}
-                className="size-4 accent-primary-500"
-              />
-              <div className="flex flex-1 items-center justify-between">
-                <span className="text-sm font-medium text-gray-900">
-                  {formatPrice(tier.price)} {formatInterval(tier.interval)}
+    <div className="rounded-2xl border border-gray-200 bg-white shadow-sm p-4.5 space-y-3.5">
+      {!isMember && !isFree && (
+        <div className="space-y-2">
+          {tiers.map((tier) => {
+            const isSelected = tier.id === selectedTierId;
+            return (
+              <button
+                key={tier.id}
+                type="button"
+                onClick={() => onSelectTier(tier.id)}
+                className={cn(
+                  "w-full flex items-center gap-3 p-3 rounded-[14px] border text-left transition-colors cursor-pointer",
+                  isSelected
+                    ? "border-primary-600 border-2 bg-primary-600/5"
+                    : "border-gray-200 bg-white hover:bg-gray-50"
+                )}
+              >
+                <span
+                  className={cn(
+                    "size-4 shrink-0 rounded-full border-2 transition-colors",
+                    isSelected
+                      ? "border-primary-600 bg-primary-600 shadow-[inset_0_0_0_3px_#fff]"
+                      : "border-gray-300 bg-white"
+                  )}
+                />
+                <span className="flex-1 min-w-0">
+                  <span className="block text-sm font-semibold text-black truncate">
+                    {tier.name}
+                  </span>
+                  <span className="block text-[13px] font-mono text-gray-600">
+                    {formatTierPrice(tier)}
+                  </span>
                 </span>
-                {tier.discount && (
-                  <span className="rounded-full bg-blue-100 px-2 py-0.5 text-xs font-medium text-blue-700">
-                    {tier.discount}% off
+                {tier.discountPercent != null && (
+                  <span className="px-2 py-0.5 rounded-full bg-gray-100 text-xs font-medium text-gray-600">
+                    −{tier.discountPercent}%
                   </span>
                 )}
-              </div>
-            </label>
-          ))}
+              </button>
+            );
+          })}
         </div>
       )}
 
-      <Button theme="primary" size="l" fluid onClick={handleJoin}>
-        {isFree ? "Join for free" : "Join"}
-      </Button>
+      {isMember ? (
+        <Button theme="primary" size="l" fluid onClick={onOpenCommunity}>
+          Открыть сообщество
+        </Button>
+      ) : (
+        <Button theme="primary" size="l" fluid onClick={onJoin} isLoading={isJoining}>
+          {isFree ? "Присоединиться бесплатно" : "Присоединиться"}
+        </Button>
+      )}
 
-      <div className="mt-4 flex items-center justify-center gap-2 text-sm text-gray-500">
-        <Users className="size-4" />
-        <span>Join {formatMemberCount(memberCount)} members</span>
-      </div>
+      {membersCount > 0 && (
+        <p className="flex items-center justify-center gap-1.5 text-[13px] text-gray-600">
+          <Users className="size-[15px]" />
+          {membersCount.toLocaleString("ru-RU")}{" "}
+          {membersCount % 10 === 1 && membersCount % 100 !== 11
+            ? "участник"
+            : membersCount % 10 >= 2 &&
+                membersCount % 10 <= 4 &&
+                (membersCount % 100 < 12 || membersCount % 100 > 14)
+              ? "участника"
+              : "участников"}
+        </p>
+      )}
     </div>
   );
-};
+}

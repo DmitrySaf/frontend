@@ -1,0 +1,149 @@
+<!-- @dsCard group="Components" -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="../colors_and_type.css">
+<link rel="stylesheet" href="_dscard.css">
+<style>
+  /* ---- Toast base ---- */
+  .toast { position: relative; display: flex; gap: 11px; align-items: center;
+           background: #fff; border-radius: 14px; padding: 13px 14px; min-width: 320px; max-width: 380px;
+           box-shadow: inset 0 0 0 1px var(--border), var(--shadow-pop); overflow: hidden; }
+  /* multi-line toasts (description / action / buttons) top-align; single-line ones stay centered */
+  .toast:has(.tx), .toast:has(.act), .toast:has(.btns) { align-items: flex-start; }
+  .toast .ic { flex: none; width: 20px; height: 20px; color: var(--mn); }
+  .toast .bd { flex: 1; min-width: 0; }
+  /* title box is exactly icon-height (20px) so glyph + text line up perfectly */
+  .toast .ttl { font-size: 14px; font-weight: 600; color: var(--text-primary); line-height: 20px; }
+  .toast .tx { font-size: 12.5px; color: var(--text-secondary); line-height: 1.45; margin-top: 2px; }
+  .toast .x { flex: none; color: var(--gray-500); width: 17px; height: 17px; cursor: default; }
+  .toast:has(.tx) .x, .toast:has(.act) .x, .toast:has(.btns) .x { margin-top: 1px; }
+  /* unified action button — soft recessed grey (--accent), dark text, same on every toast, sits below the text */
+  .toast .act { align-self: flex-start; background: var(--accent); color: var(--text-primary); border: 0;
+                font-family: var(--font-sans); font-weight: 600; font-size: 12.5px; line-height: 1; cursor: default;
+                padding: 9px 14px; border-radius: 10px; margin-top: 11px; display: inline-flex; align-items: center; }
+  .toast .bar { position: absolute; left: 0; bottom: 0; height: 3px; background: var(--mn); border-radius: 3px; }
+
+  /* action buttons, bottom-right */
+  .toast .btns { display: flex; gap: 8px; justify-content: flex-end; margin-top: 12px; }
+  .toast .btns .b { height: 30px; padding: 0 13px; border-radius: 10px; font-family: var(--font-sans);
+                    font-weight: 600; font-size: 12.5px; line-height: 1; border: 0; cursor: default;
+                    display: inline-flex; align-items: center; }
+  .toast .btns .b.primary { background: var(--mn); color: #fff; }
+  .toast .btns .b.ghost { background: transparent; color: var(--text-secondary); box-shadow: inset 0 0 0 1px var(--border); }
+
+  .info    { --mn: var(--info); } .success { --mn: var(--success); }
+  .warning { --mn: var(--warning); } .error { --mn: var(--error); }
+  .neutral { --mn: var(--text-secondary); }
+
+  /* inverse / compact variant (NB: avoid class name "dark" — it triggers the dark THEME vars) */
+  .toast.inv { background: var(--text-primary); box-shadow: var(--shadow-pop); }
+  .toast.inv .ttl { color: #fff; }
+  .toast.inv .tx { color: rgba(255,255,255,.72); }
+  .toast.inv .x { color: rgba(255,255,255,.6); }
+  .toast.inv .act { color: #8fc2ff; }
+  .toast.inv .btns .b.ghost { color: rgba(255,255,255,.72); box-shadow: inset 0 0 0 1px rgba(255,255,255,.18); }
+  .toast.inv .btns .b.primary { background: #fff; color: var(--text-primary); }
+
+  .stage { background: var(--bg-light-secondary); border-radius: 18px; padding: 26px; }
+  .stk { display: flex; flex-direction: column; gap: 12px; }
+  .row { display: flex; gap: 16px; flex-wrap: wrap; align-items: flex-start; }
+
+  /* full content matrix: semantic rows × content columns */
+  .cmatrix { display: grid; grid-template-columns: 58px repeat(4, minmax(172px,1fr)); gap: 16px 16px; align-items: start; }
+  .cmatrix .toast { min-width: 0; max-width: none; width: 100%; }
+  .cmatrix .ds-rlab { white-space: nowrap; align-self: center; }
+  .cmatrix .ds-clab { padding-left: 2px; }
+
+  /* corner stack mock */
+  .corner { position: relative; height: 230px; background: var(--bg-light-secondary); border-radius: 18px; overflow: hidden; box-shadow: inset 0 0 0 1px var(--border); }
+  .corner .hint { position: absolute; top: 14px; left: 16px; font-size: 11px; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: .05em; }
+  .corner .pile { position: absolute; right: 16px; bottom: 16px; display: flex; flex-direction: column; gap: 10px; align-items: flex-end; }
+  .corner .toast { width: 300px; min-width: 0; transform-origin: right center; }
+  .corner .toast.s2 { transform: scale(.97); opacity: .9; }
+  .corner .toast.s3 { transform: scale(.94); opacity: .75; }
+</style>
+</head>
+<body>
+  <div class="ds-head">
+    <h2 class="ds-title">Toast</h2>
+    <p class="ds-sub">Всплывающее уведомление о результате действия — появляется в углу, держится несколько секунд и исчезает (auto-dismiss). Приподнято (shadow-pop). 5 семантик · контент: заголовок · +описание · inline-действие.</p>
+  </div>
+  <hr class="ds-rule">
+
+  <!-- SEMANTICS — single-line, icon + title vertically centred -->
+  <div class="ds-block">
+    <div class="ds-sect">Семантики <span class="meta">— только заголовок · иконка и текст по центру</span></div>
+    <div class="stage">
+      <div class="stk">
+        <div class="toast success"><i data-lucide="check-circle-2" class="ic"></i><div class="bd"><div class="ttl">Изменения сохранены</div></div><i data-lucide="x" class="x"></i></div>
+        <div class="toast info"><i data-lucide="info" class="ic"></i><div class="bd"><div class="ttl">Черновик сохранён автоматически</div></div><i data-lucide="x" class="x"></i></div>
+        <div class="toast warning"><i data-lucide="alert-triangle" class="ic"></i><div class="bd"><div class="ttl">Нестабильное соединение</div></div><i data-lucide="x" class="x"></i></div>
+        <div class="toast error"><i data-lucide="alert-circle" class="ic"></i><div class="bd"><div class="ttl">Не удалось опубликовать</div></div><i data-lucide="x" class="x"></i></div>
+        <div class="toast neutral"><i data-lucide="bell" class="ic"></i><div class="bd"><div class="ttl">3 новых комментария</div></div><i data-lucide="x" class="x"></i></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FULL CONTENT MATRIX: semantic × content treatment -->
+  <div class="ds-block">
+    <div class="ds-sect">Контент <span class="meta">— семантика × наполнение: заголовок · крестик · описание · действие</span></div>
+    <div class="stage">
+      <div class="cmatrix">
+        <span></span>
+        <span class="ds-clab">Заголовок</span><span class="ds-clab">+ крестик</span><span class="ds-clab">+ описание</span><span class="ds-clab">+ действие</span>
+
+        <span class="ds-rlab">Success</span>
+        <div class="ds-cell"><div class="toast success"><i data-lucide="check-circle-2" class="ic"></i><div class="bd"><div class="ttl">Профиль обновлён</div></div></div></div>
+        <div class="ds-cell"><div class="toast success"><i data-lucide="check-circle-2" class="ic"></i><div class="bd"><div class="ttl">Изменения сохранены</div></div><i data-lucide="x" class="x"></i></div></div>
+        <div class="ds-cell"><div class="toast success"><i data-lucide="check-circle-2" class="ic"></i><div class="bd"><div class="ttl">Выплата отправлена</div><div class="tx">Поступит на счёт в течение 1–2 дней.</div></div><i data-lucide="x" class="x"></i></div></div>
+        <div class="ds-cell"><div class="toast success"><i data-lucide="check-circle-2" class="ic"></i><div class="bd"><div class="ttl">Файл загружен</div><div class="tx">Документ готов к просмотру.</div><button class="act">Показать</button></div></div></div>
+
+        <span class="ds-rlab">Info</span>
+        <div class="ds-cell"><div class="toast info"><i data-lucide="info" class="ic"></i><div class="bd"><div class="ttl">Черновик сохранён</div></div></div></div>
+        <div class="ds-cell"><div class="toast info"><i data-lucide="info" class="ic"></i><div class="bd"><div class="ttl">Синхронизация завершена</div></div><i data-lucide="x" class="x"></i></div></div>
+        <div class="ds-cell"><div class="toast info"><i data-lucide="info" class="ic"></i><div class="bd"><div class="ttl">Доступно обновление</div><div class="tx">Перезагрузите страницу, чтобы применить.</div></div><i data-lucide="x" class="x"></i></div></div>
+        <div class="ds-cell"><div class="toast info"><i data-lucide="info" class="ic"></i><div class="bd"><div class="ttl">Новая версия</div><div class="tx">Версия 2.4 готова к установке.</div><button class="act">Обновить</button></div></div></div>
+
+        <span class="ds-rlab">Warning</span>
+        <div class="ds-cell"><div class="toast warning"><i data-lucide="alert-triangle" class="ic"></i><div class="bd"><div class="ttl">Слабый сигнал</div></div></div></div>
+        <div class="ds-cell"><div class="toast warning"><i data-lucide="alert-triangle" class="ic"></i><div class="bd"><div class="ttl">Сессия истекает</div></div><i data-lucide="x" class="x"></i></div></div>
+        <div class="ds-cell"><div class="toast warning"><i data-lucide="alert-triangle" class="ic"></i><div class="bd"><div class="ttl">Хранилище почти заполнено</div><div class="tx">Осталось 8% свободного места.</div></div><i data-lucide="x" class="x"></i></div></div>
+        <div class="ds-cell"><div class="toast warning"><i data-lucide="alert-triangle" class="ic"></i><div class="bd"><div class="ttl">Сессия истекает</div><div class="tx">Сохраните изменения заранее.</div><button class="act">Продлить</button></div></div></div>
+
+        <span class="ds-rlab">Error</span>
+        <div class="ds-cell"><div class="toast error"><i data-lucide="alert-circle" class="ic"></i><div class="bd"><div class="ttl">Не удалось сохранить</div></div></div></div>
+        <div class="ds-cell"><div class="toast error"><i data-lucide="alert-circle" class="ic"></i><div class="bd"><div class="ttl">Сбой загрузки</div></div><i data-lucide="x" class="x"></i></div></div>
+        <div class="ds-cell"><div class="toast error"><i data-lucide="alert-circle" class="ic"></i><div class="bd"><div class="ttl">Не удалось опубликовать</div><div class="tx">Проверьте подключение и повторите.</div></div><i data-lucide="x" class="x"></i></div></div>
+        <div class="ds-cell"><div class="toast error"><i data-lucide="alert-circle" class="ic"></i><div class="bd"><div class="ttl">Сбой загрузки</div><div class="tx">Файл не был отправлен.</div><button class="act">Повторить</button></div></div></div>
+
+        <span class="ds-rlab">Neutral</span>
+        <div class="ds-cell"><div class="toast neutral"><i data-lucide="bell" class="ic"></i><div class="bd"><div class="ttl">Новое уведомление</div></div></div></div>
+        <div class="ds-cell"><div class="toast neutral"><i data-lucide="bell" class="ic"></i><div class="bd"><div class="ttl">3 новых комментария</div></div><i data-lucide="x" class="x"></i></div></div>
+        <div class="ds-cell"><div class="toast neutral"><i data-lucide="bell" class="ic"></i><div class="bd"><div class="ttl">Запланирована встреча</div><div class="tx">Сегодня в 16:00 · «Дизайн-ревью».</div></div><i data-lucide="x" class="x"></i></div></div>
+        <div class="ds-cell"><div class="toast neutral"><i data-lucide="bell" class="ic"></i><div class="bd"><div class="ttl">Пост перемещён</div><div class="tx">В архив подборки.</div><button class="act">Отменить</button></div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- POSITION & STACK -->
+  <div class="ds-block">
+    <div class="ds-sect">Позиция и стопка <span class="meta">— правый нижний угол, новые сверху</span></div>
+    <div class="corner">
+      <span class="hint">область экрана</span>
+      <div class="pile">
+        <div class="toast success"><i data-lucide="check-circle-2" class="ic"></i><div class="bd"><div class="ttl">Профиль обновлён</div></div><i data-lucide="x" class="x"></i></div>
+        <div class="toast info s2"><i data-lucide="info" class="ic"></i><div class="bd"><div class="ttl">Новый участник в сообществе</div></div><i data-lucide="x" class="x"></i></div>
+        <div class="toast neutral s3"><i data-lucide="bell" class="ic"></i><div class="bd"><div class="ttl">3 новых комментария</div></div><i data-lucide="x" class="x"></i></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ds-note">
+    Toast vs <b>Alert</b>: alert встроен в страницу и постоянен; <b>toast</b> приподнят, временный и сам исчезает. Появляется по короткому <code>ease-out</code>, авто-скрытие через ~4–6 c (полоса-таймер), действие «Отменить» продлевает показ. Одиночная строка центрируется с иконкой; при описании или кнопках контент выравнивается по верху.
+  </div>
+<script src="https://unpkg.com/lucide@latest"></script>
+<script>lucide.createIcons();</script>
+</body>
+</html>

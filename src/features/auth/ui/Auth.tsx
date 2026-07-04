@@ -8,7 +8,12 @@ import Link from "next/link";
 import { type EmailFormData, type ConfirmationFormData } from "../model/validation";
 import { createBrowserClient } from "@/api/browser-client";
 
-export default function Auth() {
+interface AuthProps {
+  /** После успешного входа; по умолчанию — редирект в /communities */
+  onSuccess?: () => void;
+}
+
+export default function Auth({ onSuccess }: AuthProps) {
   const supabase = createBrowserClient();
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
@@ -65,8 +70,12 @@ export default function Auth() {
           return;
         }
 
-        // Успешная аутентификация — резолвер выберет сообщество или покажет пустое состояние
-        router.push("/communities");
+        if (onSuccess) {
+          onSuccess();
+        } else {
+          // Резолвер выберет сообщество или покажет пустое состояние
+          router.push("/communities");
+        }
       } catch (error) {
         console.error("Ошибка при проверке кода:", error);
         setConfirmationError("Произошла ошибка при проверке кода");
@@ -74,7 +83,7 @@ export default function Auth() {
         setIsLoading(false);
       }
     },
-    [supabase, router]
+    [supabase, router, onSuccess]
   );
 
   const handleBackToEmail = useCallback(() => {

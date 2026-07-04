@@ -1,0 +1,102 @@
+<!-- @dsCard group="Components" -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="../colors_and_type.css">
+<link rel="stylesheet" href="_dscard.css">
+<style>
+  .tag { display: inline-flex; align-items: center; gap: 2px; padding: 5px 11px; border-radius: 9999px;
+         font-size: 13px; font-weight: 500; background: var(--bg-light-secondary); color: var(--text-secondary); cursor: default; }
+  .tag .hash { color: var(--gray-500); }
+  .tag i, .tag svg { width: 16px; height: 16px; }
+  .tag .x { display: inline-flex; color: var(--gray-500); margin-left: 1px; }
+  .tag .x i, .tag .x svg { width: 16px; height: 16px; }
+  .tag.rm { padding-right: 7px; }
+
+  /* variants */
+  .tag.subtle  { background: var(--bg-light-secondary); color: var(--text-secondary); }
+  .tag.outline { background: #fff; box-shadow: inset 0 0 0 1px var(--border); color: var(--text-secondary); }
+  .tag.solid   { background: var(--text-primary); color: #fff; }
+  .tag.brand   { background: rgba(222,252,173,.6); color: #3a5012; }
+
+  /* states (applied statically) */
+  .tag.subtle.hover  { background: var(--gray-100); }
+  .tag.subtle.sel    { background: var(--primary-50); color: var(--primary-600); box-shadow: inset 0 0 0 1px var(--primary-600); }
+  .tag.subtle.dis    { opacity: .45; }
+  .tag.outline.hover { background: var(--accent); }
+  .tag.outline.sel   { background: var(--primary-50); color: var(--primary-600); box-shadow: inset 0 0 0 1px var(--primary-600); }
+  .tag.outline.dis   { opacity: .45; }
+  .tag.solid.hover   { background: #000; }
+  .tag.solid.dis     { opacity: .45; }
+  .tag.brand.hover   { background: var(--secondary-700); }
+  .tag.brand.dis     { opacity: .45; }
+
+  .tag.add { background: #fff; box-shadow: inset 0 0 0 1px var(--primary-600); color: var(--primary-600); }
+
+  .grid-vs { display: grid; grid-template-columns: 76px repeat(4, 1fr); gap: 16px 14px; align-items: center; max-width: 600px; }
+  .row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+</style>
+</head>
+<body>
+  <div class="ds-head">
+    <h2 class="ds-title">Tags</h2>
+    <p class="ds-sub">Метки тем и категорий контента — отличаются от статус-<b>Badges</b>. Pill-форма. 4 варианта эмфазы (<b>Subtle / Outline / Solid / Brand</b>) со всеми состояниями + типы: тема <code>#</code>, категория с иконкой, удаляемый <code>×</code>, «Добавить тег».</p>
+  </div>
+  <hr class="ds-rule">
+
+  <div class="ds-block">
+    <div class="ds-sect">Вариант × состояние</div>
+    <div class="grid-vs">
+      <span></span>
+      <span class="ds-clab">Default</span><span class="ds-clab">Hover</span><span class="ds-clab">Selected</span><span class="ds-clab">Disabled</span>
+      <span class="ds-rlab">Subtle</span>
+      <span><span class="tag subtle">Дизайн</span></span>
+      <span><span class="tag subtle hover">Дизайн</span></span>
+      <span><span class="tag subtle sel">Дизайн</span></span>
+      <span><span class="tag subtle dis">Дизайн</span></span>
+      <span class="ds-rlab">Outline</span>
+      <span><span class="tag outline">Дизайн</span></span>
+      <span><span class="tag outline hover">Дизайн</span></span>
+      <span><span class="tag outline sel">Дизайн</span></span>
+      <span><span class="tag outline dis">Дизайн</span></span>
+      <span class="ds-rlab">Solid</span>
+      <span><span class="tag solid">Дизайн</span></span>
+      <span><span class="tag solid hover">Дизайн</span></span>
+      <span><span class="tag solid" style="background:var(--primary-600);">Дизайн</span></span>
+      <span><span class="tag solid dis">Дизайн</span></span>
+      <span class="ds-rlab">Brand</span>
+      <span><span class="tag brand">Дизайн</span></span>
+      <span><span class="tag brand hover">Дизайн</span></span>
+      <span><span class="tag brand" style="box-shadow:inset 0 0 0 1px #3a5012;">Дизайн</span></span>
+      <span><span class="tag brand dis">Дизайн</span></span>
+    </div>
+  </div>
+
+  <div class="ds-block">
+    <div class="ds-sect">Типы</div>
+    <div class="row" style="margin-bottom:14px;">
+      <span class="tag subtle"><span class="hash">#</span>маркетинг</span>
+      <span class="tag subtle"><span class="hash">#</span>личныйбренд</span>
+      <span class="tag subtle"><span class="hash">#</span>продажи</span>
+    </div>
+    <div class="row" style="margin-bottom:14px;">
+      <span class="tag subtle"><i data-lucide="book-open"></i>Курс</span>
+      <span class="tag subtle"><i data-lucide="megaphone"></i>Объявление</span>
+      <span class="tag subtle"><i data-lucide="message-circle"></i>Обсуждение</span>
+      <span class="tag brand"><i data-lucide="sparkles"></i>Новое</span>
+    </div>
+    <div class="row">
+      <span class="tag subtle rm"><span class="hash">#</span>дизайн<span class="x"><i data-lucide="x"></i></span></span>
+      <span class="tag subtle rm"><span class="hash">#</span>аналитика<span class="x"><i data-lucide="x"></i></span></span>
+      <span class="tag add"><i data-lucide="plus"></i>Добавить тег</span>
+    </div>
+  </div>
+
+  <div class="ds-note">
+    Default — мягкий recessed-pill; <b>Outline</b>/<b>Solid</b> усиливают, <b>Brand</b> — lime-wash. Selected подсвечивает синим (фильтрация по тегу). Удаляемые теги несут <b>×</b>; «Добавить тег» — outlined-primary.
+  </div>
+<script src="https://unpkg.com/lucide@latest"></script>
+<script>lucide.createIcons();</script>
+</body>
+</html>

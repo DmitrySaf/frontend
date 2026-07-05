@@ -1,45 +1,73 @@
-import { createMockCollection } from "@/shared/utils";
-import { CURRENT_USER_ID } from "@/entities/message";
-import type { MemberRecord, MemberRole } from "./types";
+import { createBrowserClient } from "@/api/browser-client";
+import { getSessionUserIdOrNull, getSessionUserId } from "@/api/auth";
+import { getCommunityIdBySlug } from "@/entities/community";
+import type { MemberRecord } from "./types";
 
-const members = createMockCollection<MemberRecord>("community_members");
+const MEMBER_FIELDS = "id, community_id, user_id, role, joined_at";
 
 /**
  * Membership текущего пользователя в сообществе
  */
 export const getMyMembership = async (communitySlug: string): Promise<MemberRecord | null> => {
-  const all = await members.list();
-  return (
-    all.find(
-      (record) => record.community_id === communitySlug && record.user_id === CURRENT_USER_ID
-    ) ?? null
-  );
+  const client = createBrowserClient();
+  const userId = await getSessionUserIdOrNull(client);
+  if (!userId) return null;
+
+  const communityId = await getCommunityIdBySlug(communitySlug);
+
+  const { data, error } = await client
+    .from("community_members")
+    .select(MEMBER_FIELDS)
+    .eq("community_id", communityId)
+    .eq("user_id", userId)
+    .maybeSingle();
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return (data as MemberRecord | null) ?? null;
 };
 
 /**
- * Вступление текущего пользователя (бесплатно или после симуляции оплаты)
+ * Бесплатное вступление текущего пользователя (атомарная проверка на сервере)
  */
-export const joinCommunity = async (
-  communitySlug: string,
-  role: MemberRole = "member"
-): Promise<MemberRecord> => {
-  const existing = await getMyMembership(communitySlug);
-  if (existing) return existing;
+export const joinCommunity = async (communitySlug: string): Promise<MemberRecord> => {
+  const client = createBrowserClient();
+  await getSessionUserId(client);
 
-  return members.insert({
-    community_id: communitySlug,
-    user_id: CURRENT_USER_ID,
-    role,
-    joined_at: new Date().toISOString(),
+  const communityId = await getCommunityIdBySlug(communitySlug);
+
+  const { error } = await client.rpc("join_free_community", {
+    p_community_id: communityId,
   });
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  const membership = await getMyMembership(communitySlug);
+  if (!membership) {
+    throw new Error("Не удалось вступить в сообщество");
+  }
+  return membership;
 };
 
 /**
  * Покинуть сообщество
  */
 export const leaveCommunity = async (communitySlug: string): Promise<void> => {
-  const existing = await getMyMembership(communitySlug);
-  if (existing) {
-    await members.remove(existing.id);
+  const client = createBrowserClient();
+  const userId = await getSessionUserId(client);
+  const communityId = await getCommunityIdBySlug(communitySlug);
+
+  const { error } = await client
+    .from("community_members")
+    .delete()
+    .eq("community_id", communityId)
+    .eq("user_id", userId);
+
+  if (error) {
+    throw new Error(error.message);
   }
 };

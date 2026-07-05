@@ -1,4 +1,4 @@
-export { getTiers, createTier, updateTier, setTierActive, deleteTier, seedDefaultTiers } from "./api";
+export { getTiers, createTier, updateTier, setTierActive, deleteTier } from "./api";
 export { tierQueryKeys } from "./constants";
 export { useTiersQuery, useInvalidateTiers } from "./queries";
 export {

@@ -1,103 +1,96 @@
-import { createMockCollection } from "@/shared/utils";
-import type { TierRecord, TierInput } from "./types";
+import { createBrowserClient } from "@/api/browser-client";
+import { getCommunityIdBySlug } from "@/entities/community";
+import type { TierRecord, TierKind, TierInput } from "./types";
 
-const tiers = createMockCollection<TierRecord>("pricing_tiers");
+const TIER_FIELDS =
+  "id, community_id, name, kind, is_hidden, price_kopeks, period_months, discount_percent, is_active, position, created_at";
 
 /**
- * Тарифы сообщества (по позиции)
+ * Тарифы сообщества (по позиции). Админ видит все, участник/гость — активные нескрытые.
  */
 export const getTiers = async (communitySlug: string): Promise<TierRecord[]> => {
-  const all = await tiers.list();
-  return all
-    .filter((tier) => tier.community_id === communitySlug)
-    .sort((a, b) => a.position - b.position);
+  const client = createBrowserClient();
+  const communityId = await getCommunityIdBySlug(communitySlug);
+
+  const { data, error } = await client
+    .from("pricing_tiers")
+    .select(TIER_FIELDS)
+    .eq("community_id", communityId)
+    .order("position");
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return (data ?? []).map((tier) => ({ ...tier, kind: tier.kind as TierKind }));
 };
 
 export const createTier = async (
   communitySlug: string,
   input: TierInput
 ): Promise<TierRecord> => {
+  const client = createBrowserClient();
+  const communityId = await getCommunityIdBySlug(communitySlug);
   const siblings = await getTiers(communitySlug);
 
-  return tiers.insert({
-    community_id: communitySlug,
-    name: input.name,
-    kind: input.kind,
-    price_kopeks: input.priceKopeks,
-    period_months: input.kind === "recurring" ? input.periodMonths : null,
-    discount_percent: input.discountPercent,
-    is_active: true,
-    is_hidden: false,
-    position: siblings.length,
-    created_at: new Date().toISOString(),
-  });
+  const { data, error } = await client
+    .from("pricing_tiers")
+    .insert({
+      community_id: communityId,
+      name: input.name,
+      kind: input.kind,
+      price_kopeks: input.priceKopeks,
+      period_months: input.kind === "recurring" ? input.periodMonths : null,
+      discount_percent: input.discountPercent,
+      position: siblings.length,
+    })
+    .select(TIER_FIELDS)
+    .single();
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return data as TierRecord;
 };
 
-export const updateTier = async (tierId: string, input: TierInput): Promise<TierRecord> => {
-  return tiers.update(tierId, {
-    name: input.name,
-    kind: input.kind,
-    price_kopeks: input.priceKopeks,
-    period_months: input.kind === "recurring" ? input.periodMonths : null,
-    discount_percent: input.discountPercent,
-  });
+export const updateTier = async (tierId: string, input: TierInput): Promise<void> => {
+  const client = createBrowserClient();
+
+  const { error } = await client
+    .from("pricing_tiers")
+    .update({
+      name: input.name,
+      kind: input.kind,
+      price_kopeks: input.priceKopeks,
+      period_months: input.kind === "recurring" ? input.periodMonths : null,
+      discount_percent: input.discountPercent,
+    })
+    .eq("id", tierId);
+
+  if (error) {
+    throw new Error(error.message);
+  }
 };
 
-export const setTierActive = async (tierId: string, isActive: boolean): Promise<TierRecord> => {
-  return tiers.update(tierId, { is_active: isActive });
+export const setTierActive = async (tierId: string, isActive: boolean): Promise<void> => {
+  const client = createBrowserClient();
+
+  const { error } = await client
+    .from("pricing_tiers")
+    .update({ is_active: isActive })
+    .eq("id", tierId);
+
+  if (error) {
+    throw new Error(error.message);
+  }
 };
 
 export const deleteTier = async (tierId: string): Promise<void> => {
-  await tiers.remove(tierId);
-};
+  const client = createBrowserClient();
+  const { error } = await client.from("pricing_tiers").delete().eq("id", tierId);
 
-/**
- * Сид демо-тарифов (вызывается сидом продаж, если тарифов ещё нет)
- */
-export const seedDefaultTiers = async (communitySlug: string): Promise<TierRecord[]> => {
-  const now = new Date().toISOString();
-  const defaults: TierRecord[] = [
-    {
-      id: crypto.randomUUID(),
-      community_id: communitySlug,
-      name: "Месячный",
-      kind: "recurring",
-      price_kopeks: 99_000,
-      period_months: 1,
-      discount_percent: null,
-      is_active: true,
-      is_hidden: false,
-      position: 0,
-      created_at: now,
-    },
-    {
-      id: crypto.randomUUID(),
-      community_id: communitySlug,
-      name: "6 месяцев",
-      kind: "recurring",
-      price_kopeks: 499_000,
-      period_months: 6,
-      discount_percent: 15,
-      is_active: true,
-      is_hidden: false,
-      position: 1,
-      created_at: now,
-    },
-    {
-      id: crypto.randomUUID(),
-      community_id: communitySlug,
-      name: "Годовой",
-      kind: "recurring",
-      price_kopeks: 899_000,
-      period_months: 12,
-      discount_percent: 24,
-      is_active: true,
-      is_hidden: false,
-      position: 2,
-      created_at: now,
-    },
-  ];
-
-  await tiers.insertMany(defaults);
-  return defaults;
+  if (error) {
+    throw new Error(error.message);
+  }
 };

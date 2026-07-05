@@ -3,16 +3,19 @@
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Clock, Trash2, Upload, X } from "lucide-react";
+import { useParams } from "next/navigation";
+import { Clock, Loader2, Trash2, Upload, X } from "lucide-react";
 import { toast } from "sonner";
 import {
-  DEMO_VIDEO_URL,
   lessonFormSchema,
+  uploadLessonVideo,
+  useLessonVideoUrlQuery,
   LESSON_TITLE_MAX_LENGTH,
   type Lesson,
   type LessonFormData,
   type LessonInput,
 } from "@/entities/course";
+import { useCommunityQuery } from "@/entities/community";
 import { Button, Form, Input, Textarea } from "@/shared/components";
 import { formatDuration, getVideoFileDuration } from "@/shared/utils";
 
@@ -25,7 +28,12 @@ interface LessonEditorProps {
 export function LessonEditor({ lesson, onSave, onDelete }: LessonEditorProps) {
   const [videoPath, setVideoPath] = useState<string | null>(lesson.videoPath);
   const [durationSeconds, setDurationSeconds] = useState<number | null>(lesson.durationSeconds);
+  const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const params = useParams();
+  const { data: community } = useCommunityQuery((params?.slug as string) ?? "");
+  const { data: videoUrl } = useLessonVideoUrlQuery(videoPath);
 
   const methods = useForm<LessonFormData>({
     resolver: zodResolver(lessonFormSchema),
@@ -47,13 +55,24 @@ export function LessonEditor({ lesson, onSave, onDelete }: LessonEditorProps) {
   const handleVideoChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     event.target.value = "";
-    if (!file) return;
+    if (!file || !community) return;
 
-    const duration = await getVideoFileDuration(file);
-    // Фиктивный путь в Storage — реальная загрузка появится на этапе БД
-    setVideoPath(`lesson-videos/${crypto.randomUUID()}.mp4`);
-    setDurationSeconds(duration);
-    toast.success("Видео добавлено");
+    setIsUploading(true);
+    try {
+      const [duration, path] = await Promise.all([
+        getVideoFileDuration(file),
+        uploadLessonVideo(community.id, file),
+      ]);
+      setVideoPath(path);
+      setDurationSeconds(duration);
+      toast.success("Видео загружено");
+    } catch (error) {
+      toast.error("Не удалось загрузить видео", {
+        description: error instanceof Error ? error.message : "Попробуйте еще раз",
+      });
+    } finally {
+      setIsUploading(false);
+    }
   };
 
   const handleSubmit = async (data: LessonFormData) => {
@@ -89,13 +108,24 @@ export function LessonEditor({ lesson, onSave, onDelete }: LessonEditorProps) {
           {/* Видео (необязательно) */}
           <div className="space-y-2">
             <span className="text-sm font-medium text-black">Видео</span>
-            {videoPath ? (
+            {isUploading ? (
+              <div className="w-full h-28 flex flex-col items-center justify-center gap-2 rounded-[14px] border border-dashed border-gray-300 text-gray-600">
+                <Loader2 className="size-5 animate-spin" />
+                <span className="text-sm font-medium">Загружаем видео…</span>
+              </div>
+            ) : videoPath ? (
               <div className="space-y-2">
-                <video
-                  controls
-                  src={DEMO_VIDEO_URL}
-                  className="w-full aspect-video rounded-[14px] bg-black"
-                />
+                {videoUrl ? (
+                  <video
+                    controls
+                    src={videoUrl}
+                    className="w-full aspect-video rounded-[14px] bg-black"
+                  />
+                ) : (
+                  <div className="w-full aspect-video rounded-[14px] bg-gray-100 border border-gray-200 flex items-center justify-center">
+                    <Loader2 className="size-8 animate-spin text-gray-400" />
+                  </div>
+                )}
                 <div className="flex items-center gap-3">
                   {durationSeconds != null && (
                     <span className="flex items-center gap-1 text-xs text-gray-500">
@@ -103,9 +133,6 @@ export function LessonEditor({ lesson, onSave, onDelete }: LessonEditorProps) {
                       {formatDuration(durationSeconds)}
                     </span>
                   )}
-                  <span className="text-xs text-gray-500">
-                    Демо-ролик — файл заменится после подключения хранилища
-                  </span>
                   <div className="flex-1" />
                   <Button
                     theme="outline"

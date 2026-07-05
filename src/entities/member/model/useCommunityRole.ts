@@ -20,7 +20,7 @@ export interface CommunityRole {
 /**
  * Роль текущего пользователя в сообществе + постоянная админ-фича
  * «Смотреть как участник» (предпросмотр интерфейса глазами участника).
- * В мок-режиме: нет membership-записи → владелец (создатель сообщества).
+ * Membership владельца создаётся триггером БД при создании сообщества.
  */
 export function useCommunityRole(slug: string): CommunityRole {
   const queryClient = useQueryClient();
@@ -33,7 +33,7 @@ export function useCommunityRole(slug: string): CommunityRole {
     enabled: !!slug,
   });
 
-  const actualRole: MemberRole = membership?.role ?? "owner";
+  const actualRole: MemberRole = membership?.role ?? "member";
   const canModerate = actualRole === "owner" || actualRole === "admin";
   const isViewingAsMember = canModerate && viewAs === "member";
   const role: MemberRole = isViewingAsMember ? "member" : actualRole;

@@ -11,7 +11,6 @@ import {
   PinOff,
   Trash2,
 } from "lucide-react";
-import { CURRENT_USER_ID } from "@/entities/message";
 import {
   useUpdatePostMutation,
   useTogglePinMutation,
@@ -21,6 +20,7 @@ import {
   type PostFormData,
 } from "@/entities/post";
 import { Avatar, Dropdown, type DropdownItemConfig } from "@/shared/components";
+import { useSessionUserId } from "@/shared/composables";
 import { cn, formatRelativeTime } from "@/shared/utils";
 import { useAuthorView } from "../useAuthorView";
 import { PostComments } from "./PostComments";
@@ -37,14 +37,15 @@ export function PostCard({ post, isAdmin, onDelete }: PostCardProps) {
   const [areCommentsOpen, setAreCommentsOpen] = useState(false);
 
   const resolveAuthor = useAuthorView();
-  const author = resolveAuthor(post.authorId);
+  const author = resolveAuthor(post.authorId, post.author);
+  const myUserId = useSessionUserId();
 
   const updatePost = useUpdatePostMutation();
   const togglePin = useTogglePinMutation();
   const toggleLike = useToggleLikeMutation();
   const toggleBookmark = useToggleBookmarkMutation();
 
-  const isOwn = post.authorId === CURRENT_USER_ID;
+  const isOwn = myUserId !== null && post.authorId === myUserId;
 
   const menuItems: DropdownItemConfig[] = [
     ...(isOwn

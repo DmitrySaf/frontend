@@ -1,5 +1,11 @@
-// Формы записей повторяют docs/db-schema.md (posts, post_likes, post_bookmarks, post_comments).
-// В мок-режиме author_id/user_id — CURRENT_USER_ID («me») либо id вымышленного участника.
+// Формы записей повторяют docs/db-schema.md (posts, post_likes, post_bookmarks, post_comments)
+// + джойн профиля автора.
+
+export interface PostAuthorRecord {
+  display_name: string;
+  username: string;
+  avatar_url: string | null;
+}
 
 export interface PostRecord {
   id: string;
@@ -11,6 +17,7 @@ export interface PostRecord {
   pinned: boolean;
   created_at: string;
   updated_at: string | null;
+  author: PostAuthorRecord | null;
 }
 
 export interface PostLikeRecord {
@@ -31,9 +38,16 @@ export interface PostCommentRecord {
   author_id: string;
   content: string;
   created_at: string;
+  author: PostAuthorRecord | null;
 }
 
 // Доменные типы (для UI)
+export interface PostAuthor {
+  displayName: string;
+  username: string;
+  avatarUrl: string | null;
+}
+
 export interface Post {
   id: string;
   channelId: string;
@@ -48,6 +62,7 @@ export interface Post {
   commentsCount: number;
   likedByMe: boolean;
   bookmarkedByMe: boolean;
+  author: PostAuthor | null;
 }
 
 export interface PostComment {
@@ -56,6 +71,7 @@ export interface PostComment {
   authorId: string;
   content: string;
   createdAt: string;
+  author: PostAuthor | null;
 }
 
 export interface CreatePostInput {

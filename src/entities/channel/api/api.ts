@@ -1,16 +1,18 @@
-import { createMockCollection, transliterate } from "@/shared/utils";
-import { CURRENT_USER_ID } from "@/entities/message";
+import { createBrowserClient } from "@/api/browser-client";
+import { getSessionUserIdOrNull } from "@/api/auth";
+import { getCommunityIdBySlug } from "@/entities/community";
+import { transliterate } from "@/shared/utils";
 import type {
   CategoryRecord,
   ChannelRecord,
-  ChannelGrantRecord,
+  ChannelAccess,
+  ChannelType,
   CreateChannelInput,
   UpdateChannelInput,
 } from "./types";
 
-const categories = createMockCollection<CategoryRecord>("community_categories");
-const channels = createMockCollection<ChannelRecord>("community_channels");
-const grants = createMockCollection<ChannelGrantRecord>("channel_grants");
+const CATEGORY_FIELDS = "id, community_id, name, position, created_at";
+const CHANNEL_FIELDS = "id, community_id, category_id, type, name, slug, access, position, created_at";
 
 /**
  * Уникальный slug таба внутри сообщества: транслитерация + числовой суффикс при коллизии
@@ -29,107 +31,125 @@ function buildChannelSlug(name: string, existing: ChannelRecord[]): string {
 }
 
 /**
- * Первый заход в сообщество — создаём структуру по умолчанию: «Начало» + #общий-чат
- */
-async function seedDefaultStructure(communitySlug: string): Promise<{
-  categories: CategoryRecord[];
-  channels: ChannelRecord[];
-}> {
-  const now = new Date().toISOString();
-
-  const category: CategoryRecord = {
-    id: crypto.randomUUID(),
-    community_id: communitySlug,
-    name: "Начало",
-    position: 0,
-    created_at: now,
-  };
-
-  const channel: ChannelRecord = {
-    id: crypto.randomUUID(),
-    community_id: communitySlug,
-    category_id: category.id,
-    type: "chat",
-    name: "общий-чат",
-    slug: "obschiy-chat",
-    access: "open",
-    position: 0,
-    created_at: now,
-  };
-
-  await categories.insert(category);
-  await channels.insert(channel);
-
-  return { categories: [category], channels: [channel] };
-}
-
-/**
- * Структура сообщества: категории + каналы
+ * Структура сообщества: категории + каналы.
+ * Дефолтная структура («Начало» + #общий-чат) создаётся триггером при создании сообщества.
+ * RLS сам скрывает secret-каналы у участников без гранта.
  */
 export const getCommunityStructure = async (
   communitySlug: string
 ): Promise<{ categories: CategoryRecord[]; channels: ChannelRecord[] }> => {
-  const [allCategories, allChannels] = await Promise.all([
-    categories.list(),
-    channels.list(),
+  const client = createBrowserClient();
+  const communityId = await getCommunityIdBySlug(communitySlug);
+
+  const [categoriesResult, channelsResult] = await Promise.all([
+    client
+      .from("community_categories")
+      .select(CATEGORY_FIELDS)
+      .eq("community_id", communityId)
+      .order("position"),
+    client
+      .from("community_channels")
+      .select(CHANNEL_FIELDS)
+      .eq("community_id", communityId)
+      .order("position"),
   ]);
 
-  const communityCategories = allCategories.filter(
-    (category) => category.community_id === communitySlug
-  );
-  const communityChannels = allChannels.filter(
-    (channel) => channel.community_id === communitySlug
-  );
-
-  if (communityCategories.length === 0 && communityChannels.length === 0) {
-    return seedDefaultStructure(communitySlug);
+  if (categoriesResult.error) {
+    throw new Error(categoriesResult.error.message);
+  }
+  if (channelsResult.error) {
+    throw new Error(channelsResult.error.message);
   }
 
   return {
-    categories: communityCategories,
-    channels: communityChannels.map((channel) => ({
+    categories: (categoriesResult.data ?? []) as CategoryRecord[],
+    channels: (channelsResult.data ?? []).map((channel) => ({
       ...channel,
-      access: channel.access ?? "open",
+      type: channel.type as ChannelType,
+      access: channel.access as ChannelAccess,
     })),
   };
 };
 
+async function resolveCategoryId(
+  communityId: string,
+  categoriesCount: number,
+  categoryId: string | undefined,
+  newCategoryName: string | undefined
+): Promise<string | null> {
+  if (categoryId) return categoryId;
+  if (!newCategoryName) return null;
+
+  const client = createBrowserClient();
+  const { data, error } = await client
+    .from("community_categories")
+    .insert({
+      community_id: communityId,
+      name: newCategoryName,
+      position: categoriesCount,
+    })
+    .select("id")
+    .single();
+
+  if (error) {
+    throw new Error(error.message);
+  }
+  return data.id;
+}
+
 /**
- * Создание таба (при необходимости — вместе с новой категорией)
+ * Создание таба (при необходимости — вместе с новой категорией).
+ * Для таба-курса сразу создаётся пустой курс 1:1.
  */
 export const createChannel = async (input: CreateChannelInput): Promise<ChannelRecord> => {
-  const now = new Date().toISOString();
-  const { categories: communityCategories, channels: communityChannels } =
-    await getCommunityStructure(input.communitySlug);
+  const client = createBrowserClient();
+  const communityId = await getCommunityIdBySlug(input.communitySlug);
+  const { categories, channels } = await getCommunityStructure(input.communitySlug);
 
-  let categoryId = input.categoryId ?? null;
-
-  if (!categoryId && input.newCategoryName) {
-    const category = await categories.insert({
-      community_id: input.communitySlug,
-      name: input.newCategoryName,
-      position: communityCategories.length,
-      created_at: now,
-    });
-    categoryId = category.id;
-  }
+  const categoryId = await resolveCategoryId(
+    communityId,
+    categories.length,
+    input.categoryId,
+    input.newCategoryName
+  );
 
   if (!categoryId) {
     throw new Error("Выберите категорию");
   }
 
-  const siblings = communityChannels.filter((channel) => channel.category_id === categoryId);
+  const siblings = channels.filter((channel) => channel.category_id === categoryId);
 
-  return channels.insert({
-    community_id: input.communitySlug,
-    category_id: categoryId,
-    type: input.type,
-    name: input.name,
-    slug: buildChannelSlug(input.name, communityChannels),
-    access: input.access,
-    position: siblings.length,
-    created_at: now,
-  });
+  const { data, error } = await client
+    .from("community_channels")
+    .insert({
+      community_id: communityId,
+      category_id: categoryId,
+      type: input.type,
+      name: input.name,
+      slug: buildChannelSlug(input.name, channels),
+      access: input.access,
+      position: siblings.length,
+    })
+    .select(CHANNEL_FIELDS)
+    .single();
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  const channel = data as ChannelRecord;
+
+  if (channel.type === "course") {
+    const { error: courseError } = await client
+      .from("courses")
+      .insert({ channel_id: channel.id, title: channel.name });
+
+    if (courseError) {
+      throw new Error(courseError.message);
+    }
+  }
+
+  return channel;
 };
 
 /**
@@ -137,53 +157,63 @@ export const createChannel = async (input: CreateChannelInput): Promise<ChannelR
  * Смена доступа неретроактивна — выданные гранты не отзываются.
  */
 export const updateChannel = async (input: UpdateChannelInput): Promise<ChannelRecord> => {
-  const { categories: communityCategories } = await getCommunityStructure(input.communitySlug);
+  const client = createBrowserClient();
+  const communityId = await getCommunityIdBySlug(input.communitySlug);
+  const { categories } = await getCommunityStructure(input.communitySlug);
 
-  let categoryId = input.categoryId ?? null;
-  if (!categoryId && input.newCategoryName) {
-    const category = await categories.insert({
-      community_id: input.communitySlug,
-      name: input.newCategoryName,
-      position: communityCategories.length,
-      created_at: new Date().toISOString(),
-    });
-    categoryId = category.id;
+  const categoryId = await resolveCategoryId(
+    communityId,
+    categories.length,
+    input.categoryId,
+    input.newCategoryName
+  );
+
+  const { data, error } = await client
+    .from("community_channels")
+    .update({
+      name: input.name,
+      access: input.access,
+      ...(categoryId ? { category_id: categoryId } : {}),
+    })
+    .eq("id", input.channelId)
+    .select(CHANNEL_FIELDS)
+    .single();
+
+  if (error) {
+    throw new Error(error.message);
   }
 
-  return channels.update(input.channelId, {
-    name: input.name,
-    access: input.access,
-    ...(categoryId ? { category_id: categoryId } : {}),
-  });
+  return data as ChannelRecord;
 };
 
 /**
  * Гранты текущего пользователя (доступ к private/secret-каналам)
  */
 export const getMyChannelGrants = async (): Promise<string[]> => {
-  const all = await grants.list();
-  return all
-    .filter((grant) => grant.user_id === CURRENT_USER_ID)
-    .map((grant) => grant.channel_id);
-};
+  const client = createBrowserClient();
+  const userId = await getSessionUserIdOrNull(client);
+  if (!userId) return [];
 
-/**
- * Выдача гранта текущему пользователю (переход по инвайт-ссылке канала)
- */
-export const grantChannelAccess = async (channelId: string): Promise<void> => {
-  const mine = await getMyChannelGrants();
-  if (!mine.includes(channelId)) {
-    await grants.insert({
-      channel_id: channelId,
-      user_id: CURRENT_USER_ID,
-      granted_at: new Date().toISOString(),
-    });
+  const { data, error } = await client
+    .from("channel_grants")
+    .select("channel_id")
+    .eq("user_id", userId);
+
+  if (error) {
+    throw new Error(error.message);
   }
+
+  return (data ?? []).map((grant) => grant.channel_id);
 };
 
 /**
- * Удаление таба
+ * Удаление таба (контент удаляется каскадом в БД)
  */
 export const deleteChannel = async (channelId: string): Promise<void> => {
-  await channels.remove(channelId);
+  const client = createBrowserClient();
+  const { error } = await client.from("community_channels").delete().eq("id", channelId);
+
+  if (error) {
+    throw new Error(error.message);
+  }
 };

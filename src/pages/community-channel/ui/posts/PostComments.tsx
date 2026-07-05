@@ -49,7 +49,7 @@ export function PostComments({ postId, channelId }: PostCommentsProps) {
         </div>
       ) : (
         comments?.map((comment) => {
-          const author = resolveAuthor(comment.authorId);
+          const author = resolveAuthor(comment.authorId, comment.author);
           return (
             <div key={comment.id} className="flex gap-2.5">
               <Avatar name={author.displayName} src={author.avatarUrl} size="s" />

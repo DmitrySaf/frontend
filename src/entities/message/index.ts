@@ -5,18 +5,17 @@ export {
   deleteMessage,
   messageQueryKeys,
   useMessagesQuery,
+  useMessagesRealtime,
   useInvalidateMessages,
   useSendMessageMutation,
   useUpdateMessageMutation,
   useDeleteMessageMutation,
 } from "./api";
-export type { Message, SendMessageInput, UpdateMessageInput, DeleteMessageInput } from "./api";
-export {
-  CURRENT_USER_ID,
-  MOCK_MEMBERS,
-  getMockMember,
-  transformMessage,
-  transformMessages,
-  MESSAGE_MAX_LENGTH,
-  type MockMember,
-} from "./model";
+export type {
+  Message,
+  MessageAuthor,
+  SendMessageInput,
+  UpdateMessageInput,
+  DeleteMessageInput,
+} from "./api";
+export { transformMessage, transformMessages, MESSAGE_MAX_LENGTH } from "./model";

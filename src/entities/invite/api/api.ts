@@ -1,8 +1,10 @@
-import { createMockCollection } from "@/shared/utils";
-import { CURRENT_USER_ID } from "@/entities/message";
+import { createBrowserClient } from "@/api/browser-client";
+import { getSessionUserId } from "@/api/auth";
+import { getCommunityIdBySlug } from "@/entities/community";
 import type { InviteRecord } from "./types";
 
-const invites = createMockCollection<InviteRecord>("community_invites");
+const INVITE_FIELDS =
+  "id, community_id, channel_id, code, created_by, created_at, expires_at, max_uses, uses, revoked_at";
 
 const CODE_ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 const CODE_LENGTH = 16;
@@ -30,57 +32,84 @@ export const getOrCreateInvite = async (
   communitySlug: string,
   channelId: string | null = null
 ): Promise<InviteRecord> => {
-  const all = await invites.list();
-  const usable = all.find(
-    (invite) =>
-      invite.community_id === communitySlug &&
-      (invite.channel_id ?? null) === channelId &&
-      isInviteUsable(invite)
-  );
+  const client = createBrowserClient();
+  const userId = await getSessionUserId(client);
+  const communityId = await getCommunityIdBySlug(communitySlug);
+
+  let query = client
+    .from("community_invites")
+    .select(INVITE_FIELDS)
+    .eq("community_id", communityId)
+    .is("revoked_at", null);
+
+  query = channelId ? query.eq("channel_id", channelId) : query.is("channel_id", null);
+
+  const { data: existing, error: selectError } = await query;
+
+  if (selectError) {
+    throw new Error(selectError.message);
+  }
+
+  const usable = ((existing ?? []) as InviteRecord[]).find(isInviteUsable);
   if (usable) return usable;
 
-  return invites.insert({
-    community_id: communitySlug,
-    channel_id: channelId,
-    code: generateInviteCode(),
-    created_by: CURRENT_USER_ID,
-    created_at: new Date().toISOString(),
-    expires_at: new Date(Date.now() + DEFAULT_TTL_DAYS * 24 * 60 * 60 * 1000).toISOString(),
-    max_uses: null,
-    uses: 0,
-    revoked_at: null,
-  });
+  const { data, error } = await client
+    .from("community_invites")
+    .insert({
+      community_id: communityId,
+      channel_id: channelId,
+      code: generateInviteCode(),
+      created_by: userId,
+      expires_at: new Date(
+        Date.now() + DEFAULT_TTL_DAYS * 24 * 60 * 60 * 1000
+      ).toISOString(),
+    })
+    .select(INVITE_FIELDS)
+    .single();
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return data as InviteRecord;
 };
 
 /**
  * Отзыв ссылки — блокирует её мгновенно
  */
 export const revokeInvite = async (inviteId: string): Promise<void> => {
-  await invites.update(inviteId, { revoked_at: new Date().toISOString() });
-};
+  const client = createBrowserClient();
 
-/**
- * Проверка кода в момент перехода (в мок-режиме — клиентская;
- * на этапе БД станет server-side и атомарной)
- */
-export const validateInviteCode = async (
-  communitySlug: string,
-  code: string
-): Promise<InviteRecord | null> => {
-  const all = await invites.list();
-  const invite = all.find(
-    (record) => record.community_id === communitySlug && record.code === code
-  );
-  return invite && isInviteUsable(invite) ? invite : null;
-};
+  const { error } = await client
+    .from("community_invites")
+    .update({ revoked_at: new Date().toISOString() })
+    .eq("id", inviteId);
 
-/**
- * Трата использования при вступлении новичка (действующий участник uses не тратит)
- */
-export const consumeInvite = async (inviteId: string): Promise<void> => {
-  const all = await invites.list();
-  const invite = all.find((record) => record.id === inviteId);
-  if (invite) {
-    await invites.update(inviteId, { uses: invite.uses + 1 });
+  if (error) {
+    throw new Error(error.message);
   }
+};
+
+export interface ConsumeInviteResult {
+  communityId: string;
+  channelId: string | null;
+}
+
+/**
+ * Переход по инвайту: атомарная серверная проверка срока/лимита,
+ * membership (для бесплатных сообществ) + грант канала одним действием.
+ * Платное сообщество без membership → ошибка PAYMENT_REQUIRED.
+ */
+export const consumeInvite = async (code: string): Promise<ConsumeInviteResult> => {
+  const client = createBrowserClient();
+  await getSessionUserId(client);
+
+  const { data, error } = await client.rpc("consume_invite", { p_code: code });
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  const result = data as { community_id: string; channel_id: string | null };
+  return { communityId: result.community_id, channelId: result.channel_id };
 };

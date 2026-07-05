@@ -1,7 +1,7 @@
 "use client";
 
-import { ArrowLeft, ArrowRight, Check, Clock, PlayCircle } from "lucide-react";
-import { DEMO_VIDEO_URL, type CourseView, type Lesson } from "@/entities/course";
+import { ArrowLeft, ArrowRight, Check, Clock, Loader2, PlayCircle } from "lucide-react";
+import { useLessonVideoUrlQuery, type CourseView, type Lesson } from "@/entities/course";
 import { Button } from "@/shared/components";
 import { formatDuration } from "@/shared/utils";
 
@@ -25,23 +25,28 @@ export function LessonView({
   const previous = index > 0 ? allLessons[index - 1] : null;
   const next = index < allLessons.length - 1 ? allLessons[index + 1] : null;
 
+  // Видео из Storage — по временной signed-ссылке (только для участников)
+  const { data: videoUrl, isLoading: isVideoLoading } = useLessonVideoUrlQuery(
+    lesson.videoPath
+  );
+
   return (
     <div className="flex-1 min-w-0 overflow-y-auto">
       <div className="max-w-3xl mx-auto px-6 py-5 space-y-4">
         {/* Видео или текстовый блок */}
         {lesson.videoPath ? (
-          <div className="space-y-1.5">
-            {/* В мок-режиме играет общий демо-ролик; реальное видео — после подключения Storage */}
+          isVideoLoading || !videoUrl ? (
+            <div className="w-full aspect-video rounded-[14px] bg-gray-100 border border-gray-200 flex items-center justify-center">
+              <Loader2 className="size-8 animate-spin text-gray-400" />
+            </div>
+          ) : (
             <video
               key={lesson.id}
               controls
-              src={DEMO_VIDEO_URL}
+              src={videoUrl}
               className="w-full aspect-video rounded-[14px] bg-black"
             />
-            <p className="text-xs text-gray-500">
-              Демо-ролик — загруженное видео появится после подключения хранилища.
-            </p>
-          </div>
+          )
         ) : (
           <div className="w-full aspect-video rounded-[14px] bg-gray-100 border border-gray-200 flex flex-col items-center justify-center gap-2">
             <PlayCircle className="size-10 text-gray-400" />

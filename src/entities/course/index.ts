@@ -8,8 +8,11 @@ export {
   updateLesson,
   deleteLesson,
   toggleLessonComplete,
+  uploadLessonVideo,
+  getLessonVideoUrl,
   courseQueryKeys,
   useCourseQuery,
+  useLessonVideoUrlQuery,
   useInvalidateCourse,
   useUpdateCourseMutation,
   useCreateModuleMutation,
@@ -22,7 +25,6 @@ export {
 } from "./api";
 export type { CourseView, CourseModule, Lesson, LessonInput } from "./api";
 export {
-  DEMO_VIDEO_URL,
   transformCourse,
   lessonFormSchema,
   LESSON_TITLE_MAX_LENGTH,

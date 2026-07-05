@@ -1,5 +1,6 @@
-import { createMockCollection } from "@/shared/utils";
-import { CURRENT_USER_ID, MOCK_MEMBERS } from "@/entities/message";
+import { createBrowserClient } from "@/api/browser-client";
+import { getSessionUserId, getSessionUserIdOrNull } from "@/api/auth";
+import { uploadDataUrlImage } from "@/shared/utils";
 import type {
   PostRecord,
   PostLikeRecord,
@@ -9,82 +10,38 @@ import type {
   UpdatePostInput,
 } from "./types";
 
-const posts = createMockCollection<PostRecord>("posts");
-const likes = createMockCollection<PostLikeRecord>("post_likes");
-const bookmarks = createMockCollection<PostBookmarkRecord>("post_bookmarks");
-const comments = createMockCollection<PostCommentRecord>("post_comments");
-const seededChannels = createMockCollection<{ id: string }>("posts_seeded_channels");
+const POST_FIELDS = `
+  id, channel_id, author_id, title, content, cover_url, pinned, created_at, updated_at,
+  author:profiles (display_name, username, avatar_url)
+`;
 
-const SEED_COVER_URL =
-  "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=1280&q=80";
+const COMMENT_FIELDS = `
+  id, post_id, author_id, content, created_at,
+  author:profiles (display_name, username, avatar_url)
+`;
 
-/**
- * Первое открытие таба постов — демо-контент: закреплённый пост владельца
- * с обложкой + текстовый пост участника с лайками и комментариями
- */
-async function seedPosts(channelId: string): Promise<void> {
-  const now = Date.now();
-  const hourMs = 60 * 60 * 1000;
+/** community_id канала — для пути обложки в Storage ({community_id}/...) */
+async function getChannelCommunityId(channelId: string): Promise<string> {
+  const client = createBrowserClient();
+  const { data, error } = await client
+    .from("community_channels")
+    .select("community_id")
+    .eq("id", channelId)
+    .single();
 
-  const pinnedPost: PostRecord = {
-    id: crypto.randomUUID(),
-    channel_id: channelId,
-    author_id: CURRENT_USER_ID,
-    title: "Запуск нового потока курса уже на этой неделе",
-    content:
-      "Мы открываем набор на новый поток. Внутри — обновлённые уроки, живые разборы и чат с обратной связью. Места ограничены, поэтому не откладывайте.",
-    cover_url: SEED_COVER_URL,
-    pinned: true,
-    created_at: new Date(now - 3 * hourMs).toISOString(),
-    updated_at: null,
-  };
+  if (error) {
+    throw new Error(error.message);
+  }
+  return data.community_id;
+}
 
-  const textPost: PostRecord = {
-    id: crypto.randomUUID(),
-    channel_id: channelId,
-    author_id: MOCK_MEMBERS[0].id,
-    title: "Делюсь конспектом с прошлого вебинара",
-    content:
-      "Собрала главные тезисы в один документ: позиционирование, контент-план и частые ошибки. Пишите в комментариях, что добавить.",
-    cover_url: null,
-    pinned: false,
-    created_at: new Date(now - 26 * hourMs).toISOString(),
-    updated_at: null,
-  };
-
-  await posts.insertMany([pinnedPost, textPost]);
-
-  await likes.insertMany([
-    ...MOCK_MEMBERS.map((member) => ({
-      id: crypto.randomUUID(),
-      post_id: pinnedPost.id,
-      user_id: member.id,
-    })),
-    {
-      id: crypto.randomUUID(),
-      post_id: textPost.id,
-      user_id: MOCK_MEMBERS[1].id,
-    },
-  ]);
-
-  await comments.insertMany([
-    {
-      id: crypto.randomUUID(),
-      post_id: textPost.id,
-      author_id: MOCK_MEMBERS[2].id,
-      content: "Спасибо, очень вовремя!",
-      created_at: new Date(now - 20 * hourMs).toISOString(),
-    },
-    {
-      id: crypto.randomUUID(),
-      post_id: textPost.id,
-      author_id: MOCK_MEMBERS[1].id,
-      content: "Добавьте, пожалуйста, раздел про сторис.",
-      created_at: new Date(now - 5 * hourMs).toISOString(),
-    },
-  ]);
-
-  await seededChannels.insert({ id: channelId });
+async function uploadPostCover(channelId: string, coverUrl: string): Promise<string> {
+  const communityId = await getChannelCommunityId(channelId);
+  return uploadDataUrlImage(
+    "post-covers",
+    `${communityId}/${crypto.randomUUID()}.jpg`,
+    coverUrl
+  );
 }
 
 export interface PostsWithMeta {
@@ -92,107 +49,167 @@ export interface PostsWithMeta {
   likes: PostLikeRecord[];
   bookmarks: PostBookmarkRecord[];
   comments: PostCommentRecord[];
+  /** Id текущего пользователя — для флагов likedByMe/bookmarkedByMe */
+  myUserId: string | null;
 }
 
 /**
- * Посты канала со связанными лайками/закладками/комментариями
+ * Посты канала со связанными лайками/закладками/комментариями.
+ * Закладки RLS отдаёт только свои — этого достаточно для bookmarkedByMe.
  */
 export const getPosts = async (channelId: string): Promise<PostsWithMeta> => {
-  const [allPosts, seeded] = await Promise.all([posts.list(), seededChannels.list()]);
+  const client = createBrowserClient();
+  const myUserId = await getSessionUserIdOrNull(client);
 
-  const channelPosts = allPosts.filter((post) => post.channel_id === channelId);
-  const alreadySeeded = seeded.some((record) => record.id === channelId);
+  const { data: postsData, error: postsError } = await client
+    .from("posts")
+    .select(POST_FIELDS)
+    .eq("channel_id", channelId)
+    .order("created_at", { ascending: false });
 
-  if (channelPosts.length === 0 && !alreadySeeded) {
-    await seedPosts(channelId);
-    return getPosts(channelId);
+  if (postsError) {
+    throw new Error(postsError.message);
   }
 
-  const [allLikes, allBookmarks, allComments] = await Promise.all([
-    likes.list(),
-    bookmarks.list(),
-    comments.list(),
+  const posts = (postsData ?? []) as unknown as PostRecord[];
+  const postIds = posts.map((post) => post.id);
+
+  if (postIds.length === 0) {
+    return { posts, likes: [], bookmarks: [], comments: [], myUserId };
+  }
+
+  const [likesResult, bookmarksResult, commentsResult] = await Promise.all([
+    client.from("post_likes").select("id, post_id, user_id").in("post_id", postIds),
+    client.from("post_bookmarks").select("id, post_id, user_id").in("post_id", postIds),
+    client.from("post_comments").select(COMMENT_FIELDS).in("post_id", postIds),
   ]);
-  const postIds = new Set(channelPosts.map((post) => post.id));
+
+  if (likesResult.error) {
+    throw new Error(likesResult.error.message);
+  }
+  if (bookmarksResult.error) {
+    throw new Error(bookmarksResult.error.message);
+  }
+  if (commentsResult.error) {
+    throw new Error(commentsResult.error.message);
+  }
 
   return {
-    posts: channelPosts,
-    likes: allLikes.filter((like) => postIds.has(like.post_id)),
-    bookmarks: allBookmarks.filter((bookmark) => postIds.has(bookmark.post_id)),
-    comments: allComments.filter((comment) => postIds.has(comment.post_id)),
+    posts,
+    likes: (likesResult.data ?? []) as PostLikeRecord[],
+    bookmarks: (bookmarksResult.data ?? []) as PostBookmarkRecord[],
+    comments: (commentsResult.data ?? []) as unknown as PostCommentRecord[],
+    myUserId,
   };
 };
 
 /**
- * Публикация поста от текущего пользователя
+ * Публикация поста (RLS: только владелец сообщества)
  */
 export const createPost = async (input: CreatePostInput): Promise<PostRecord> => {
-  return posts.insert({
-    channel_id: input.channelId,
-    author_id: CURRENT_USER_ID,
-    title: input.title,
-    content: input.content,
-    cover_url: input.coverUrl ?? null,
-    pinned: false,
-    created_at: new Date().toISOString(),
-    updated_at: null,
-  });
+  const client = createBrowserClient();
+  const userId = await getSessionUserId(client);
+
+  const coverUrl = input.coverUrl
+    ? await uploadPostCover(input.channelId, input.coverUrl)
+    : null;
+
+  const { data, error } = await client
+    .from("posts")
+    .insert({
+      channel_id: input.channelId,
+      author_id: userId,
+      title: input.title,
+      content: input.content,
+      cover_url: coverUrl,
+    })
+    .select(POST_FIELDS)
+    .single();
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return data as unknown as PostRecord;
 };
 
 /**
  * Редактирование поста
  */
 export const updatePost = async (input: UpdatePostInput): Promise<PostRecord> => {
-  return posts.update(input.postId, {
-    title: input.title,
-    content: input.content,
-    cover_url: input.coverUrl ?? null,
-    updated_at: new Date().toISOString(),
-  });
+  const client = createBrowserClient();
+
+  const coverUrl = input.coverUrl
+    ? await uploadPostCover(input.channelId, input.coverUrl)
+    : null;
+
+  const { data, error } = await client
+    .from("posts")
+    .update({
+      title: input.title,
+      content: input.content,
+      cover_url: coverUrl,
+      updated_at: new Date().toISOString(),
+    })
+    .eq("id", input.postId)
+    .select(POST_FIELDS)
+    .single();
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return data as unknown as PostRecord;
 };
 
 /**
- * Удаление поста вместе с реакциями и комментариями
+ * Удаление поста (реакции и комментарии удаляются каскадом)
  */
 export const deletePost = async (postId: string): Promise<void> => {
-  const [allLikes, allBookmarks, allComments] = await Promise.all([
-    likes.list(),
-    bookmarks.list(),
-    comments.list(),
-  ]);
+  const client = createBrowserClient();
+  const { error } = await client.from("posts").delete().eq("id", postId);
 
-  await posts.remove(postId);
-  await Promise.all([
-    ...allLikes.filter((like) => like.post_id === postId).map((like) => likes.remove(like.id)),
-    ...allBookmarks
-      .filter((bookmark) => bookmark.post_id === postId)
-      .map((bookmark) => bookmarks.remove(bookmark.id)),
-    ...allComments
-      .filter((comment) => comment.post_id === postId)
-      .map((comment) => comments.remove(comment.id)),
-  ]);
+  if (error) {
+    throw new Error(error.message);
+  }
 };
 
 /**
  * Закрепить/открепить пост
  */
-export const togglePinPost = async (postId: string, pinned: boolean): Promise<PostRecord> => {
-  return posts.update(postId, { pinned });
+export const togglePinPost = async (postId: string, pinned: boolean): Promise<void> => {
+  const client = createBrowserClient();
+  const { error } = await client.from("posts").update({ pinned }).eq("id", postId);
+
+  if (error) {
+    throw new Error(error.message);
+  }
 };
 
 /**
  * Лайк текущего пользователя (toggle)
  */
 export const toggleLike = async (postId: string): Promise<void> => {
-  const allLikes = await likes.list();
-  const existing = allLikes.find(
-    (like) => like.post_id === postId && like.user_id === CURRENT_USER_ID
-  );
+  const client = createBrowserClient();
+  const userId = await getSessionUserId(client);
 
-  if (existing) {
-    await likes.remove(existing.id);
-  } else {
-    await likes.insert({ post_id: postId, user_id: CURRENT_USER_ID });
+  const { data: existing, error: selectError } = await client
+    .from("post_likes")
+    .select("id")
+    .eq("post_id", postId)
+    .eq("user_id", userId)
+    .maybeSingle();
+
+  if (selectError) {
+    throw new Error(selectError.message);
+  }
+
+  const { error } = existing
+    ? await client.from("post_likes").delete().eq("id", existing.id)
+    : await client.from("post_likes").insert({ post_id: postId, user_id: userId });
+
+  if (error) {
+    throw new Error(error.message);
   }
 };
 
@@ -200,15 +217,26 @@ export const toggleLike = async (postId: string): Promise<void> => {
  * Закладка текущего пользователя (toggle)
  */
 export const toggleBookmark = async (postId: string): Promise<void> => {
-  const allBookmarks = await bookmarks.list();
-  const existing = allBookmarks.find(
-    (bookmark) => bookmark.post_id === postId && bookmark.user_id === CURRENT_USER_ID
-  );
+  const client = createBrowserClient();
+  const userId = await getSessionUserId(client);
 
-  if (existing) {
-    await bookmarks.remove(existing.id);
-  } else {
-    await bookmarks.insert({ post_id: postId, user_id: CURRENT_USER_ID });
+  const { data: existing, error: selectError } = await client
+    .from("post_bookmarks")
+    .select("id")
+    .eq("post_id", postId)
+    .eq("user_id", userId)
+    .maybeSingle();
+
+  if (selectError) {
+    throw new Error(selectError.message);
+  }
+
+  const { error } = existing
+    ? await client.from("post_bookmarks").delete().eq("id", existing.id)
+    : await client.from("post_bookmarks").insert({ post_id: postId, user_id: userId });
+
+  if (error) {
+    throw new Error(error.message);
   }
 };
 
@@ -216,10 +244,22 @@ export const toggleBookmark = async (postId: string): Promise<void> => {
  * Комментарий от текущего пользователя
  */
 export const addComment = async (postId: string, content: string): Promise<PostCommentRecord> => {
-  return comments.insert({
-    post_id: postId,
-    author_id: CURRENT_USER_ID,
-    content,
-    created_at: new Date().toISOString(),
-  });
+  const client = createBrowserClient();
+  const userId = await getSessionUserId(client);
+
+  const { data, error } = await client
+    .from("post_comments")
+    .insert({
+      post_id: postId,
+      author_id: userId,
+      content,
+    })
+    .select(COMMENT_FIELDS)
+    .single();
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return data as unknown as PostCommentRecord;
 };

@@ -8,9 +8,11 @@ export {
   updateLesson,
   deleteLesson,
   toggleLessonComplete,
+  uploadLessonVideo,
+  getLessonVideoUrl,
 } from "./api";
 export { courseQueryKeys } from "./constants";
-export { useCourseQuery, useInvalidateCourse } from "./queries";
+export { useCourseQuery, useLessonVideoUrlQuery, useInvalidateCourse } from "./queries";
 export {
   useUpdateCourseMutation,
   useCreateModuleMutation,

@@ -1,6 +1,7 @@
 export {
   getCommunities,
   getCommunity,
+  getCommunityIdBySlug,
   createCommunity,
   deleteCommunity,
   getCommunityProfile,

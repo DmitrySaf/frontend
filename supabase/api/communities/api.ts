@@ -1,21 +1,24 @@
 import { type TypedSupabaseClient } from "../types";
-import { type Community } from "./types";
+import { type Community, type UpdateCommunityData } from "./types";
 
 const COMMUNITIES_TABLE = 'communities';
+
+const COMMUNITY_FIELDS =
+  'id, name, display_name, owner_id, description, cover_url, logo_url, visibility, created_at, updated_at';
 
 export async function getCommunities(client: TypedSupabaseClient): Promise<{ data: Community[] | null, error: any }> {
   return client
     .from(COMMUNITIES_TABLE)
-    .select('display_name, name, created_at, updated_at')
+    .select(COMMUNITY_FIELDS)
     .order('created_at', { ascending: false });
 }
 
 export async function getCommunity(client: TypedSupabaseClient, name: string): Promise<{ data: Community | null, error: any }> {
   return client
     .from(COMMUNITIES_TABLE)
-    .select('display_name, name, created_at, updated_at')
+    .select(COMMUNITY_FIELDS)
     .eq('name', name)
-    .single();
+    .maybeSingle();
 }
 
 export async function createCommunity(
@@ -29,20 +32,20 @@ export async function createCommunity(
       display_name: data.display_name,
       owner_id: data.owner_id,
     })
-    .select('display_name, name, created_at, updated_at')
+    .select(COMMUNITY_FIELDS)
     .single();
 }
 
 export async function updateCommunity(
   client: TypedSupabaseClient,
   name: string,
-  data: { display_name?: string }
+  data: UpdateCommunityData
 ): Promise<{ data: Community | null, error: any }> {
   return client
     .from(COMMUNITIES_TABLE)
     .update(data)
     .eq('name', name)
-    .select('display_name, name, created_at, updated_at')
+    .select(COMMUNITY_FIELDS)
     .single();
 }
 

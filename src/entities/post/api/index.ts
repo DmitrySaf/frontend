@@ -10,6 +10,7 @@ export {
 } from "./api";
 export { postQueryKeys } from "./constants";
 export { usePostsQuery, usePostCommentsQuery, useInvalidatePosts } from "./queries";
+export { usePostsRealtime } from "./realtime";
 export {
   useCreatePostMutation,
   useUpdatePostMutation,
@@ -21,6 +22,7 @@ export {
 } from "./mutations";
 export type {
   Post,
+  PostAuthor,
   PostComment,
   CreatePostInput,
   UpdatePostInput,

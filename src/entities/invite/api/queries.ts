@@ -1,5 +1,5 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { getOrCreateInvite, validateInviteCode } from "./api";
+import { getOrCreateInvite } from "./api";
 import { inviteQueryKeys } from "./constants";
 import type { Invite } from "./types";
 
@@ -25,20 +25,6 @@ export const useCommunityInviteQuery = (
       };
     },
     enabled: !!communitySlug && enabled,
-  });
-};
-
-/**
- * Валидация кода из URL витрины
- */
-export const useInviteValidationQuery = (communitySlug: string, code: string | null) => {
-  return useQuery({
-    queryKey: inviteQueryKeys.validation(communitySlug, code ?? ""),
-    queryFn: async () => {
-      if (!code) return null;
-      return validateInviteCode(communitySlug, code);
-    },
-    enabled: !!communitySlug && code !== undefined,
   });
 };
 

@@ -1,7 +1,7 @@
 "use client";
 
-import { CURRENT_USER_ID, getMockMember } from "@/entities/message";
-import { useProfileQuery } from "@/entities/profile";
+import { useParams } from "next/navigation";
+import { useCommunityQuery } from "@/entities/community";
 
 export interface AuthorView {
   displayName: string;
@@ -9,25 +9,23 @@ export interface AuthorView {
   isCommunityOwner: boolean;
 }
 
+interface AuthorInfo {
+  displayName: string;
+  avatarUrl: string | null;
+}
+
 /**
- * Резолвер автора для мок-контента: «me» → реальный профиль (владелец),
- * иначе — вымышленный участник
+ * Резолвер автора: имя/аватар приходят джойном профиля,
+ * бейдж «автор» — по owner_id сообщества
  */
 export function useAuthorView() {
-  const { data: profile } = useProfileQuery();
+  const params = useParams();
+  const slug = (params?.slug as string) ?? "";
+  const { data: community } = useCommunityQuery(slug);
 
-  return (authorId: string): AuthorView => {
-    if (authorId === CURRENT_USER_ID) {
-      return {
-        displayName: profile?.displayName ?? "Вы",
-        avatarUrl: profile?.avatarUrl,
-        isCommunityOwner: true,
-      };
-    }
-    const member = getMockMember(authorId);
-    return {
-      displayName: member?.displayName ?? "Участник",
-      isCommunityOwner: false,
-    };
-  };
+  return (authorId: string, author?: AuthorInfo | null): AuthorView => ({
+    displayName: author?.displayName ?? "Участник",
+    avatarUrl: author?.avatarUrl ?? null,
+    isCommunityOwner: !!community && authorId === community.ownerId,
+  });
 }

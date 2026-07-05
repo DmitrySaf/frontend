@@ -1,5 +1,5 @@
-import { createMockCollection } from "@/shared/utils";
-import { CURRENT_USER_ID } from "@/entities/message";
+import { createBrowserClient } from "@/api/browser-client";
+import { getSessionUserId, getSessionUserIdOrNull } from "@/api/auth";
 import type {
   CourseRecord,
   CourseModuleRecord,
@@ -9,47 +9,102 @@ import type {
   LessonInput,
 } from "./types";
 
-const courses = createMockCollection<CourseRecord>("courses");
-const modules = createMockCollection<CourseModuleRecord>("course_modules");
-const lessons = createMockCollection<CourseLessonRecord>("course_lessons");
-const progress = createMockCollection<LessonProgressRecord>("lesson_progress");
+const COURSE_FIELDS = "id, channel_id, title, description, cover_url, created_at";
+const MODULE_FIELDS = "id, course_id, title, position, created_at";
+const LESSON_FIELDS =
+  "id, module_id, title, description, video_path, duration_seconds, position, created_at";
 
 /**
- * Курс канала (1:1 с табом типа «курс»); создаётся пустым при первом открытии
+ * Курс канала (1:1 с табом типа «курс»). Строка курса создаётся вместе с табом;
+ * для старых табов владелец досоздаёт её при первом открытии.
  */
 export const getCourse = async (channelId: string, channelName: string): Promise<CourseData> => {
-  const allCourses = await courses.list();
-  let course = allCourses.find((record) => record.channel_id === channelId);
+  const client = createBrowserClient();
 
-  if (!course) {
-    course = await courses.insert({
-      channel_id: channelId,
-      title: channelName,
-      description: "",
-      cover_url: null,
-      created_at: new Date().toISOString(),
-    });
+  const { data: existing, error: courseError } = await client
+    .from("courses")
+    .select(COURSE_FIELDS)
+    .eq("channel_id", channelId)
+    .maybeSingle();
+
+  if (courseError) {
+    throw new Error(courseError.message);
   }
 
-  const [allModules, allLessons, allProgress] = await Promise.all([
-    modules.list(),
-    lessons.list(),
-    progress.list(),
-  ]);
+  let course = existing as CourseRecord | null;
 
-  const courseModules = allModules.filter((module) => module.course_id === course.id);
-  const moduleIds = new Set(courseModules.map((module) => module.id));
-  const courseLessons = allLessons.filter((lesson) => moduleIds.has(lesson.module_id));
-  const lessonIds = new Set(courseLessons.map((lesson) => lesson.id));
+  if (!course) {
+    const { data: created, error: insertError } = await client
+      .from("courses")
+      .insert({ channel_id: channelId, title: channelName })
+      .select(COURSE_FIELDS)
+      .single();
 
-  return {
-    course,
-    modules: courseModules,
-    lessons: courseLessons,
-    progress: allProgress.filter(
-      (record) => record.user_id === CURRENT_USER_ID && lessonIds.has(record.lesson_id)
-    ),
-  };
+    // У участника нет прав на insert — показываем пустой курс
+    if (insertError) {
+      return {
+        course: {
+          id: "",
+          channel_id: channelId,
+          title: channelName,
+          description: "",
+          cover_url: null,
+          created_at: new Date().toISOString(),
+        },
+        modules: [],
+        lessons: [],
+        progress: [],
+      };
+    }
+    course = created as CourseRecord;
+  }
+
+  const { data: modulesData, error: modulesError } = await client
+    .from("course_modules")
+    .select(MODULE_FIELDS)
+    .eq("course_id", course.id)
+    .order("position");
+
+  if (modulesError) {
+    throw new Error(modulesError.message);
+  }
+
+  const modules = (modulesData ?? []) as CourseModuleRecord[];
+  const moduleIds = modules.map((module) => module.id);
+
+  let lessons: CourseLessonRecord[] = [];
+  if (moduleIds.length > 0) {
+    const { data: lessonsData, error: lessonsError } = await client
+      .from("course_lessons")
+      .select(LESSON_FIELDS)
+      .in("module_id", moduleIds)
+      .order("position");
+
+    if (lessonsError) {
+      throw new Error(lessonsError.message);
+    }
+    lessons = (lessonsData ?? []) as CourseLessonRecord[];
+  }
+
+  let progress: LessonProgressRecord[] = [];
+  const userId = await getSessionUserIdOrNull(client);
+  if (userId && lessons.length > 0) {
+    const { data: progressData, error: progressError } = await client
+      .from("lesson_progress")
+      .select("id, lesson_id, user_id, completed_at")
+      .eq("user_id", userId)
+      .in(
+        "lesson_id",
+        lessons.map((lesson) => lesson.id)
+      );
+
+    if (progressError) {
+      throw new Error(progressError.message);
+    }
+    progress = (progressData ?? []) as LessonProgressRecord[];
+  }
+
+  return { course, modules, lessons, progress };
 };
 
 /**
@@ -58,44 +113,62 @@ export const getCourse = async (channelId: string, channelName: string): Promise
 export const updateCourse = async (
   courseId: string,
   patch: { title?: string; description?: string }
-): Promise<CourseRecord> => {
-  return courses.update(courseId, patch);
+): Promise<void> => {
+  const client = createBrowserClient();
+  const { error } = await client.from("courses").update(patch).eq("id", courseId);
+
+  if (error) {
+    throw new Error(error.message);
+  }
 };
 
 /**
  * Новый модуль (в конец)
  */
 export const createModule = async (courseId: string, title: string): Promise<CourseModuleRecord> => {
-  const allModules = await modules.list();
-  const siblings = allModules.filter((module) => module.course_id === courseId);
+  const client = createBrowserClient();
 
-  return modules.insert({
-    course_id: courseId,
-    title,
-    position: siblings.length,
-    created_at: new Date().toISOString(),
-  });
+  const { count, error: countError } = await client
+    .from("course_modules")
+    .select("id", { count: "exact", head: true })
+    .eq("course_id", courseId);
+
+  if (countError) {
+    throw new Error(countError.message);
+  }
+
+  const { data, error } = await client
+    .from("course_modules")
+    .insert({ course_id: courseId, title, position: count ?? 0 })
+    .select(MODULE_FIELDS)
+    .single();
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return data as CourseModuleRecord;
 };
 
-export const renameModule = async (moduleId: string, title: string): Promise<CourseModuleRecord> => {
-  return modules.update(moduleId, { title });
+export const renameModule = async (moduleId: string, title: string): Promise<void> => {
+  const client = createBrowserClient();
+  const { error } = await client.from("course_modules").update({ title }).eq("id", moduleId);
+
+  if (error) {
+    throw new Error(error.message);
+  }
 };
 
 /**
- * Удаление модуля вместе с уроками и прогрессом по ним
+ * Удаление модуля (уроки и прогресс удаляются каскадом)
  */
 export const deleteModule = async (moduleId: string): Promise<void> => {
-  const [allLessons, allProgress] = await Promise.all([lessons.list(), progress.list()]);
-  const moduleLessons = allLessons.filter((lesson) => lesson.module_id === moduleId);
-  const lessonIds = new Set(moduleLessons.map((lesson) => lesson.id));
+  const client = createBrowserClient();
+  const { error } = await client.from("course_modules").delete().eq("id", moduleId);
 
-  await modules.remove(moduleId);
-  await Promise.all([
-    ...moduleLessons.map((lesson) => lessons.remove(lesson.id)),
-    ...allProgress
-      .filter((record) => lessonIds.has(record.lesson_id))
-      .map((record) => progress.remove(record.id)),
-  ]);
+  if (error) {
+    throw new Error(error.message);
+  }
 };
 
 /**
@@ -105,59 +178,130 @@ export const createLesson = async (
   moduleId: string,
   input: LessonInput
 ): Promise<CourseLessonRecord> => {
-  const allLessons = await lessons.list();
-  const siblings = allLessons.filter((lesson) => lesson.module_id === moduleId);
+  const client = createBrowserClient();
 
-  return lessons.insert({
-    module_id: moduleId,
-    title: input.title,
-    description: input.description,
-    video_path: input.videoPath,
-    duration_seconds: input.durationSeconds,
-    position: siblings.length,
-    created_at: new Date().toISOString(),
-  });
+  const { count, error: countError } = await client
+    .from("course_lessons")
+    .select("id", { count: "exact", head: true })
+    .eq("module_id", moduleId);
+
+  if (countError) {
+    throw new Error(countError.message);
+  }
+
+  const { data, error } = await client
+    .from("course_lessons")
+    .insert({
+      module_id: moduleId,
+      title: input.title,
+      description: input.description,
+      video_path: input.videoPath,
+      duration_seconds: input.durationSeconds,
+      position: count ?? 0,
+    })
+    .select(LESSON_FIELDS)
+    .single();
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return data as CourseLessonRecord;
 };
 
 export const updateLesson = async (
   lessonId: string,
   input: LessonInput
-): Promise<CourseLessonRecord> => {
-  return lessons.update(lessonId, {
-    title: input.title,
-    description: input.description,
-    video_path: input.videoPath,
-    duration_seconds: input.durationSeconds,
-  });
+): Promise<void> => {
+  const client = createBrowserClient();
+
+  const { error } = await client
+    .from("course_lessons")
+    .update({
+      title: input.title,
+      description: input.description,
+      video_path: input.videoPath,
+      duration_seconds: input.durationSeconds,
+    })
+    .eq("id", lessonId);
+
+  if (error) {
+    throw new Error(error.message);
+  }
 };
 
 export const deleteLesson = async (lessonId: string): Promise<void> => {
-  const allProgress = await progress.list();
+  const client = createBrowserClient();
+  const { error } = await client.from("course_lessons").delete().eq("id", lessonId);
 
-  await lessons.remove(lessonId);
-  await Promise.all(
-    allProgress
-      .filter((record) => record.lesson_id === lessonId)
-      .map((record) => progress.remove(record.id))
-  );
+  if (error) {
+    throw new Error(error.message);
+  }
 };
 
 /**
  * Отметка «пройдено» текущего пользователя (toggle)
  */
 export const toggleLessonComplete = async (lessonId: string): Promise<void> => {
-  const allProgress = await progress.list();
-  const existing = allProgress.find(
-    (record) => record.lesson_id === lessonId && record.user_id === CURRENT_USER_ID
-  );
+  const client = createBrowserClient();
+  const userId = await getSessionUserId(client);
 
-  if (existing) {
-    await progress.remove(existing.id);
-  } else {
-    await progress.insert({
-      user_id: CURRENT_USER_ID,
-      lesson_id: lessonId,
-      completed_at: new Date().toISOString(),
-    });
+  const { data: existing, error: selectError } = await client
+    .from("lesson_progress")
+    .select("id")
+    .eq("lesson_id", lessonId)
+    .eq("user_id", userId)
+    .maybeSingle();
+
+  if (selectError) {
+    throw new Error(selectError.message);
   }
+
+  const { error } = existing
+    ? await client.from("lesson_progress").delete().eq("id", existing.id)
+    : await client.from("lesson_progress").insert({ lesson_id: lessonId, user_id: userId });
+
+  if (error) {
+    throw new Error(error.message);
+  }
+};
+
+/**
+ * Загрузка видео урока в Storage (bucket lesson-videos, путь {community_id}/...).
+ * Возвращает video_path для записи урока.
+ */
+export const uploadLessonVideo = async (
+  communityId: string,
+  file: File
+): Promise<string> => {
+  const client = createBrowserClient();
+  const extension = file.name.split(".").pop()?.toLowerCase() || "mp4";
+  const path = `${communityId}/${crypto.randomUUID()}.${extension}`;
+
+  const { error } = await client.storage.from("lesson-videos").upload(path, file, {
+    contentType: file.type || "video/mp4",
+  });
+
+  if (error) {
+    throw new Error(error.message || "Не удалось загрузить видео");
+  }
+
+  return path;
+};
+
+/**
+ * Временная ссылка на видео урока (RLS Storage: только участники сообщества)
+ */
+export const getLessonVideoUrl = async (videoPath: string): Promise<string> => {
+  const client = createBrowserClient();
+
+  const { data, error } = await client.storage
+    .from("lesson-videos")
+    .createSignedUrl(videoPath, 60 * 60);
+
+  if (error) {
+    throw new Error(error.message || "Не удалось получить ссылку на видео");
+  }
+
+  return data.signedUrl;
 };

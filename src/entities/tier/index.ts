@@ -4,7 +4,6 @@ export {
   updateTier,
   setTierActive,
   deleteTier,
-  seedDefaultTiers,
   tierQueryKeys,
   useTiersQuery,
   useInvalidateTiers,

@@ -10,6 +10,7 @@ export {
   postQueryKeys,
   usePostsQuery,
   usePostCommentsQuery,
+  usePostsRealtime,
   useInvalidatePosts,
   useCreatePostMutation,
   useUpdatePostMutation,
@@ -19,7 +20,7 @@ export {
   useToggleBookmarkMutation,
   useAddCommentMutation,
 } from "./api";
-export type { Post, PostComment, CreatePostInput, UpdatePostInput } from "./api";
+export type { Post, PostAuthor, PostComment, CreatePostInput, UpdatePostInput } from "./api";
 export {
   transformPosts,
   transformComment,

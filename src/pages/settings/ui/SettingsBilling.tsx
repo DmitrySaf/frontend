@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { ArrowDownLeft, ArrowUpRight, Loader2, ReceiptText } from "lucide-react";
 import { useCommunitiesQuery } from "@/entities/community";
 import { useMyTransactionsQuery, type TransactionItem } from "@/entities/subscription";
+import { useSessionUserId } from "@/shared/composables";
 import { cn, formatRelativeTime } from "@/shared/utils";
 
 type Filter = "all" | "income" | "payouts";
@@ -41,9 +42,13 @@ export function SettingsBilling() {
   const [filter, setFilter] = useState<Filter>("all");
 
   const { data: communities, isLoading: isCommunitiesLoading } = useCommunitiesQuery();
+  const myUserId = useSessionUserId();
   const ownedSlugs = useMemo(
-    () => (communities ?? []).map((community) => community.name),
-    [communities]
+    () =>
+      (communities ?? [])
+        .filter((community) => community.ownerId === myUserId)
+        .map((community) => community.name),
+    [communities, myUserId]
   );
 
   const { data: transactions, isLoading } = useMyTransactionsQuery(

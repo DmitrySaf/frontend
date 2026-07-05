@@ -14,6 +14,15 @@ const SOCIAL_LINKS_TABLE = 'profile_social_links';
 export async function getProfile(
   client: TypedSupabaseClient,
 ): Promise<{ data: ProfileWithSocials | null, error: any }> {
+  // Профили видны всем участникам (авторы сообщений/постов),
+  // поэтому свой профиль выбираем явно по auth-сессии
+  const { data: sessionData } = await client.auth.getSession();
+  const userId = sessionData.session?.user.id;
+
+  if (!userId) {
+    return { data: null, error: new Error("Требуется авторизация") };
+  }
+
   const { data, error } = await client
     .from(PROFILES_TABLE)
     .select(`
@@ -24,6 +33,7 @@ export async function getProfile(
       privacy_settings,
       social_links:${SOCIAL_LINKS_TABLE}(platform, label, link)
     `)
+    .eq('id', userId)
     .single();
 
   if (error) {

@@ -4,7 +4,6 @@ export {
   updateChannel,
   deleteChannel,
   getMyChannelGrants,
-  grantChannelAccess,
   channelQueryKeys,
   useCommunityStructureQuery,
   useMyChannelGrantsQuery,

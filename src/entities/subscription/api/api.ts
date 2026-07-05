@@ -1,135 +1,85 @@
-import { createMockCollection } from "@/shared/utils";
-import { CURRENT_USER_ID } from "@/entities/message";
-import { getTiers, seedDefaultTiers, type TierRecord } from "@/entities/tier";
-import type { SubscriptionRecord, TransactionRecord } from "./types";
+import { createBrowserClient } from "@/api/browser-client";
+import { getSessionUserId, getSessionUserIdOrNull } from "@/api/auth";
+import { getCommunityIdBySlug } from "@/entities/community";
+import { getTiers, type TierRecord } from "@/entities/tier";
+import type {
+  SubscriptionRecord,
+  SubscriptionStatus,
+  TransactionRecord,
+  TransactionStatus,
+  TransactionType,
+} from "./types";
 
-const subscriptions = createMockCollection<SubscriptionRecord>("subscriptions");
-const transactions = createMockCollection<TransactionRecord>("transactions");
-const seededCommunities = createMockCollection<{ id: string }>("sales_seeded_communities");
+const SUBSCRIPTION_FIELDS = "id, user_id, community_id, tier_id, status, started_at, expires_at";
+const TRANSACTION_FIELDS = "id, user_id, community_id, type, amount_kopeks, status, metadata, created_at";
 
-const MONTH_MS = 30 * 24 * 60 * 60 * 1000;
+function castSubscription(record: Record<string, unknown>): SubscriptionRecord {
+  return { ...record, status: record.status as SubscriptionStatus } as SubscriptionRecord;
+}
 
-/**
- * Сид-история продаж за 12 месяцев: растущее число подписок по тарифам,
- * транзакция на каждую подписку. Если тарифов нет — создаются демо-тарифы.
- */
-async function seedSalesHistory(communitySlug: string): Promise<void> {
-  let tiers = await getTiers(communitySlug);
-  if (tiers.length === 0) {
-    tiers = await seedDefaultTiers(communitySlug);
-  }
-
-  const recurringTiers = tiers.filter((tier) => tier.kind === "recurring");
-  const pool: TierRecord[] = recurringTiers.length > 0 ? recurringTiers : tiers;
-
-  const now = Date.now();
-  const newSubscriptions: SubscriptionRecord[] = [];
-  const newTransactions: TransactionRecord[] = [];
-  let userCounter = 0;
-
-  for (let monthIndex = 0; monthIndex < 12; monthIndex++) {
-    // От ~3 подписок в начале к ~14 в текущем месяце
-    const count = Math.round(3 + monthIndex + Math.random() * 2);
-    const monthStart = now - (11 - monthIndex) * MONTH_MS;
-
-    for (let i = 0; i < count; i++) {
-      // Распределение: чаще всего первый тариф, реже последние
-      const roll = Math.random();
-      const tier =
-        pool[roll < 0.65 ? 0 : roll < 0.88 ? Math.min(1, pool.length - 1) : pool.length - 1];
-
-      const startedAt = monthStart + Math.random() * MONTH_MS * 0.9;
-      const periodMonths = tier.period_months ?? 1;
-      const expiresAt =
-        tier.kind === "one_time" ? null : startedAt + periodMonths * MONTH_MS;
-
-      userCounter += 1;
-      const userId = `seed-user-${userCounter}`;
-
-      newSubscriptions.push({
-        id: crypto.randomUUID(),
-        user_id: userId,
-        community_id: communitySlug,
-        tier_id: tier.id,
-        status: expiresAt === null || expiresAt > now ? "active" : "expired",
-        started_at: new Date(startedAt).toISOString(),
-        expires_at: expiresAt === null ? null : new Date(expiresAt).toISOString(),
-      });
-
-      newTransactions.push({
-        id: crypto.randomUUID(),
-        user_id: userId,
-        community_id: communitySlug,
-        type: "subscription",
-        amount_kopeks: tier.price_kopeks,
-        status: "succeeded",
-        metadata: { tier_id: tier.id, tier_name: tier.name },
-        created_at: new Date(startedAt).toISOString(),
-      });
-    }
-  }
-
-  await subscriptions.insertMany(newSubscriptions);
-  await transactions.insertMany(newTransactions);
-  await seededCommunities.insert({ id: communitySlug });
+function castTransaction(record: Record<string, unknown>): TransactionRecord {
+  return {
+    ...record,
+    type: record.type as TransactionType,
+    status: record.status as TransactionStatus,
+  } as TransactionRecord;
 }
 
 /**
- * Число участников без сид-эффекта (для публичной витрины чужого сообщества)
+ * Число участников сообщества (для витрины считается на сервере в get_storefront)
  */
 export const getCommunityMembersCount = async (communitySlug: string): Promise<number> => {
-  const allSubscriptions = await subscriptions.list();
-  return allSubscriptions.filter((record) => record.community_id === communitySlug).length;
+  const client = createBrowserClient();
+  const communityId = await getCommunityIdBySlug(communitySlug);
+
+  const { count, error } = await client
+    .from("community_members")
+    .select("id", { count: "exact", head: true })
+    .eq("community_id", communityId);
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return count ?? 0;
 };
 
-// Сид пары выплат для истории транзакций (одноразово)
-const payoutSeeded = createMockCollection<{ id: string }>("payouts_seeded");
-
 /**
- * Транзакции текущего пользователя: поступления по его сообществам + его выплаты.
- * При первом открытии сидируются две демо-выплаты.
+ * Транзакции текущего пользователя: поступления по его сообществам + его выплаты
  */
 export const getMyTransactions = async (
   ownedCommunitySlugs: string[]
 ): Promise<TransactionRecord[]> => {
-  const seeded = await payoutSeeded.list();
-  if (seeded.length === 0 && ownedCommunitySlugs.length > 0) {
-    const now = Date.now();
-    const dayMs = 24 * 60 * 60 * 1000;
-    await transactions.insertMany([
-      {
-        id: crypto.randomUUID(),
-        user_id: CURRENT_USER_ID,
-        community_id: null,
-        type: "payout",
-        amount_kopeks: 2_000_000,
-        status: "pending",
-        metadata: {},
-        created_at: new Date(now - dayMs).toISOString(),
-      },
-      {
-        id: crypto.randomUUID(),
-        user_id: CURRENT_USER_ID,
-        community_id: null,
-        type: "payout",
-        amount_kopeks: 3_500_000,
-        status: "succeeded",
-        metadata: {},
-        created_at: new Date(now - 14 * dayMs).toISOString(),
-      },
-    ]);
-    await payoutSeeded.insert({ id: "seeded" });
+  const client = createBrowserClient();
+  const userId = await getSessionUserIdOrNull(client);
+  if (!userId) return [];
+
+  const communityIds = await Promise.all(ownedCommunitySlugs.map(getCommunityIdBySlug));
+
+  const [payoutsResult, incomeResult] = await Promise.all([
+    client
+      .from("transactions")
+      .select(TRANSACTION_FIELDS)
+      .eq("user_id", userId)
+      .eq("type", "payout"),
+    communityIds.length > 0
+      ? client
+          .from("transactions")
+          .select(TRANSACTION_FIELDS)
+          .eq("type", "subscription")
+          .in("community_id", communityIds)
+      : Promise.resolve({ data: [], error: null }),
+  ]);
+
+  if (payoutsResult.error) {
+    throw new Error(payoutsResult.error.message);
+  }
+  if (incomeResult.error) {
+    throw new Error(incomeResult.error.message);
   }
 
-  const all = await transactions.list();
-  return all
-    .filter(
-      (tx) =>
-        (tx.type === "subscription" &&
-          tx.community_id !== null &&
-          ownedCommunitySlugs.includes(tx.community_id)) ||
-        (tx.type === "payout" && tx.user_id === CURRENT_USER_ID)
-    )
+  return [...(payoutsResult.data ?? []), ...(incomeResult.data ?? [])]
+    .map(castTransaction)
     .sort((a, b) => b.created_at.localeCompare(a.created_at));
 };
 
@@ -140,66 +90,57 @@ export interface CommunitySales {
 }
 
 /**
- * Продажи сообщества (подписки + транзакции + тарифы); при первом обращении сидируются
+ * Продажи сообщества для дашборда (RLS: видит только админ)
  */
 export const getCommunitySales = async (communitySlug: string): Promise<CommunitySales> => {
-  const seeded = await seededCommunities.list();
-  const [allSubscriptions, allTransactions] = await Promise.all([
-    subscriptions.list(),
-    transactions.list(),
+  const client = createBrowserClient();
+  const communityId = await getCommunityIdBySlug(communitySlug);
+
+  const [subscriptionsResult, transactionsResult, tiers] = await Promise.all([
+    client
+      .from("subscriptions")
+      .select(SUBSCRIPTION_FIELDS)
+      .eq("community_id", communityId),
+    client
+      .from("transactions")
+      .select(TRANSACTION_FIELDS)
+      .eq("community_id", communityId)
+      .eq("type", "subscription"),
+    getTiers(communitySlug),
   ]);
 
-  const communitySubscriptions = allSubscriptions.filter(
-    (record) => record.community_id === communitySlug
-  );
-
-  if (
-    communitySubscriptions.length === 0 &&
-    !seeded.some((record) => record.id === communitySlug)
-  ) {
-    await seedSalesHistory(communitySlug);
-    return getCommunitySales(communitySlug);
+  if (subscriptionsResult.error) {
+    throw new Error(subscriptionsResult.error.message);
+  }
+  if (transactionsResult.error) {
+    throw new Error(transactionsResult.error.message);
   }
 
   return {
-    subscriptions: communitySubscriptions,
-    transactions: allTransactions.filter(
-      (record) => record.community_id === communitySlug && record.type === "subscription"
-    ),
-    tiers: await getTiers(communitySlug),
+    subscriptions: (subscriptionsResult.data ?? []).map(castSubscription),
+    transactions: (transactionsResult.data ?? []).map(castTransaction),
+    tiers,
   };
 };
 
 /**
- * Симуляция покупки текущим пользователем (для витрины, этап 9):
- * подписка + транзакция создаются мгновенно
+ * Симуляция покупки: подписка + транзакция + membership создаются
+ * атомарно на сервере (RPC simulate_purchase); инвайт тратится там же
  */
 export const purchaseTier = async (
   communitySlug: string,
-  tier: { id: string; kind: string; priceKopeks: number; periodMonths: number | null; name: string }
+  tier: { id: string; kind: string; priceKopeks: number; periodMonths: number | null; name: string },
+  inviteCode?: string | null
 ): Promise<void> => {
-  const now = Date.now();
-  const expiresAt =
-    tier.kind === "one_time" || tier.periodMonths == null
-      ? null
-      : new Date(now + tier.periodMonths * MONTH_MS).toISOString();
+  const client = createBrowserClient();
+  await getSessionUserId(client);
 
-  await subscriptions.insert({
-    user_id: CURRENT_USER_ID,
-    community_id: communitySlug,
-    tier_id: tier.id,
-    status: "active",
-    started_at: new Date(now).toISOString(),
-    expires_at: expiresAt,
+  const { error } = await client.rpc("simulate_purchase", {
+    p_tier_id: tier.id,
+    ...(inviteCode ? { p_invite_code: inviteCode } : {}),
   });
 
-  await transactions.insert({
-    user_id: CURRENT_USER_ID,
-    community_id: communitySlug,
-    type: "subscription",
-    amount_kopeks: tier.priceKopeks,
-    status: "succeeded",
-    metadata: { tier_id: tier.id, tier_name: tier.name },
-    created_at: new Date(now).toISOString(),
-  });
+  if (error) {
+    throw new Error(error.message);
+  }
 };

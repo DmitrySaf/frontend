@@ -1,18 +1,38 @@
-import { createMockCollection } from "@/shared/utils";
-import { CURRENT_USER_ID } from "@/entities/message";
-import type { VerificationRequestRecord, VerificationKind } from "./types";
+import { createBrowserClient } from "@/api/browser-client";
+import { getSessionUserId, getSessionUserIdOrNull } from "@/api/auth";
+import type { VerificationRequestRecord, VerificationKind, VerificationStatus } from "./types";
 
-const requests = createMockCollection<VerificationRequestRecord>("verification_requests");
+const REQUEST_FIELDS = "id, user_id, kind, status, data, submitted_at";
+
+function castRequest(record: Record<string, unknown>): VerificationRequestRecord {
+  return {
+    ...record,
+    kind: record.kind as VerificationKind,
+    status: record.status as VerificationStatus,
+  } as VerificationRequestRecord;
+}
 
 /**
  * Последняя заявка текущего пользователя
  */
 export const getMyVerification = async (): Promise<VerificationRequestRecord | null> => {
-  const all = await requests.list();
-  const mine = all
-    .filter((record) => record.user_id === CURRENT_USER_ID)
-    .sort((a, b) => b.submitted_at.localeCompare(a.submitted_at));
-  return mine[0] ?? null;
+  const client = createBrowserClient();
+  const userId = await getSessionUserIdOrNull(client);
+  if (!userId) return null;
+
+  const { data, error } = await client
+    .from("verification_requests")
+    .select(REQUEST_FIELDS)
+    .eq("user_id", userId)
+    .order("submitted_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return data ? castRequest(data) : null;
 };
 
 /**
@@ -21,21 +41,37 @@ export const getMyVerification = async (): Promise<VerificationRequestRecord | n
 export const submitVerification = async (
   kind: VerificationKind
 ): Promise<VerificationRequestRecord> => {
-  return requests.insert({
-    user_id: CURRENT_USER_ID,
-    kind,
-    status: "pending",
-    data: {},
-    submitted_at: new Date().toISOString(),
-  });
+  const client = createBrowserClient();
+  const userId = await getSessionUserId(client);
+
+  const { data, error } = await client
+    .from("verification_requests")
+    .insert({ user_id: userId, kind })
+    .select(REQUEST_FIELDS)
+    .single();
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return castRequest(data);
 };
 
 /**
  * Симуляция одобрения (тестовый режим до подключения провайдера)
  */
 export const approveMyVerification = async (): Promise<void> => {
+  const client = createBrowserClient();
   const current = await getMyVerification();
+
   if (current && current.status === "pending") {
-    await requests.update(current.id, { status: "approved" });
+    const { error } = await client
+      .from("verification_requests")
+      .update({ status: "approved" })
+      .eq("id", current.id);
+
+    if (error) {
+      throw new Error(error.message);
+    }
   }
 };

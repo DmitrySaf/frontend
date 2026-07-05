@@ -1,4 +1,3 @@
-export { DEMO_VIDEO_URL } from "./constants";
 export { transformCourse } from "./mappers";
 export {
   lessonFormSchema,

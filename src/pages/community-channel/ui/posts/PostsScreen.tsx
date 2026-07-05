@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Loader2, Newspaper } from "lucide-react";
-import { usePostsQuery, useDeletePostMutation } from "@/entities/post";
+import { usePostsQuery, usePostsRealtime, useDeletePostMutation } from "@/entities/post";
 import type { Channel } from "@/entities/channel";
 import { useCommunityRole } from "@/entities/member";
 import { useParams } from "next/navigation";
@@ -12,6 +12,7 @@ import { PostComposer } from "./PostComposer";
 
 export function PostsScreen({ channel }: { channel: Channel }) {
   const { data: posts, isLoading } = usePostsQuery(channel.id);
+  usePostsRealtime(channel.id);
   const deletePost = useDeletePostMutation();
   const [deletingPostId, setDeletingPostId] = useState<string | null>(null);
 

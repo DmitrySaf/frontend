@@ -3,8 +3,8 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Loader2 } from "lucide-react";
 import {
-  CURRENT_USER_ID,
   useMessagesQuery,
+  useMessagesRealtime,
   useSendMessageMutation,
   useUpdateMessageMutation,
   useDeleteMessageMutation,
@@ -14,6 +14,7 @@ import type { Channel } from "@/entities/channel";
 import { useCommunityRole } from "@/entities/member";
 import { useParams } from "next/navigation";
 import { DeleteDialog } from "@/shared/components";
+import { useSessionUserId } from "@/shared/composables";
 import { dayKey, formatDayLabel } from "@/shared/utils";
 import { useAuthorView } from "../useAuthorView";
 import { ChatComposer } from "./ChatComposer";
@@ -65,7 +66,9 @@ function DayDivider({ label }: { label: string }) {
 
 export function ChatScreen({ channel }: { channel: Channel }) {
   const { data: messages, isLoading } = useMessagesQuery(channel.id);
+  useMessagesRealtime(channel.id);
   const resolveAuthor = useAuthorView();
+  const myUserId = useSessionUserId();
 
   const sendMessage = useSendMessageMutation();
   const updateMessage = useUpdateMessageMutation();
@@ -99,12 +102,12 @@ export function ChatScreen({ channel }: { channel: Channel }) {
             <div key={day.key}>
               <DayDivider label={day.label} />
               {day.messages.map((message) => {
-                const isOwn = message.authorId === CURRENT_USER_ID;
+                const isOwn = myUserId !== null && message.authorId === myUserId;
                 return (
                   <ChatMessageItem
                     key={message.id}
                     message={message}
-                    author={resolveAuthor(message.authorId)}
+                    author={resolveAuthor(message.authorId, message.author)}
                     isGroupStart={message.isGroupStart}
                     canEdit={isOwn}
                     canDelete={isOwn || isAdmin}

@@ -2,27 +2,19 @@
 
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
-import { useCommunityProfileQuery } from "@/entities/community";
 import {
   STOREFRONT_FEATURE_ICONS,
   DEFAULT_FEATURE_ICON,
-  useStorefrontQuery,
+  storefrontQueryKeys,
+  useStorefrontViewQuery,
 } from "@/entities/storefront";
-import { useTiersQuery, type Tier } from "@/entities/tier";
-import {
-  joinCommunity,
-  useMyMembershipQuery,
-  useInvalidateMyMembership,
-} from "@/entities/member";
-import { consumeInvite, useInviteValidationQuery } from "@/entities/invite";
-import { grantChannelAccess } from "@/entities/channel";
-import {
-  purchaseTier,
-  useCommunityMembersCountQuery,
-  useInvalidateCommunitySales,
-} from "@/entities/subscription";
+import type { Tier } from "@/entities/tier";
+import { joinCommunity, useInvalidateMyMembership } from "@/entities/member";
+import { consumeInvite } from "@/entities/invite";
+import { purchaseTier, useInvalidateCommunitySales } from "@/entities/subscription";
 import { useAuthUserQuery } from "@/entities/profile";
 import { setLastVisitedCommunity } from "@/entities/community";
 import { Avatar } from "@/shared/components";
@@ -68,84 +60,88 @@ function LoadingScreen() {
 
 export function StorefrontPage({ slug, inviteCode }: StorefrontPageProps) {
   const router = useRouter();
+  const queryClient = useQueryClient();
 
   const { data: authUser, isLoading: isAuthLoading } = useAuthUserQuery();
   const isAuthed = !!authUser?.email;
 
-  const { data: profile, isLoading: isProfileLoading, isError } = useCommunityProfileQuery(slug);
-  const { data: storefront } = useStorefrontQuery(slug);
-  const { data: tiers } = useTiersQuery(slug);
-  const { data: membership, isLoading: isMembershipLoading } = useMyMembershipQuery(slug);
-  const { data: inviteValidity } = useInviteValidationQuery(slug, inviteCode);
-  const { data: membersCount } = useCommunityMembersCountQuery(slug);
+  // Вся витрина приходит одним RPC-запросом: сервер сам решает,
+  // доступна ли страница (hidden без инвайта → null → 404)
+  const { data: view, isLoading: isViewLoading } = useStorefrontViewQuery(slug, inviteCode);
 
   const invalidateMembership = useInvalidateMyMembership();
   const invalidateSales = useInvalidateCommunitySales();
-
-  const validInvite = inviteValidity ?? null;
-  const hasValidInvite = !!validInvite;
-  const isMember = isAuthed && !!membership;
 
   const [selectedTierId, setSelectedTierId] = useState<string | null>(null);
   const [isAuthDialogOpen, setIsAuthDialogOpen] = useState(false);
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   const [isJoining, setIsJoining] = useState(false);
 
-  // Скрытые тарифы видны только по валидной инвайт-ссылке
-  const visibleTiers = useMemo(
-    () => (tiers ?? []).filter((tier) => tier.isActive && (!tier.isHidden || hasValidInvite)),
-    [tiers, hasValidInvite]
+  const validInvite = view?.invite?.valid ? view.invite : null;
+  const isMember = isAuthed && !!view?.viewer.isMember;
+
+  // Тарифы уже отфильтрованы сервером (скрытые — только по валидному инвайту)
+  const visibleTiers: Tier[] = useMemo(
+    () =>
+      (view?.tiers ?? []).map((tier) => ({
+        id: tier.id,
+        name: tier.name,
+        kind: tier.kind,
+        priceKopeks: tier.priceKopeks,
+        periodMonths: tier.periodMonths,
+        discountPercent: tier.discountPercent,
+        isActive: true,
+        isHidden: tier.isHidden,
+        position: tier.position,
+      })),
+    [view?.tiers]
   );
   const selectedTier: Tier | null =
     visibleTiers.find((tier) => tier.id === selectedTierId) ?? null;
 
-  if (isProfileLoading || isAuthLoading || (isAuthed && isMembershipLoading)) {
+  if (isViewLoading || isAuthLoading) {
     return <LoadingScreen />;
   }
 
   // Несуществующее сообщество и hidden без доступа — один и тот же экран
-  const accessDenied =
-    isError ||
-    !profile ||
-    (profile.visibility === "hidden" && !hasValidInvite && !isMember);
-
-  if (accessDenied) {
+  if (!view) {
     return <NotFoundScreen isAuthed={isAuthed} />;
   }
 
-  const media = storefront?.media?.length
+  const { community, storefront, owner } = view;
+
+  const media = storefront.media.length
     ? storefront.media
-    : profile.coverUrl
-      ? [profile.coverUrl]
+    : community.coverUrl
+      ? [community.coverUrl]
       : [];
 
   const finalizeJoin = async (tier: Tier | null) => {
     setIsJoining(true);
     try {
-      const alreadyMember = !!membership;
-
       if (tier) {
-        await purchaseTier(slug, {
-          id: tier.id,
-          kind: tier.kind,
-          priceKopeks: tier.priceKopeks,
-          periodMonths: tier.periodMonths,
-          name: tier.name,
-        });
-      }
-      await joinCommunity(slug);
-
-      // Использование инвайта тратится только вступлением новичка
-      if (validInvite && !alreadyMember) {
-        await consumeInvite(validInvite.id);
-      }
-      // Инвайт на канал даёт membership + грант канала одним действием
-      if (validInvite?.channel_id) {
-        await grantChannelAccess(validInvite.channel_id);
+        // Подписка + транзакция + membership + трата инвайта — атомарно на сервере
+        await purchaseTier(
+          slug,
+          {
+            id: tier.id,
+            kind: tier.kind,
+            priceKopeks: tier.priceKopeks,
+            periodMonths: tier.periodMonths,
+            name: tier.name,
+          },
+          validInvite?.code ?? null
+        );
+      } else if (validInvite) {
+        // Бесплатное вступление по инвайту: membership + грант канала одним действием
+        await consumeInvite(validInvite.code);
+      } else {
+        await joinCommunity(slug);
       }
 
       invalidateMembership(slug);
       invalidateSales(slug);
+      queryClient.invalidateQueries({ queryKey: storefrontQueryKeys.view(slug, inviteCode) });
       setLastVisitedCommunity(slug);
 
       toast.success(tier ? "Оплата прошла — добро пожаловать" : "Добро пожаловать в сообщество");
@@ -174,12 +170,25 @@ export function StorefrontPage({ slug, inviteCode }: StorefrontPageProps) {
 
   const handleAuthSuccess = () => {
     setIsAuthDialogOpen(false);
+    queryClient.invalidateQueries({ queryKey: storefrontQueryKeys.view(slug, inviteCode) });
     // После входа продолжаем начатое действие
     if (selectedTier) {
       setIsCheckoutOpen(true);
     } else {
       finalizeJoin(null);
     }
+  };
+
+  const handleOpenCommunity = async () => {
+    // Действующий участник по каналу-инвайту получает грант при открытии
+    if (validInvite?.channelId) {
+      try {
+        await consumeInvite(validInvite.code);
+      } catch {
+        // Грант не критичен для входа — открываем сообщество в любом случае
+      }
+    }
+    router.push(`/communities/${slug}`);
   };
 
   return (
@@ -190,22 +199,27 @@ export function StorefrontPage({ slug, inviteCode }: StorefrontPageProps) {
         <div className="max-w-[1000px] mx-auto flex flex-col lg:flex-row gap-7">
           {/* Основная колонка */}
           <div className="flex-1 min-w-0">
-            <MediaCarousel media={media} alt={profile.displayName} />
+            <MediaCarousel media={media} alt={community.displayName} />
 
             <div className="mt-7 flex items-center gap-3">
-              <Avatar name={profile.displayName} src={profile.logoUrl} size="l" shape="square" />
+              <Avatar
+                name={community.displayName}
+                src={community.logoUrl}
+                size="l"
+                shape="square"
+              />
               <h1 className="text-[26px] font-bold text-black leading-tight">
-                {profile.displayName}
+                {community.displayName}
               </h1>
             </div>
 
-            {(storefront?.description || profile.description) && (
+            {(storefront.description || community.description) && (
               <p className="mt-3.5 text-[15px] leading-[1.6] text-gray-600 whitespace-pre-wrap">
-                {storefront?.description || profile.description}
+                {storefront.description || community.description}
               </p>
             )}
 
-            {storefront && storefront.features.length > 0 && (
+            {storefront.features.length > 0 && (
               <div className="mt-7 space-y-3">
                 <h3 className="text-[17px] font-bold text-black">Что внутри</h3>
                 {storefront.features.map((feature, index) => {
@@ -230,18 +244,27 @@ export function StorefrontPage({ slug, inviteCode }: StorefrontPageProps) {
               selectedTierId={selectedTierId}
               onSelectTier={setSelectedTierId}
               isMember={isMember}
-              membersCount={membersCount ?? 0}
+              membersCount={view.membersCount}
               onJoin={handleJoinClick}
-              onOpenCommunity={() => router.push(`/communities/${slug}`)}
+              onOpenCommunity={handleOpenCommunity}
               isJoining={isJoining}
             />
 
             {/* Карточка автора */}
             <div className="rounded-2xl border border-gray-200 bg-white shadow-sm p-3.5 flex items-center gap-3">
-              <Avatar name={profile.displayName} src={profile.logoUrl} size="m" shape="square" />
+              <Avatar
+                name={owner?.displayName ?? community.displayName}
+                src={owner?.avatarUrl ?? community.logoUrl}
+                size="m"
+                shape={owner ? "circle" : "square"}
+              />
               <div>
-                <p className="text-sm font-semibold text-black">{profile.displayName}</p>
-                <p className="text-xs text-gray-600">Сообщество на Bean</p>
+                <p className="text-sm font-semibold text-black">
+                  {owner?.displayName ?? community.displayName}
+                </p>
+                <p className="text-xs text-gray-600">
+                  {owner ? "Автор сообщества" : "Сообщество на Bean"}
+                </p>
               </div>
             </div>
           </div>
@@ -257,7 +280,7 @@ export function StorefrontPage({ slug, inviteCode }: StorefrontPageProps) {
       <CheckoutModal
         isOpen={isCheckoutOpen}
         onClose={() => setIsCheckoutOpen(false)}
-        communityName={profile.displayName}
+        communityName={community.displayName}
         tier={selectedTier}
         onConfirm={() => finalizeJoin(selectedTier)}
         isPending={isJoining}

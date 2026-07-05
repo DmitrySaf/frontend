@@ -1,5 +1,4 @@
 // Формы повторяют docs/db-schema.md (subscriptions, transactions).
-// В мок-режиме community_id — slug, user_id — «me» или сид-идентификаторы.
 
 export type SubscriptionStatus = "active" | "canceled" | "expired";
 export type TransactionType = "subscription" | "payout";
@@ -9,7 +8,8 @@ export interface SubscriptionRecord {
   id: string;
   user_id: string;
   community_id: string;
-  tier_id: string;
+  /** null — тариф удалён (история сохраняется) */
+  tier_id: string | null;
   status: SubscriptionStatus;
   started_at: string;
   /** null — бессрочно (one_time) */

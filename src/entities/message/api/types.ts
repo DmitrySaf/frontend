@@ -1,18 +1,30 @@
-// Форма повторяет docs/db-schema.md (messages).
-// В мок-режиме author_id — либо CURRENT_USER_ID («me»), либо id вымышленного участника.
+// Форма повторяет docs/db-schema.md (messages) + джойн профиля автора.
+
+export interface AuthorProfileRecord {
+  display_name: string;
+  username: string;
+  avatar_url: string | null;
+}
 
 export interface MessageRecord {
   id: string;
   channel_id: string;
   author_id: string;
   content: string;
-  attachments: unknown[] | null;
+  attachments: unknown;
   created_at: string;
   updated_at: string | null;
   deleted_at: string | null;
+  author: AuthorProfileRecord | null;
 }
 
-// Доменный тип (для UI)
+// Доменные типы (для UI)
+export interface MessageAuthor {
+  displayName: string;
+  username: string;
+  avatarUrl: string | null;
+}
+
 export interface Message {
   id: string;
   channelId: string;
@@ -21,6 +33,7 @@ export interface Message {
   createdAt: string;
   /** Заполнено, если сообщение редактировали */
   editedAt: string | null;
+  author: MessageAuthor | null;
 }
 
 export interface SendMessageInput {

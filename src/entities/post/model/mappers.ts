@@ -1,6 +1,14 @@
-import { CURRENT_USER_ID } from "@/entities/message";
 import type { PostsWithMeta } from "../api/api";
-import type { Post, PostComment, PostCommentRecord } from "../api/types";
+import type { Post, PostAuthorRecord, PostAuthor, PostComment, PostCommentRecord } from "../api/types";
+
+const transformAuthor = (author: PostAuthorRecord | null): PostAuthor | null => {
+  if (!author) return null;
+  return {
+    displayName: author.display_name,
+    username: author.username,
+    avatarUrl: author.avatar_url,
+  };
+};
 
 export const transformComment = (record: PostCommentRecord): PostComment => {
   return {
@@ -9,6 +17,7 @@ export const transformComment = (record: PostCommentRecord): PostComment => {
     authorId: record.author_id,
     content: record.content,
     createdAt: record.created_at,
+    author: transformAuthor(record.author),
   };
 };
 
@@ -37,10 +46,13 @@ export const transformPosts = (data: PostsWithMeta): Post[] => {
         editedAt: record.updated_at,
         likesCount: postLikes.length,
         commentsCount: postComments.length,
-        likedByMe: postLikes.some((like) => like.user_id === CURRENT_USER_ID),
-        bookmarkedByMe: postBookmarks.some(
-          (bookmark) => bookmark.user_id === CURRENT_USER_ID
-        ),
+        likedByMe:
+          data.myUserId !== null &&
+          postLikes.some((like) => like.user_id === data.myUserId),
+        bookmarkedByMe:
+          data.myUserId !== null &&
+          postBookmarks.some((bookmark) => bookmark.user_id === data.myUserId),
+        author: transformAuthor(record.author),
       };
     })
     .sort((a, b) => {

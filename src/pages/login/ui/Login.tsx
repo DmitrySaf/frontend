@@ -1,4 +1,4 @@
-import { Auth, DevPasswordLogin } from "@/features/auth";
+import { Auth } from "@/features/auth";
 import Image from "next/image";
 
 export function Login() {
@@ -15,9 +15,6 @@ export function Login() {
         </div>
 
         <Auth />
-
-        {/* DEV ONLY — удалить перед продом */}
-        <DevPasswordLogin />
       </div>
     </div>
   );

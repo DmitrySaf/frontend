@@ -1,11 +1,6 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { communityQueryKeys } from "./constants";
-import {
-  getCommunities,
-  getCommunity,
-  getCommunityProfile,
-  getAllCommunityExtras,
-} from "./api";
+import { getCommunities, getCommunity, getCommunityProfile } from "./api";
 import { useBrowserQuery, useBrowserClient } from "@/shared/composables";
 import { transformCommunity } from "../model";
 
@@ -22,7 +17,7 @@ export const useCommunitiesQuery = () => {
 };
 
 /**
- * Хук для получения единичного сообществф
+ * Хук для получения единичного сообщества
  */
 export const useCommunityQuery = (name: string) => {
   return useBrowserQuery({
@@ -35,8 +30,7 @@ export const useCommunityQuery = (name: string) => {
 };
 
 /**
- * Полный профиль сообщества (Supabase + mock extras): описание, обложка,
- * логотип, видимость
+ * Полный профиль сообщества: описание, обложка, логотип, видимость
  */
 export const useCommunityProfileQuery = (slug: string) => {
   const client = useBrowserClient();
@@ -49,14 +43,15 @@ export const useCommunityProfileQuery = (slug: string) => {
 };
 
 /**
- * Карта slug → логотип для rail (mock extras всех сообществ)
+ * Карта slug → логотип для rail (из общего списка сообществ)
  */
 export const useCommunityLogosQuery = () => {
-  return useQuery({
-    queryKey: communityQueryKeys.logos,
-    queryFn: getAllCommunityExtras,
+  return useBrowserQuery({
+    queryKey: communityQueryKeys.communities,
+    queryFn: (client) => getCommunities(client),
+    staleTime: 1000 * 60 * 5,
     select: (records) =>
-      Object.fromEntries(records.map((record) => [record.id, record.logo_url])),
+      Object.fromEntries(records.map((record) => [record.name, record.logo_url])),
   });
 };
 
@@ -72,14 +67,13 @@ export const useInvalidateCommunities = () => {
 };
 
 /**
- * Хук для инвалидации профиля сообщества (+ карта логотипов)
+ * Хук для инвалидации профиля сообщества (+ список для rail)
  */
 export const useInvalidateCommunityProfile = () => {
   const queryClient = useQueryClient();
 
   return (slug: string) => {
     queryClient.invalidateQueries({ queryKey: communityQueryKeys.profile(slug) });
-    queryClient.invalidateQueries({ queryKey: communityQueryKeys.logos });
     queryClient.invalidateQueries({ queryKey: communityQueryKeys.community(slug) });
     queryClient.invalidateQueries({ queryKey: communityQueryKeys.communities });
   };

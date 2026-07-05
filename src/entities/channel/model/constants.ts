@@ -1,5 +1,5 @@
-import { Hash, Newspaper, BookOpen } from "lucide-react";
-import type { ChannelType } from "../api/types";
+import { Hash, Newspaper, BookOpen, Globe, Lock, EyeOff } from "lucide-react";
+import type { ChannelType, ChannelAccess } from "../api/types";
 
 interface ChannelTypeMeta {
   icon: React.ComponentType<{ className?: string }>;
@@ -11,4 +11,17 @@ export const CHANNEL_TYPE_META: Record<ChannelType, ChannelTypeMeta> = {
   chat: { icon: Hash, name: "Чат" },
   posts: { icon: Newspaper, name: "Посты" },
   course: { icon: BookOpen, name: "Курс" },
+};
+
+interface ChannelAccessMeta {
+  icon: React.ComponentType<{ className?: string }>;
+  name: string;
+  description: string;
+}
+
+// Уровни доступа таба по спецификации приватности
+export const CHANNEL_ACCESS_META: Record<ChannelAccess, ChannelAccessMeta> = {
+  open: { icon: Globe, name: "Открытый", description: "Доступен всем участникам" },
+  private: { icon: Lock, name: "Приватный", description: "Виден с замком, вход по приглашению" },
+  secret: { icon: EyeOff, name: "Секретный", description: "Не виден без приглашения" },
 };

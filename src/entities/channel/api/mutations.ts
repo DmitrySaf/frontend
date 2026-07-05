@@ -1,8 +1,8 @@
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { createChannel, deleteChannel } from "./api";
+import { createChannel, updateChannel, deleteChannel } from "./api";
 import { useInvalidateCommunityStructure } from "./queries";
-import type { CreateChannelInput } from "./types";
+import type { CreateChannelInput, UpdateChannelInput } from "./types";
 
 /**
  * Хук для создания таба
@@ -18,6 +18,26 @@ export const useCreateChannelMutation = () => {
     },
     onError: (error) => {
       toast.error("Ошибка при создании таба", {
+        description: error instanceof Error ? error.message : "Попробуйте еще раз",
+      });
+    },
+  });
+};
+
+/**
+ * Хук для настроек таба
+ */
+export const useUpdateChannelMutation = () => {
+  const invalidateStructure = useInvalidateCommunityStructure();
+
+  return useMutation({
+    mutationFn: updateChannel,
+    onSuccess: (_, variables: UpdateChannelInput) => {
+      toast.success("Таб сохранён");
+      invalidateStructure(variables.communitySlug);
+    },
+    onError: (error) => {
+      toast.error("Ошибка при сохранении таба", {
         description: error instanceof Error ? error.message : "Попробуйте еще раз",
       });
     },

@@ -1,11 +1,13 @@
-export { getCommunityStructure, createChannel, deleteChannel } from "./api";
+export { getCommunityStructure, createChannel, updateChannel, deleteChannel, getMyChannelGrants, grantChannelAccess } from "./api";
 export { channelQueryKeys } from "./constants";
-export { useCommunityStructureQuery, useInvalidateCommunityStructure } from "./queries";
-export { useCreateChannelMutation, useDeleteChannelMutation } from "./mutations";
+export { useCommunityStructureQuery, useMyChannelGrantsQuery, useInvalidateCommunityStructure } from "./queries";
+export { useCreateChannelMutation, useUpdateChannelMutation, useDeleteChannelMutation } from "./mutations";
 export type {
   Channel,
   ChannelType,
+  ChannelAccess,
   CategoryWithChannels,
   CommunityStructure,
   CreateChannelInput,
+  UpdateChannelInput,
 } from "./types";

@@ -1,14 +1,19 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useCommunityProfileQuery } from "@/entities/community";
 import {
   useCommunityStructureQuery,
+  useMyChannelGrantsQuery,
   useCreateChannelMutation,
+  useUpdateChannelMutation,
+  useDeleteChannelMutation,
+  type Channel,
   type CreateChannelFormData,
 } from "@/entities/channel";
+import { leaveCommunity, useCommunityRole, useInvalidateMyMembership } from "@/entities/member";
 import { DeleteDialog } from "@/shared/components";
 import { ChannelCreateModal } from "@/widgets/channel-create-modal";
 import CategorySection from "./CategorySection";
@@ -36,34 +41,92 @@ export default function CommunitySidebar({ slug }: CommunitySidebarProps) {
 
   const { data: community } = useCommunityProfileQuery(slug);
   const { data: structure, isLoading } = useCommunityStructureQuery(slug);
-  const createChannel = useCreateChannelMutation();
+  const { data: grants } = useMyChannelGrantsQuery();
+  const { isAdmin, actualRole, isViewingAsMember, setViewAsMember } = useCommunityRole(slug);
+  const invalidateMembership = useInvalidateMyMembership();
 
-  // TODO(этап 11): роль из community_members; пока все пользователи — владельцы
-  const isAdmin = true;
-  const canLeave = false;
+  const createChannel = useCreateChannelMutation();
+  const updateChannel = useUpdateChannelMutation();
+  const deleteChannel = useDeleteChannelMutation(slug);
+
+  const canLeave = actualRole === "member";
 
   const [isInviteOpen, setIsInviteOpen] = useState(false);
+  const [channelInvite, setChannelInvite] = useState<Channel | null>(null);
   const [isLeaveOpen, setIsLeaveOpen] = useState(false);
   const [createChannelCategoryId, setCreateChannelCategoryId] = useState<string | null>(null);
+  const [editingChannel, setEditingChannel] = useState<Channel | null>(null);
+  const [deletingChannel, setDeletingChannel] = useState<Channel | null>(null);
 
   const activeTabSlug = pathname?.split("/")[3];
+
+  // Видимость каналов по спецификации: secret скрыт без гранта (у не-админа),
+  // private виден с замком
+  const visibleStructure = useMemo(() => {
+    if (!structure) return null;
+
+    const isChannelVisible = (channel: Channel) => {
+      if (isAdmin) return true;
+      if (channel.access === "secret") return grants?.has(channel.id) ?? false;
+      return true;
+    };
+
+    return {
+      uncategorized: structure.uncategorized.filter(isChannelVisible),
+      categories: structure.categories.map((category) => ({
+        ...category,
+        channels: category.channels.filter(isChannelVisible),
+      })),
+    };
+  }, [structure, isAdmin, grants]);
+
+  const isChannelLocked = (channel: Channel) =>
+    !isAdmin && channel.access !== "open" && !(grants?.has(channel.id) ?? false);
 
   const handleCreateChannel = async (data: CreateChannelFormData) => {
     const channel = await createChannel.mutateAsync({
       communitySlug: slug,
       type: data.type,
       name: data.name,
+      access: data.access,
       categoryId: data.categoryId,
       newCategoryName: data.newCategoryName?.trim() || undefined,
     });
     router.push(`/communities/${slug}/${channel.slug}`);
   };
 
+  const handleUpdateChannel = async (data: CreateChannelFormData) => {
+    if (!editingChannel) return;
+    await updateChannel.mutateAsync({
+      channelId: editingChannel.id,
+      communitySlug: slug,
+      name: data.name,
+      access: data.access,
+      categoryId: data.categoryId,
+      newCategoryName: data.newCategoryName?.trim() || undefined,
+    });
+  };
+
   const handleLeave = async () => {
-    // TODO(этап 9): удаление membership из mock-store
+    await leaveCommunity(slug);
+    invalidateMembership(slug);
     toast.success("Вы покинули сообщество");
     router.push("/communities");
   };
+
+  const renderChannel = (channel: Channel) => (
+    <ChannelRow
+      key={channel.id}
+      channel={channel}
+      communitySlug={slug}
+      isActive={channel.slug === activeTabSlug}
+      isLockedForViewer={isChannelLocked(channel)}
+      isAdmin={isAdmin}
+      onOpenSettings={() => setEditingChannel(channel)}
+      onOpenInvite={() => setChannelInvite(channel)}
+      onDelete={() => setDeletingChannel(channel)}
+    />
+  );
 
   return (
     <div className="w-64 shrink-0 bg-white border-r border-gray-200 flex flex-col h-full">
@@ -73,54 +136,53 @@ export default function CommunitySidebar({ slug }: CommunitySidebarProps) {
         logoUrl={community?.logoUrl}
         isAdmin={isAdmin}
         canLeave={canLeave}
+        canModerate={actualRole !== "member"}
+        isViewingAsMember={isViewingAsMember}
+        onToggleViewAsMember={() => setViewAsMember(!isViewingAsMember)}
         onOpenAdminSection={(section) => router.push(`/communities/${slug}/admin/${section}`)}
         onInvite={() => setIsInviteOpen(true)}
         onLeave={() => setIsLeaveOpen(true)}
       />
 
       <div className="flex-1 overflow-y-auto px-2.5 pb-3">
-        {isLoading || !structure ? (
+        {isLoading || !visibleStructure ? (
           <StructureSkeleton />
         ) : (
           <>
-            {structure.uncategorized.length > 0 && (
+            {visibleStructure.uncategorized.length > 0 && (
               <nav className="pt-2 space-y-0.5">
-                {structure.uncategorized.map((channel) => (
-                  <ChannelRow
-                    key={channel.id}
-                    channel={channel}
-                    communitySlug={slug}
-                    isActive={channel.slug === activeTabSlug}
-                  />
-                ))}
+                {visibleStructure.uncategorized.map(renderChannel)}
               </nav>
             )}
 
-            {structure.categories.map((category) => (
+            {visibleStructure.categories.map((category) => (
               <CategorySection
                 key={category.id}
                 name={category.name}
                 canAddChannel={isAdmin}
                 onAddChannel={() => setCreateChannelCategoryId(category.id)}
               >
-                {category.channels.map((channel) => (
-                  <ChannelRow
-                    key={channel.id}
-                    channel={channel}
-                    communitySlug={slug}
-                    isActive={channel.slug === activeTabSlug}
-                  />
-                ))}
+                {category.channels.map(renderChannel)}
               </CategorySection>
             ))}
           </>
         )}
       </div>
 
+      {/* Инвайт в сообщество */}
       <InviteDialog
         isOpen={isInviteOpen}
         onClose={() => setIsInviteOpen(false)}
         communitySlug={slug}
+      />
+
+      {/* Инвайт в private/secret-канал */}
+      <InviteDialog
+        isOpen={channelInvite !== null}
+        onClose={() => setChannelInvite(null)}
+        communitySlug={slug}
+        channelId={channelInvite?.id ?? null}
+        channelName={channelInvite?.name}
       />
 
       <DeleteDialog
@@ -132,12 +194,37 @@ export default function CommunitySidebar({ slug }: CommunitySidebarProps) {
         confirmText="Покинуть"
       />
 
+      {/* Создание таба */}
       <ChannelCreateModal
         isOpen={createChannelCategoryId !== null}
         onClose={() => setCreateChannelCategoryId(null)}
         onSubmit={handleCreateChannel}
         categories={structure?.categories ?? []}
         defaultCategoryId={createChannelCategoryId ?? undefined}
+      />
+
+      {/* Настройки таба */}
+      <ChannelCreateModal
+        isOpen={editingChannel !== null}
+        onClose={() => setEditingChannel(null)}
+        onSubmit={handleUpdateChannel}
+        categories={structure?.categories ?? []}
+        channel={editingChannel}
+      />
+
+      <DeleteDialog
+        isOpen={deletingChannel !== null}
+        onClose={() => setDeletingChannel(null)}
+        onDelete={async () => {
+          if (deletingChannel) {
+            await deleteChannel.mutateAsync(deletingChannel.id);
+            if (deletingChannel.slug === activeTabSlug) {
+              router.push(`/communities/${slug}`);
+            }
+          }
+        }}
+        title={`Удалить таб «${deletingChannel?.name ?? ""}»?`}
+        description="Контент таба будет удалён. Это действие нельзя отменить."
       />
     </div>
   );

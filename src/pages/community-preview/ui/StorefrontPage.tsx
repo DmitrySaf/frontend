@@ -17,6 +17,7 @@ import {
   useInvalidateMyMembership,
 } from "@/entities/member";
 import { consumeInvite, useInviteValidationQuery } from "@/entities/invite";
+import { grantChannelAccess } from "@/entities/channel";
 import {
   purchaseTier,
   useCommunityMembersCountQuery,
@@ -137,6 +138,10 @@ export function StorefrontPage({ slug, inviteCode }: StorefrontPageProps) {
       // Использование инвайта тратится только вступлением новичка
       if (validInvite && !alreadyMember) {
         await consumeInvite(validInvite.id);
+      }
+      // Инвайт на канал даёт membership + грант канала одним действием
+      if (validInvite?.channel_id) {
+        await grantChannelAccess(validInvite.channel_id);
       }
 
       invalidateMembership(slug);

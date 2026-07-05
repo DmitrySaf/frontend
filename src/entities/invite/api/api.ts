@@ -23,17 +23,25 @@ function isInviteUsable(invite: InviteRecord): boolean {
 }
 
 /**
- * Действующая ссылка сообщества: возвращает живую или создаёт новую
+ * Действующая ссылка сообщества или канала: возвращает живую или создаёт новую.
+ * channelId — инвайт на private/secret-канал (membership + грант одним действием).
  */
-export const getOrCreateInvite = async (communitySlug: string): Promise<InviteRecord> => {
+export const getOrCreateInvite = async (
+  communitySlug: string,
+  channelId: string | null = null
+): Promise<InviteRecord> => {
   const all = await invites.list();
   const usable = all.find(
-    (invite) => invite.community_id === communitySlug && isInviteUsable(invite)
+    (invite) =>
+      invite.community_id === communitySlug &&
+      (invite.channel_id ?? null) === channelId &&
+      isInviteUsable(invite)
   );
   if (usable) return usable;
 
   return invites.insert({
     community_id: communitySlug,
+    channel_id: channelId,
     code: generateInviteCode(),
     created_by: CURRENT_USER_ID,
     created_at: new Date().toISOString(),

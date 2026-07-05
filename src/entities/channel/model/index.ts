@@ -1,4 +1,4 @@
-export { CHANNEL_TYPE_META } from "./constants";
+export { CHANNEL_TYPE_META, CHANNEL_ACCESS_META } from "./constants";
 export { transformChannel, transformCommunityStructure } from "./mappers";
 export {
   createChannelSchema,

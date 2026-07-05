@@ -4,6 +4,8 @@
 export interface InviteRecord {
   id: string;
   community_id: string;
+  /** Инвайт на secret/private-канал: одним действием даёт membership + грант канала */
+  channel_id: string | null;
   code: string;
   created_by: string;
   created_at: string;
@@ -15,6 +17,7 @@ export interface InviteRecord {
 
 export interface Invite {
   id: string;
+  channelId: string | null;
   code: string;
   expiresAt: string | null;
   maxUses: number | null;

@@ -12,6 +12,7 @@ export const transformChannel = (record: ChannelRecord): Channel => {
     type: record.type,
     name: record.name,
     slug: record.slug,
+    access: record.access ?? "open",
     position: record.position,
   };
 };

@@ -3,6 +3,10 @@
 
 export type ChannelType = "chat" | "posts" | "course";
 
+// Спецификация приватности (2026-07-04): open — всем участникам,
+// private — виден с замком, нужен грант; secret — не виден без гранта
+export type ChannelAccess = "open" | "private" | "secret";
+
 export interface CategoryRecord {
   id: string;
   community_id: string;
@@ -18,8 +22,16 @@ export interface ChannelRecord {
   type: ChannelType;
   name: string;
   slug: string;
+  access: ChannelAccess;
   position: number;
   created_at: string;
+}
+
+export interface ChannelGrantRecord {
+  id: string;
+  channel_id: string;
+  user_id: string;
+  granted_at: string;
 }
 
 // Доменные типы (для UI)
@@ -29,6 +41,7 @@ export interface Channel {
   type: ChannelType;
   name: string;
   slug: string;
+  access: ChannelAccess;
   position: number;
 }
 
@@ -49,6 +62,16 @@ export interface CreateChannelInput {
   communitySlug: string;
   type: ChannelType;
   name: string;
+  access: ChannelAccess;
+  categoryId?: string;
+  newCategoryName?: string;
+}
+
+export interface UpdateChannelInput {
+  channelId: string;
+  communitySlug: string;
+  name: string;
+  access: ChannelAccess;
   categoryId?: string;
   newCategoryName?: string;
 }

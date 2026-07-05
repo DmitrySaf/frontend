@@ -4,6 +4,8 @@ import { useState } from "react";
 import { Loader2, Newspaper } from "lucide-react";
 import { usePostsQuery, useDeletePostMutation } from "@/entities/post";
 import type { Channel } from "@/entities/channel";
+import { useCommunityRole } from "@/entities/member";
+import { useParams } from "next/navigation";
 import { DeleteDialog } from "@/shared/components";
 import { PostCard } from "./PostCard";
 import { PostComposer } from "./PostComposer";
@@ -13,8 +15,10 @@ export function PostsScreen({ channel }: { channel: Channel }) {
   const deletePost = useDeletePostMutation();
   const [deletingPostId, setDeletingPostId] = useState<string | null>(null);
 
-  // TODO(этап 11): публиковать могут админы; пока текущий пользователь — владелец
-  const canPost = true;
+  // Публикуют только админы (участники читают и реагируют)
+  const params = useParams();
+  const { isAdmin } = useCommunityRole((params?.slug as string) ?? "");
+  const canPost = isAdmin;
 
   return (
     <div className="flex-1 min-h-0 overflow-y-auto">
@@ -27,7 +31,12 @@ export function PostsScreen({ channel }: { channel: Channel }) {
           </div>
         ) : posts && posts.length > 0 ? (
           posts.map((post) => (
-            <PostCard key={post.id} post={post} onDelete={() => setDeletingPostId(post.id)} />
+            <PostCard
+              key={post.id}
+              post={post}
+              isAdmin={isAdmin}
+              onDelete={() => setDeletingPostId(post.id)}
+            />
           ))
         ) : (
           <div className="flex flex-col items-center gap-3 py-16 text-center">

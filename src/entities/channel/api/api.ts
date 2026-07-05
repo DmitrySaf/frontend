@@ -1,12 +1,16 @@
 import { createMockCollection, transliterate } from "@/shared/utils";
+import { CURRENT_USER_ID } from "@/entities/message";
 import type {
   CategoryRecord,
   ChannelRecord,
+  ChannelGrantRecord,
   CreateChannelInput,
+  UpdateChannelInput,
 } from "./types";
 
 const categories = createMockCollection<CategoryRecord>("community_categories");
 const channels = createMockCollection<ChannelRecord>("community_channels");
+const grants = createMockCollection<ChannelGrantRecord>("channel_grants");
 
 /**
  * Уникальный slug таба внутри сообщества: транслитерация + числовой суффикс при коллизии
@@ -48,6 +52,7 @@ async function seedDefaultStructure(communitySlug: string): Promise<{
     type: "chat",
     name: "общий-чат",
     slug: "obschiy-chat",
+    access: "open",
     position: 0,
     created_at: now,
   };
@@ -80,7 +85,13 @@ export const getCommunityStructure = async (
     return seedDefaultStructure(communitySlug);
   }
 
-  return { categories: communityCategories, channels: communityChannels };
+  return {
+    categories: communityCategories,
+    channels: communityChannels.map((channel) => ({
+      ...channel,
+      access: channel.access ?? "open",
+    })),
+  };
 };
 
 /**
@@ -115,9 +126,59 @@ export const createChannel = async (input: CreateChannelInput): Promise<ChannelR
     type: input.type,
     name: input.name,
     slug: buildChannelSlug(input.name, communityChannels),
+    access: input.access,
     position: siblings.length,
     created_at: now,
   });
+};
+
+/**
+ * Настройки таба: имя, категория (с созданием новой), доступ.
+ * Смена доступа неретроактивна — выданные гранты не отзываются.
+ */
+export const updateChannel = async (input: UpdateChannelInput): Promise<ChannelRecord> => {
+  const { categories: communityCategories } = await getCommunityStructure(input.communitySlug);
+
+  let categoryId = input.categoryId ?? null;
+  if (!categoryId && input.newCategoryName) {
+    const category = await categories.insert({
+      community_id: input.communitySlug,
+      name: input.newCategoryName,
+      position: communityCategories.length,
+      created_at: new Date().toISOString(),
+    });
+    categoryId = category.id;
+  }
+
+  return channels.update(input.channelId, {
+    name: input.name,
+    access: input.access,
+    ...(categoryId ? { category_id: categoryId } : {}),
+  });
+};
+
+/**
+ * Гранты текущего пользователя (доступ к private/secret-каналам)
+ */
+export const getMyChannelGrants = async (): Promise<string[]> => {
+  const all = await grants.list();
+  return all
+    .filter((grant) => grant.user_id === CURRENT_USER_ID)
+    .map((grant) => grant.channel_id);
+};
+
+/**
+ * Выдача гранта текущему пользователю (переход по инвайт-ссылке канала)
+ */
+export const grantChannelAccess = async (channelId: string): Promise<void> => {
+  const mine = await getMyChannelGrants();
+  if (!mine.includes(channelId)) {
+    await grants.insert({
+      channel_id: channelId,
+      user_id: CURRENT_USER_ID,
+      granted_at: new Date().toISOString(),
+    });
+  }
 };
 
 /**

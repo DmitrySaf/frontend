@@ -15,6 +15,8 @@ import {
   type LessonInput,
 } from "@/entities/course";
 import type { Channel } from "@/entities/channel";
+import { useCommunityRole } from "@/entities/member";
+import { useParams } from "next/navigation";
 import { DeleteDialog, SegmentedControl } from "@/shared/components";
 import { LessonEditor } from "./LessonEditor";
 import { LessonList } from "./LessonList";
@@ -33,8 +35,8 @@ export function CourseScreen({ channel }: { channel: Channel }) {
   const deleteLesson = useDeleteLessonMutation(channel.id);
   const toggleComplete = useToggleLessonCompleteMutation(channel.id);
 
-  // TODO(этап 11): роль из community_members; пока текущий пользователь — владелец
-  const isAdmin = true;
+  const params = useParams();
+  const { isAdmin } = useCommunityRole((params?.slug as string) ?? "");
 
   const [mode, setMode] = useState<CourseMode>("view");
   const [selectedLessonId, setSelectedLessonId] = useState<string | null>(null);

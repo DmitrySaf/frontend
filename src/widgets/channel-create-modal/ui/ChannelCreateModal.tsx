@@ -18,13 +18,17 @@ import {
 import { cn } from "@/shared/utils";
 import {
   CHANNEL_TYPE_META,
+  CHANNEL_ACCESS_META,
   createChannelSchema,
   CHANNEL_NAME_MAX_LENGTH,
   type CreateChannelFormData,
+  type Channel,
   type ChannelType,
+  type ChannelAccess,
 } from "@/entities/channel";
 
 const CHANNEL_TYPES: ChannelType[] = ["chat", "posts", "course"];
+const CHANNEL_ACCESSES: ChannelAccess[] = ["open", "private", "secret"];
 
 const NAME_PLACEHOLDERS: Record<ChannelType, string> = {
   chat: "например, общий-чат",
@@ -43,6 +47,8 @@ interface ChannelCreateModalProps {
   onSubmit: (data: CreateChannelFormData) => Promise<void>;
   categories: CategoryOption[];
   defaultCategoryId?: string;
+  /** Передан — режим «Настройки таба» (тип не меняется) */
+  channel?: Channel | null;
 }
 
 export function ChannelCreateModal({
@@ -51,13 +57,16 @@ export function ChannelCreateModal({
   onSubmit,
   categories,
   defaultCategoryId,
+  channel,
 }: ChannelCreateModalProps) {
   const [isCreatingCategory, setIsCreatingCategory] = useState(false);
+  const isEditing = !!channel;
 
   const methods = useForm<CreateChannelFormData>({
     resolver: zodResolver(createChannelSchema),
     defaultValues: {
       type: "chat",
+      access: "open",
       name: "",
       categoryId: defaultCategoryId ?? categories[0]?.id,
       newCategoryName: undefined,
@@ -72,20 +81,22 @@ export function ChannelCreateModal({
   } = methods;
 
   const selectedType = watch("type");
+  const selectedAccess = watch("access");
   const selectedCategoryId = watch("categoryId");
 
-  // Модалка может открываться с «+» конкретной категории — синхронизируем дефолт
+  // Синхронизация при открытии: «+» категории или настройки существующего таба
   useEffect(() => {
     if (isOpen) {
       setIsCreatingCategory(false);
       reset({
-        type: "chat",
-        name: "",
-        categoryId: defaultCategoryId ?? categories[0]?.id,
+        type: channel?.type ?? "chat",
+        access: channel?.access ?? "open",
+        name: channel?.name ?? "",
+        categoryId: channel?.categoryId ?? defaultCategoryId ?? categories[0]?.id,
         newCategoryName: undefined,
       });
     }
-  }, [isOpen, defaultCategoryId, categories, reset]);
+  }, [isOpen, channel, defaultCategoryId, categories, reset]);
 
   const handleClose = () => {
     reset();
@@ -124,44 +135,46 @@ export function ChannelCreateModal({
     <Dialog open={isOpen} onOpenChange={handleClose}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Новый таб</DialogTitle>
+          <DialogTitle>{isEditing ? "Настройки таба" : "Новый таб"}</DialogTitle>
         </DialogHeader>
 
         <Form methods={methods} onSubmit={handleSubmit} className="space-y-4">
-          {/* Тип таба */}
-          <div className="space-y-2">
-            <span className="text-sm font-medium text-black">Тип</span>
-            <div className="flex gap-2.5">
-              {CHANNEL_TYPES.map((type) => {
-                const meta = CHANNEL_TYPE_META[type];
-                const Icon = meta.icon;
-                const isSelected = selectedType === type;
-                return (
-                  <button
-                    key={type}
-                    type="button"
-                    onClick={() => setValue("type", type, { shouldValidate: true })}
-                    className={cn(
-                      "flex-1 flex flex-col items-center gap-2 py-4 px-2.5 rounded-[13px] border transition-colors cursor-pointer",
-                      isSelected
-                        ? "border-gray-400 bg-gray-100 inset-ring inset-ring-gray-400"
-                        : "border-gray-200 bg-white hover:bg-gray-50"
-                    )}
-                  >
-                    <Icon className={cn("size-[22px]", isSelected ? "text-black" : "text-gray-600")} />
-                    <span
+          {/* Тип таба — только при создании */}
+          {!isEditing && (
+            <div className="space-y-2">
+              <span className="text-sm font-medium text-black">Тип</span>
+              <div className="flex gap-2.5">
+                {CHANNEL_TYPES.map((type) => {
+                  const meta = CHANNEL_TYPE_META[type];
+                  const Icon = meta.icon;
+                  const isSelected = selectedType === type;
+                  return (
+                    <button
+                      key={type}
+                      type="button"
+                      onClick={() => setValue("type", type, { shouldValidate: true })}
                       className={cn(
-                        "text-[13px] font-semibold",
-                        isSelected ? "text-black" : "text-gray-600"
+                        "flex-1 flex flex-col items-center gap-2 py-4 px-2.5 rounded-[13px] border transition-colors cursor-pointer",
+                        isSelected
+                          ? "border-gray-400 bg-gray-100 inset-ring inset-ring-gray-400"
+                          : "border-gray-200 bg-white hover:bg-gray-50"
                       )}
                     >
-                      {meta.name}
-                    </span>
-                  </button>
-                );
-              })}
+                      <Icon className={cn("size-[22px]", isSelected ? "text-black" : "text-gray-600")} />
+                      <span
+                        className={cn(
+                          "text-[13px] font-semibold",
+                          isSelected ? "text-black" : "text-gray-600"
+                        )}
+                      >
+                        {meta.name}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
             </div>
-          </div>
+          )}
 
           <Input
             name="name"
@@ -205,12 +218,48 @@ export function ChannelCreateModal({
             )}
           </div>
 
+          {/* Доступ (спецификация приватности) */}
+          <div className="space-y-2">
+            <span className="text-sm font-medium text-black">Доступ</span>
+            <div className="space-y-1.5">
+              {CHANNEL_ACCESSES.map((access) => {
+                const meta = CHANNEL_ACCESS_META[access];
+                const Icon = meta.icon;
+                const isSelected = selectedAccess === access;
+                return (
+                  <button
+                    key={access}
+                    type="button"
+                    onClick={() => setValue("access", access, { shouldValidate: true })}
+                    className={cn(
+                      "w-full flex items-center gap-3 px-3.5 py-2.5 rounded-[13px] border text-left transition-colors cursor-pointer",
+                      isSelected
+                        ? "border-gray-400 bg-gray-100 inset-ring inset-ring-gray-400"
+                        : "border-gray-200 bg-white hover:bg-gray-50"
+                    )}
+                  >
+                    <Icon className="size-4 shrink-0 text-gray-600" />
+                    <span className="flex-1 min-w-0">
+                      <span className="block text-[13px] font-semibold text-black">{meta.name}</span>
+                      <span className="block text-xs text-gray-600">{meta.description}</span>
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+            {isEditing && selectedAccess !== channel?.access && (
+              <p className="text-xs text-gray-500">
+                Смена доступа не отзывает уже выданные приглашения.
+              </p>
+            )}
+          </div>
+
           <DialogFooter>
             <Button type="button" theme="ghost" size="m" onClick={handleClose}>
               Отмена
             </Button>
             <Button type="submit" theme="primary" size="m" isLoading={isSubmitting}>
-              Создать
+              {isEditing ? "Сохранить" : "Создать"}
             </Button>
           </DialogFooter>
         </Form>

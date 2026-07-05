@@ -6,6 +6,7 @@ export const CHANNEL_NAME_MAX_LENGTH = 32;
 export const createChannelSchema = z
   .object({
     type: z.enum(["chat", "posts", "course"]),
+    access: z.enum(["open", "private", "secret"]),
     name: z
       .string()
       .min(1, REQUIRED_MESSAGE)

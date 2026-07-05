@@ -11,6 +11,8 @@ import {
   type Message,
 } from "@/entities/message";
 import type { Channel } from "@/entities/channel";
+import { useCommunityRole } from "@/entities/member";
+import { useParams } from "next/navigation";
 import { DeleteDialog } from "@/shared/components";
 import { dayKey, formatDayLabel } from "@/shared/utils";
 import { useAuthorView } from "../useAuthorView";
@@ -71,8 +73,8 @@ export function ChatScreen({ channel }: { channel: Channel }) {
 
   const [deletingMessageId, setDeletingMessageId] = useState<string | null>(null);
 
-  // TODO(этап 11): роль из community_members; пока текущий пользователь — владелец
-  const isAdmin = true;
+  const params = useParams();
+  const { isAdmin } = useCommunityRole((params?.slug as string) ?? "");
 
   const scrollRef = useRef<HTMLDivElement>(null);
   const days = useMemo(() => groupByDay(messages ?? []), [messages]);

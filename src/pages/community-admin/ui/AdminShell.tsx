@@ -1,7 +1,8 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, ShieldAlert } from "lucide-react";
+import { useCommunityRole } from "@/entities/member";
 import { Button } from "@/shared/components";
 
 interface AdminShellProps {
@@ -18,6 +19,25 @@ interface AdminShellProps {
  */
 export function AdminShell({ slug, title, subtitle, actions, children }: AdminShellProps) {
   const router = useRouter();
+  const { isAdmin } = useCommunityRole(slug);
+
+  // Guard: разделы доступны только админам (в т.ч. в режиме «Смотреть как участник»)
+  if (!isAdmin) {
+    return (
+      <div className="flex-1 flex items-center justify-center bg-white">
+        <div className="flex flex-col items-center gap-3 max-w-xs text-center">
+          <div className="size-14 rounded-2xl bg-gray-100 border border-gray-200 flex items-center justify-center">
+            <ShieldAlert className="size-6 text-gray-500" />
+          </div>
+          <p className="text-[15px] font-semibold text-black">Нет доступа</p>
+          <p className="text-sm text-gray-600">Раздел доступен только администраторам сообщества.</p>
+          <Button theme="outline" size="m" onClick={() => router.push(`/communities/${slug}`)}>
+            Вернуться в сообщество
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex-1 flex flex-col min-h-0">

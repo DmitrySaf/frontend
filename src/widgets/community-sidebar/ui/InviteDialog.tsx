@@ -21,13 +21,22 @@ interface InviteDialogProps {
   isOpen: boolean;
   onClose: () => void;
   communitySlug: string;
+  /** Инвайт на private/secret-канал: даёт membership + доступ к каналу одним действием */
+  channelId?: string | null;
+  channelName?: string;
 }
 
-export default function InviteDialog({ isOpen, onClose, communitySlug }: InviteDialogProps) {
+export default function InviteDialog({
+  isOpen,
+  onClose,
+  communitySlug,
+  channelId = null,
+  channelName,
+}: InviteDialogProps) {
   const [isCopied, setIsCopied] = useState(false);
   const [isRevoking, setIsRevoking] = useState(false);
 
-  const { data: invite, isLoading } = useCommunityInviteQuery(communitySlug, isOpen);
+  const { data: invite, isLoading } = useCommunityInviteQuery(communitySlug, isOpen, channelId);
   const invalidateInvite = useInvalidateCommunityInvite();
 
   const inviteLink =
@@ -67,9 +76,13 @@ export default function InviteDialog({ isOpen, onClose, communitySlug }: InviteD
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Пригласить в сообщество</DialogTitle>
+          <DialogTitle>
+            {channelId ? `Пригласить в таб «${channelName ?? ""}»` : "Пригласить в сообщество"}
+          </DialogTitle>
           <DialogDescription>
-            По ссылке откроется витрина — даже если сообщество скрытое.
+            {channelId
+              ? "Ссылка даёт вступление в сообщество и доступ к табу одним действием."
+              : "По ссылке откроется витрина — даже если сообщество скрытое."}
           </DialogDescription>
         </DialogHeader>
 

@@ -28,10 +28,11 @@ import { PostForm } from "./PostForm";
 
 interface PostCardProps {
   post: Post;
+  isAdmin: boolean;
   onDelete: () => void;
 }
 
-export function PostCard({ post, onDelete }: PostCardProps) {
+export function PostCard({ post, isAdmin, onDelete }: PostCardProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [areCommentsOpen, setAreCommentsOpen] = useState(false);
 
@@ -43,8 +44,6 @@ export function PostCard({ post, onDelete }: PostCardProps) {
   const toggleLike = useToggleLikeMutation();
   const toggleBookmark = useToggleBookmarkMutation();
 
-  // TODO(этап 11): роль из community_members; пока текущий пользователь — владелец
-  const isAdmin = true;
   const isOwn = post.authorId === CURRENT_USER_ID;
 
   const menuItems: DropdownItemConfig[] = [

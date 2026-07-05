@@ -2,6 +2,7 @@
 
 import {
   ChevronDown,
+  Eye,
   LayoutDashboard,
   LogOut,
   Palette,
@@ -22,6 +23,10 @@ interface CommunityBannerProps {
   coverUrl?: string | null;
   logoUrl?: string | null;
   isAdmin: boolean;
+  /** Фактическая роль позволяет модерировать (для пункта «Смотреть как») */
+  canModerate: boolean;
+  isViewingAsMember: boolean;
+  onToggleViewAsMember: () => void;
   onOpenAdminSection: (section: "settings" | "appearance" | "dashboard") => void;
   onInvite: () => void;
   onLeave: () => void;
@@ -35,6 +40,9 @@ export default function CommunityBanner({
   coverUrl,
   logoUrl,
   isAdmin,
+  canModerate,
+  isViewingAsMember,
+  onToggleViewAsMember,
   onOpenAdminSection,
   onInvite,
   onLeave,
@@ -52,6 +60,17 @@ export default function CommunityBanner({
     : [];
 
   const memberItems: (DropdownItemConfig | "separator")[] = [
+    // Постоянная админ-фича: предпросмотр интерфейса глазами участника
+    ...(canModerate
+      ? [
+          {
+            icon: Eye,
+            label: isViewingAsMember ? "Вернуться к виду владельца" : "Смотреть как участник",
+            onClick: onToggleViewAsMember,
+          },
+          "separator" as const,
+        ]
+      : []),
     { icon: UserPlus, label: "Пригласить в сообщество", onClick: onInvite },
     ...(canLeave
       ? [{ icon: LogOut, label: "Покинуть сообщество", onClick: onLeave, variant: "danger" as const }]

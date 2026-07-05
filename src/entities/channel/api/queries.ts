@@ -1,5 +1,5 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { getCommunityStructure } from "./api";
+import { getCommunityStructure, getMyChannelGrants } from "./api";
 import { channelQueryKeys } from "./constants";
 import { transformCommunityStructure } from "../model";
 
@@ -17,6 +17,17 @@ export const useCommunityStructureQuery = (communitySlug: string) => {
 };
 
 /**
+ * Гранты текущего пользователя на private/secret-каналы
+ */
+export const useMyChannelGrantsQuery = () => {
+  return useQuery({
+    queryKey: channelQueryKeys.myGrants,
+    queryFn: getMyChannelGrants,
+    select: (ids) => new Set(ids),
+  });
+};
+
+/**
  * Хук для инвалидации структуры сообщества
  */
 export const useInvalidateCommunityStructure = () => {
@@ -24,5 +35,6 @@ export const useInvalidateCommunityStructure = () => {
 
   return (communitySlug: string) => {
     queryClient.invalidateQueries({ queryKey: channelQueryKeys.structure(communitySlug) });
+    queryClient.invalidateQueries({ queryKey: channelQueryKeys.myGrants });
   };
 };

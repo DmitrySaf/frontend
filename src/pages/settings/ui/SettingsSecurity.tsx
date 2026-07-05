@@ -10,6 +10,7 @@ import {
   transformPrivacySettingsToApi,
 } from "@/entities/profile";
 import { SettingsSecurityForm } from "@/widgets/settings-security-form";
+import { DevPasswordSetter } from "@/features/auth";
 import { Button, Input, Form } from "@/shared/components";
 
 interface PrivacyFormData {
@@ -126,6 +127,9 @@ export function SettingsSecurity() {
         onSubmit={handlePrivacySubmit}
         isLoading={isLoading}
       />
+
+      {/* DEV ONLY — удалить перед продом */}
+      <DevPasswordSetter />
     </div>
   );
 }

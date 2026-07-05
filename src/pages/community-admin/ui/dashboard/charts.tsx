@@ -1,9 +1,9 @@
 "use client";
 
-import { useState } from "react";
 import type { MonthPoint } from "@/entities/subscription";
 import { formatRub } from "@/entities/subscription";
 import { cn } from "@/shared/utils";
+import { useState } from "react";
 
 /** Тултип-плашка по DS (тёмная, 12.5px) над отмеченной точкой/баром */
 function ChartTooltip({ label, value }: { label: string; value: string }) {

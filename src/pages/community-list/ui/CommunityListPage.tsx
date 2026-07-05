@@ -1,12 +1,12 @@
 "use client";
 
-import { useEffect } from "react";
+import { getLastVisitedCommunity, useCommunitiesQuery } from "@/entities/community";
+import { Button } from "@/shared/components";
+import { Loader2 } from "lucide-react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useQueryState } from "nuqs";
-import Image from "next/image";
-import { Loader2 } from "lucide-react";
-import { Button } from "@/shared/components";
-import { useCommunitiesQuery, getLastVisitedCommunity } from "@/entities/community";
+import { useEffect } from "react";
 
 /**
  * Резолвер после входа: последнее посещённое сообщество → первое из списка →
@@ -24,8 +24,8 @@ export function CommunityListPage() {
     if (communities.length === 0) return;
 
     const lastVisited = getLastVisitedCommunity();
-    const target = communities.find((community) => community.name === lastVisited)
-      ?? communities[0];
+    const target =
+      communities.find((community) => community.name === lastVisited) ?? communities[0];
 
     router.replace(`/communities/${target.name}`);
   }, [isLoading, communities, router]);

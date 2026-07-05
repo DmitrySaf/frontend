@@ -1,8 +1,8 @@
 "use client";
 
-import * as React from "react";
-import * as DropdownMenuPrimitive from "@radix-ui/react-dropdown-menu";
 import { cn } from "@/shared/utils";
+import * as DropdownMenuPrimitive from "@radix-ui/react-dropdown-menu";
+import * as React from "react";
 
 // Base Radix UI primitives (for advanced usage if needed)
 const DropdownMenu = DropdownMenuPrimitive.Root;
@@ -93,7 +93,10 @@ function Dropdown({ trigger, items, align = "end", side = "bottom", className }:
 
           if ("note" in item) {
             return (
-              <div key={`note-${index}`} className="px-2 pt-1.5 pb-0.5 text-[11px] font-medium uppercase tracking-wide text-gray-500">
+              <div
+                key={`note-${index}`}
+                className="px-2 pt-1.5 pb-0.5 text-[11px] font-medium uppercase tracking-wide text-gray-500"
+              >
                 {item.note}
               </div>
             );

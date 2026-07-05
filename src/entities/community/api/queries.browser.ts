@@ -1,8 +1,8 @@
+import { useBrowserClient, useBrowserQuery } from "@/shared/composables";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { communityQueryKeys } from "./constants";
-import { getCommunities, getCommunity, getCommunityProfile } from "./api";
-import { useBrowserQuery, useBrowserClient } from "@/shared/composables";
 import { transformCommunity } from "../model";
+import { getCommunities, getCommunity, getCommunityProfile } from "./api";
+import { communityQueryKeys } from "./constants";
 
 /**
  * Хук для получения списка сообществ

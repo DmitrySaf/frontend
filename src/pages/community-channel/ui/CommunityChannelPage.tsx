@@ -1,8 +1,8 @@
 "use client";
 
-import { Loader2, Lock } from "lucide-react";
 import { useCommunityStructureQuery, useMyChannelGrantsQuery } from "@/entities/channel";
 import { useCommunityRole } from "@/entities/member";
+import { Loader2, Lock } from "lucide-react";
 import { ChannelTitleBar } from "./ChannelTitleBar";
 import { ChatScreen } from "./chat/ChatScreen";
 import { CourseScreen } from "./course/CourseScreen";

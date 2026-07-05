@@ -1,8 +1,8 @@
 "use client";
 
-import * as React from "react";
-import * as TooltipPrimitive from "@radix-ui/react-tooltip";
 import { cn } from "@/shared/utils";
+import * as TooltipPrimitive from "@radix-ui/react-tooltip";
+import type * as React from "react";
 
 interface TooltipProps {
   // Custom Props

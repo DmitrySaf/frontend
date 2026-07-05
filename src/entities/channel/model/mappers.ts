@@ -1,9 +1,4 @@
-import type {
-  CategoryRecord,
-  ChannelRecord,
-  Channel,
-  CommunityStructure,
-} from "../api/types";
+import type { CategoryRecord, Channel, ChannelRecord, CommunityStructure } from "../api/types";
 
 export const transformChannel = (record: ChannelRecord): Channel => {
   return {
@@ -32,12 +27,8 @@ export const transformCommunityStructure = (data: {
         id: category.id,
         name: category.name,
         position: category.position,
-        channels: channels
-          .filter((channel) => channel.categoryId === category.id)
-          .sort(byPosition),
+        channels: channels.filter((channel) => channel.categoryId === category.id).sort(byPosition),
       })),
-    uncategorized: channels
-      .filter((channel) => channel.categoryId === null)
-      .sort(byPosition),
+    uncategorized: channels.filter((channel) => channel.categoryId === null).sort(byPosition),
   };
 };

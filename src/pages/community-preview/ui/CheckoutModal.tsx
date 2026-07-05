@@ -1,15 +1,15 @@
 "use client";
 
-import { FlaskConical } from "lucide-react";
-import { formatTierPrice, type Tier } from "@/entities/tier";
+import { type Tier, formatTierPrice } from "@/entities/tier";
 import {
   Button,
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogDescription,
 } from "@/shared/components";
+import { FlaskConical } from "lucide-react";
 
 interface CheckoutModalProps {
   isOpen: boolean;
@@ -64,8 +64,8 @@ export function CheckoutModal({
           <div className="flex items-start gap-2.5 p-3 rounded-[12px] bg-[#fbf3da] border border-[#e7d29a]">
             <FlaskConical className="size-4 shrink-0 mt-0.5 text-[#9a7b2a]" />
             <p className="text-[13px] leading-[1.45] text-[#7a5e16]">
-              Тестовый режим — деньги не списываются. Реальный платёжный провайдер будет
-              подключён позже.
+              Тестовый режим — деньги не списываются. Реальный платёжный провайдер будет подключён
+              позже.
             </p>
           </div>
 

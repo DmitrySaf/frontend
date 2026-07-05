@@ -1,6 +1,6 @@
-import { TypedSupabaseClient } from "@/api";
+import type { TypedSupabaseClient } from "@/api";
 import { createBrowserClient } from "@/api/utils/client";
-import { QueryOptions, useQuery, UseQueryResult } from "@tanstack/react-query";
+import { type QueryOptions, type UseQueryResult, useQuery } from "@tanstack/react-query";
 
 /**
  * Browser query hook with automatic client creation

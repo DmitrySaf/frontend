@@ -1,12 +1,9 @@
 "use client";
 
-import { useCallback, useMemo } from "react";
-import {
-  useProfileQuery,
-  useUpdateProfileMutation,
-} from "@/entities/profile";
-import { SettingsProfileForm, type UserSettingsData } from "@/widgets/settings-profile-form";
 import type { SocialPlatform } from "@/api/profiles";
+import { useProfileQuery, useUpdateProfileMutation } from "@/entities/profile";
+import { SettingsProfileForm, type UserSettingsData } from "@/widgets/settings-profile-form";
+import { useCallback, useMemo } from "react";
 
 export function SettingsProfile() {
   const { data: profileData, isLoading } = useProfileQuery();
@@ -16,7 +13,11 @@ export function SettingsProfile() {
     async (data: UserSettingsData) => {
       try {
         // Prepare social links array
-        const socialLinksArray: Array<{ platform: SocialPlatform; label: string | null; link: string }> = [];
+        const socialLinksArray: Array<{
+          platform: SocialPlatform;
+          label: string | null;
+          link: string;
+        }> = [];
 
         // Add standard social networks
         const socialPlatforms: Array<{ key: keyof UserSettingsData; platform: SocialPlatform }> = [
@@ -64,10 +65,14 @@ export function SettingsProfile() {
 
   // Transform data from entities to widget format
   const initValues = useMemo(() => {
-    const socialLinksMap = profileData?.socialLinks.reduce((acc, link) => {
-      acc[link.platform] = link.link;
-      return acc;
-    }, {} as Record<string, string>) || {};
+    const socialLinksMap =
+      profileData?.socialLinks.reduce(
+        (acc, link) => {
+          acc[link.platform] = link.link;
+          return acc;
+        },
+        {} as Record<string, string>
+      ) || {};
 
     return {
       name: profileData?.displayName || "",

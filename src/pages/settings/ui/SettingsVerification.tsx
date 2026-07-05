@@ -1,25 +1,17 @@
 "use client";
 
-import { useState } from "react";
-import { toast } from "sonner";
 import {
-  BadgeCheck,
-  Briefcase,
-  Building2,
-  Clock,
-  Loader2,
-  ShieldCheck,
-  User,
-} from "lucide-react";
-import {
+  type VerificationKind,
   approveMyVerification,
   submitVerification,
-  useMyVerificationQuery,
   useInvalidateMyVerification,
-  type VerificationKind,
+  useMyVerificationQuery,
 } from "@/entities/verification";
 import { Button } from "@/shared/components";
 import { cn } from "@/shared/utils";
+import { BadgeCheck, Briefcase, Building2, Clock, Loader2, ShieldCheck, User } from "lucide-react";
+import { useState } from "react";
+import { toast } from "sonner";
 
 const KIND_OPTIONS: {
   value: VerificationKind;
@@ -28,7 +20,12 @@ const KIND_OPTIONS: {
   description: string;
 }[] = [
   { value: "passport", icon: User, title: "Паспорт", description: "Физическое лицо" },
-  { value: "self_employed", icon: Briefcase, title: "Самозанятый", description: "Налог на профдоход" },
+  {
+    value: "self_employed",
+    icon: Briefcase,
+    title: "Самозанятый",
+    description: "Налог на профдоход",
+  },
   { value: "ip", icon: ShieldCheck, title: "ИП", description: "Индивидуальный предприниматель" },
   { value: "ooo", icon: Building2, title: "ООО", description: "Юридическое лицо" },
 ];
@@ -54,14 +51,34 @@ function Banner({
   children?: React.ReactNode;
 }) {
   const tones = {
-    neutral: { bg: "bg-gray-100", border: "border-gray-200", ink: "text-black", sub: "text-gray-600" },
-    pending: { bg: "bg-[#fbf3da]", border: "border-[#e7d29a]", ink: "text-[#7a5e16]", sub: "text-[#9a7b2a]" },
-    passed: { bg: "bg-[#eef3ec]", border: "border-[#bcd0b6]", ink: "text-[#3f5a3a]", sub: "text-[#5a7a52]" },
+    neutral: {
+      bg: "bg-gray-100",
+      border: "border-gray-200",
+      ink: "text-black",
+      sub: "text-gray-600",
+    },
+    pending: {
+      bg: "bg-[#fbf3da]",
+      border: "border-[#e7d29a]",
+      ink: "text-[#7a5e16]",
+      sub: "text-[#9a7b2a]",
+    },
+    passed: {
+      bg: "bg-[#eef3ec]",
+      border: "border-[#bcd0b6]",
+      ink: "text-[#3f5a3a]",
+      sub: "text-[#5a7a52]",
+    },
   }[tone];
 
   return (
     <div className={cn("flex items-start gap-4 rounded-[18px] border p-5", tones.bg, tones.border)}>
-      <div className={cn("size-[46px] shrink-0 rounded-[13px] bg-white border flex items-center justify-center", tones.border)}>
+      <div
+        className={cn(
+          "size-[46px] shrink-0 rounded-[13px] bg-white border flex items-center justify-center",
+          tones.border
+        )}
+      >
         <Icon className={cn("size-6", tones.sub)} />
       </div>
       <div className="flex-1 min-w-0 space-y-1.5">
@@ -198,7 +215,8 @@ export function SettingsVerification() {
                       Здесь появится форма проверки документов ({KIND_LABELS[selectedKind]})
                     </p>
                     <p className="text-xs text-gray-500">
-                      Встраиваемый виджет партнёра по верификации — подключается на этапе интеграции.
+                      Встраиваемый виджет партнёра по верификации — подключается на этапе
+                      интеграции.
                     </p>
                   </div>
 

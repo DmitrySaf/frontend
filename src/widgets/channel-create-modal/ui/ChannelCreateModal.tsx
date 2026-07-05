@@ -1,31 +1,31 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { ChevronDown, Plus } from "lucide-react";
 import {
+  CHANNEL_ACCESS_META,
+  CHANNEL_NAME_MAX_LENGTH,
+  CHANNEL_TYPE_META,
+  type Channel,
+  type ChannelAccess,
+  type ChannelType,
+  type CreateChannelFormData,
+  createChannelSchema,
+} from "@/entities/channel";
+import {
+  Button,
   Dialog,
   DialogContent,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogFooter,
-  Button,
-  Input,
-  Form,
   Dropdown,
+  Form,
+  Input,
 } from "@/shared/components";
 import { cn } from "@/shared/utils";
-import {
-  CHANNEL_TYPE_META,
-  CHANNEL_ACCESS_META,
-  createChannelSchema,
-  CHANNEL_NAME_MAX_LENGTH,
-  type CreateChannelFormData,
-  type Channel,
-  type ChannelType,
-  type ChannelAccess,
-} from "@/entities/channel";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { ChevronDown, Plus } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
 
 const CHANNEL_TYPES: ChannelType[] = ["chat", "posts", "course"];
 const CHANNEL_ACCESSES: ChannelAccess[] = ["open", "private", "secret"];
@@ -160,7 +160,9 @@ export function ChannelCreateModal({
                           : "border-gray-200 bg-white hover:bg-gray-50"
                       )}
                     >
-                      <Icon className={cn("size-[22px]", isSelected ? "text-black" : "text-gray-600")} />
+                      <Icon
+                        className={cn("size-[22px]", isSelected ? "text-black" : "text-gray-600")}
+                      />
                       <span
                         className={cn(
                           "text-[13px] font-semibold",
@@ -240,7 +242,9 @@ export function ChannelCreateModal({
                   >
                     <Icon className="size-4 shrink-0 text-gray-600" />
                     <span className="flex-1 min-w-0">
-                      <span className="block text-[13px] font-semibold text-black">{meta.name}</span>
+                      <span className="block text-[13px] font-semibold text-black">
+                        {meta.name}
+                      </span>
                       <span className="block text-xs text-gray-600">{meta.description}</span>
                     </span>
                   </button>

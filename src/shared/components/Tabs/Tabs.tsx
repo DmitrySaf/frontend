@@ -1,7 +1,7 @@
 "use client";
 
-import * as React from "react";
 import { usePathname } from "next/navigation";
+import * as React from "react";
 import { Tab } from "./Tab";
 
 export interface TabItem {
@@ -36,4 +36,3 @@ export function Tabs({ items, className }: TabsProps) {
     </nav>
   );
 }
-

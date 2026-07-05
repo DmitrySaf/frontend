@@ -1,6 +1,16 @@
 "use client";
 
-import { useState } from "react";
+import {
+  type Post,
+  type PostFormData,
+  useToggleBookmarkMutation,
+  useToggleLikeMutation,
+  useTogglePinMutation,
+  useUpdatePostMutation,
+} from "@/entities/post";
+import { Avatar, Dropdown, type DropdownItemConfig } from "@/shared/components";
+import { useSessionUserId } from "@/shared/composables";
+import { cn, formatRelativeTime } from "@/shared/utils";
 import {
   Bookmark,
   Heart,
@@ -11,17 +21,7 @@ import {
   PinOff,
   Trash2,
 } from "lucide-react";
-import {
-  useUpdatePostMutation,
-  useTogglePinMutation,
-  useToggleLikeMutation,
-  useToggleBookmarkMutation,
-  type Post,
-  type PostFormData,
-} from "@/entities/post";
-import { Avatar, Dropdown, type DropdownItemConfig } from "@/shared/components";
-import { useSessionUserId } from "@/shared/composables";
-import { cn, formatRelativeTime } from "@/shared/utils";
+import { useState } from "react";
 import { useAuthorView } from "../useAuthorView";
 import { PostComments } from "./PostComments";
 import { PostForm } from "./PostForm";
@@ -48,16 +48,18 @@ export function PostCard({ post, isAdmin, onDelete }: PostCardProps) {
   const isOwn = myUserId !== null && post.authorId === myUserId;
 
   const menuItems: DropdownItemConfig[] = [
-    ...(isOwn
-      ? [{ icon: Pencil, label: "Редактировать", onClick: () => setIsEditing(true) }]
-      : []),
+    ...(isOwn ? [{ icon: Pencil, label: "Редактировать", onClick: () => setIsEditing(true) }] : []),
     ...(isAdmin
       ? [
           {
             icon: post.pinned ? PinOff : Pin,
             label: post.pinned ? "Открепить" : "Закрепить",
             onClick: () =>
-              togglePin.mutate({ postId: post.id, channelId: post.channelId, pinned: !post.pinned }),
+              togglePin.mutate({
+                postId: post.id,
+                channelId: post.channelId,
+                pinned: !post.pinned,
+              }),
           },
         ]
       : []),

@@ -1,7 +1,7 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { transformCommunityStructure } from "../model";
 import { getCommunityStructure, getMyChannelGrants } from "./api";
 import { channelQueryKeys } from "./constants";
-import { transformCommunityStructure } from "../model";
 
 /**
  * Структура сообщества: категории с каналами.

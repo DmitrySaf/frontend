@@ -1,14 +1,14 @@
-import { Tables, TablesInsert, TablesUpdate, Enums } from "../types/database";
+import type { Enums, Tables, TablesInsert, TablesUpdate } from "../types/database";
 
-export type ProfileRow = Tables<'profiles'>;
-export type ProfileInsert = TablesInsert<'profiles'>;
-export type ProfileUpdate = TablesUpdate<'profiles'>;
+export type ProfileRow = Tables<"profiles">;
+export type ProfileInsert = TablesInsert<"profiles">;
+export type ProfileUpdate = TablesUpdate<"profiles">;
 
-export type ProfileSocialLinkRow = Tables<'profile_social_links'>;
-export type ProfileSocialLinkInsert = TablesInsert<'profile_social_links'>;
-export type ProfileSocialLinkUpdate = TablesUpdate<'profile_social_links'>;
+export type ProfileSocialLinkRow = Tables<"profile_social_links">;
+export type ProfileSocialLinkInsert = TablesInsert<"profile_social_links">;
+export type ProfileSocialLinkUpdate = TablesUpdate<"profile_social_links">;
 
-export type SocialPlatform = Enums<'social_platform'>;
+export type SocialPlatform = Enums<"social_platform">;
 
 export interface SocialLinkInput {
   platform: SocialPlatform;
@@ -16,8 +16,9 @@ export interface SocialLinkInput {
   link: string;
 }
 
-export interface ProfileWithSocials extends Omit<ProfileRow, 'id' | 'privacy_settings' | 'created_at' | 'updated_at'> {
-  social_links: Omit<ProfileSocialLinkRow, 'id' | 'profile_id' | 'created_at' | 'updated_at'>[];
+export interface ProfileWithSocials
+  extends Omit<ProfileRow, "id" | "privacy_settings" | "created_at" | "updated_at"> {
+  social_links: Omit<ProfileSocialLinkRow, "id" | "profile_id" | "created_at" | "updated_at">[];
   privacy_settings: PrivacySettings;
 }
 

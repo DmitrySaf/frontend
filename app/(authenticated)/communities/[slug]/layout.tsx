@@ -1,5 +1,5 @@
-import { CommunitySidebar } from "@/widgets/community-sidebar";
 import { CommunityVisitTracker } from "@/entities/community";
+import { CommunitySidebar } from "@/widgets/community-sidebar";
 
 export default async function CommunityLayout({
   children,

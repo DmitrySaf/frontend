@@ -1,6 +1,6 @@
 import { type VariantProps, cva } from "class-variance-authority";
-import * as React from "react";
 import { Loader2 } from "lucide-react";
+import * as React from "react";
 
 import { cn } from "@/shared/utils";
 import Link from "next/link";

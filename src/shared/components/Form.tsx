@@ -1,7 +1,7 @@
 "use client";
 
-import { ReactNode } from "react";
-import { FormProvider, UseFormReturn } from "react-hook-form";
+import type { ReactNode } from "react";
+import { FormProvider, type UseFormReturn } from "react-hook-form";
 
 interface FormProps {
   children: ReactNode;

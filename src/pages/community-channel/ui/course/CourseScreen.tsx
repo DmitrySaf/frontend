@@ -1,23 +1,23 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-import { BookOpen, Eye, Loader2, Pencil } from "lucide-react";
+import type { Channel } from "@/entities/channel";
 import {
-  useCourseQuery,
-  useCreateModuleMutation,
-  useRenameModuleMutation,
-  useDeleteModuleMutation,
-  useCreateLessonMutation,
-  useUpdateLessonMutation,
-  useDeleteLessonMutation,
-  useToggleLessonCompleteMutation,
   type Lesson,
   type LessonInput,
+  useCourseQuery,
+  useCreateLessonMutation,
+  useCreateModuleMutation,
+  useDeleteLessonMutation,
+  useDeleteModuleMutation,
+  useRenameModuleMutation,
+  useToggleLessonCompleteMutation,
+  useUpdateLessonMutation,
 } from "@/entities/course";
-import type { Channel } from "@/entities/channel";
 import { useCommunityRole } from "@/entities/member";
-import { useParams } from "next/navigation";
 import { DeleteDialog, SegmentedControl } from "@/shared/components";
+import { BookOpen, Eye, Loader2, Pencil } from "lucide-react";
+import { useParams } from "next/navigation";
+import { useEffect, useMemo, useState } from "react";
 import { LessonEditor } from "./LessonEditor";
 import { LessonList } from "./LessonList";
 import { LessonView } from "./LessonView";
@@ -40,9 +40,7 @@ export function CourseScreen({ channel }: { channel: Channel }) {
 
   const [mode, setMode] = useState<CourseMode>("view");
   const [selectedLessonId, setSelectedLessonId] = useState<string | null>(null);
-  const [deleting, setDeleting] = useState<
-    { kind: "module" | "lesson"; id: string } | null
-  >(null);
+  const [deleting, setDeleting] = useState<{ kind: "module" | "lesson"; id: string } | null>(null);
 
   const allLessons = useMemo(
     () => course?.modules.flatMap((module) => module.lessons) ?? [],

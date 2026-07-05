@@ -1,11 +1,11 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { BadgeCheck, Settings, MoreHorizontal, LogOut } from "lucide-react";
-import { Avatar, Button, Dropdown } from "@/shared/components";
+import { createBrowserClient } from "@/api/browser-client";
 import { useProfileQuery } from "@/entities/profile";
 import { useMyVerificationQuery } from "@/entities/verification";
-import { createBrowserClient } from "@/api/browser-client";
+import { Avatar, Button, Dropdown } from "@/shared/components";
+import { BadgeCheck, LogOut, MoreHorizontal, Settings } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export default function ProfileButton() {
   const router = useRouter();

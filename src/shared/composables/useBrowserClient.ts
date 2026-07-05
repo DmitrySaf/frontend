@@ -7,4 +7,3 @@ import { useMemo } from "react";
 export const useBrowserClient = () => {
   return useMemo(() => createBrowserClient(), []);
 };
-

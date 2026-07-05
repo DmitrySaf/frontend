@@ -1,4 +1,9 @@
-export { getMyPayoutMethods, addPayoutMethod, setDefaultPayoutMethod, removePayoutMethod } from "./api";
+export {
+  getMyPayoutMethods,
+  addPayoutMethod,
+  setDefaultPayoutMethod,
+  removePayoutMethod,
+} from "./api";
 export { payoutQueryKeys } from "./constants";
 export { useMyPayoutMethodsQuery, useInvalidateMyPayoutMethods } from "./queries";
 export {

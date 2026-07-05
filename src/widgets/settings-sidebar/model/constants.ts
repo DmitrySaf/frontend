@@ -1,4 +1,4 @@
-import { BadgeCheck, Shield, CreditCard, ReceiptText, User } from "lucide-react";
+import { BadgeCheck, CreditCard, ReceiptText, Shield, User } from "lucide-react";
 
 export const SETTINGS_SECTIONS = [
   { id: "profile", name: "Профиль", icon: User },

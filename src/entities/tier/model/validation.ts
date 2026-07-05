@@ -1,5 +1,5 @@
-import { z } from "zod";
 import { REQUIRED_MESSAGE } from "@/shared/constants";
+import { z } from "zod";
 
 export const TIER_NAME_MAX_LENGTH = 40;
 

@@ -1,9 +1,9 @@
 "use client";
 
-import { useRef, useState } from "react";
-import { SendHorizontal } from "lucide-react";
 import { MESSAGE_MAX_LENGTH } from "@/entities/message";
 import { cn } from "@/shared/utils";
+import { SendHorizontal } from "lucide-react";
+import { useRef, useState } from "react";
 
 const COUNTER_THRESHOLD = MESSAGE_MAX_LENGTH - 200;
 

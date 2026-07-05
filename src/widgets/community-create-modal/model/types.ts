@@ -1,4 +1,4 @@
-import { type CreateCommunityData } from "@/entities/community";
+import type { CreateCommunityData } from "@/entities/community";
 
 export interface CommunityCreateModalProps {
   isOpen: boolean;

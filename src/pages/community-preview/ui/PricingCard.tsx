@@ -1,9 +1,9 @@
 "use client";
 
-import { Users } from "lucide-react";
-import { formatTierPrice, type Tier } from "@/entities/tier";
+import { type Tier, formatTierPrice } from "@/entities/tier";
 import { Button } from "@/shared/components";
 import { cn } from "@/shared/utils";
+import { Users } from "lucide-react";
 
 interface PricingCardProps {
   tiers: Tier[];

@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect } from "react";
-import { useQueryClient } from "@tanstack/react-query";
 import { createBrowserClient } from "@/api/browser-client";
 import type { RealtimePostgresChangesPayload } from "@supabase/supabase-js";
+import { useQueryClient } from "@tanstack/react-query";
+import { useEffect } from "react";
 
 interface UseSupabaseRealtimeOptions<T extends Record<string, any> = Record<string, any>> {
   table: string;

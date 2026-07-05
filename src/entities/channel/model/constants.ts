@@ -1,5 +1,5 @@
-import { Hash, Newspaper, BookOpen, Globe, Lock, EyeOff } from "lucide-react";
-import type { ChannelType, ChannelAccess } from "../api/types";
+import { BookOpen, EyeOff, Globe, Hash, Lock, Newspaper } from "lucide-react";
+import type { ChannelAccess, ChannelType } from "../api/types";
 
 interface ChannelTypeMeta {
   icon: React.ComponentType<{ className?: string }>;

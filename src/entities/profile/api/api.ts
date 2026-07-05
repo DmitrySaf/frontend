@@ -1,23 +1,21 @@
+import type { TypedSupabaseClient } from "@/api";
 import {
-  getProfile as _getProfile,
-  updateProfile as _updateProfile,
-  type ProfileWithSocials,
-  type UpdateProfileData,
-} from "@/api/profiles";
-import {
+  type UpdateAuthUserData,
   getAuthUser as _getAuthUser,
   updateAuthUser as _updateAuthUser,
-  type UpdateAuthUserData,
 } from "@/api/auth";
-import { type TypedSupabaseClient } from "@/api";
+import {
+  type ProfileWithSocials,
+  type UpdateProfileData,
+  getProfile as _getProfile,
+  updateProfile as _updateProfile,
+} from "@/api/profiles";
 import type { AuthUser } from "./types";
 
 /**
  * Get current user profile with social links
  */
-export const getProfile = async (
-  client: TypedSupabaseClient
-): Promise<ProfileWithSocials> => {
+export const getProfile = async (client: TypedSupabaseClient): Promise<ProfileWithSocials> => {
   const { data, error } = await _getProfile(client);
 
   if (error) {

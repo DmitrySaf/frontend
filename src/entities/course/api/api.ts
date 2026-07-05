@@ -1,12 +1,12 @@
-import { createBrowserClient } from "@/api/browser-client";
 import { getSessionUserId, getSessionUserIdOrNull } from "@/api/auth";
+import { createBrowserClient } from "@/api/browser-client";
 import type {
-  CourseRecord,
-  CourseModuleRecord,
-  CourseLessonRecord,
-  LessonProgressRecord,
   CourseData,
+  CourseLessonRecord,
+  CourseModuleRecord,
+  CourseRecord,
   LessonInput,
+  LessonProgressRecord,
 } from "./types";
 
 const COURSE_FIELDS = "id, channel_id, title, description, cover_url, created_at";
@@ -125,7 +125,10 @@ export const updateCourse = async (
 /**
  * Новый модуль (в конец)
  */
-export const createModule = async (courseId: string, title: string): Promise<CourseModuleRecord> => {
+export const createModule = async (
+  courseId: string,
+  title: string
+): Promise<CourseModuleRecord> => {
   const client = createBrowserClient();
 
   const { count, error: countError } = await client
@@ -209,10 +212,7 @@ export const createLesson = async (
   return data as CourseLessonRecord;
 };
 
-export const updateLesson = async (
-  lessonId: string,
-  input: LessonInput
-): Promise<void> => {
+export const updateLesson = async (lessonId: string, input: LessonInput): Promise<void> => {
   const client = createBrowserClient();
 
   const { error } = await client
@@ -270,10 +270,7 @@ export const toggleLessonComplete = async (lessonId: string): Promise<void> => {
  * Загрузка видео урока в Storage (bucket lesson-videos, путь {community_id}/...).
  * Возвращает video_path для записи урока.
  */
-export const uploadLessonVideo = async (
-  communityId: string,
-  file: File
-): Promise<string> => {
+export const uploadLessonVideo = async (communityId: string, file: File): Promise<string> => {
   const client = createBrowserClient();
   const extension = file.name.split(".").pop()?.toLowerCase() || "mp4";
   const path = `${communityId}/${crypto.randomUUID()}.${extension}`;

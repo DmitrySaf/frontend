@@ -1,13 +1,10 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
-import {
-  MESSAGE_MAX_LENGTH,
-  type Message,
-} from "@/entities/message";
+import { MESSAGE_MAX_LENGTH, type Message } from "@/entities/message";
 import { Avatar, Dropdown } from "@/shared/components";
 import { cn, formatTimeShort } from "@/shared/utils";
+import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 
 export interface MessageAuthorView {
   displayName: string;
@@ -117,9 +114,7 @@ export function ChatMessageItem({
               }}
               className="w-full resize-none rounded-[10px] bg-white px-3 py-2 text-sm text-black inset-ring inset-ring-gray-200 focus:outline-none focus:inset-ring-2 focus:inset-ring-primary-500"
             />
-            <p className="text-xs text-gray-500">
-              Enter — сохранить · Esc — отменить
-            </p>
+            <p className="text-xs text-gray-500">Enter — сохранить · Esc — отменить</p>
           </div>
         ) : (
           <p className="text-sm text-gray-800 leading-[1.45] whitespace-pre-wrap break-words">

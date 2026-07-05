@@ -1,9 +1,9 @@
 "use client";
 
-import { useState, useRef, useEffect, useCallback } from "react";
 import { Button } from "@/shared/components";
 import { cn } from "@/shared/utils";
 import { ChevronLeft } from "lucide-react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 const CODE_LENGTH = 6;
 const RESEND_COOLDOWN_SECONDS = 60;
@@ -199,9 +199,7 @@ export function ConfirmationForm({
       <p className="text-sm text-gray-600 text-center">
         Не получили код?{" "}
         {cooldown > 0 ? (
-          <span className="text-gray-500">
-            Отправить заново через {cooldown} с
-          </span>
+          <span className="text-gray-500">Отправить заново через {cooldown} с</span>
         ) : (
           <button
             type="button"

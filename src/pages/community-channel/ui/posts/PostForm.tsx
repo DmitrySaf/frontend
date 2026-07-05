@@ -1,17 +1,13 @@
 "use client";
 
-import { useRef, useState } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { ImagePlus, X } from "lucide-react";
-import { toast } from "sonner";
-import {
-  postFormSchema,
-  POST_TITLE_MAX_LENGTH,
-  type PostFormData,
-} from "@/entities/post";
+import { POST_TITLE_MAX_LENGTH, type PostFormData, postFormSchema } from "@/entities/post";
 import { Button, Form } from "@/shared/components";
 import { fileToDataUrl } from "@/shared/utils";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { ImagePlus, X } from "lucide-react";
+import { useRef, useState } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 
 interface PostFormProps {
   initialValues?: PostFormData & { coverUrl?: string | null };
@@ -69,7 +65,9 @@ export function PostForm({ initialValues, submitLabel, onSubmit, onCancel }: Pos
           autoFocus
           className="w-full bg-transparent text-lg font-bold text-black placeholder:text-gray-400 focus:outline-none"
         />
-        {errors.title?.message && <p className="mt-1 text-sm text-danger">{errors.title.message}</p>}
+        {errors.title?.message && (
+          <p className="mt-1 text-sm text-danger">{errors.title.message}</p>
+        )}
       </div>
 
       <div>

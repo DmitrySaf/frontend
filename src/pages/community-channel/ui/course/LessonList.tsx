@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
-import { Check, Lock, Pencil, Play, Plus, Trash2 } from "lucide-react";
 import type { CourseView, Lesson } from "@/entities/course";
 import { MODULE_TITLE_MAX_LENGTH } from "@/entities/course";
 import { cn, formatDuration } from "@/shared/utils";
+import { Check, Lock, Pencil, Play, Plus, Trash2 } from "lucide-react";
+import { useState } from "react";
 
 interface LessonListProps {
   course: CourseView;

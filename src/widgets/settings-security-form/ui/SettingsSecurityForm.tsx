@@ -1,11 +1,11 @@
 "use client";
 
+import { Button, Switch } from "@/shared/components";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Loader2 } from "lucide-react";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Switch, Button } from "@/shared/components";
-import { Loader2 } from "lucide-react";
-import { securitySettingsSchema, type SecuritySettingsData } from "../model";
+import { type SecuritySettingsData, securitySettingsSchema } from "../model";
 
 interface SettingsSecurityFormProps {
   initValues: SecuritySettingsData;

@@ -23,7 +23,7 @@
     }
   },
   "files": {
-    "include": ["**/*.{js,jsx,ts,tsx}"],
+    "include": ["**/*.js", "**/*.jsx", "**/*.ts", "**/*.tsx"],
     "ignore": [
       "node_modules",
       ".next",
@@ -31,6 +31,7 @@
       "out",
       "build",
       ".git",
+      "bean-design-system",
       "**/*.json",
       "**/*.md",
       "**/*.css"

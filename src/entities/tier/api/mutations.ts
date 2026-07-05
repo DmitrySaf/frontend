@@ -1,6 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { createTier, updateTier, setTierActive, deleteTier } from "./api";
+import { createTier, deleteTier, setTierActive, updateTier } from "./api";
 import { useInvalidateTiers } from "./queries";
 import type { TierInput } from "./types";
 

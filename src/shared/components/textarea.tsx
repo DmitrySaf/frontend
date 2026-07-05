@@ -1,8 +1,8 @@
 "use client";
 
-import { useFormContext } from "react-hook-form";
 import { cn } from "@/shared/utils";
 import { cva } from "class-variance-authority";
+import { useFormContext } from "react-hook-form";
 
 export interface TextareaProps {
   // Form integration

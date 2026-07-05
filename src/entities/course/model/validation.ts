@@ -1,5 +1,5 @@
-import { z } from "zod";
 import { REQUIRED_MESSAGE } from "@/shared/constants";
+import { z } from "zod";
 
 export const LESSON_TITLE_MAX_LENGTH = 100;
 export const MODULE_TITLE_MAX_LENGTH = 60;

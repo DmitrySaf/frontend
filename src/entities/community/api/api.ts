@@ -1,21 +1,17 @@
+import type { TypedSupabaseClient } from "@/api";
+import { getAuthUser } from "@/api/auth";
+import { createBrowserClient } from "@/api/browser-client";
 import {
-  getCommunity as _getCommunity,
-  createCommunity as _createCommunity,
-  updateCommunity as _updateCommunity,
-  deleteCommunity as _deleteCommunity,
   type Community as CommunityRecord,
   type UpdateCommunityData,
+  createCommunity as _createCommunity,
+  deleteCommunity as _deleteCommunity,
+  getCommunity as _getCommunity,
+  updateCommunity as _updateCommunity,
 } from "@/api/communities";
-import { getAuthUser } from "@/api/auth";
-import { type TypedSupabaseClient } from "@/api";
-import { createBrowserClient } from "@/api/browser-client";
 import { uploadDataUrlImage } from "@/shared/utils";
 import type { CreateCommunityData } from "../model";
-import type {
-  CommunityProfile,
-  CommunityVisibility,
-  UpdateCommunityProfileInput,
-} from "./types";
+import type { CommunityProfile, CommunityVisibility, UpdateCommunityProfileInput } from "./types";
 
 // Кэш slug → uuid: остальные entities ссылаются на сообщество по slug из URL
 const communityIdCache = new Map<string, string>();
@@ -122,9 +118,7 @@ export const getCommunityProfile = async (
 /**
  * Обновление профиля сообщества; data:-обложки и лого заливаются в Storage
  */
-export const updateCommunityProfile = async (
-  input: UpdateCommunityProfileInput
-): Promise<void> => {
+export const updateCommunityProfile = async (input: UpdateCommunityProfileInput): Promise<void> => {
   const client = createBrowserClient();
   const communityId = await getCommunityIdBySlug(input.slug);
 

@@ -1,7 +1,7 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { transformTiers } from "../model/mappers";
 import { getTiers } from "./api";
 import { tierQueryKeys } from "./constants";
-import { transformTiers } from "../model/mappers";
 
 /**
  * Тарифы сообщества. Мок-хранилище в localStorage — хук только клиентский.

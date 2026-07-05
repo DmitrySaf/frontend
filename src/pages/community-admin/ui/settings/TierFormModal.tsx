@@ -1,15 +1,12 @@
 "use client";
 
-import { useEffect } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import {
-  tierFormSchema,
   TIER_NAME_MAX_LENGTH,
   type Tier,
   type TierFormData,
   type TierInput,
   type TierKind,
+  tierFormSchema,
 } from "@/entities/tier";
 import {
   Button,
@@ -22,6 +19,9 @@ import {
   Input,
   SegmentedControl,
 } from "@/shared/components";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useEffect } from "react";
+import { useForm } from "react-hook-form";
 
 interface TierFormModalProps {
   isOpen: boolean;

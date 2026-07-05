@@ -1,6 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { createChannel, updateChannel, deleteChannel } from "./api";
+import { createChannel, deleteChannel, updateChannel } from "./api";
 import { useInvalidateCommunityStructure } from "./queries";
 import type { CreateChannelInput, UpdateChannelInput } from "./types";
 

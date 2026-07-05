@@ -1,10 +1,10 @@
 "use client";
 
-import Link from "next/link";
-import { Link2, Lock, MoreHorizontal, Settings2, Trash2 } from "lucide-react";
 import { CHANNEL_TYPE_META, type Channel } from "@/entities/channel";
 import { Dropdown, type DropdownItemConfig } from "@/shared/components";
 import { cn } from "@/shared/utils";
+import { Link2, Lock, MoreHorizontal, Settings2, Trash2 } from "lucide-react";
+import Link from "next/link";
 
 interface ChannelRowProps {
   channel: Channel;
@@ -44,15 +44,11 @@ export default function ChannelRow({
         href={`/communities/${communitySlug}/${channel.slug}`}
         className={cn(
           "flex items-center gap-2 px-2.5 py-[7px] rounded-[9px] transition-colors",
-          isActive
-            ? "bg-[#D3D3D340] inset-ring inset-ring-[#D3D3D3]"
-            : "hover:bg-[#D3D3D325]",
+          isActive ? "bg-[#D3D3D340] inset-ring inset-ring-[#D3D3D3]" : "hover:bg-[#D3D3D325]",
           isLockedForViewer && "opacity-70"
         )}
       >
-        <Icon
-          className={cn("size-[17px] shrink-0", isActive ? "text-black" : "text-gray-500")}
-        />
+        <Icon className={cn("size-[17px] shrink-0", isActive ? "text-black" : "text-gray-500")} />
         <span
           className={cn(
             "flex-1 min-w-0 truncate text-sm",

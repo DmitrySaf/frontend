@@ -1,19 +1,12 @@
 "use client";
 
-import { useState } from "react";
-import Link from "next/link";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import { BadgeCheck, Check, CreditCard, Loader2, Plus, Trash2 } from "lucide-react";
 import {
-  useMyPayoutMethodsQuery,
   useAddPayoutMethodMutation,
-  useSetDefaultPayoutMethodMutation,
+  useMyPayoutMethodsQuery,
   useRemovePayoutMethodMutation,
+  useSetDefaultPayoutMethodMutation,
 } from "@/entities/payout";
 import { useMyVerificationQuery } from "@/entities/verification";
-import { REQUIRED_MESSAGE } from "@/shared/constants";
 import {
   Button,
   DeleteDialog,
@@ -25,7 +18,14 @@ import {
   Form,
   Input,
 } from "@/shared/components";
+import { REQUIRED_MESSAGE } from "@/shared/constants";
 import { cn } from "@/shared/utils";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { BadgeCheck, Check, CreditCard, Loader2, Plus, Trash2 } from "lucide-react";
+import Link from "next/link";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 
 const addCardSchema = z.object({
   lastName: z.string().min(1, REQUIRED_MESSAGE),
@@ -74,9 +74,27 @@ function AddCardModal({
         </DialogHeader>
 
         <Form methods={methods} onSubmit={handleSubmit} className="space-y-3.5">
-          <Input name="lastName" size="m" label="Фамилия" placeholder="Паровозов" error={errors.lastName?.message} />
-          <Input name="firstName" size="m" label="Имя" placeholder="Аркадий" error={errors.firstName?.message} />
-          <Input name="middleName" size="m" label="Отчество" placeholder="Петрович" error={errors.middleName?.message} />
+          <Input
+            name="lastName"
+            size="m"
+            label="Фамилия"
+            placeholder="Паровозов"
+            error={errors.lastName?.message}
+          />
+          <Input
+            name="firstName"
+            size="m"
+            label="Имя"
+            placeholder="Аркадий"
+            error={errors.firstName?.message}
+          />
+          <Input
+            name="middleName"
+            size="m"
+            label="Отчество"
+            placeholder="Петрович"
+            error={errors.middleName?.message}
+          />
           <Input
             name="cardNumber"
             size="m"
@@ -117,9 +135,7 @@ export function SettingsPayment() {
     <div className="space-y-6">
       <div className="space-y-2">
         <h2 className="text-2xl font-bold text-gray-900">Вывод средств</h2>
-        <p className="text-sm text-gray-600">
-          Выплаты приходят автоматически на выбранную карту.
-        </p>
+        <p className="text-sm text-gray-600">Выплаты приходят автоматически на выбранную карту.</p>
       </div>
 
       {!isVerified && (
@@ -127,7 +143,10 @@ export function SettingsPayment() {
           <BadgeCheck className="size-[18px] shrink-0 text-gray-600" />
           <p className="flex-1 text-sm text-gray-700">
             Чтобы получать выплаты,{" "}
-            <Link href="/settings/verification" className="font-semibold text-primary-600 hover:underline">
+            <Link
+              href="/settings/verification"
+              className="font-semibold text-primary-600 hover:underline"
+            >
               пройдите верификацию
             </Link>
             .
@@ -154,7 +173,9 @@ export function SettingsPayment() {
               key={card.id}
               className={cn(
                 "flex items-center gap-3.5 p-4 rounded-2xl border bg-white",
-                card.isDefault ? "border-gray-400 inset-ring inset-ring-gray-400" : "border-gray-200"
+                card.isDefault
+                  ? "border-gray-400 inset-ring inset-ring-gray-400"
+                  : "border-gray-200"
               )}
             >
               <button

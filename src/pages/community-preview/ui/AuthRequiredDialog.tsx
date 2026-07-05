@@ -1,14 +1,14 @@
 "use client";
 
-import Image from "next/image";
+import { Auth } from "@/features/auth";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogDescription,
 } from "@/shared/components";
-import { Auth } from "@/features/auth";
+import Image from "next/image";
 
 interface AuthRequiredDialogProps {
   isOpen: boolean;

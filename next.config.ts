@@ -29,11 +29,11 @@ const nextConfig: NextConfig = {
     return [
       // Basic redirect
       {
-        source: '/settings',
-        destination: '/settings/profile',
+        source: "/settings",
+        destination: "/settings/profile",
         permanent: true,
       },
-    ]
+    ];
   },
 };
 

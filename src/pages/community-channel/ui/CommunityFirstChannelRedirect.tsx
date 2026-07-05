@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { Loader2 } from "lucide-react";
 import { useCommunityStructureQuery } from "@/entities/channel";
+import { Loader2 } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 /**
  * Вход в сообщество открывает его первый таб (как в Discord — отдельной «Главной» нет)

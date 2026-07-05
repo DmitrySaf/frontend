@@ -1,7 +1,7 @@
 "use client";
 
-import { useParams } from "next/navigation";
 import { useCommunityQuery } from "@/entities/community";
+import { useParams } from "next/navigation";
 
 export interface AuthorView {
   displayName: string;

@@ -1,19 +1,15 @@
-import { type TypedSupabaseClient } from "../types";
-import {
-  type ProfileWithSocials,
-  type UpdateProfileData,
-  type SocialLinkInput,
-} from "./types";
+import type { TypedSupabaseClient } from "../types";
+import type { ProfileWithSocials, SocialLinkInput, UpdateProfileData } from "./types";
 
-const PROFILES_TABLE = 'profiles';
-const SOCIAL_LINKS_TABLE = 'profile_social_links';
+const PROFILES_TABLE = "profiles";
+const SOCIAL_LINKS_TABLE = "profile_social_links";
 
 /**
  * Get profile with social links
  */
 export async function getProfile(
-  client: TypedSupabaseClient,
-): Promise<{ data: ProfileWithSocials | null, error: any }> {
+  client: TypedSupabaseClient
+): Promise<{ data: ProfileWithSocials | null; error: any }> {
   // Профили видны всем участникам (авторы сообщений/постов),
   // поэтому свой профиль выбираем явно по auth-сессии
   const { data: sessionData } = await client.auth.getSession();
@@ -33,7 +29,7 @@ export async function getProfile(
       privacy_settings,
       social_links:${SOCIAL_LINKS_TABLE}(platform, label, link)
     `)
-    .eq('id', userId)
+    .eq("id", userId)
     .single();
 
   if (error) {
@@ -49,21 +45,21 @@ export async function getProfile(
 export async function updateProfile(
   client: TypedSupabaseClient,
   data: UpdateProfileData
-): Promise<{ data: ProfileWithSocials | null, error: any }> {
+): Promise<{ data: ProfileWithSocials | null; error: any }> {
   // Transform social links to match RPC expected format
-  const socialLinksForRpc = data.social_links?.map(link => ({
+  const socialLinksForRpc = data.social_links?.map((link) => ({
     platform: link.platform,
     label: link.label ?? null,
-    link: link.link
+    link: link.link,
   }));
 
-  const { error } = await client.rpc('update_profile_with_social_links', {
+  const { error } = await client.rpc("update_profile_with_social_links", {
     p_username: data.username ?? undefined,
     p_display_name: data.display_name ?? undefined,
     p_avatar_url: data.avatar_url ?? undefined,
     p_bio: data.bio ?? undefined,
     p_social_links: socialLinksForRpc ?? undefined,
-    p_privacy_settings: (data.privacy_settings as any) ?? undefined
+    p_privacy_settings: (data.privacy_settings as any) ?? undefined,
   });
 
   if (error) {

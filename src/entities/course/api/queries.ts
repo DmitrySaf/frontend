@@ -1,7 +1,7 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { transformCourse } from "../model/mappers";
 import { getCourse, getLessonVideoUrl } from "./api";
 import { courseQueryKeys } from "./constants";
-import { transformCourse } from "../model/mappers";
 
 /**
  * Курс канала

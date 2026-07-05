@@ -1,12 +1,12 @@
-import { createBrowserClient } from "@/api/browser-client";
 import { getSessionUserId, getSessionUserIdOrNull } from "@/api/auth";
+import { createBrowserClient } from "@/api/browser-client";
 import { uploadDataUrlImage } from "@/shared/utils";
 import type {
-  PostRecord,
-  PostLikeRecord,
+  CreatePostInput,
   PostBookmarkRecord,
   PostCommentRecord,
-  CreatePostInput,
+  PostLikeRecord,
+  PostRecord,
   UpdatePostInput,
 } from "./types";
 
@@ -37,11 +37,7 @@ async function getChannelCommunityId(channelId: string): Promise<string> {
 
 async function uploadPostCover(channelId: string, coverUrl: string): Promise<string> {
   const communityId = await getChannelCommunityId(channelId);
-  return uploadDataUrlImage(
-    "post-covers",
-    `${communityId}/${crypto.randomUUID()}.jpg`,
-    coverUrl
-  );
+  return uploadDataUrlImage("post-covers", `${communityId}/${crypto.randomUUID()}.jpg`, coverUrl);
 }
 
 export interface PostsWithMeta {
@@ -110,9 +106,7 @@ export const createPost = async (input: CreatePostInput): Promise<PostRecord> =>
   const client = createBrowserClient();
   const userId = await getSessionUserId(client);
 
-  const coverUrl = input.coverUrl
-    ? await uploadPostCover(input.channelId, input.coverUrl)
-    : null;
+  const coverUrl = input.coverUrl ? await uploadPostCover(input.channelId, input.coverUrl) : null;
 
   const { data, error } = await client
     .from("posts")
@@ -139,9 +133,7 @@ export const createPost = async (input: CreatePostInput): Promise<PostRecord> =>
 export const updatePost = async (input: UpdatePostInput): Promise<PostRecord> => {
   const client = createBrowserClient();
 
-  const coverUrl = input.coverUrl
-    ? await uploadPostCover(input.channelId, input.coverUrl)
-    : null;
+  const coverUrl = input.coverUrl ? await uploadPostCover(input.channelId, input.coverUrl) : null;
 
   const { data, error } = await client
     .from("posts")

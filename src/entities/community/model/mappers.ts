@@ -1,5 +1,5 @@
-import { Community } from "../api/types";
-import { type Community as CommunityRecord } from "@/api/communities";
+import type { Community as CommunityRecord } from "@/api/communities";
+import type { Community } from "../api/types";
 
 export const transformCommunity = (community: CommunityRecord): Community => {
   return {

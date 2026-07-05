@@ -1,21 +1,21 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
-import { Loader2 } from "lucide-react";
+import type { Channel } from "@/entities/channel";
+import { useCommunityRole } from "@/entities/member";
 import {
+  type Message,
+  useDeleteMessageMutation,
   useMessagesQuery,
   useMessagesRealtime,
   useSendMessageMutation,
   useUpdateMessageMutation,
-  useDeleteMessageMutation,
-  type Message,
 } from "@/entities/message";
-import type { Channel } from "@/entities/channel";
-import { useCommunityRole } from "@/entities/member";
-import { useParams } from "next/navigation";
 import { DeleteDialog } from "@/shared/components";
 import { useSessionUserId } from "@/shared/composables";
 import { dayKey, formatDayLabel } from "@/shared/utils";
+import { Loader2 } from "lucide-react";
+import { useParams } from "next/navigation";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useAuthorView } from "../useAuthorView";
 import { ChatComposer } from "./ChatComposer";
 import { ChatMessageItem } from "./ChatMessageItem";

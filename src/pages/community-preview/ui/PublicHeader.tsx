@@ -1,8 +1,8 @@
 "use client";
 
+import { Button } from "@/shared/components";
 import Image from "next/image";
 import Link from "next/link";
-import { Button } from "@/shared/components";
 
 interface PublicHeaderProps {
   isAuthed: boolean;

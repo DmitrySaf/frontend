@@ -1,6 +1,6 @@
 import { createBrowserClient } from "@/api/browser-client";
 import { getCommunityIdBySlug } from "@/entities/community";
-import type { TierRecord, TierKind, TierInput } from "./types";
+import type { TierInput, TierKind, TierRecord } from "./types";
 
 const TIER_FIELDS =
   "id, community_id, name, kind, is_hidden, price_kopeks, period_months, discount_percent, is_active, position, created_at";
@@ -25,10 +25,7 @@ export const getTiers = async (communitySlug: string): Promise<TierRecord[]> => 
   return (data ?? []).map((tier) => ({ ...tier, kind: tier.kind as TierKind }));
 };
 
-export const createTier = async (
-  communitySlug: string,
-  input: TierInput
-): Promise<TierRecord> => {
+export const createTier = async (communitySlug: string, input: TierInput): Promise<TierRecord> => {
   const client = createBrowserClient();
   const communityId = await getCommunityIdBySlug(communitySlug);
   const siblings = await getTiers(communitySlug);

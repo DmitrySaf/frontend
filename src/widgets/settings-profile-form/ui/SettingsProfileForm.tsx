@@ -1,14 +1,14 @@
 "use client";
 
-import { useEffect } from "react";
-import { useForm, useFieldArray } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { Button, Form, Input, Textarea } from "@/shared/components";
-import { Globe, Loader2, Plus } from "lucide-react";
-import { userSettingsSchema, type UserSettingsData, SOCIAL_NETWORKS } from "../model";
-import { UnsavedChangesBar } from "./UnsavedChangesBar";
 import { cn } from "@/shared/utils";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Globe, Loader2, Plus } from "lucide-react";
 import Image from "next/image";
+import { useEffect } from "react";
+import { useFieldArray, useForm } from "react-hook-form";
+import { SOCIAL_NETWORKS, type UserSettingsData, userSettingsSchema } from "../model";
+import { UnsavedChangesBar } from "./UnsavedChangesBar";
 
 interface SettingsProfileFormProps {
   initValues: UserSettingsData;
@@ -55,14 +55,20 @@ export function SettingsProfileForm({ initValues, onSubmit, isLoading }: Setting
 
   return (
     <>
-      <Form 
-        methods={methods} 
-        onSubmit={handleSubmit(onSubmit)} 
+      <Form
+        methods={methods}
+        onSubmit={handleSubmit(onSubmit)}
         className={cn("relative space-y-6", !isDirty && "pb-[102px]")}
       >
         <Input name="name" size="l" label="Имя" error={errors.name?.message} />
 
-        <Input name="username" size="l" label="Имя пользователя" prefix="@" error={errors.username?.message} />
+        <Input
+          name="username"
+          size="l"
+          label="Имя пользователя"
+          prefix="@"
+          error={errors.username?.message}
+        />
 
         <Textarea
           name="bio"
@@ -79,24 +85,18 @@ export function SettingsProfileForm({ initValues, onSubmit, isLoading }: Setting
 
           {/* Static social networks */}
           <div className="space-y-2">
-          {SOCIAL_NETWORKS.map((social) => (
-            <Input
-              name={social.id}
-              size="m"
-              prefix={social.prefix}
-              prefixElement={
-                <div className="flex items-center justify-center w-8 h-8 border border-gray-400 rounded-[10px] shadow">
-                  <Image
-                    src={social.icon}
-                    alt={social.id}
-                    width={24}
-                    height={24}
-                    unoptimized
-                  />
-                </div>
-              }
-              error={errors[social.id]?.message}
-            />
+            {SOCIAL_NETWORKS.map((social) => (
+              <Input
+                name={social.id}
+                size="m"
+                prefix={social.prefix}
+                prefixElement={
+                  <div className="flex items-center justify-center w-8 h-8 border border-gray-400 rounded-[10px] shadow">
+                    <Image src={social.icon} alt={social.id} width={24} height={24} unoptimized />
+                  </div>
+                }
+                error={errors[social.id]?.message}
+              />
             ))}
             <Input
               name="website"

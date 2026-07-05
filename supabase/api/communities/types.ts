@@ -1,9 +1,8 @@
+import type { Tables, TablesInsert, TablesUpdate } from "../types/database";
 
-import { Tables, TablesInsert, TablesUpdate } from "../types/database";
-
-export type CommunityRow = Tables<'communities'>;
-export type CommunityInsert = TablesInsert<'communities'>;
-export type CommunityUpdate = TablesUpdate<'communities'>;
+export type CommunityRow = Tables<"communities">;
+export type CommunityInsert = TablesInsert<"communities">;
+export type CommunityUpdate = TablesUpdate<"communities">;
 export type CommunityResponse = CommunityRow;
 
 export type Community = CommunityRow;

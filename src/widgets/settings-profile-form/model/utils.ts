@@ -34,4 +34,3 @@ export const extractDomain = (url: string): string => {
     return "";
   }
 };
-

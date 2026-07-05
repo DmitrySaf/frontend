@@ -1,1 +1,1 @@
-export { REQUIRED_MESSAGE } from './validationMessages'
+export { REQUIRED_MESSAGE } from "./validationMessages";

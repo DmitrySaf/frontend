@@ -1,7 +1,12 @@
 import { createBrowserClient } from "@/api/browser-client";
 import { getCommunityIdBySlug } from "@/entities/community";
 import { uploadDataUrlImage } from "@/shared/utils";
-import type { StorefrontFeature, StorefrontRecord, StorefrontView, StorefrontViewTier } from "./types";
+import type {
+  StorefrontFeature,
+  StorefrontRecord,
+  StorefrontView,
+  StorefrontViewTier,
+} from "./types";
 
 const EMPTY_STOREFRONT: Omit<StorefrontRecord, "id"> = {
   description: "",
@@ -58,17 +63,15 @@ export const updateStorefront = async (
     )
   );
 
-  const { error } = await client
-    .from("community_storefronts")
-    .upsert(
-      {
-        community_id: communityId,
-        description: patch.description,
-        media,
-        features: patch.features as unknown as Record<string, unknown>[],
-      },
-      { onConflict: "community_id" }
-    );
+  const { error } = await client.from("community_storefronts").upsert(
+    {
+      community_id: communityId,
+      description: patch.description,
+      media,
+      features: patch.features as unknown as Record<string, unknown>[],
+    },
+    { onConflict: "community_id" }
+  );
 
   if (error) {
     throw new Error(error.message);

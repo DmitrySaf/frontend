@@ -1,7 +1,7 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { transformMessages } from "../model/mappers";
 import { getMessages } from "./api";
 import { messageQueryKeys } from "./constants";
-import { transformMessages } from "../model/mappers";
 
 /**
  * Сообщения канала. Мок-хранилище в localStorage — хук только клиентский.

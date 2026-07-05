@@ -1,14 +1,14 @@
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 import {
-  updateCourse,
-  createModule,
-  renameModule,
-  deleteModule,
   createLesson,
-  updateLesson,
+  createModule,
   deleteLesson,
+  deleteModule,
+  renameModule,
   toggleLessonComplete,
+  updateCourse,
+  updateLesson,
 } from "./api";
 import { useInvalidateCourse } from "./queries";
 import type { LessonInput } from "./types";

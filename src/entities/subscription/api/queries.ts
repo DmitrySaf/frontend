@@ -1,7 +1,7 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { getCommunitySales, getCommunityMembersCount, getMyTransactions } from "./api";
-import { subscriptionQueryKeys } from "./constants";
 import { transformCommunityStats, transformTransactions } from "../model/mappers";
+import { getCommunityMembersCount, getCommunitySales, getMyTransactions } from "./api";
+import { subscriptionQueryKeys } from "./constants";
 
 /**
  * Статистика дашборда сообщества. Мок-хранилище в localStorage — хук клиентский.

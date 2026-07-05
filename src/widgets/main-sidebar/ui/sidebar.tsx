@@ -1,10 +1,10 @@
 "use client";
 
 import {
-  useCreateCommunityMutation,
+  type CreateCommunityData,
   useCommunitiesQuery,
   useCommunityLogosQuery,
-  type CreateCommunityData,
+  useCreateCommunityMutation,
 } from "@/entities/community";
 import { Avatar, Button, Tooltip } from "@/shared/components";
 import { CommunityCreateModal } from "@/widgets/community-create-modal";

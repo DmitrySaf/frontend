@@ -1,11 +1,11 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { ArrowDownLeft, ArrowUpRight, Loader2, ReceiptText } from "lucide-react";
 import { useCommunitiesQuery } from "@/entities/community";
-import { useMyTransactionsQuery, type TransactionItem } from "@/entities/subscription";
+import { type TransactionItem, useMyTransactionsQuery } from "@/entities/subscription";
 import { useSessionUserId } from "@/shared/composables";
 import { cn, formatRelativeTime } from "@/shared/utils";
+import { ArrowDownLeft, ArrowUpRight, Loader2, ReceiptText } from "lucide-react";
+import { useMemo, useState } from "react";
 
 type Filter = "all" | "income" | "payouts";
 

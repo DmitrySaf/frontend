@@ -1,6 +1,14 @@
 "use client";
 
 import {
+  Avatar,
+  Button,
+  Dropdown,
+  type DropdownItemConfig,
+  type DropdownNoteConfig,
+} from "@/shared/components";
+import { cn } from "@/shared/utils";
+import {
   ChevronDown,
   Eye,
   LayoutDashboard,
@@ -9,14 +17,6 @@ import {
   Settings,
   UserPlus,
 } from "lucide-react";
-import {
-  Avatar,
-  Button,
-  Dropdown,
-  type DropdownItemConfig,
-  type DropdownNoteConfig,
-} from "@/shared/components";
-import { cn } from "@/shared/utils";
 
 interface CommunityBannerProps {
   name: string;
@@ -52,7 +52,11 @@ export default function CommunityBanner({
   const adminItems: (DropdownItemConfig | DropdownNoteConfig | "separator")[] = isAdmin
     ? [
         { note: "только для админа" },
-        { icon: Settings, label: "Настройки сообщества", onClick: () => onOpenAdminSection("settings") },
+        {
+          icon: Settings,
+          label: "Настройки сообщества",
+          onClick: () => onOpenAdminSection("settings"),
+        },
         { icon: Palette, label: "Внешний вид", onClick: () => onOpenAdminSection("appearance") },
         { icon: LayoutDashboard, label: "Дашборд", onClick: () => onOpenAdminSection("dashboard") },
         "separator",
@@ -73,15 +77,20 @@ export default function CommunityBanner({
       : []),
     { icon: UserPlus, label: "Пригласить в сообщество", onClick: onInvite },
     ...(canLeave
-      ? [{ icon: LogOut, label: "Покинуть сообщество", onClick: onLeave, variant: "danger" as const }]
+      ? [
+          {
+            icon: LogOut,
+            label: "Покинуть сообщество",
+            onClick: onLeave,
+            variant: "danger" as const,
+          },
+        ]
       : []),
   ];
 
   const menu = (
     <Dropdown
-      trigger={
-        <Button theme="ghost" size="s" Icon={ChevronDown} aria-label="Меню сообщества" />
-      }
+      trigger={<Button theme="ghost" size="s" Icon={ChevronDown} aria-label="Меню сообщества" />}
       items={[...adminItems, ...memberItems]}
       align="end"
       className="w-60"

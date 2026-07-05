@@ -1,5 +1,5 @@
-import { type TypedSupabaseClient } from "../types";
-import { type UpdateAuthUserData } from "./types";
+import type { TypedSupabaseClient } from "../types";
+import type { UpdateAuthUserData } from "./types";
 
 /**
  * Update auth user (email, phone, password)
@@ -7,14 +7,14 @@ import { type UpdateAuthUserData } from "./types";
 export async function updateAuthUser(
   client: TypedSupabaseClient,
   data: UpdateAuthUserData
-): Promise<{ data: any, error: any }> {
+): Promise<{ data: any; error: any }> {
   return client.auth.updateUser(data);
 }
 
 /**
  * Get current auth user
  */
-export async function getAuthUser(client: TypedSupabaseClient): Promise<{ data: any, error: any }> {
+export async function getAuthUser(client: TypedSupabaseClient): Promise<{ data: any; error: any }> {
   return client.auth.getUser();
 }
 
@@ -32,10 +32,7 @@ export async function getSessionUserId(client: TypedSupabaseClient): Promise<str
 }
 
 /** Id текущего пользователя или null для гостя */
-export async function getSessionUserIdOrNull(
-  client: TypedSupabaseClient
-): Promise<string | null> {
+export async function getSessionUserIdOrNull(client: TypedSupabaseClient): Promise<string | null> {
   const { data } = await client.auth.getSession();
   return data.session?.user.id ?? null;
 }
-

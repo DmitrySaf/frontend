@@ -1,20 +1,17 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { ImageIcon, Loader2, Upload, Users, X } from "lucide-react";
-import { toast } from "sonner";
+import { useCommunityProfileQuery, useUpdateCommunityProfileMutation } from "@/entities/community";
 import {
-  useCommunityProfileQuery,
-  useUpdateCommunityProfileMutation,
-} from "@/entities/community";
-import {
+  type Storefront,
   useStorefrontQuery,
   useUpdateStorefrontMutation,
-  type Storefront,
 } from "@/entities/storefront";
 import { useCommunityStatsQuery } from "@/entities/subscription";
 import { Avatar, Button } from "@/shared/components";
 import { fileToDataUrl } from "@/shared/utils";
+import { ImageIcon, Loader2, Upload, Users, X } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { toast } from "sonner";
 import { AdminShell } from "../AdminShell";
 import { StorefrontEditor } from "./StorefrontEditor";
 
@@ -46,7 +43,10 @@ function UploadField({ label, hint, value, height, maxWidth, onChange }: UploadF
   return (
     <div className="space-y-2">
       <span className="text-sm font-medium text-black">{label}</span>
-      <div className="relative overflow-hidden rounded-[14px] border border-gray-200" style={{ height }}>
+      <div
+        className="relative overflow-hidden rounded-[14px] border border-gray-200"
+        style={{ height }}
+      >
         {value ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img src={value} alt={label} className="size-full object-cover" />
@@ -58,7 +58,13 @@ function UploadField({ label, hint, value, height, maxWidth, onChange }: UploadF
         )}
         <div className="absolute right-3 bottom-3 flex gap-2">
           {value && (
-            <Button theme="outline" size="s" Icon={X} onClick={() => onChange(null)} aria-label="Убрать" />
+            <Button
+              theme="outline"
+              size="s"
+              Icon={X}
+              onClick={() => onChange(null)}
+              aria-label="Убрать"
+            />
           )}
           <Button theme="outline" size="s" onClick={() => inputRef.current?.click()}>
             <Upload className="size-3.5" />
@@ -159,15 +165,14 @@ export function AppearancePage({ slug }: { slug: string }) {
               onChange={setLogoUrl}
             />
             <p className="text-xs text-gray-500">
-              Обложка показывается в баннере сообщества, логотип — в списке сообществ и в
-              баннере.
+              Обложка показывается в баннере сообщества, логотип — в списке сообществ и в баннере.
             </p>
 
             <div className="pt-2 border-t border-gray-200 space-y-1">
               <p className="text-[15px] font-bold text-black">Витрина</p>
               <p className="text-xs text-gray-500">
-                Публичная страница для гостей — оформляется отдельно; из сообщества берутся
-                только название и логотип.
+                Публичная страница для гостей — оформляется отдельно; из сообщества берутся только
+                название и логотип.
               </p>
             </div>
             <StorefrontEditor value={storefrontDraft} onChange={setStorefrontDraft} />

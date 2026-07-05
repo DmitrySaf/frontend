@@ -1,16 +1,16 @@
 "use client";
 
-import { useRef } from "react";
-import { ChevronDown, ImagePlus, Plus, X } from "lucide-react";
-import { toast } from "sonner";
 import {
-  STOREFRONT_FEATURE_ICONS,
   DEFAULT_FEATURE_ICON,
+  STOREFRONT_FEATURE_ICONS,
   type Storefront,
   type StorefrontFeature,
 } from "@/entities/storefront";
 import { Button, Dropdown } from "@/shared/components";
 import { fileToDataUrl } from "@/shared/utils";
+import { ChevronDown, ImagePlus, Plus, X } from "lucide-react";
+import { useRef } from "react";
+import { toast } from "sonner";
 
 const MAX_MEDIA = 6;
 const MAX_FEATURES = 6;

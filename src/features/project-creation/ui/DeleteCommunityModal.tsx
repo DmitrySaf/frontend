@@ -1,7 +1,7 @@
 "use client";
 
-import { DeleteDialog } from "@/shared/components";
 import { useDeleteCommunityMutation } from "@/entities/community";
+import { DeleteDialog } from "@/shared/components";
 
 interface DeleteCommunityModalProps {
   isOpen: boolean;
@@ -33,4 +33,3 @@ export default function DeleteCommunityModal({
     />
   );
 }
-

@@ -1,13 +1,14 @@
 "use client";
 
 import { useMemo } from "react";
-import { tv } from "tailwind-variants";
-import { IMaskInput } from "react-imask";
 import { useFormContext } from "react-hook-form";
+import { IMaskInput } from "react-imask";
+import { tv } from "tailwind-variants";
 
 const inputVariants = tv({
   slots: {
-    inputWrapper: "w-full inset-ring inset-ring-gray-200 transition-all flex focus-within:outline-0 focus-within:inset-ring-primary-500 focus-within:inset-ring-2 disabled:opacity-50",
+    inputWrapper:
+      "w-full inset-ring inset-ring-gray-200 transition-all flex focus-within:outline-0 focus-within:inset-ring-primary-500 focus-within:inset-ring-2 disabled:opacity-50",
     inputContainer: "flex-1 flex",
     helperText: "text-sm",
   },
@@ -20,7 +21,7 @@ const inputVariants = tv({
       m: {
         inputWrapper: "h-10 rounded-lg text-sm",
         inputContainer: "py-3 px-3",
-      }
+      },
     },
     hasError: {
       true: {
@@ -29,14 +30,14 @@ const inputVariants = tv({
       },
       false: {
         helperText: "text-gray-500",
-      }
+      },
     },
     hasPrefixElement: {
       true: {
         inputContainer: "pl-1",
-      }
-    }
-  }
+      },
+    },
+  },
 });
 
 export interface InputProps {
@@ -146,9 +147,7 @@ const Input = ({
         {label && <div>{label}</div>}
 
         <div className={styles.inputWrapper()}>
-          {prefixElement && (
-            <div className="flex items-center pl-1">{prefixElement}</div>
-          )}
+          {prefixElement && <div className="flex items-center pl-1">{prefixElement}</div>}
           <div className={styles.inputContainer()}>
             {prefix && <span className="pointer-events-none">{prefix}</span>}
             {inputElement}

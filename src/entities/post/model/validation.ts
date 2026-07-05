@@ -1,5 +1,5 @@
-import { z } from "zod";
 import { REQUIRED_MESSAGE } from "@/shared/constants";
+import { z } from "zod";
 
 export const POST_TITLE_MAX_LENGTH = 120;
 export const POST_CONTENT_MAX_LENGTH = 10_000;

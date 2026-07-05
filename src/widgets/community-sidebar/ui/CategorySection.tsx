@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
-import { ChevronDown, ChevronRight, Plus } from "lucide-react";
 import { cn } from "@/shared/utils";
+import { ChevronDown, ChevronRight, Plus } from "lucide-react";
+import { useState } from "react";
 
 interface CategorySectionProps {
   name: string;

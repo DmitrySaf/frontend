@@ -1,9 +1,9 @@
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { getProfile, getAuthUser } from "./api";
-import { transformProfile } from "../model/mappers";
-import { profileQueryKeys } from "./constants";
 import { useBrowserClient } from "@/shared/composables";
-import type { Profile, AuthUser } from "./types";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { transformProfile } from "../model/mappers";
+import { getAuthUser, getProfile } from "./api";
+import { profileQueryKeys } from "./constants";
+import type { AuthUser, Profile } from "./types";
 
 /**
  * Hook to fetch current user profile with social links and privacy settings

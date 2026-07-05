@@ -1,5 +1,11 @@
 import type { PostsWithMeta } from "../api/api";
-import type { Post, PostAuthorRecord, PostAuthor, PostComment, PostCommentRecord } from "../api/types";
+import type {
+  Post,
+  PostAuthor,
+  PostAuthorRecord,
+  PostComment,
+  PostCommentRecord,
+} from "../api/types";
 
 const transformAuthor = (author: PostAuthorRecord | null): PostAuthor | null => {
   if (!author) return null;
@@ -29,9 +35,7 @@ export const transformPosts = (data: PostsWithMeta): Post[] => {
   return data.posts
     .map((record): Post => {
       const postLikes = data.likes.filter((like) => like.post_id === record.id);
-      const postBookmarks = data.bookmarks.filter(
-        (bookmark) => bookmark.post_id === record.id
-      );
+      const postBookmarks = data.bookmarks.filter((bookmark) => bookmark.post_id === record.id);
       const postComments = data.comments.filter((comment) => comment.post_id === record.id);
 
       return {
@@ -47,8 +51,7 @@ export const transformPosts = (data: PostsWithMeta): Post[] => {
         likesCount: postLikes.length,
         commentsCount: postComments.length,
         likedByMe:
-          data.myUserId !== null &&
-          postLikes.some((like) => like.user_id === data.myUserId),
+          data.myUserId !== null && postLikes.some((like) => like.user_id === data.myUserId),
         bookmarkedByMe:
           data.myUserId !== null &&
           postBookmarks.some((bookmark) => bookmark.user_id === data.myUserId),
@@ -62,7 +65,5 @@ export const transformPosts = (data: PostsWithMeta): Post[] => {
 };
 
 export const transformComments = (records: PostCommentRecord[]): PostComment[] => {
-  return records
-    .map(transformComment)
-    .sort((a, b) => a.createdAt.localeCompare(b.createdAt));
+  return records.map(transformComment).sort((a, b) => a.createdAt.localeCompare(b.createdAt));
 };

@@ -1,10 +1,10 @@
 "use server";
 
-import { useQueryClient } from "@tanstack/react-query";
-import { communityQueryKeys } from "./constants";
-import { getCommunities, getCommunity } from "./api";
-import { useServerQuery } from "@/shared/composables";
 import { TypedSupabaseClient } from "@/api";
+import { useServerQuery } from "@/shared/composables";
+import { useQueryClient } from "@tanstack/react-query";
+import { getCommunities, getCommunity } from "./api";
+import { communityQueryKeys } from "./constants";
 
 /**
  * Серверный хук для предзагрузки сообществ

@@ -1,5 +1,5 @@
-import { redirect } from "next/navigation";
 import { createServerClient } from "@/api/server-client";
+import { redirect } from "next/navigation";
 
 export default async function Home() {
   const supabase = await createServerClient();

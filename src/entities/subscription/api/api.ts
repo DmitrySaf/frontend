@@ -1,7 +1,7 @@
-import { createBrowserClient } from "@/api/browser-client";
 import { getSessionUserId, getSessionUserIdOrNull } from "@/api/auth";
+import { createBrowserClient } from "@/api/browser-client";
 import { getCommunityIdBySlug } from "@/entities/community";
-import { getTiers, type TierRecord } from "@/entities/tier";
+import { type TierRecord, getTiers } from "@/entities/tier";
 import type {
   SubscriptionRecord,
   SubscriptionStatus,
@@ -11,7 +11,8 @@ import type {
 } from "./types";
 
 const SUBSCRIPTION_FIELDS = "id, user_id, community_id, tier_id, status, started_at, expires_at";
-const TRANSACTION_FIELDS = "id, user_id, community_id, type, amount_kopeks, status, metadata, created_at";
+const TRANSACTION_FIELDS =
+  "id, user_id, community_id, type, amount_kopeks, status, metadata, created_at";
 
 function castSubscription(record: Record<string, unknown>): SubscriptionRecord {
   return { ...record, status: record.status as SubscriptionStatus } as SubscriptionRecord;
@@ -97,10 +98,7 @@ export const getCommunitySales = async (communitySlug: string): Promise<Communit
   const communityId = await getCommunityIdBySlug(communitySlug);
 
   const [subscriptionsResult, transactionsResult, tiers] = await Promise.all([
-    client
-      .from("subscriptions")
-      .select(SUBSCRIPTION_FIELDS)
-      .eq("community_id", communityId),
+    client.from("subscriptions").select(SUBSCRIPTION_FIELDS).eq("community_id", communityId),
     client
       .from("transactions")
       .select(TRANSACTION_FIELDS)
@@ -129,7 +127,13 @@ export const getCommunitySales = async (communitySlug: string): Promise<Communit
  */
 export const purchaseTier = async (
   communitySlug: string,
-  tier: { id: string; kind: string; priceKopeks: number; periodMonths: number | null; name: string },
+  tier: {
+    id: string;
+    kind: string;
+    priceKopeks: number;
+    periodMonths: number | null;
+    name: string;
+  },
   inviteCode?: string | null
 ): Promise<void> => {
   const client = createBrowserClient();

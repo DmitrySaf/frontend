@@ -1,9 +1,9 @@
 "use client";
 
-import { ArrowLeft, ArrowRight, Check, Clock, Loader2, PlayCircle } from "lucide-react";
-import { useLessonVideoUrlQuery, type CourseView, type Lesson } from "@/entities/course";
+import { type CourseView, type Lesson, useLessonVideoUrlQuery } from "@/entities/course";
 import { Button } from "@/shared/components";
 import { formatDuration } from "@/shared/utils";
+import { ArrowLeft, ArrowRight, Check, Clock, Loader2, PlayCircle } from "lucide-react";
 
 interface LessonViewProps {
   course: CourseView;
@@ -26,9 +26,7 @@ export function LessonView({
   const next = index < allLessons.length - 1 ? allLessons[index + 1] : null;
 
   // Видео из Storage — по временной signed-ссылке (только для участников)
-  const { data: videoUrl, isLoading: isVideoLoading } = useLessonVideoUrlQuery(
-    lesson.videoPath
-  );
+  const { data: videoUrl, isLoading: isVideoLoading } = useLessonVideoUrlQuery(lesson.videoPath);
 
   return (
     <div className="flex-1 min-w-0 overflow-y-auto">

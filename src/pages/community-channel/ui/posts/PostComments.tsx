@@ -1,15 +1,11 @@
 "use client";
 
-import { useState } from "react";
-import { Loader2, SendHorizontal } from "lucide-react";
-import {
-  COMMENT_MAX_LENGTH,
-  usePostCommentsQuery,
-  useAddCommentMutation,
-} from "@/entities/post";
+import { COMMENT_MAX_LENGTH, useAddCommentMutation, usePostCommentsQuery } from "@/entities/post";
 import { useProfileQuery } from "@/entities/profile";
 import { Avatar } from "@/shared/components";
 import { cn, formatRelativeTime } from "@/shared/utils";
+import { Loader2, SendHorizontal } from "lucide-react";
+import { useState } from "react";
 import { useAuthorView } from "../useAuthorView";
 
 interface PostCommentsProps {
@@ -55,9 +51,7 @@ export function PostComments({ postId, channelId }: PostCommentsProps) {
               <Avatar name={author.displayName} src={author.avatarUrl} size="s" />
               <div className="flex-1 min-w-0">
                 <div className="flex items-baseline gap-2">
-                  <span className="text-[13px] font-semibold text-black">
-                    {author.displayName}
-                  </span>
+                  <span className="text-[13px] font-semibold text-black">{author.displayName}</span>
                   {author.isCommunityOwner && (
                     <span className="text-xs font-medium text-primary-600">автор</span>
                   )}

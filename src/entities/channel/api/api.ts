@@ -1,18 +1,19 @@
-import { createBrowserClient } from "@/api/browser-client";
 import { getSessionUserIdOrNull } from "@/api/auth";
+import { createBrowserClient } from "@/api/browser-client";
 import { getCommunityIdBySlug } from "@/entities/community";
 import { transliterate } from "@/shared/utils";
 import type {
   CategoryRecord,
-  ChannelRecord,
   ChannelAccess,
+  ChannelRecord,
   ChannelType,
   CreateChannelInput,
   UpdateChannelInput,
 } from "./types";
 
 const CATEGORY_FIELDS = "id, community_id, name, position, created_at";
-const CHANNEL_FIELDS = "id, community_id, category_id, type, name, slug, access, position, created_at";
+const CHANNEL_FIELDS =
+  "id, community_id, category_id, type, name, slug, access, position, created_at";
 
 /**
  * Уникальный slug таба внутри сообщества: транслитерация + числовой суффикс при коллизии

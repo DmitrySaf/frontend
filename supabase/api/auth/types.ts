@@ -14,4 +14,3 @@ export interface UpdateAuthUserData {
   phone?: string;
   password?: string;
 }
-

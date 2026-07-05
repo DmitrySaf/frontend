@@ -1,12 +1,12 @@
 "use client";
 
-import { useState } from "react";
-import { Loader2, Newspaper } from "lucide-react";
-import { usePostsQuery, usePostsRealtime, useDeletePostMutation } from "@/entities/post";
 import type { Channel } from "@/entities/channel";
 import { useCommunityRole } from "@/entities/member";
-import { useParams } from "next/navigation";
+import { useDeletePostMutation, usePostsQuery, usePostsRealtime } from "@/entities/post";
 import { DeleteDialog } from "@/shared/components";
+import { Loader2, Newspaper } from "lucide-react";
+import { useParams } from "next/navigation";
+import { useState } from "react";
 import { PostCard } from "./PostCard";
 import { PostComposer } from "./PostComposer";
 

@@ -1,6 +1,6 @@
-import * as React from "react";
-import { Lock } from "lucide-react";
 import { cn } from "@/shared/utils";
+import { Lock } from "lucide-react";
+import * as React from "react";
 
 export interface SwitchProps {
   // State

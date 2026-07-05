@@ -1,5 +1,5 @@
-import { createBrowserClient } from "@/api/browser-client";
 import { getSessionUserId } from "@/api/auth";
+import { createBrowserClient } from "@/api/browser-client";
 import { getCommunityIdBySlug } from "@/entities/community";
 import type { InviteRecord } from "./types";
 
@@ -60,9 +60,7 @@ export const getOrCreateInvite = async (
       channel_id: channelId,
       code: generateInviteCode(),
       created_by: userId,
-      expires_at: new Date(
-        Date.now() + DEFAULT_TTL_DAYS * 24 * 60 * 60 * 1000
-      ).toISOString(),
+      expires_at: new Date(Date.now() + DEFAULT_TTL_DAYS * 24 * 60 * 60 * 1000).toISOString(),
     })
     .select(INVITE_FIELDS)
     .single();

@@ -1,6 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { addPayoutMethod, setDefaultPayoutMethod, removePayoutMethod } from "./api";
+import { addPayoutMethod, removePayoutMethod, setDefaultPayoutMethod } from "./api";
 import { useInvalidateMyPayoutMethods } from "./queries";
 import type { AddCardInput } from "./types";
 

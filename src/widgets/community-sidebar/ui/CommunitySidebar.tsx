@@ -1,21 +1,21 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { usePathname, useRouter } from "next/navigation";
-import { toast } from "sonner";
-import { useCommunityProfileQuery } from "@/entities/community";
 import {
-  useCommunityStructureQuery,
-  useMyChannelGrantsQuery,
-  useCreateChannelMutation,
-  useUpdateChannelMutation,
-  useDeleteChannelMutation,
   type Channel,
   type CreateChannelFormData,
+  useCommunityStructureQuery,
+  useCreateChannelMutation,
+  useDeleteChannelMutation,
+  useMyChannelGrantsQuery,
+  useUpdateChannelMutation,
 } from "@/entities/channel";
+import { useCommunityProfileQuery } from "@/entities/community";
 import { leaveCommunity, useCommunityRole, useInvalidateMyMembership } from "@/entities/member";
 import { DeleteDialog } from "@/shared/components";
 import { ChannelCreateModal } from "@/widgets/channel-create-modal";
+import { usePathname, useRouter } from "next/navigation";
+import { useMemo, useState } from "react";
+import { toast } from "sonner";
 import CategorySection from "./CategorySection";
 import ChannelRow from "./ChannelRow";
 import CommunityBanner from "./CommunityBanner";

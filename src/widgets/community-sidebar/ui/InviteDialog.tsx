@@ -1,21 +1,21 @@
 "use client";
 
-import { useState } from "react";
-import { toast } from "sonner";
-import { Check, Copy, Loader2 } from "lucide-react";
 import {
   revokeInvite,
   useCommunityInviteQuery,
   useInvalidateCommunityInvite,
 } from "@/entities/invite";
 import {
+  Button,
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogDescription,
-  Button,
 } from "@/shared/components";
+import { Check, Copy, Loader2 } from "lucide-react";
+import { useState } from "react";
+import { toast } from "sonner";
 
 interface InviteDialogProps {
   isOpen: boolean;
@@ -106,9 +106,7 @@ export default function InviteDialog({
             </div>
 
             <div className="flex items-center justify-between">
-              <span className="text-xs text-gray-500">
-                Использована: {invite?.uses ?? 0} раз
-              </span>
+              <span className="text-xs text-gray-500">Использована: {invite?.uses ?? 0} раз</span>
               <Button theme="ghost" size="s" onClick={handleRevoke} isLoading={isRevoking}>
                 Отозвать ссылку
               </Button>

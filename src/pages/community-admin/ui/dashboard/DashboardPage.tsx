@@ -1,8 +1,8 @@
 "use client";
 
-import { Loader2, TrendingDown, TrendingUp } from "lucide-react";
 import { useCommunityQuery } from "@/entities/community";
-import { useCommunityStatsQuery, formatRub, type StatCard } from "@/entities/subscription";
+import { type StatCard, formatRub, useCommunityStatsQuery } from "@/entities/subscription";
+import { Loader2, TrendingDown, TrendingUp } from "lucide-react";
 import { AdminShell } from "../AdminShell";
 import { MembersLineChart, RevenueBarChart } from "./charts";
 

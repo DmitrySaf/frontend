@@ -1,9 +1,9 @@
 "use client";
 
-import { useForm } from "react-hook-form";
+import { Button, Form, Input } from "@/shared/components";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button, Input, Form } from "@/shared/components";
-import { emailSchema, type EmailFormData, DEFAULT_EMAIL_VALUES } from "../model/validation";
+import { useForm } from "react-hook-form";
+import { DEFAULT_EMAIL_VALUES, type EmailFormData, emailSchema } from "../model/validation";
 
 interface EmailFormProps {
   onSubmit: (data: EmailFormData) => Promise<void>;

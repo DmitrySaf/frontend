@@ -1,37 +1,31 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { FormProvider, useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import { EyeOff, Globe, Link2, Loader2, Pencil, Plus, Trash2 } from "lucide-react";
 import {
+  type CommunityVisibility,
   clearLastVisitedCommunity,
   useCommunityProfileQuery,
   useDeleteCommunityMutation,
   useUpdateCommunityProfileMutation,
-  type CommunityVisibility,
 } from "@/entities/community";
 import {
-  formatTierPrice,
-  useTiersQuery,
-  useCreateTierMutation,
-  useUpdateTierMutation,
-  useSetTierActiveMutation,
-  useDeleteTierMutation,
   type Tier,
   type TierInput,
+  formatTierPrice,
+  useCreateTierMutation,
+  useDeleteTierMutation,
+  useSetTierActiveMutation,
+  useTiersQuery,
+  useUpdateTierMutation,
 } from "@/entities/tier";
+import { Button, DeleteDialog, Input, Switch, Textarea } from "@/shared/components";
 import { REQUIRED_MESSAGE } from "@/shared/constants";
-import {
-  Button,
-  DeleteDialog,
-  Input,
-  Switch,
-  Textarea,
-} from "@/shared/components";
 import { cn } from "@/shared/utils";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { EyeOff, Globe, Link2, Loader2, Pencil, Plus, Trash2 } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { FormProvider, useForm } from "react-hook-form";
+import { z } from "zod";
 import { AdminShell } from "../AdminShell";
 import { TierFormModal } from "./TierFormModal";
 
@@ -290,11 +284,7 @@ export function CommunitySettingsPage({ slug }: { slug: string }) {
               <p className="text-[13px] text-gray-600">
                 Сообщество, его контент и подписки будут удалены безвозвратно.
               </p>
-              <Button
-                theme="destructive"
-                size="s"
-                onClick={() => setIsDeleteCommunityOpen(true)}
-              >
+              <Button theme="destructive" size="s" onClick={() => setIsDeleteCommunityOpen(true)}>
                 Удалить сообщество
               </Button>
             </div>

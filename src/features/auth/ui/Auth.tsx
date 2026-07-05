@@ -1,12 +1,12 @@
 "use client";
 
-import { useState, useCallback } from "react";
-import { useRouter } from "next/navigation";
-import { EmailForm } from "./EmailForm";
-import { ConfirmationForm } from "./ConfirmationForm";
-import Link from "next/link";
-import { type EmailFormData, type ConfirmationFormData } from "../model/validation";
 import { createBrowserClient } from "@/api/browser-client";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useCallback, useState } from "react";
+import type { ConfirmationFormData, EmailFormData } from "../model/validation";
+import { ConfirmationForm } from "./ConfirmationForm";
+import { EmailForm } from "./EmailForm";
 
 interface AuthProps {
   /** После успешного входа; по умолчанию — редирект в /communities */
@@ -34,7 +34,7 @@ export default function Auth({ onSuccess }: AuthProps) {
             data: {
               username: data.email.toUpperCase().split("@")[0],
               display_name: data.email.toLowerCase().split("@")[0],
-            }
+            },
           },
         });
 
@@ -106,7 +106,7 @@ export default function Auth({ onSuccess }: AuthProps) {
           data: {
             username: currentEmail.toUpperCase().split("@")[0],
             display_name: currentEmail.toLowerCase().split("@")[0],
-          }
+          },
         },
       });
 

@@ -1,14 +1,14 @@
 "use server";
 
+import type { TypedSupabaseClient } from "@/api";
+import { createServerClient } from "@/api/server-client";
 import {
   QueryClient,
-  dehydrate,
   type QueryOptions,
-  useQuery,
   type UseQueryResult,
+  dehydrate,
+  useQuery,
 } from "@tanstack/react-query";
-import { type TypedSupabaseClient } from "@/api";
-import { createServerClient } from "@/api/server-client";
 
 /**
  * Universal hook for SSR with TanStack Query

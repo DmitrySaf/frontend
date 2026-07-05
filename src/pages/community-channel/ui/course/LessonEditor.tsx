@@ -1,23 +1,23 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useParams } from "next/navigation";
-import { Clock, Loader2, Trash2, Upload, X } from "lucide-react";
-import { toast } from "sonner";
+import { useCommunityQuery } from "@/entities/community";
 import {
-  lessonFormSchema,
-  uploadLessonVideo,
-  useLessonVideoUrlQuery,
   LESSON_TITLE_MAX_LENGTH,
   type Lesson,
   type LessonFormData,
   type LessonInput,
+  lessonFormSchema,
+  uploadLessonVideo,
+  useLessonVideoUrlQuery,
 } from "@/entities/course";
-import { useCommunityQuery } from "@/entities/community";
 import { Button, Form, Input, Textarea } from "@/shared/components";
 import { formatDuration, getVideoFileDuration } from "@/shared/utils";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Clock, Loader2, Trash2, Upload, X } from "lucide-react";
+import { useParams } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 
 interface LessonEditorProps {
   lesson: Lesson;
@@ -50,7 +50,14 @@ export function LessonEditor({ lesson, onSave, onDelete }: LessonEditorProps) {
     reset({ title: lesson.title, description: lesson.description });
     setVideoPath(lesson.videoPath);
     setDurationSeconds(lesson.durationSeconds);
-  }, [lesson.id, lesson.title, lesson.description, lesson.videoPath, lesson.durationSeconds, reset]);
+  }, [
+    lesson.id,
+    lesson.title,
+    lesson.description,
+    lesson.videoPath,
+    lesson.durationSeconds,
+    reset,
+  ]);
 
   const handleVideoChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -163,7 +170,9 @@ export function LessonEditor({ lesson, onSave, onDelete }: LessonEditorProps) {
               >
                 <Upload className="size-5" />
                 <span className="text-sm font-medium">Загрузить видео</span>
-                <span className="text-xs text-gray-500">Необязательно — урок может быть текстовым</span>
+                <span className="text-xs text-gray-500">
+                  Необязательно — урок может быть текстовым
+                </span>
               </button>
             )}
             <input

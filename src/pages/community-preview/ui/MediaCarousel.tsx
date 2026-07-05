@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
-import { ImageIcon } from "lucide-react";
 import { cn } from "@/shared/utils";
+import { ImageIcon } from "lucide-react";
+import { useState } from "react";
 
 interface MediaCarouselProps {
   media: string[];

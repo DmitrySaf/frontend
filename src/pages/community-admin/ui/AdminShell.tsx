@@ -1,9 +1,9 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { ArrowLeft, ShieldAlert } from "lucide-react";
 import { useCommunityRole } from "@/entities/member";
 import { Button } from "@/shared/components";
+import { ArrowLeft, ShieldAlert } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 interface AdminShellProps {
   slug: string;
@@ -30,7 +30,9 @@ export function AdminShell({ slug, title, subtitle, actions, children }: AdminSh
             <ShieldAlert className="size-6 text-gray-500" />
           </div>
           <p className="text-[15px] font-semibold text-black">Нет доступа</p>
-          <p className="text-sm text-gray-600">Раздел доступен только администраторам сообщества.</p>
+          <p className="text-sm text-gray-600">
+            Раздел доступен только администраторам сообщества.
+          </p>
           <Button theme="outline" size="m" onClick={() => router.push(`/communities/${slug}`)}>
             Вернуться в сообщество
           </Button>

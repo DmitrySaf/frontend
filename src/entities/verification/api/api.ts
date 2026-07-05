@@ -1,6 +1,6 @@
-import { createBrowserClient } from "@/api/browser-client";
 import { getSessionUserId, getSessionUserIdOrNull } from "@/api/auth";
-import type { VerificationRequestRecord, VerificationKind, VerificationStatus } from "./types";
+import { createBrowserClient } from "@/api/browser-client";
+import type { VerificationKind, VerificationRequestRecord, VerificationStatus } from "./types";
 
 const REQUEST_FIELDS = "id, user_id, kind, status, data, submitted_at";
 

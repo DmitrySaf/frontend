@@ -1,23 +1,23 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { useRouter } from "next/navigation";
-import { useQueryClient } from "@tanstack/react-query";
-import { toast } from "sonner";
-import { Loader2 } from "lucide-react";
+import { setLastVisitedCommunity } from "@/entities/community";
+import { consumeInvite } from "@/entities/invite";
+import { joinCommunity, useInvalidateMyMembership } from "@/entities/member";
+import { useAuthUserQuery } from "@/entities/profile";
 import {
-  STOREFRONT_FEATURE_ICONS,
   DEFAULT_FEATURE_ICON,
+  STOREFRONT_FEATURE_ICONS,
   storefrontQueryKeys,
   useStorefrontViewQuery,
 } from "@/entities/storefront";
-import type { Tier } from "@/entities/tier";
-import { joinCommunity, useInvalidateMyMembership } from "@/entities/member";
-import { consumeInvite } from "@/entities/invite";
 import { purchaseTier, useInvalidateCommunitySales } from "@/entities/subscription";
-import { useAuthUserQuery } from "@/entities/profile";
-import { setLastVisitedCommunity } from "@/entities/community";
+import type { Tier } from "@/entities/tier";
 import { Avatar } from "@/shared/components";
+import { useQueryClient } from "@tanstack/react-query";
+import { Loader2 } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useMemo, useState } from "react";
+import { toast } from "sonner";
 import { AuthRequiredDialog } from "./AuthRequiredDialog";
 import { CheckoutModal } from "./CheckoutModal";
 import { MediaCarousel } from "./MediaCarousel";
@@ -96,8 +96,7 @@ export function StorefrontPage({ slug, inviteCode }: StorefrontPageProps) {
       })),
     [view?.tiers]
   );
-  const selectedTier: Tier | null =
-    visibleTiers.find((tier) => tier.id === selectedTierId) ?? null;
+  const selectedTier: Tier | null = visibleTiers.find((tier) => tier.id === selectedTierId) ?? null;
 
   if (isViewLoading || isAuthLoading) {
     return <LoadingScreen />;

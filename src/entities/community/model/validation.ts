@@ -1,10 +1,8 @@
-import { z } from "zod";
 import { REQUIRED_MESSAGE } from "@/shared/constants";
+import { z } from "zod";
 
 export const createCommunitySchema = z.object({
-  displayName: z
-    .string()
-    .min(1, REQUIRED_MESSAGE),
+  displayName: z.string().min(1, REQUIRED_MESSAGE),
   name: z
     .string()
     .min(1, REQUIRED_MESSAGE)

@@ -1,6 +1,6 @@
-import { createBrowserClient } from "@/api/browser-client";
 import { getSessionUserId, getSessionUserIdOrNull } from "@/api/auth";
-import type { PayoutMethodRecord, AddCardInput } from "./types";
+import { createBrowserClient } from "@/api/browser-client";
+import type { AddCardInput, PayoutMethodRecord } from "./types";
 
 const METHOD_FIELDS = "id, user_id, kind, last4, brand, holder_name, is_default, created_at";
 
@@ -49,9 +49,7 @@ export const addPayoutMethod = async (input: AddCardInput): Promise<PayoutMethod
       kind: "card",
       last4: digits.slice(-4),
       brand: detectBrand(digits),
-      holder_name: [input.lastName, input.firstName, input.middleName]
-        .filter(Boolean)
-        .join(" "),
+      holder_name: [input.lastName, input.firstName, input.middleName].filter(Boolean).join(" "),
       is_default: existing.length === 0,
     })
     .select(METHOD_FIELDS)

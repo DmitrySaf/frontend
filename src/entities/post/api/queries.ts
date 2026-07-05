@@ -1,7 +1,7 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { transformComments, transformPosts } from "../model";
 import { getPosts } from "./api";
 import { postQueryKeys } from "./constants";
-import { transformPosts, transformComments } from "../model";
 
 /**
  * Посты канала. Мок-хранилище в localStorage — хук только клиентский.

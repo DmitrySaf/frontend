@@ -1,16 +1,16 @@
 "use client";
 
+import {
+  transformPrivacySettingsToApi,
+  useAuthUserQuery,
+  useProfileQuery,
+  useUpdateAuthUserMutation,
+  useUpdateProfileMutation,
+} from "@/entities/profile";
+import { Button, Form, Input } from "@/shared/components";
+import { SettingsSecurityForm } from "@/widgets/settings-security-form";
 import { useCallback, useMemo } from "react";
 import { useForm } from "react-hook-form";
-import {
-  useProfileQuery,
-  useUpdateProfileMutation,
-  useAuthUserQuery,
-  useUpdateAuthUserMutation,
-  transformPrivacySettingsToApi,
-} from "@/entities/profile";
-import { SettingsSecurityForm } from "@/widgets/settings-security-form";
-import { Button, Input, Form } from "@/shared/components";
 
 interface PrivacyFormData {
   joinedVisible?: boolean;
@@ -56,7 +56,7 @@ export function SettingsSecurity() {
   const handleEmailUpdate = useCallback(async () => {
     const email = emailMethods.getValues("email");
     if (!email || !email.trim()) return;
-    
+
     try {
       await updateAuthUser.mutateAsync({ email });
       emailMethods.setValue("email", "");
@@ -90,16 +90,11 @@ export function SettingsSecurity() {
               {authUser?.email || "Не указан"}
             </div>
           </div>
-          
+
           <Form methods={emailMethods} onSubmit={(e) => e.preventDefault()}>
             <div className="mt-4 flex items-end gap-2">
               <div className="flex-1">
-                <Input
-                  name="email"
-                  label="Новый email"
-                  size="l"
-                  placeholder="example@email.com"
-                />
+                <Input name="email" label="Новый email" size="l" placeholder="example@email.com" />
               </div>
               <Button
                 type="button"
@@ -117,7 +112,6 @@ export function SettingsSecurity() {
             После изменения на новый email будет отправлено письмо с подтверждением
           </p>
         </div>
-
       </div>
 
       {/* Privacy Settings Section */}

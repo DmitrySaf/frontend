@@ -1,24 +1,24 @@
 "use client";
 
-import { useEffect } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { type CreateCommunityData, createCommunitySchema } from "@/entities/community";
 import {
+  Button,
   Dialog,
   DialogContent,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogFooter,
-  Button,
-  Input,
   Form,
+  Input,
 } from "@/shared/components";
 import { transliterate } from "@/shared/utils";
-import { createCommunitySchema, type CreateCommunityData } from "@/entities/community";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useEffect } from "react";
+import { useForm } from "react-hook-form";
 import {
   type CommunityCreateModalProps,
   DEFAULT_CREATE_PROJECT_VALUES,
-  PROJECT_NAME_MAX_LENGTH
+  PROJECT_NAME_MAX_LENGTH,
 } from "../model";
 
 export function CommunityCreateModal({ isOpen, onClose, onSubmit }: CommunityCreateModalProps) {

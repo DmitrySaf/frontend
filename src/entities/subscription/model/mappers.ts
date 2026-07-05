@@ -1,8 +1,21 @@
-import { transformTier, formatTierPrice } from "@/entities/tier";
+import { formatTierPrice, transformTier } from "@/entities/tier";
 import type { CommunitySales } from "../api/api";
 import type { CommunityStats, MonthPoint, StatCard } from "../api/types";
 
-const MONTH_LABELS = ["янв", "фев", "мар", "апр", "май", "июн", "июл", "авг", "сен", "окт", "ноя", "дек"];
+const MONTH_LABELS = [
+  "янв",
+  "фев",
+  "мар",
+  "апр",
+  "май",
+  "июн",
+  "июл",
+  "авг",
+  "сен",
+  "окт",
+  "ноя",
+  "дек",
+];
 const DAY_MS = 24 * 60 * 60 * 1000;
 
 function formatRub(kopeks: number): string {
@@ -37,9 +50,7 @@ export const transformCommunityStats = (sales: CommunitySales): CommunityStats =
       .filter((tx) => {
         const date = new Date(tx.created_at);
         return (
-          tx.status === "succeeded" &&
-          date.getFullYear() === year &&
-          date.getMonth() === month
+          tx.status === "succeeded" && date.getFullYear() === year && date.getMonth() === month
         );
       })
       .reduce((sum, tx) => sum + tx.amount_kopeks, 0),
@@ -50,15 +61,16 @@ export const transformCommunityStats = (sales: CommunitySales): CommunityStats =
     const monthEnd = new Date(year, month + 1, 1).getTime();
     return {
       label: MONTH_LABELS[month],
-      value: sales.subscriptions.filter(
-        (sub) => new Date(sub.started_at).getTime() < monthEnd
-      ).length,
+      value: sales.subscriptions.filter((sub) => new Date(sub.started_at).getTime() < monthEnd)
+        .length,
     };
   });
 
   // Карточки: доход за 30 дней, участники, активные подписки — с дельтами
   const revenueLast30 = sales.transactions
-    .filter((tx) => tx.status === "succeeded" && now - new Date(tx.created_at).getTime() < 30 * DAY_MS)
+    .filter(
+      (tx) => tx.status === "succeeded" && now - new Date(tx.created_at).getTime() < 30 * DAY_MS
+    )
     .reduce((sum, tx) => sum + tx.amount_kopeks, 0);
   const revenuePrev30 = sales.transactions
     .filter((tx) => {

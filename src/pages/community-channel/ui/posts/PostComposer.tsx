@@ -1,9 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { type PostFormData, useCreatePostMutation } from "@/entities/post";
 import { useProfileQuery } from "@/entities/profile";
-import { useCreatePostMutation, type PostFormData } from "@/entities/post";
 import { Avatar, Button } from "@/shared/components";
+import { useState } from "react";
 import { PostForm } from "./PostForm";
 
 /**

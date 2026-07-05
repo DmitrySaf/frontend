@@ -1,1 +1,1 @@
-export const REQUIRED_MESSAGE = 'Обязательно для заполнения'
+export const REQUIRED_MESSAGE = "Обязательно для заполнения";

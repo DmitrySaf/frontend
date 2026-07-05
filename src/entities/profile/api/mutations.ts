@@ -1,10 +1,10 @@
+import type { UpdateAuthUserData } from "@/api/auth";
+import type { UpdateProfileData } from "@/api/profiles";
+import { useBrowserClient } from "@/shared/composables";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { updateProfile, updateAuthUser } from "./api";
-import { useInvalidateProfile, useInvalidateAuthUser } from "./queries";
-import { useBrowserClient } from "@/shared/composables";
-import type { UpdateProfileData } from "@/api/profiles";
-import type { UpdateAuthUserData } from "@/api/auth";
+import { updateAuthUser, updateProfile } from "./api";
+import { useInvalidateAuthUser, useInvalidateProfile } from "./queries";
 
 /**
  * Hook to update profile with social links and privacy settings
@@ -14,8 +14,7 @@ export const useUpdateProfileMutation = () => {
   const client = useBrowserClient();
 
   return useMutation({
-    mutationFn: (data: UpdateProfileData) => 
-      updateProfile(client, data),
+    mutationFn: (data: UpdateProfileData) => updateProfile(client, data),
     onSuccess: () => {
       toast.success("Профиль обновлен успешно");
       invalidateProfile();
@@ -36,8 +35,7 @@ export const useUpdateAuthUserMutation = () => {
   const client = useBrowserClient();
 
   return useMutation({
-    mutationFn: (data: UpdateAuthUserData) => 
-      updateAuthUser(client, data),
+    mutationFn: (data: UpdateAuthUserData) => updateAuthUser(client, data),
     onSuccess: (_, variables) => {
       if (variables.email) {
         toast.success("Проверьте вашу почту", {

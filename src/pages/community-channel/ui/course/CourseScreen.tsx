@@ -15,7 +15,8 @@ import {
 } from "@/entities/course";
 import { useCommunityRole } from "@/entities/member";
 import { DeleteDialog, SegmentedControl } from "@/shared/components";
-import { BookOpen, Eye, Loader2, Pencil } from "lucide-react";
+import { cn } from "@/shared/utils";
+import { ArrowLeft, BookOpen, Eye, Loader2, Pencil } from "lucide-react";
 import { useParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { LessonEditor } from "./LessonEditor";
@@ -41,6 +42,8 @@ export function CourseScreen({ channel }: { channel: Channel }) {
   const [mode, setMode] = useState<CourseMode>("view");
   const [selectedLessonId, setSelectedLessonId] = useState<string | null>(null);
   const [deleting, setDeleting] = useState<{ kind: "module" | "lesson"; id: string } | null>(null);
+  // На мобиле список и урок — два «экрана»: выбор урока открывает урок, «назад» возвращает к списку
+  const [isListOpenOnMobile, setIsListOpenOnMobile] = useState(true);
 
   const allLessons = useMemo(
     () => course?.modules.flatMap((module) => module.lessons) ?? [],
@@ -102,46 +105,68 @@ export function CourseScreen({ channel }: { channel: Channel }) {
           <LessonList
             course={course}
             selectedLessonId={selectedLessonId}
-            onSelectLesson={(lesson) => setSelectedLessonId(lesson.id)}
+            onSelectLesson={(lesson) => {
+              setSelectedLessonId(lesson.id);
+              setIsListOpenOnMobile(false);
+            }}
             isEditMode={isEditMode}
             onCreateModule={(title) => createModule.mutate({ courseId: course.id, title })}
             onRenameModule={(moduleId, title) => renameModule.mutate({ moduleId, title })}
             onDeleteModule={(moduleId) => setDeleting({ kind: "module", id: moduleId })}
             onCreateLesson={handleCreateLesson}
+            className={cn(!isListOpenOnMobile && "hidden md:flex")}
           />
         )}
 
-        {isEditMode ? (
-          selectedLesson ? (
-            <LessonEditor
+        <div
+          className={cn(
+            "flex-1 min-w-0 flex-col min-h-0",
+            isListOpenOnMobile && !isEmpty ? "hidden md:flex" : "flex"
+          )}
+        >
+          {/* Мобильный возврат к списку уроков */}
+          {!isEmpty && (
+            <button
+              type="button"
+              onClick={() => setIsListOpenOnMobile(true)}
+              className="md:hidden shrink-0 flex items-center gap-1.5 px-4 py-2.5 text-[13px] font-medium text-gray-600 border-b border-gray-200 bg-white cursor-pointer"
+            >
+              <ArrowLeft className="size-4" />К списку уроков
+            </button>
+          )}
+
+          {isEditMode ? (
+            selectedLesson ? (
+              <LessonEditor
+                lesson={selectedLesson}
+                onSave={handleSaveLesson}
+                onDelete={(lessonId) => setDeleting({ kind: "lesson", id: lessonId })}
+              />
+            ) : (
+              <EmptyPane
+                title={course.modules.length === 0 ? "Начните с модуля" : "Добавьте урок"}
+                description={
+                  course.modules.length === 0
+                    ? "Создайте первый модуль в списке слева, затем добавьте в него уроки."
+                    : "Выберите урок слева или добавьте новый в модуль."
+                }
+              />
+            )
+          ) : selectedLesson ? (
+            <LessonView
+              course={course}
               lesson={selectedLesson}
-              onSave={handleSaveLesson}
-              onDelete={(lessonId) => setDeleting({ kind: "lesson", id: lessonId })}
+              onSelectLesson={(lesson) => setSelectedLessonId(lesson.id)}
+              onToggleComplete={(lessonId) => toggleComplete.mutate(lessonId)}
+              isTogglingComplete={toggleComplete.isPending}
             />
           ) : (
             <EmptyPane
-              title={course.modules.length === 0 ? "Начните с модуля" : "Добавьте урок"}
-              description={
-                course.modules.length === 0
-                  ? "Создайте первый модуль в списке слева, затем добавьте в него уроки."
-                  : "Выберите урок слева или добавьте новый в модуль."
-              }
+              title="Курс наполняется"
+              description="Автор ещё готовит уроки — загляните позже."
             />
-          )
-        ) : selectedLesson ? (
-          <LessonView
-            course={course}
-            lesson={selectedLesson}
-            onSelectLesson={(lesson) => setSelectedLessonId(lesson.id)}
-            onToggleComplete={(lessonId) => toggleComplete.mutate(lessonId)}
-            isTogglingComplete={toggleComplete.isPending}
-          />
-        ) : (
-          <EmptyPane
-            title="Курс наполняется"
-            description="Автор ещё готовит уроки — загляните позже."
-          />
-        )}
+          )}
+        </div>
       </div>
 
       <DeleteDialog

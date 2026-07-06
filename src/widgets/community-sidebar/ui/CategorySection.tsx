@@ -38,7 +38,7 @@ export default function CategorySection({
             type="button"
             onClick={onAddChannel}
             aria-label="Новый таб"
-            className="opacity-0 group-hover:opacity-100 cursor-pointer text-gray-500 hover:text-gray-800 transition-all"
+            className="md:opacity-0 md:group-hover:opacity-100 cursor-pointer text-gray-500 hover:text-gray-800 transition-all"
           >
             <Plus className="size-3.5" />
           </button>

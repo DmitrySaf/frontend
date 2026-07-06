@@ -93,7 +93,7 @@ export function LessonEditor({ lesson, onSave, onDelete }: LessonEditorProps) {
 
   return (
     <div className="flex-1 min-w-0 overflow-y-auto">
-      <div className="max-w-3xl mx-auto px-6 py-5">
+      <div className="max-w-3xl mx-auto px-4 md:px-6 py-4 md:py-5">
         <Form methods={methods} onSubmit={handleSubmit} className="space-y-4">
           <Input
             name="title"

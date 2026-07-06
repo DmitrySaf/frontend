@@ -145,7 +145,7 @@ export function AppearancePage({ slug }: { slug: string }) {
           <Loader2 className="size-6 animate-spin text-gray-500" />
         </div>
       ) : (
-        <div className="p-6 flex gap-8">
+        <div className="p-4 md:p-6 flex flex-col lg:flex-row gap-6 lg:gap-8">
           {/* Редактор */}
           <div className="flex-1 min-w-0 max-w-xl space-y-5">
             <UploadField
@@ -179,7 +179,7 @@ export function AppearancePage({ slug }: { slug: string }) {
           </div>
 
           {/* Live-превью публичной карточки */}
-          <div className="w-[300px] shrink-0 space-y-2">
+          <div className="w-full lg:w-[300px] shrink-0 space-y-2">
             <span className="text-sm font-medium text-black">Превью карточки</span>
             <div className="rounded-2xl border border-gray-200 bg-white shadow-sm overflow-hidden">
               <div className="h-[120px] bg-gray-100">

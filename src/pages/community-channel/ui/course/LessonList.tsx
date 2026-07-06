@@ -15,6 +15,7 @@ interface LessonListProps {
   onRenameModule: (moduleId: string, title: string) => void;
   onDeleteModule: (moduleId: string) => void;
   onCreateLesson: (moduleId: string) => void;
+  className?: string;
 }
 
 function LessonIcon({ lesson }: { lesson: Lesson }) {
@@ -76,6 +77,7 @@ export function LessonList({
   onRenameModule,
   onDeleteModule,
   onCreateLesson,
+  className,
 }: LessonListProps) {
   const [editingModuleId, setEditingModuleId] = useState<string | null>(null);
   const [isAddingModule, setIsAddingModule] = useState(false);
@@ -84,7 +86,12 @@ export function LessonList({
     course.totalLessons > 0 ? (course.completedLessons / course.totalLessons) * 100 : 0;
 
   return (
-    <div className="w-64 shrink-0 border-r border-gray-200 bg-white flex flex-col min-h-0">
+    <div
+      className={cn(
+        "w-full md:w-64 shrink-0 md:border-r border-gray-200 bg-white flex flex-col min-h-0",
+        className
+      )}
+    >
       {/* Заголовок курса + прогресс */}
       <div className="shrink-0 px-4 pt-4 pb-3 border-b border-gray-200">
         <p className="text-sm font-bold text-black truncate">{course.title}</p>

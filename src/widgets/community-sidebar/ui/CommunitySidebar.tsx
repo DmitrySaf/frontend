@@ -12,6 +12,7 @@ import {
 import { useCommunityProfileQuery } from "@/entities/community";
 import { leaveCommunity, useCommunityRole, useInvalidateMyMembership } from "@/entities/member";
 import { DeleteDialog } from "@/shared/components";
+import { cn } from "@/shared/utils";
 import { ChannelCreateModal } from "@/widgets/channel-create-modal";
 import { usePathname, useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
@@ -23,6 +24,8 @@ import InviteDialog from "./InviteDialog";
 
 interface CommunitySidebarProps {
   slug: string;
+  /** Переопределение ширины/рамки в мобильном drawer'е */
+  className?: string;
 }
 
 function StructureSkeleton() {
@@ -35,7 +38,7 @@ function StructureSkeleton() {
   );
 }
 
-export default function CommunitySidebar({ slug }: CommunitySidebarProps) {
+export default function CommunitySidebar({ slug, className }: CommunitySidebarProps) {
   const pathname = usePathname();
   const router = useRouter();
 
@@ -129,7 +132,12 @@ export default function CommunitySidebar({ slug }: CommunitySidebarProps) {
   );
 
   return (
-    <div className="w-64 shrink-0 bg-white border-r border-gray-200 flex flex-col h-full">
+    <div
+      className={cn(
+        "w-64 shrink-0 bg-white border-r border-gray-200 flex flex-col h-full",
+        className
+      )}
+    >
       <CommunityBanner
         name={community?.displayName ?? slug}
         coverUrl={community?.coverUrl}

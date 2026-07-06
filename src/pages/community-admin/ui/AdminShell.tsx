@@ -43,7 +43,7 @@ export function AdminShell({ slug, title, subtitle, actions, children }: AdminSh
 
   return (
     <div className="flex-1 flex flex-col min-h-0">
-      <div className="shrink-0 flex items-center gap-3.5 px-6 py-3 border-b border-gray-200 bg-white">
+      <div className="shrink-0 flex items-center gap-2.5 md:gap-3.5 px-3 md:px-6 py-3 border-b border-gray-200 bg-white">
         <Button
           theme="ghost"
           size="s"
@@ -55,7 +55,7 @@ export function AdminShell({ slug, title, subtitle, actions, children }: AdminSh
           <p className="text-[15px] font-bold text-black truncate">{title}</p>
           {subtitle && <p className="text-xs text-gray-600 truncate">{subtitle}</p>}
         </div>
-        <span className="text-[11px] font-medium uppercase tracking-wide text-gray-500">
+        <span className="hidden sm:inline text-[11px] font-medium uppercase tracking-wide text-gray-500">
           только для админа
         </span>
         {actions}

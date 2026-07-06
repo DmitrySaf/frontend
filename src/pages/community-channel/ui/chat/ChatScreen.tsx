@@ -56,7 +56,7 @@ function groupByDay(messages: Message[]): DayGroup[] {
 
 function DayDivider({ label }: { label: string }) {
   return (
-    <div className="flex items-center gap-2.5 px-6 pt-4 pb-1">
+    <div className="flex items-center gap-2.5 px-4 md:px-6 pt-4 pb-1">
       <div className="flex-1 h-px bg-gray-200" />
       <span className="text-xs text-gray-500">{label}</span>
       <div className="flex-1 h-px bg-gray-200" />

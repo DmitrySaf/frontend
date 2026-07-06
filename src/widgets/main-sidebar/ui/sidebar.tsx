@@ -16,7 +16,12 @@ import { useQueryState } from "nuqs";
 import { useCallback } from "react";
 import ProfileButton from "./ProfileButton";
 
-export default function MainSidebar() {
+interface MainSidebarProps {
+  /** false — в мобильном drawer'е: модалка создания рендерится только в основном инстансе */
+  withCreateModal?: boolean;
+}
+
+export default function MainSidebar({ withCreateModal = true }: MainSidebarProps) {
   const { data: communities } = useCommunitiesQuery();
   const { data: communityLogos } = useCommunityLogosQuery();
   const params = useParams();
@@ -42,11 +47,13 @@ export default function MainSidebar() {
 
   return (
     <>
-      <CommunityCreateModal
-        isOpen={isCreateModalOpen}
-        onClose={handleCloseCreateModal}
-        onSubmit={handleCreateCommunity}
-      />
+      {withCreateModal && (
+        <CommunityCreateModal
+          isOpen={isCreateModalOpen}
+          onClose={handleCloseCreateModal}
+          onSubmit={handleCreateCommunity}
+        />
+      )}
       <div className="w-15 flex flex-col">
         <div className="flex-1 flex flex-col gap-3 w-12 self-center">
           <Link href="/communities">

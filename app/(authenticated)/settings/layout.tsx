@@ -8,13 +8,13 @@ export default function SettingsLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="">
-      <div className="flex w-full">
-        <div className="flex flex-col items-end flex-1 flex-shrink-0 basis-[230px] pr-8">
+    <div className="w-full">
+      <div className="flex flex-col md:flex-row w-full h-full">
+        <div className="shrink-0 md:flex md:flex-col md:items-end md:flex-1 md:basis-[230px] md:pr-8">
           <SettingsSidebar />
         </div>
-        <div className="flex-1 pt-10 flex-shrink-1 pl-8 basis-[672px] overflow-y-auto">
-          <div className="w-2xl h-full">{children}</div>
+        <div className="flex-1 min-w-0 pt-4 md:pt-10 px-4 md:px-0 md:pl-8 md:basis-[672px] overflow-y-auto">
+          <div className="w-full max-w-2xl h-full pb-10">{children}</div>
         </div>
       </div>
     </div>

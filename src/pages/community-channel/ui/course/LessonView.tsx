@@ -30,7 +30,7 @@ export function LessonView({
 
   return (
     <div className="flex-1 min-w-0 overflow-y-auto">
-      <div className="max-w-3xl mx-auto px-6 py-5 space-y-4">
+      <div className="max-w-3xl mx-auto px-4 md:px-6 py-4 md:py-5 space-y-4">
         {/* Видео или текстовый блок */}
         {lesson.videoPath ? (
           isVideoLoading || !videoUrl ? (

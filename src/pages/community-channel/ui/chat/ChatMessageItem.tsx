@@ -71,7 +71,7 @@ export function ChatMessageItem({
   return (
     <div
       className={cn(
-        "group relative flex gap-3 px-6 py-0.5 hover:bg-gray-50",
+        "group relative flex gap-3 px-4 md:px-6 py-0.5 hover:bg-gray-50",
         isGroupStart && "mt-3"
       )}
     >
@@ -126,8 +126,9 @@ export function ChatMessageItem({
         )}
       </div>
 
+      {/* На таче hover нет — кнопка видна всегда */}
       {actions.length > 0 && !isEditing && (
-        <div className="absolute right-6 -top-2 opacity-0 group-hover:opacity-100 transition-opacity">
+        <div className="absolute right-4 md:right-6 -top-2 md:opacity-0 md:group-hover:opacity-100 transition-opacity">
           <Dropdown
             trigger={
               <button

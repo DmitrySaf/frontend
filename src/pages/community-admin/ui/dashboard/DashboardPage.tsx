@@ -31,16 +31,16 @@ export function DashboardPage({ slug }: { slug: string }) {
           <Loader2 className="size-6 animate-spin text-gray-500" />
         </div>
       ) : (
-        <div className="p-6 space-y-5 max-w-5xl">
+        <div className="p-4 md:p-6 space-y-5 max-w-5xl">
           {/* Стат-карточки */}
-          <div className="flex gap-3.5">
+          <div className="flex flex-col sm:flex-row gap-3.5">
             {stats.cards.map((card) => (
               <StatCardItem key={card.label} card={card} />
             ))}
           </div>
 
           {/* Графики */}
-          <div className="flex gap-4">
+          <div className="flex flex-col lg:flex-row gap-4">
             <div className="flex-[2] min-w-0 rounded-2xl border border-gray-200 bg-white shadow-sm p-4.5">
               <div className="flex items-center justify-between mb-3">
                 <span className="text-[15px] font-bold text-black">Доход</span>
@@ -63,8 +63,8 @@ export function DashboardPage({ slug }: { slug: string }) {
           <div className="rounded-2xl border border-gray-200 bg-white shadow-sm p-4.5">
             <span className="text-[15px] font-bold text-black">Тарифы</span>
             {stats.tierStats.length > 0 ? (
-              <div className="mt-3">
-                <div className="flex gap-3.5 pb-2 text-[11px] uppercase tracking-[.04em] text-gray-500">
+              <div className="mt-3 overflow-x-auto">
+                <div className="min-w-[480px] flex gap-3.5 pb-2 text-[11px] uppercase tracking-[.04em] text-gray-500">
                   <span className="flex-1">Тариф</span>
                   <span className="w-28">Цена</span>
                   <span className="w-28">Подписчики</span>
@@ -73,7 +73,7 @@ export function DashboardPage({ slug }: { slug: string }) {
                 {stats.tierStats.map((tier) => (
                   <div
                     key={tier.tierId}
-                    className="flex items-center gap-3.5 py-3 border-t border-gray-200"
+                    className="min-w-[480px] flex items-center gap-3.5 py-3 border-t border-gray-200"
                   >
                     <span className="flex-1 text-sm font-semibold text-black truncate">
                       {tier.name}

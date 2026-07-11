@@ -27,10 +27,10 @@ const Switch = React.forwardRef<HTMLButtonElement, SwitchProps>(
         disabled={disabled}
         onClick={() => onCheckedChange?.(!checked)}
         className={cn(
-          "relative inline-flex h-6 w-11 items-center rounded-full transition-colors cursor-pointer",
-          "focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2",
+          "relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-200 ease-out-quart cursor-pointer",
+          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500/45 focus-visible:ring-offset-2",
           "disabled:cursor-not-allowed",
-          checked ? "bg-blue-600" : "bg-gray-200",
+          checked ? "bg-primary-500" : "bg-gray-200",
           className
         )}
         ref={ref}
@@ -39,8 +39,8 @@ const Switch = React.forwardRef<HTMLButtonElement, SwitchProps>(
       >
         <span
           className={cn(
-            "inline-flex h-4 w-4 items-center justify-center transform rounded-full bg-white transition-transform",
-            checked && !disabled ? "translate-x-6" : "translate-x-1"
+            "inline-flex size-5 items-center justify-center transform rounded-full bg-white shadow-sm transition-transform duration-200 ease-out-quart",
+            checked && !disabled ? "translate-x-[22px]" : "translate-x-0.5"
           )}
         >
           {disabled && <Lock className="h-2 w-2 text-gray-400" />}

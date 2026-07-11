@@ -1,6 +1,8 @@
 "use client";
 
 import { cn } from "@/shared/utils";
+import { motion, useReducedMotion } from "motion/react";
+import { useId } from "react";
 
 interface SegmentedOption<T extends string> {
   value: T;
@@ -20,7 +22,7 @@ interface SegmentedControlProps<T extends string> {
 
 /**
  * Сегмент-контрол по DS: утопленный трек #F5F5F5, активный сегмент —
- * белая приподнятая пилюля (rounded-9 внутри rounded-12)
+ * белая пилюля (rounded-9 внутри rounded-12), скользящая между сегментами
  */
 function SegmentedControl<T extends string>({
   options,
@@ -29,6 +31,9 @@ function SegmentedControl<T extends string>({
   size = "m",
   className,
 }: SegmentedControlProps<T>) {
+  const id = useId();
+  const shouldReduceMotion = useReducedMotion();
+
   return (
     <div
       role="tablist"
@@ -45,15 +50,26 @@ function SegmentedControl<T extends string>({
             type="button"
             onClick={() => onChange(option.value)}
             className={cn(
-              "flex items-center gap-1.5 rounded-[9px] font-medium transition-all cursor-pointer",
+              "relative flex items-center gap-1.5 rounded-[9px] font-medium transition-colors duration-150 cursor-pointer",
               size === "s" ? "px-2.5 h-7 text-xs" : "px-3.5 h-8 text-sm",
-              isActive
-                ? "bg-white text-black shadow-sm inset-ring inset-ring-gray-200"
-                : "text-gray-600 hover:text-black"
+              isActive ? "text-black" : "text-gray-600 hover:text-black"
             )}
           >
-            {Icon && <Icon className={size === "s" ? "size-3.5" : "size-4"} />}
-            {option.label}
+            {isActive && (
+              <motion.span
+                layoutId={`${id}-pill`}
+                transition={
+                  shouldReduceMotion
+                    ? { duration: 0 }
+                    : { type: "spring", bounce: 0.15, duration: 0.35 }
+                }
+                className="absolute inset-0 rounded-[9px] bg-white shadow-sm inset-ring inset-ring-gray-200"
+              />
+            )}
+            <span className="relative flex items-center gap-1.5">
+              {Icon && <Icon className={size === "s" ? "size-3.5" : "size-4"} />}
+              {option.label}
+            </span>
           </button>
         );
       })}

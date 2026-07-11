@@ -4,6 +4,7 @@ import { useCommunityQuery } from "@/entities/community";
 import { CommunitySidebar } from "@/widgets/community-sidebar";
 import { MainSidebar } from "@/widgets/main-sidebar";
 import { Menu } from "lucide-react";
+import { AnimatePresence, type PanInfo, motion, useReducedMotion } from "motion/react";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -20,6 +21,7 @@ export function CommunityShell({ slug, children }: CommunityShellProps) {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const pathname = usePathname();
   const { data: community } = useCommunityQuery(slug);
+  const shouldReduceMotion = useReducedMotion();
 
   // Переход по любой ссылке закрывает drawer
   // biome-ignore lint/correctness/useExhaustiveDependencies: pathname — триггер закрытия
@@ -34,23 +36,45 @@ export function CommunityShell({ slug, children }: CommunityShellProps) {
         <CommunitySidebar slug={slug} />
       </div>
 
-      {/* Мобильный drawer: rail + каналы */}
-      {isDrawerOpen && (
-        <div className="fixed inset-0 z-50 md:hidden">
-          <button
-            type="button"
-            aria-label="Закрыть меню"
-            onClick={() => setIsDrawerOpen(false)}
-            className="absolute inset-0 bg-black/40 animate-in fade-in duration-200"
-          />
-          <div className="absolute inset-y-0 left-0 flex w-[85vw] max-w-[340px] bg-[#F5F5F5] py-2 pl-1 shadow-xl animate-in slide-in-from-left duration-200">
-            <MainSidebar withCreateModal={false} />
-            <div className="flex-1 min-w-0 rounded-l-md overflow-hidden border-l border-y border-gray-200">
-              <CommunitySidebar slug={slug} className="w-full border-r-0" />
-            </div>
+      {/* Мобильный drawer: rail + каналы. Spring-вход/выход, свайп влево закрывает */}
+      <AnimatePresence>
+        {isDrawerOpen && (
+          <div className="fixed inset-0 z-50 md:hidden">
+            <motion.button
+              type="button"
+              aria-label="Закрыть меню"
+              onClick={() => setIsDrawerOpen(false)}
+              className="absolute inset-0 bg-black/40"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: shouldReduceMotion ? 0.01 : 0.2, ease: "easeOut" }}
+            />
+            <motion.div
+              className="absolute inset-y-0 left-0 flex w-[85vw] max-w-[340px] bg-[#F5F5F5] py-2 pl-1 shadow-xl"
+              initial={shouldReduceMotion ? { opacity: 0 } : { x: "-100%" }}
+              animate={shouldReduceMotion ? { opacity: 1 } : { x: 0 }}
+              exit={shouldReduceMotion ? { opacity: 0 } : { x: "-100%" }}
+              transition={
+                shouldReduceMotion
+                  ? { duration: 0.15 }
+                  : { type: "spring", bounce: 0, duration: 0.35 }
+              }
+              drag={shouldReduceMotion ? false : "x"}
+              dragConstraints={{ left: -360, right: 0 }}
+              dragElastic={{ left: 0.05, right: 0 }}
+              onDragEnd={(_: PointerEvent, info: PanInfo) => {
+                if (info.offset.x < -80 || info.velocity.x < -300) setIsDrawerOpen(false);
+              }}
+            >
+              <MainSidebar withCreateModal={false} />
+              <div className="flex-1 min-w-0 rounded-l-md overflow-hidden border-l border-y border-gray-200">
+                <CommunitySidebar slug={slug} className="w-full border-r-0" />
+              </div>
+            </motion.div>
           </div>
-        </div>
-      )}
+        )}
+      </AnimatePresence>
 
       <div className="flex-1 flex flex-col min-w-0">
         {/* Мобильный топ-бар */}

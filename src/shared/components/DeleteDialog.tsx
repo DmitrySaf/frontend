@@ -9,7 +9,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/shared/components";
-import { Loader2 } from "lucide-react";
 import { useState } from "react";
 
 interface DeleteDialogProps {
@@ -64,8 +63,8 @@ export function DeleteDialog({
           <Button theme="outline" size="m" onClick={onClose} isDisabled={isPending}>
             {cancelText}
           </Button>
-          <Button theme="destructive" size="m" onClick={handleDelete} isDisabled={isPending}>
-            {isPending ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : confirmText}
+          <Button theme="destructive" size="m" onClick={handleDelete} isLoading={isPending}>
+            {confirmText}
           </Button>
         </DialogFooter>
       </DialogContent>

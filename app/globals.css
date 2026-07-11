@@ -1,7 +1,15 @@
 @import "tailwindcss";
+@plugin "tailwindcss-animate";
 
 /* Конфигурация темы из tailwind.config.ts */
 @theme {
+  /* Моушн-токены: ease-out — входы и ховеры, in-out — движение на экране,
+     drawer — iOS-кривая для шторок. Длительности: <160мс микро, 180-240 слои, <300 всё */
+  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out-quart: cubic-bezier(0.77, 0, 0.175, 1);
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+
   /* Шрифты (переменные задаются в app/layout.tsx через next/font) */
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
@@ -149,5 +157,67 @@
 @layer base {
   body {
     @apply text-base bg-background text-black;
+  }
+
+  /* Плавность — не за счёт вестибулярного комфорта: движение выключается,
+     смены состояний становятся мгновенными (фиды/цвета остаются) */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@layer utilities {
+  /* Появление нового контента (сообщения, комментарии): @starting-style срабатывает
+     только для узлов, вставленных ПОСЛЕ первичного рендера (контейнер помечается data-live),
+     поэтому история не мигает, а новые элементы плавно поднимаются */
+  [data-live="true"] .content-appear {
+    transition:
+      opacity 240ms var(--ease-out-quart),
+      transform 240ms var(--ease-out-quart);
+
+    @starting-style {
+      opacity: 0;
+      transform: translateY(6px);
+    }
+  }
+
+  /* Лайк-«пружинка» */
+  .animate-heart-pop {
+    animation: heart-pop 350ms var(--ease-out-quart);
+  }
+
+  /* Прорисовка линии графика (polyline с pathLength=1) */
+  .animate-draw-line {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    animation: draw-line 900ms var(--ease-out-quart) 150ms forwards;
+  }
+
+  @keyframes draw-line {
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+
+  @keyframes heart-pop {
+    0% {
+      transform: scale(1);
+    }
+    35% {
+      transform: scale(1.28);
+    }
+    70% {
+      transform: scale(0.94);
+    }
+    100% {
+      transform: scale(1);
+    }
   }
 }

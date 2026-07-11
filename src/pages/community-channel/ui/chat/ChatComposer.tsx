@@ -70,8 +70,10 @@ export function ChatComposer({ channelName, onSend, isSending }: ChatComposerPro
           disabled={!canSend}
           aria-label="Отправить"
           className={cn(
-            "shrink-0 pb-0.5 transition-colors cursor-pointer",
-            canSend ? "text-primary-600 hover:text-primary-500" : "text-gray-400 cursor-default"
+            "shrink-0 pb-0.5 transition-[color,transform,opacity] duration-150 ease-out-quart cursor-pointer",
+            canSend
+              ? "text-primary-600 hover:text-primary-500 active:scale-90"
+              : "text-gray-400 opacity-70 cursor-default"
           )}
         >
           <SendHorizontal className="size-5" />
@@ -79,7 +81,7 @@ export function ChatComposer({ channelName, onSend, isSending }: ChatComposerPro
       </div>
 
       {value.length >= COUNTER_THRESHOLD && (
-        <p className="mt-1 text-right text-xs font-mono text-gray-500">
+        <p className="mt-1 text-right text-xs font-mono text-gray-500 animate-in fade-in duration-200">
           {value.length} / {MESSAGE_MAX_LENGTH}
         </p>
       )}

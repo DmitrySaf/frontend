@@ -155,11 +155,14 @@ export function PostCard({ post, isAdmin, onDelete }: PostCardProps) {
             type="button"
             onClick={() => toggleLike.mutate({ postId: post.id, channelId: post.channelId })}
             className={cn(
-              "flex items-center gap-1.5 text-[13px] transition-colors cursor-pointer",
+              "flex items-center gap-1.5 text-[13px] transition-[color,transform] duration-150 ease-out-quart active:scale-90 cursor-pointer",
               post.likedByMe ? "text-danger" : "text-gray-600 hover:text-black"
             )}
           >
-            <Heart className={cn("size-[17px]", post.likedByMe && "fill-current")} />
+            <Heart
+              key={post.likedByMe ? "liked" : "idle"}
+              className={cn("size-[17px]", post.likedByMe && "fill-current animate-heart-pop")}
+            />
             {post.likesCount > 0 && post.likesCount}
           </button>
 
@@ -167,7 +170,7 @@ export function PostCard({ post, isAdmin, onDelete }: PostCardProps) {
             type="button"
             onClick={() => setAreCommentsOpen(!areCommentsOpen)}
             className={cn(
-              "flex items-center gap-1.5 text-[13px] transition-colors cursor-pointer",
+              "flex items-center gap-1.5 text-[13px] transition-[color,transform] duration-150 ease-out-quart active:scale-90 cursor-pointer",
               areCommentsOpen ? "text-black" : "text-gray-600 hover:text-black"
             )}
           >
@@ -182,7 +185,7 @@ export function PostCard({ post, isAdmin, onDelete }: PostCardProps) {
             onClick={() => toggleBookmark.mutate({ postId: post.id, channelId: post.channelId })}
             aria-label="В закладки"
             className={cn(
-              "transition-colors cursor-pointer",
+              "transition-[color,transform] duration-150 ease-out-quart active:scale-90 cursor-pointer",
               post.bookmarkedByMe ? "text-black" : "text-gray-500 hover:text-black"
             )}
           >
@@ -192,7 +195,9 @@ export function PostCard({ post, isAdmin, onDelete }: PostCardProps) {
       )}
 
       {!isEditing && areCommentsOpen && (
-        <PostComments postId={post.id} channelId={post.channelId} />
+        <div className="animate-in fade-in slide-in-from-top-1 duration-200 ease-out-quart">
+          <PostComments postId={post.id} channelId={post.channelId} />
+        </div>
       )}
     </article>
   );

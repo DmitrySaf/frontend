@@ -43,16 +43,23 @@ export default function ChannelRow({
       <Link
         href={`/communities/${communitySlug}/${channel.slug}`}
         className={cn(
-          "flex items-center gap-2 px-2.5 py-[7px] rounded-[9px] transition-colors",
-          isActive ? "bg-[#D3D3D340] inset-ring inset-ring-[#D3D3D3]" : "hover:bg-[#D3D3D325]",
+          "flex items-center gap-2 px-2.5 py-[7px] rounded-[9px] transition-colors duration-150 ease-out-quart",
+          isActive
+            ? "bg-gray-200/40 inset-ring inset-ring-gray-200"
+            : "hover:bg-gray-200/25 active:bg-gray-200/40",
           isLockedForViewer && "opacity-70"
         )}
       >
-        <Icon className={cn("size-[17px] shrink-0", isActive ? "text-black" : "text-gray-500")} />
+        <Icon
+          className={cn(
+            "size-[17px] shrink-0 transition-colors duration-150",
+            isActive ? "text-black" : "text-gray-500"
+          )}
+        />
         <span
           className={cn(
             "flex-1 min-w-0 truncate text-sm",
-            isActive ? "font-semibold text-black" : "font-medium text-gray-600"
+            isActive ? "font-semibold text-black" : "font-medium text-gray-700"
           )}
         >
           {channel.name}
@@ -69,7 +76,7 @@ export default function ChannelRow({
               <button
                 type="button"
                 aria-label="Действия с табом"
-                className="size-6 flex items-center justify-center rounded-md bg-white border border-gray-200 shadow-sm text-gray-500 hover:text-black cursor-pointer"
+                className="size-6 flex items-center justify-center rounded-md bg-white border border-gray-200 shadow-sm text-gray-500 hover:text-black active:scale-90 transition-[color,transform] duration-150 ease-out-quart cursor-pointer"
               >
                 <MoreHorizontal className="size-3.5" />
               </button>

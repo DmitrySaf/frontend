@@ -64,16 +64,19 @@ export default function MainSidebar({ withCreateModal = true }: MainSidebarProps
               const isActive = activeCommunitySlug === community.name;
               return (
                 <Tooltip key={community.name} content={community.displayName} side="right">
-                  <Link href={`/communities/${community.name}`} className="relative block">
+                  <Link
+                    href={`/communities/${community.name}`}
+                    className="relative block transition-transform duration-150 ease-out-quart hover:scale-[1.04] active:scale-95"
+                  >
                     <Avatar
                       name={community.displayName}
                       src={communityLogos?.[community.name]}
                       size="l"
                       shape="square"
-                      className="shadow-sm transition-opacity hover:opacity-80"
+                      className="shadow-sm"
                     />
                     {isActive && (
-                      <div className="absolute -right-[6px] top-1/2 -translate-y-1/2 w-[3px] h-3.5 bg-black rounded-r-[4px]" />
+                      <div className="absolute -right-[6px] top-1/2 -translate-y-1/2 w-[3px] h-3.5 bg-black rounded-r-[4px] animate-in fade-in zoom-in-50 duration-200 ease-out-quart" />
                     )}
                   </Link>
                 </Tooltip>

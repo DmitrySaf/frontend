@@ -38,7 +38,7 @@ export function PostComments({ postId, channelId }: PostCommentsProps) {
   };
 
   return (
-    <div className="border-t border-gray-200 px-4.5 py-3.5 space-y-3.5">
+    <div data-live={!isLoading} className="border-t border-gray-200 px-4.5 py-3.5 space-y-3.5">
       {isLoading ? (
         <div className="flex justify-center py-2">
           <Loader2 className="size-4 animate-spin text-gray-500" />
@@ -47,7 +47,7 @@ export function PostComments({ postId, channelId }: PostCommentsProps) {
         comments?.map((comment) => {
           const author = resolveAuthor(comment.authorId, comment.author);
           return (
-            <div key={comment.id} className="flex gap-2.5">
+            <div key={comment.id} className="content-appear flex gap-2.5">
               <Avatar name={author.displayName} src={author.avatarUrl} size="s" />
               <div className="flex-1 min-w-0">
                 <div className="flex items-baseline gap-2">
@@ -90,8 +90,10 @@ export function PostComments({ postId, channelId }: PostCommentsProps) {
             disabled={!canSend}
             aria-label="Отправить комментарий"
             className={cn(
-              "shrink-0 transition-colors cursor-pointer",
-              canSend ? "text-primary-600 hover:text-primary-500" : "text-gray-400 cursor-default"
+              "shrink-0 transition-[color,transform,opacity] duration-150 ease-out-quart cursor-pointer",
+              canSend
+                ? "text-primary-600 hover:text-primary-500 active:scale-90"
+                : "text-gray-400 opacity-70 cursor-default"
             )}
           >
             <SendHorizontal className="size-4" />

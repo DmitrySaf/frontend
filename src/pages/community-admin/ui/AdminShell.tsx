@@ -25,7 +25,7 @@ export function AdminShell({ slug, title, subtitle, actions, children }: AdminSh
   if (!isAdmin) {
     return (
       <div className="flex-1 flex items-center justify-center bg-white">
-        <div className="flex flex-col items-center gap-3 max-w-xs text-center">
+        <div className="flex flex-col items-center gap-3 max-w-xs text-center animate-in fade-in zoom-in-95 duration-300 ease-out-quart">
           <div className="size-14 rounded-2xl bg-gray-100 border border-gray-200 flex items-center justify-center">
             <ShieldAlert className="size-6 text-gray-500" />
           </div>

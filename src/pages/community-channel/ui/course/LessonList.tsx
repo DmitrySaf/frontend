@@ -22,12 +22,15 @@ function LessonIcon({ lesson }: { lesson: Lesson }) {
   const Icon = lesson.locked ? Lock : lesson.completed ? Check : Play;
   return (
     <div
+      key={lesson.completed ? "done" : "todo"}
       className={cn(
-        "size-[22px] shrink-0 rounded-full border flex items-center justify-center",
-        lesson.completed ? "bg-gray-100 border-gray-300" : "bg-white border-gray-200"
+        "size-[22px] shrink-0 rounded-full border flex items-center justify-center transition-colors duration-200",
+        lesson.completed
+          ? "bg-primary-500 border-primary-500 animate-in zoom-in-75 duration-300 ease-out-quart"
+          : "bg-white border-gray-200"
       )}
     >
-      <Icon className="size-3 text-gray-600" />
+      <Icon className={cn("size-3", lesson.completed ? "text-white" : "text-gray-600")} />
     </div>
   );
 }
@@ -99,7 +102,7 @@ export function LessonList({
           <div className="mt-2 flex items-center gap-2">
             <div className="flex-1 h-1.5 rounded-full bg-gray-100 overflow-hidden">
               <div
-                className="h-full bg-primary-600 rounded-full transition-all"
+                className="h-full bg-primary-600 rounded-full transition-[width] duration-500 ease-out-quart"
                 style={{ width: `${progressPercent}%` }}
               />
             </div>
@@ -130,12 +133,12 @@ export function LessonList({
                     Модуль {index + 1} · {module.title}
                   </span>
                   {isEditMode && (
-                    <div className="hidden group-hover:flex items-center gap-1">
+                    <div className="flex items-center gap-1 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-150">
                       <button
                         type="button"
                         onClick={() => setEditingModuleId(module.id)}
                         aria-label="Переименовать модуль"
-                        className="text-gray-500 hover:text-black cursor-pointer"
+                        className="text-gray-500 hover:text-black active:scale-90 transition-[color,transform] duration-150 cursor-pointer"
                       >
                         <Pencil className="size-3" />
                       </button>
@@ -143,7 +146,7 @@ export function LessonList({
                         type="button"
                         onClick={() => onDeleteModule(module.id)}
                         aria-label="Удалить модуль"
-                        className="text-gray-500 hover:text-danger cursor-pointer"
+                        className="text-gray-500 hover:text-danger active:scale-90 transition-[color,transform] duration-150 cursor-pointer"
                       >
                         <Trash2 className="size-3" />
                       </button>
@@ -164,19 +167,19 @@ export function LessonList({
                     disabled={isDisabled}
                     onClick={() => onSelectLesson(lesson)}
                     className={cn(
-                      "w-full flex items-center gap-2.5 px-2.5 py-[7px] rounded-[10px] text-left transition-colors",
+                      "w-full flex items-center gap-2.5 px-2.5 py-[7px] rounded-[10px] text-left transition-colors duration-150 ease-out-quart",
                       isActive
-                        ? "bg-[#D3D3D340] inset-ring inset-ring-[#D3D3D3]"
+                        ? "bg-gray-200/40 inset-ring inset-ring-gray-200"
                         : isDisabled
                           ? "opacity-60 cursor-not-allowed"
-                          : "hover:bg-[#D3D3D325] cursor-pointer"
+                          : "hover:bg-gray-200/25 active:bg-gray-200/40 cursor-pointer"
                     )}
                   >
                     <LessonIcon lesson={lesson} />
                     <span
                       className={cn(
                         "flex-1 min-w-0 truncate text-[13px]",
-                        isActive ? "font-semibold text-black" : "font-medium text-gray-600"
+                        isActive ? "font-semibold text-black" : "font-medium text-gray-700"
                       )}
                     >
                       {lesson.title}
@@ -194,7 +197,7 @@ export function LessonList({
                 <button
                   type="button"
                   onClick={() => onCreateLesson(module.id)}
-                  className="w-full flex items-center gap-2.5 px-2.5 py-[7px] rounded-[10px] text-[13px] font-medium text-gray-500 hover:text-black hover:bg-[#D3D3D325] transition-colors cursor-pointer"
+                  className="w-full flex items-center gap-2.5 px-2.5 py-[7px] rounded-[10px] text-[13px] font-medium text-gray-500 hover:text-black hover:bg-gray-200/25 transition-colors duration-150 cursor-pointer"
                 >
                   <Plus className="size-4" />
                   Добавить урок

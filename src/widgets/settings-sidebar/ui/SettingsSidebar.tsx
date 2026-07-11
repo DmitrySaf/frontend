@@ -1,9 +1,11 @@
 "use client";
 
 import { createBrowserClient } from "@/api/browser-client";
-import { Tabs } from "@/shared/components";
+import { useProfileQuery } from "@/entities/profile";
+import { useMyVerificationQuery } from "@/entities/verification";
+import { Avatar, Tabs } from "@/shared/components";
 import { cn } from "@/shared/utils";
-import { ArrowLeft, LogOut } from "lucide-react";
+import { ArrowLeft, BadgeCheck, LogOut } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { SETTINGS_SECTIONS } from "../model";
@@ -12,6 +14,9 @@ export function SettingsSidebar() {
   const router = useRouter();
   const pathname = usePathname();
   const supabase = createBrowserClient();
+  const { data: profile } = useProfileQuery();
+  const { data: verification } = useMyVerificationQuery();
+  const isVerified = verification?.status === "approved";
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
@@ -57,7 +62,7 @@ export function SettingsSidebar() {
             type="button"
             onClick={handleLogout}
             aria-label="Выйти из аккаунта"
-            className="shrink-0 size-8 flex items-center justify-center rounded-full text-[#D8400C] hover:bg-[#D8400C13] transition-colors cursor-pointer"
+            className="shrink-0 size-8 flex items-center justify-center rounded-full text-danger hover:bg-danger/10 active:scale-90 transition-[background-color,transform] duration-150 ease-out-quart cursor-pointer"
           >
             <LogOut className="size-4" />
           </button>
@@ -66,15 +71,22 @@ export function SettingsSidebar() {
 
       {/* Десктопный сайдбар */}
       <div className="hidden md:block max-w-[230px]">
-        {/* User Profile */}
+        {/* Профиль (реальные данные сессии) */}
         <div className="p-10">
           <div className="flex flex-col items-center text-center space-y-3">
-            <div className="w-16 h-16 bg-gray-200 rounded-md flex items-center justify-center">
-              <span className="text-2xl">🐼</span>
-            </div>
+            <Avatar
+              name={profile?.displayName ?? ""}
+              src={profile?.avatarUrl}
+              size="l"
+              shape="circle"
+              className="size-16"
+            />
             <div>
-              <h2 className="font-bold text-gray-900">Arkadiy</h2>
-              <p className="text-sm text-gray-500">@arkadiyparovozov</p>
+              <h2 className="flex items-center justify-center gap-1 font-bold text-gray-900">
+                {profile?.displayName ?? "…"}
+                {isVerified && <BadgeCheck className="size-4 shrink-0 text-primary-600" />}
+              </h2>
+              {profile?.username && <p className="text-sm text-gray-500">@{profile.username}</p>}
             </div>
           </div>
         </div>
@@ -88,7 +100,7 @@ export function SettingsSidebar() {
         <button
           type="button"
           onClick={handleLogout}
-          className="text-[#D8400C] hover:bg-[#D8400C13] active:bg-[#D8400C33] w-full flex items-center space-x-2.5 pl-3 pr-4 py-2.5 rounded-lg text-left transition-colors cursor-pointer font-semibold"
+          className="text-danger hover:bg-danger/10 active:bg-danger/15 w-full flex items-center space-x-2.5 pl-3 pr-4 py-2.5 rounded-lg text-left transition-colors duration-150 cursor-pointer font-semibold"
         >
           <LogOut className="size-5 flex-shrink-0" />
           <span>Выйти из аккаунта</span>

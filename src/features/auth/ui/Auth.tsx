@@ -125,16 +125,25 @@ export default function Auth({ onSuccess }: AuthProps) {
   return (
     <div className="space-y-6">
       {isConfirmationStep ? (
-        <ConfirmationForm
-          email={currentEmail}
-          onSubmit={handleConfirmationSubmit}
-          onBackToEmail={handleBackToEmail}
-          onResendCode={handleResendCode}
-          isLoading={isLoading}
-          error={confirmationError}
-        />
+        // key + направленный вход: шаг кода «приезжает» справа, возврат к почте — слева
+        <div
+          key="otp"
+          className="animate-in fade-in slide-in-from-right-2 duration-240 ease-out-quart"
+        >
+          <ConfirmationForm
+            email={currentEmail}
+            onSubmit={handleConfirmationSubmit}
+            onBackToEmail={handleBackToEmail}
+            onResendCode={handleResendCode}
+            isLoading={isLoading}
+            error={confirmationError}
+          />
+        </div>
       ) : (
-        <div className="space-y-6">
+        <div
+          key="email"
+          className="space-y-6 animate-in fade-in slide-in-from-left-2 duration-240 ease-out-quart"
+        >
           <div className="mt-4">
             <p className="text-gray-600 text-base text-center">
               Создайте аккаунт или войдите, чтобы открыть новые возможности для заработка.
@@ -145,11 +154,11 @@ export default function Auth({ onSuccess }: AuthProps) {
 
           <p className="text-xs text-gray-500 text-center">
             Регистрируясь, вы соглашаетесь с нашими{" "}
-            <Link href="/terms" className="text-blue-600 hover:underline">
+            <Link href="/terms" className="text-primary-600 hover:underline">
               условиями использования
             </Link>{" "}
             и{" "}
-            <Link href="/privacy" className="text-blue-600 hover:underline">
+            <Link href="/privacy" className="text-primary-600 hover:underline">
               политикой конфиденциальности
             </Link>
             .

@@ -3,16 +3,26 @@
 import type { MonthPoint } from "@/entities/subscription";
 import { formatRub } from "@/entities/subscription";
 import { cn } from "@/shared/utils";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 /** Тултип-плашка по DS (тёмная, 12.5px) над отмеченной точкой/баром */
 function ChartTooltip({ label, value }: { label: string; value: string }) {
   return (
-    <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1.5 z-10 pointer-events-none whitespace-nowrap rounded-xl bg-black px-3 py-1.5 text-[12.5px] font-medium text-white shadow-lg">
+    <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1.5 z-10 pointer-events-none whitespace-nowrap rounded-xl bg-black px-3 py-1.5 text-[12.5px] font-medium text-white shadow-lg origin-bottom animate-in fade-in zoom-in-95 duration-150 ease-out-quart">
       <span className="text-white/70">{label} · </span>
       {value}
     </div>
   );
+}
+
+/** Отложенный флаг маунта: стартовое состояние применяется в первом кадре */
+function useMounted() {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    const frame = requestAnimationFrame(() => setMounted(true));
+    return () => cancelAnimationFrame(frame);
+  }, []);
+  return mounted;
 }
 
 /**
@@ -21,6 +31,7 @@ function ChartTooltip({ label, value }: { label: string; value: string }) {
  */
 export function RevenueBarChart({ data }: { data: MonthPoint[] }) {
   const [hovered, setHovered] = useState<number | null>(null);
+  const mounted = useMounted();
   const max = Math.max(...data.map((point) => point.value), 1);
 
   return (
@@ -38,14 +49,17 @@ export function RevenueBarChart({ data }: { data: MonthPoint[] }) {
             >
               <div
                 className={cn(
-                  "relative w-full rounded-t-[4px] transition-colors",
+                  "relative w-full rounded-t-[4px] transition-[height,background-color] duration-500 ease-out-quart",
                   isCurrent
                     ? "bg-primary-600"
                     : hovered === index
                       ? "bg-gray-300"
                       : "bg-gray-100 border border-gray-200 border-b-0"
                 )}
-                style={{ height: `${Math.max(heightPercent, 2)}%` }}
+                style={{
+                  height: mounted ? `${Math.max(heightPercent, 2)}%` : "2%",
+                  transitionDelay: mounted ? `${index * 28}ms` : "0ms",
+                }}
               >
                 {hovered === index && (
                   <ChartTooltip label={point.label} value={formatRub(point.value)} />
@@ -90,12 +104,14 @@ export function MembersLineChart({ data }: { data: MonthPoint[] }) {
       >
         <polyline
           points={polyline}
+          pathLength={1}
           fill="none"
           stroke="var(--color-primary-600)"
           strokeWidth="2"
           vectorEffect="non-scaling-stroke"
           strokeLinejoin="round"
           strokeLinecap="round"
+          className="animate-draw-line"
         />
       </svg>
 

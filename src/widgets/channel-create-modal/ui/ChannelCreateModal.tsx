@@ -154,18 +154,21 @@ export function ChannelCreateModal({
                       type="button"
                       onClick={() => setValue("type", type, { shouldValidate: true })}
                       className={cn(
-                        "flex-1 flex flex-col items-center gap-2 py-4 px-2.5 rounded-[13px] border transition-colors cursor-pointer",
+                        "flex-1 flex flex-col items-center gap-2 py-4 px-2.5 rounded-[13px] border transition-[border-color,background-color,transform] duration-150 ease-out-quart active:scale-[0.98] cursor-pointer",
                         isSelected
-                          ? "border-gray-400 bg-gray-100 inset-ring inset-ring-gray-400"
+                          ? "border-primary-600 bg-primary-600/5 inset-ring inset-ring-primary-600"
                           : "border-gray-200 bg-white hover:bg-gray-50"
                       )}
                     >
                       <Icon
-                        className={cn("size-[22px]", isSelected ? "text-black" : "text-gray-600")}
+                        className={cn(
+                          "size-[22px] transition-colors duration-150",
+                          isSelected ? "text-primary-700" : "text-gray-600"
+                        )}
                       />
                       <span
                         className={cn(
-                          "text-[13px] font-semibold",
+                          "text-[13px] font-semibold transition-colors duration-150",
                           isSelected ? "text-black" : "text-gray-600"
                         )}
                       >
@@ -203,10 +206,10 @@ export function ChannelCreateModal({
                   trigger={
                     <button
                       type="button"
-                      className="w-full h-11 flex items-center gap-2 px-3.5 rounded-[14px] bg-white inset-ring inset-ring-gray-200 text-sm text-black cursor-pointer hover:bg-gray-50 transition-colors"
+                      className="group w-full h-11 flex items-center gap-2 px-3.5 rounded-[14px] bg-white inset-ring inset-ring-gray-200 text-sm text-black cursor-pointer hover:bg-gray-50 transition-colors duration-150"
                     >
                       <span className="flex-1 text-left truncate">{selectedCategoryName}</span>
-                      <ChevronDown className="size-4 text-gray-500" />
+                      <ChevronDown className="size-4 text-gray-500 transition-transform duration-200 ease-out-quart group-data-[state=open]:rotate-180" />
                     </button>
                   }
                   items={categoryItems}
@@ -234,13 +237,18 @@ export function ChannelCreateModal({
                     type="button"
                     onClick={() => setValue("access", access, { shouldValidate: true })}
                     className={cn(
-                      "w-full flex items-center gap-3 px-3.5 py-2.5 rounded-[13px] border text-left transition-colors cursor-pointer",
+                      "w-full flex items-center gap-3 px-3.5 py-2.5 rounded-[13px] border text-left transition-[border-color,background-color,transform] duration-150 ease-out-quart active:scale-[0.99] cursor-pointer",
                       isSelected
-                        ? "border-gray-400 bg-gray-100 inset-ring inset-ring-gray-400"
+                        ? "border-primary-600 bg-primary-600/5 inset-ring inset-ring-primary-600"
                         : "border-gray-200 bg-white hover:bg-gray-50"
                     )}
                   >
-                    <Icon className="size-4 shrink-0 text-gray-600" />
+                    <Icon
+                      className={cn(
+                        "size-4 shrink-0 transition-colors duration-150",
+                        isSelected ? "text-primary-700" : "text-gray-600"
+                      )}
+                    />
                     <span className="flex-1 min-w-0">
                       <span className="block text-[13px] font-semibold text-black">
                         {meta.name}

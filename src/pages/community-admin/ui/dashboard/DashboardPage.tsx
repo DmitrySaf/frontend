@@ -6,10 +6,13 @@ import { Loader2, TrendingDown, TrendingUp } from "lucide-react";
 import { AdminShell } from "../AdminShell";
 import { MembersLineChart, RevenueBarChart } from "./charts";
 
-function StatCardItem({ card }: { card: StatCard }) {
+function StatCardItem({ card, index }: { card: StatCard; index: number }) {
   const TrendIcon = card.isUp ? TrendingUp : TrendingDown;
   return (
-    <div className="flex-1 rounded-2xl border border-gray-200 bg-white shadow-sm p-4.5 flex flex-col gap-2">
+    <div
+      style={{ animationDelay: `${index * 60}ms` }}
+      className="flex-1 rounded-2xl border border-gray-200 bg-white shadow-sm p-4.5 flex flex-col gap-2 animate-in fade-in slide-in-from-bottom-2 fill-mode-both duration-400 ease-out-quart"
+    >
       <span className="text-[13px] text-gray-600">{card.label}</span>
       <span className="text-2xl font-bold font-mono text-black">{card.value}</span>
       <span className="flex items-center gap-1.5 text-xs text-gray-600">
@@ -34,8 +37,8 @@ export function DashboardPage({ slug }: { slug: string }) {
         <div className="p-4 md:p-6 space-y-5 max-w-5xl">
           {/* Стат-карточки */}
           <div className="flex flex-col sm:flex-row gap-3.5">
-            {stats.cards.map((card) => (
-              <StatCardItem key={card.label} card={card} />
+            {stats.cards.map((card, index) => (
+              <StatCardItem key={card.label} card={card} index={index} />
             ))}
           </div>
 
@@ -73,7 +76,7 @@ export function DashboardPage({ slug }: { slug: string }) {
                 {stats.tierStats.map((tier) => (
                   <div
                     key={tier.tierId}
-                    className="min-w-[480px] flex items-center gap-3.5 py-3 border-t border-gray-200"
+                    className="min-w-[480px] flex items-center gap-3.5 py-3 border-t border-gray-200 -mx-2 px-2 rounded-lg hover:bg-gray-50 transition-colors duration-150"
                   >
                     <span className="flex-1 text-sm font-semibold text-black truncate">
                       {tier.name}

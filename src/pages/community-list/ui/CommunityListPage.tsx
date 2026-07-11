@@ -40,7 +40,7 @@ export function CommunityListPage() {
 
   return (
     <div className="flex-1 flex items-center justify-center">
-      <div className="flex flex-col items-center gap-4 max-w-sm text-center px-6">
+      <div className="flex flex-col items-center gap-4 max-w-sm text-center px-6 animate-in fade-in zoom-in-95 slide-in-from-bottom-2 duration-400 ease-out-quart">
         <Image src="/logo.svg" alt="Bean" width={56} height={56} />
         <div className="space-y-1.5">
           <h1 className="text-2xl font-bold text-black">Создайте своё сообщество</h1>

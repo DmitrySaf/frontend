@@ -14,7 +14,6 @@ import { purchaseTier, useInvalidateCommunitySales } from "@/entities/subscripti
 import type { Tier } from "@/entities/tier";
 import { Avatar } from "@/shared/components";
 import { useQueryClient } from "@tanstack/react-query";
-import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
@@ -51,9 +50,30 @@ function NotFoundScreen({ isAuthed }: { isAuthed: boolean }) {
 }
 
 function LoadingScreen() {
+  // Скелетон повторяет каркас витрины — страница «складывается», а не мигает спиннером
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-      <Loader2 className="size-6 animate-spin text-gray-500" />
+    <div className="min-h-screen bg-gray-50 flex flex-col">
+      <div className="h-14 bg-white border-b border-gray-200" />
+      <div className="flex-1 px-4 py-7">
+        <div className="max-w-[1000px] mx-auto flex flex-col lg:flex-row gap-7 animate-pulse">
+          <div className="flex-1 min-w-0 space-y-7">
+            <div className="w-full aspect-[21/9] rounded-2xl bg-gray-200/70" />
+            <div className="flex items-center gap-3">
+              <div className="size-12 rounded-xl bg-gray-200/70" />
+              <div className="h-6 w-52 rounded-lg bg-gray-200/70" />
+            </div>
+            <div className="space-y-2.5">
+              <div className="h-3.5 w-full rounded bg-gray-200/70" />
+              <div className="h-3.5 w-4/5 rounded bg-gray-200/70" />
+              <div className="h-3.5 w-2/3 rounded bg-gray-200/70" />
+            </div>
+          </div>
+          <div className="w-full lg:w-80 shrink-0 space-y-3.5">
+            <div className="h-56 rounded-2xl bg-gray-200/70" />
+            <div className="h-16 rounded-2xl bg-gray-200/70" />
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
@@ -195,7 +215,7 @@ export function StorefrontPage({ slug, inviteCode }: StorefrontPageProps) {
       <PublicHeader isAuthed={isAuthed} />
 
       <div className="flex-1 px-4 py-7">
-        <div className="max-w-[1000px] mx-auto flex flex-col lg:flex-row gap-7">
+        <div className="max-w-[1000px] mx-auto flex flex-col lg:flex-row gap-7 animate-in fade-in slide-in-from-bottom-2 duration-400 ease-out-quart">
           {/* Основная колонка */}
           <div className="flex-1 min-w-0">
             <MediaCarousel media={media} alt={community.displayName} />
@@ -236,8 +256,8 @@ export function StorefrontPage({ slug, inviteCode }: StorefrontPageProps) {
             )}
           </div>
 
-          {/* Правая колонка */}
-          <div className="w-full lg:w-80 shrink-0 space-y-3.5">
+          {/* Правая колонка: CTA остаётся на виду при скролле */}
+          <div className="w-full lg:w-80 shrink-0 space-y-3.5 lg:sticky lg:top-6 lg:self-start">
             <PricingCard
               tiers={visibleTiers}
               selectedTierId={selectedTierId}

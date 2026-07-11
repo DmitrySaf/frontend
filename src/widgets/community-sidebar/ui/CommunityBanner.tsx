@@ -90,7 +90,15 @@ export default function CommunityBanner({
 
   const menu = (
     <Dropdown
-      trigger={<Button theme="ghost" size="s" Icon={ChevronDown} aria-label="Меню сообщества" />}
+      trigger={
+        <Button
+          theme="ghost"
+          size="s"
+          Icon={ChevronDown}
+          aria-label="Меню сообщества"
+          className="[&>svg]:transition-transform [&>svg]:duration-200 [&>svg]:ease-out-quart [&[data-state=open]>svg]:rotate-180"
+        />
+      }
       items={[...adminItems, ...memberItems]}
       align="end"
       className="w-60"
@@ -104,7 +112,8 @@ export default function CommunityBanner({
         {/* Обложка может быть dataURL из мок-хранилища — next/image их не поддерживает */}
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src={coverUrl} alt={name} className="absolute inset-0 size-full object-cover" />
-        <div className="absolute inset-0 bg-black/40" />
+        {/* Градиентный скрим: затемнение сильнее у текста, фото дышит сверху */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/25 to-black/10" />
 
         <div className="absolute inset-x-0 bottom-0 flex items-center justify-between gap-2 p-2.5">
           <div className="flex items-center gap-2 min-w-0">

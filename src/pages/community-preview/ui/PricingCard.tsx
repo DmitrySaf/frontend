@@ -40,15 +40,15 @@ export function PricingCard({
                 type="button"
                 onClick={() => onSelectTier(tier.id)}
                 className={cn(
-                  "w-full flex items-center gap-3 p-3 rounded-[14px] border text-left transition-colors cursor-pointer",
+                  "w-full flex items-center gap-3 p-3 rounded-[14px] border-2 text-left transition-[border-color,background-color,transform] duration-150 ease-out-quart active:scale-[0.99] cursor-pointer",
                   isSelected
-                    ? "border-primary-600 border-2 bg-primary-600/5"
+                    ? "border-primary-600 bg-primary-600/5"
                     : "border-gray-200 bg-white hover:bg-gray-50"
                 )}
               >
                 <span
                   className={cn(
-                    "size-4 shrink-0 rounded-full border-2 transition-colors",
+                    "size-4 shrink-0 rounded-full border-2 transition-[border-color,background-color,box-shadow] duration-200 ease-out-quart",
                     isSelected
                       ? "border-primary-600 bg-primary-600 shadow-[inset_0_0_0_3px_#fff]"
                       : "border-gray-300 bg-white"

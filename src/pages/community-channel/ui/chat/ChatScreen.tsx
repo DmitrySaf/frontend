@@ -82,17 +82,38 @@ export function ChatScreen({ channel }: { channel: Channel }) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const days = useMemo(() => groupByDay(messages ?? []), [messages]);
 
+  // После первичного рендера истории контейнер помечается data-live:
+  // только новые сообщения получают анимацию появления (см. .content-appear)
+  const [isLive, setIsLive] = useState(false);
+  const isLiveRef = useRef(false);
+  isLiveRef.current = isLive;
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: channel.id — триггер сброса
+  useEffect(() => {
+    setIsLive(false);
+  }, [channel.id]);
+
+  useEffect(() => {
+    if (!isLoading) {
+      const timer = setTimeout(() => setIsLive(true), 80);
+      return () => clearTimeout(timer);
+    }
+  }, [isLoading]);
+
   const messagesCount = messages?.length ?? 0;
   useEffect(() => {
     const container = scrollRef.current;
     if (container) {
-      container.scrollTop = container.scrollHeight;
+      container.scrollTo({
+        top: container.scrollHeight,
+        behavior: isLiveRef.current ? "smooth" : "auto",
+      });
     }
   }, [messagesCount, channel.id]);
 
   return (
     <div className="flex-1 flex flex-col min-h-0">
-      <div ref={scrollRef} className="flex-1 min-h-0 overflow-y-auto pb-3">
+      <div ref={scrollRef} data-live={isLive} className="flex-1 min-h-0 overflow-y-auto pb-3">
         {isLoading ? (
           <div className="h-full flex items-center justify-center">
             <Loader2 className="size-6 animate-spin text-gray-500" />

@@ -71,7 +71,7 @@ export function ChatMessageItem({
   return (
     <div
       className={cn(
-        "group relative flex gap-3 px-4 md:px-6 py-0.5 hover:bg-gray-50",
+        "content-appear group relative flex gap-3 px-4 md:px-6 py-0.5 hover:bg-gray-50",
         isGroupStart && "mt-3"
       )}
     >
@@ -79,7 +79,7 @@ export function ChatMessageItem({
         {isGroupStart && <Avatar name={author.displayName} src={author.avatarUrl} size="m" />}
       </div>
 
-      <div className="flex-1 min-w-0">
+      <div className="flex-1 min-w-0 pr-8 md:pr-0">
         {isGroupStart && (
           <div className="flex items-baseline gap-2">
             <span className="text-sm font-bold text-black">{author.displayName}</span>

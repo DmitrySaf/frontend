@@ -23,7 +23,10 @@ export function PostsScreen({ channel }: { channel: Channel }) {
 
   return (
     <div className="flex-1 min-h-0 overflow-y-auto">
-      <div className="max-w-[720px] w-full mx-auto px-4 md:px-6 py-4 md:py-5 space-y-4">
+      <div
+        data-live={!isLoading}
+        className="max-w-[720px] w-full mx-auto px-4 md:px-6 py-4 md:py-5 space-y-4"
+      >
         {canPost && <PostComposer channelId={channel.id} />}
 
         {isLoading ? (
@@ -32,15 +35,12 @@ export function PostsScreen({ channel }: { channel: Channel }) {
           </div>
         ) : posts && posts.length > 0 ? (
           posts.map((post) => (
-            <PostCard
-              key={post.id}
-              post={post}
-              isAdmin={isAdmin}
-              onDelete={() => setDeletingPostId(post.id)}
-            />
+            <div key={post.id} className="content-appear">
+              <PostCard post={post} isAdmin={isAdmin} onDelete={() => setDeletingPostId(post.id)} />
+            </div>
           ))
         ) : (
-          <div className="flex flex-col items-center gap-3 py-16 text-center">
+          <div className="flex flex-col items-center gap-3 py-16 text-center animate-in fade-in zoom-in-95 duration-300 ease-out-quart">
             <div className="size-14 rounded-2xl bg-gray-100 border border-gray-200 flex items-center justify-center">
               <Newspaper className="size-6 text-gray-500" />
             </div>

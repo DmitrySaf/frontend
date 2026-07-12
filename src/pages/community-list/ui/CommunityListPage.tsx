@@ -15,20 +15,22 @@ import { useEffect } from "react";
 export function CommunityListPage() {
   const router = useRouter();
   const { data: communities, isLoading } = useCommunitiesQuery();
-  const [, setCreateParam] = useQueryState("create");
+  const [createParam, setCreateParam] = useQueryState("create");
 
   const hasCommunities = !!communities && communities.length > 0;
 
   useEffect(() => {
     if (isLoading || !communities) return;
     if (communities.length === 0) return;
+    // Открыта модалка создания (?create=community) — редирект съел бы параметр
+    if (createParam === "community") return;
 
     const lastVisited = getLastVisitedCommunity();
     const target =
       communities.find((community) => community.name === lastVisited) ?? communities[0];
 
     router.replace(`/communities/${target.name}`);
-  }, [isLoading, communities, router]);
+  }, [isLoading, communities, router, createParam]);
 
   if (isLoading || hasCommunities) {
     return (

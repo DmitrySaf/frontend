@@ -9,7 +9,9 @@
     "lint": "biome lint .",
     "format": "biome format . --write",
     "check": "biome check . --write",
-    "gen-supabase-types": "supabase gen types typescript --project-id 'tmedgvcpxgjqfjkzwnsr' --schema public > supabase/api/types/database.ts"
+    "gen-supabase-types": "supabase gen types typescript --project-id 'tmedgvcpxgjqfjkzwnsr' --schema public > supabase/api/types/database.ts",
+    "e2e": "playwright test",
+    "e2e:desktop": "playwright test --project=desktop"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",

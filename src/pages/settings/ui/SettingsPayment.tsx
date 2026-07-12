@@ -139,7 +139,7 @@ export function SettingsPayment() {
       </div>
 
       {!isVerified && (
-        <div className="flex items-center gap-3 rounded-[14px] border border-gray-200 bg-gray-100 px-4 py-3">
+        <div className="flex items-center gap-3 rounded-lg border border-gray-200 bg-gray-100 px-4 py-3">
           <BadgeCheck className="size-[18px] shrink-0 text-gray-600" />
           <p className="flex-1 text-sm text-gray-700">
             Чтобы получать выплаты,{" "}
@@ -184,7 +184,7 @@ export function SettingsPayment() {
                 aria-label="Выбрать для выплат"
                 className="size-5 shrink-0 rounded-full border border-gray-300 flex items-center justify-center cursor-pointer"
               >
-                {card.isDefault && <span className="size-2.5 rounded-full bg-primary-600" />}
+                {card.isDefault && <span className="size-2.5 rounded-full bg-primary-500" />}
               </button>
 
               <div className="w-11 h-[30px] shrink-0 rounded-[7px] border border-gray-200 bg-gray-100 flex items-center justify-center">

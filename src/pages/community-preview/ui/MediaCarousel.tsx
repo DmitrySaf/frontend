@@ -45,7 +45,7 @@ export function MediaCarousel({ media, alt }: MediaCarouselProps) {
               className={cn(
                 "w-[70px] h-[50px] overflow-hidden rounded-[10px] border-2 transition-[border-color,transform,opacity] duration-150 ease-out-quart active:scale-95 cursor-pointer",
                 index === activeIndex
-                  ? "border-primary-600"
+                  ? "border-primary-500"
                   : "border-gray-200 hover:border-gray-300 opacity-80 hover:opacity-100"
               )}
             >

@@ -93,7 +93,7 @@ export default function InviteDialog({
         ) : (
           <div className="space-y-2.5">
             <div className="flex items-center gap-2">
-              <div className="flex-1 min-w-0 h-11 flex items-center px-3.5 rounded-[14px] bg-gray-100 inset-ring inset-ring-gray-200">
+              <div className="flex-1 min-w-0 h-11 flex items-center px-3.5 rounded-lg bg-gray-100 inset-ring inset-ring-gray-200">
                 <span className="truncate text-sm text-gray-600 font-mono">{inviteLink}</span>
               </div>
               <Button

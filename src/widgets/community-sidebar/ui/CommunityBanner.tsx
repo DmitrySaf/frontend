@@ -120,7 +120,7 @@ export default function CommunityBanner({
             <Avatar name={name} src={logoUrl} size="m" shape="square" />
             <span className="text-sm font-bold text-white truncate drop-shadow-md">{name}</span>
           </div>
-          <div className="shrink-0 rounded-[9px] bg-white">{menu}</div>
+          <div className="shrink-0 rounded-[10px] bg-white">{menu}</div>
         </div>
       </div>
     );

@@ -50,7 +50,7 @@ function SegmentedControl<T extends string>({
             type="button"
             onClick={() => onChange(option.value)}
             className={cn(
-              "relative flex items-center gap-1.5 rounded-[9px] font-medium transition-colors duration-150 cursor-pointer",
+              "relative flex items-center gap-1.5 rounded-[10px] font-medium transition-colors duration-150 cursor-pointer",
               size === "s" ? "px-2.5 h-7 text-xs" : "px-3.5 h-8 text-sm",
               isActive ? "text-black" : "text-gray-600 hover:text-black"
             )}
@@ -63,7 +63,7 @@ function SegmentedControl<T extends string>({
                     ? { duration: 0 }
                     : { type: "spring", bounce: 0.15, duration: 0.35 }
                 }
-                className="absolute inset-0 rounded-[9px] bg-white shadow-sm inset-ring inset-ring-gray-200"
+                className="absolute inset-0 rounded-[10px] bg-white shadow-sm inset-ring inset-ring-gray-200"
               />
             )}
             <span className="relative flex items-center gap-1.5">

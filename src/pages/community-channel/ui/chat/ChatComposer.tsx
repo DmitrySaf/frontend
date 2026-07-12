@@ -50,7 +50,7 @@ export function ChatComposer({ channelName, onSend, isSending }: ChatComposerPro
 
   return (
     <div className="shrink-0 px-3 md:px-6 pb-3 md:pb-4 pt-2">
-      <div className="relative flex items-end gap-3 px-3.5 py-2.5 rounded-[14px] bg-gray-100 inset-ring inset-ring-gray-200 focus-within:inset-ring-2 focus-within:inset-ring-primary-500 transition-shadow">
+      <div className="relative flex items-end gap-3 px-3.5 py-2.5 rounded-lg bg-gray-100 inset-ring inset-ring-gray-200 focus-within:inset-ring-2 focus-within:inset-ring-primary-500 transition-shadow">
         <textarea
           ref={textareaRef}
           value={value}

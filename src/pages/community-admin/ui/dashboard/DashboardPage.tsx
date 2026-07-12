@@ -11,7 +11,7 @@ function StatCardItem({ card, index }: { card: StatCard; index: number }) {
   return (
     <div
       style={{ animationDelay: `${index * 60}ms` }}
-      className="flex-1 rounded-2xl border border-gray-200 bg-white shadow-sm p-4.5 flex flex-col gap-2 animate-in fade-in slide-in-from-bottom-2 fill-mode-both duration-400 ease-out-quart"
+      className="flex-1 rounded-2xl border border-gray-200 bg-white shadow-sm p-5 flex flex-col gap-2 animate-in fade-in slide-in-from-bottom-2 fill-mode-both duration-400 ease-out-quart"
     >
       <span className="text-[13px] text-gray-600">{card.label}</span>
       <span className="text-2xl font-bold font-mono text-black">{card.value}</span>
@@ -44,7 +44,7 @@ export function DashboardPage({ slug }: { slug: string }) {
 
           {/* Графики */}
           <div className="flex flex-col lg:flex-row gap-4">
-            <div className="flex-[2] min-w-0 rounded-2xl border border-gray-200 bg-white shadow-sm p-4.5">
+            <div className="flex-[2] min-w-0 rounded-2xl border border-gray-200 bg-white shadow-sm p-5">
               <div className="flex items-center justify-between mb-3">
                 <span className="text-[15px] font-bold text-black">Доход</span>
                 <span className="px-2.5 py-1 rounded-full bg-gray-100 text-xs font-medium text-gray-600">
@@ -54,7 +54,7 @@ export function DashboardPage({ slug }: { slug: string }) {
               <RevenueBarChart data={stats.monthlyRevenue} />
             </div>
 
-            <div className="flex-1 min-w-0 rounded-2xl border border-gray-200 bg-white shadow-sm p-4.5">
+            <div className="flex-1 min-w-0 rounded-2xl border border-gray-200 bg-white shadow-sm p-5">
               <div className="flex items-center justify-between mb-3">
                 <span className="text-[15px] font-bold text-black">Рост участников</span>
               </div>
@@ -63,7 +63,7 @@ export function DashboardPage({ slug }: { slug: string }) {
           </div>
 
           {/* Тарифы */}
-          <div className="rounded-2xl border border-gray-200 bg-white shadow-sm p-4.5">
+          <div className="rounded-2xl border border-gray-200 bg-white shadow-sm p-5">
             <span className="text-[15px] font-bold text-black">Тарифы</span>
             {stats.tierStats.length > 0 ? (
               <div className="mt-3 overflow-x-auto">

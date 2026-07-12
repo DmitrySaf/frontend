@@ -9,8 +9,8 @@ const tabVariants = cva(
   {
     variants: {
       isActive: {
-        true: "bg-gray-200/40 text-black ring-1 ring-gray-200",
-        false: "text-gray-800 hover:bg-gray-200/25 hover:text-black active:bg-gray-200/40",
+        true: "bg-gray-200/70 text-black ring-1 ring-gray-300/70",
+        false: "text-gray-800 hover:bg-gray-200/45 hover:text-black active:bg-gray-200/70",
       },
     },
     defaultVariants: {

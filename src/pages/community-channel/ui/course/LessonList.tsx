@@ -102,7 +102,7 @@ export function LessonList({
           <div className="mt-2 flex items-center gap-2">
             <div className="flex-1 h-1.5 rounded-full bg-gray-100 overflow-hidden">
               <div
-                className="h-full bg-primary-600 rounded-full transition-[width] duration-500 ease-out-quart"
+                className="h-full bg-primary-500 rounded-full transition-[width] duration-500 ease-out-quart"
                 style={{ width: `${progressPercent}%` }}
               />
             </div>
@@ -169,10 +169,10 @@ export function LessonList({
                     className={cn(
                       "w-full flex items-center gap-2.5 px-2.5 py-[7px] rounded-[10px] text-left transition-colors duration-150 ease-out-quart",
                       isActive
-                        ? "bg-gray-200/40 inset-ring inset-ring-gray-200"
+                        ? "bg-gray-200/70 inset-ring inset-ring-gray-300/70"
                         : isDisabled
                           ? "opacity-60 cursor-not-allowed"
-                          : "hover:bg-gray-200/25 active:bg-gray-200/40 cursor-pointer"
+                          : "hover:bg-gray-200/45 active:bg-gray-200/70 cursor-pointer"
                     )}
                   >
                     <LessonIcon lesson={lesson} />
@@ -197,7 +197,7 @@ export function LessonList({
                 <button
                   type="button"
                   onClick={() => onCreateLesson(module.id)}
-                  className="w-full flex items-center gap-2.5 px-2.5 py-[7px] rounded-[10px] text-[13px] font-medium text-gray-500 hover:text-black hover:bg-gray-200/25 transition-colors duration-150 cursor-pointer"
+                  className="w-full flex items-center gap-2.5 px-2.5 py-[7px] rounded-[10px] text-[13px] font-medium text-gray-500 hover:text-black hover:bg-gray-200/45 transition-colors duration-150 cursor-pointer"
                 >
                   <Plus className="size-4" />
                   Добавить урок

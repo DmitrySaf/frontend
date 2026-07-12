@@ -81,7 +81,7 @@ export function PostCard({ post, isAdmin, onDelete }: PostCardProps) {
 
   return (
     <article className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
-      <div className="p-4.5 space-y-3">
+      <div className="p-5 space-y-3">
         {/* Автор */}
         <div className="flex items-center gap-2.5">
           <Avatar name={author.displayName} src={author.avatarUrl} size="m" className="size-9" />
@@ -147,7 +147,7 @@ export function PostCard({ post, isAdmin, onDelete }: PostCardProps) {
       {!isEditing && (
         <div
           className={cn(
-            "flex items-center gap-5 px-4.5 py-3",
+            "flex items-center gap-5 px-5 py-3",
             post.coverUrl && "border-t border-gray-200"
           )}
         >

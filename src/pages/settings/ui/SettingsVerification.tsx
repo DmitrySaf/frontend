@@ -75,7 +75,7 @@ function Banner({
     <div className={cn("flex items-start gap-4 rounded-[18px] border p-5", tones.bg, tones.border)}>
       <div
         className={cn(
-          "size-[46px] shrink-0 rounded-[13px] bg-white border flex items-center justify-center",
+          "size-[46px] shrink-0 rounded-lg bg-white border flex items-center justify-center",
           tones.border
         )}
       >
@@ -185,7 +185,7 @@ export function SettingsVerification() {
                         type="button"
                         onClick={() => setSelectedKind(option.value)}
                         className={cn(
-                          "flex gap-3 p-3.5 rounded-[14px] border text-left transition-colors cursor-pointer",
+                          "flex gap-3 p-3.5 rounded-lg border text-left transition-colors cursor-pointer",
                           isSelected
                             ? "border-gray-400 bg-gray-100 inset-ring inset-ring-gray-400"
                             : "border-gray-200 bg-white hover:bg-gray-50"
@@ -209,7 +209,7 @@ export function SettingsVerification() {
               {/* Шаг 2 — место встраиваемого виджета партнёра */}
               {selectedKind && (
                 <div className="space-y-3">
-                  <div className="h-52 rounded-[14px] border border-dashed border-gray-300 bg-gray-50 flex flex-col items-center justify-center gap-2 text-center px-6">
+                  <div className="h-52 rounded-lg border border-dashed border-gray-300 bg-gray-50 flex flex-col items-center justify-center gap-2 text-center px-6">
                     <ShieldCheck className="size-6 text-gray-400" />
                     <p className="text-sm font-medium text-gray-600">
                       Здесь появится форма проверки документов ({KIND_LABELS[selectedKind]})

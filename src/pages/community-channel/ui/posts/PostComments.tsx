@@ -38,7 +38,7 @@ export function PostComments({ postId, channelId }: PostCommentsProps) {
   };
 
   return (
-    <div data-live={!isLoading} className="border-t border-gray-200 px-4.5 py-3.5 space-y-3.5">
+    <div data-live={!isLoading} className="border-t border-gray-200 px-5 py-3.5 space-y-3.5">
       {isLoading ? (
         <div className="flex justify-center py-2">
           <Loader2 className="size-4 animate-spin text-gray-500" />

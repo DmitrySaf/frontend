@@ -29,7 +29,7 @@ export function PricingCard({
   const isFree = tiers.length === 0;
 
   return (
-    <div className="rounded-2xl border border-gray-200 bg-white shadow-sm p-4.5 space-y-3.5">
+    <div className="rounded-2xl border border-gray-200 bg-white shadow-sm p-5 space-y-3.5">
       {!isMember && !isFree && (
         <div className="space-y-2">
           {tiers.map((tier) => {
@@ -40,9 +40,9 @@ export function PricingCard({
                 type="button"
                 onClick={() => onSelectTier(tier.id)}
                 className={cn(
-                  "w-full flex items-center gap-3 p-3 rounded-[14px] border-2 text-left transition-[border-color,background-color,transform] duration-150 ease-out-quart active:scale-[0.99] cursor-pointer",
+                  "w-full flex items-center gap-3 p-3 rounded-lg border-2 text-left transition-[border-color,background-color,transform] duration-150 ease-out-quart active:scale-[0.99] cursor-pointer",
                   isSelected
-                    ? "border-primary-600 bg-primary-600/5"
+                    ? "border-primary-500 bg-primary-50"
                     : "border-gray-200 bg-white hover:bg-gray-50"
                 )}
               >
@@ -50,7 +50,7 @@ export function PricingCard({
                   className={cn(
                     "size-4 shrink-0 rounded-full border-2 transition-[border-color,background-color,box-shadow] duration-200 ease-out-quart",
                     isSelected
-                      ? "border-primary-600 bg-primary-600 shadow-[inset_0_0_0_3px_#fff]"
+                      ? "border-primary-500 bg-primary-500 shadow-[inset_0_0_0_3px_#fff]"
                       : "border-gray-300 bg-white"
                   )}
                 />

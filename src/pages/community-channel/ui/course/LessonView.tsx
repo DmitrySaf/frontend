@@ -38,7 +38,7 @@ export function LessonView({
         {/* Видео или текстовый блок */}
         {lesson.videoPath ? (
           isVideoLoading || !videoUrl ? (
-            <div className="w-full aspect-video rounded-[14px] bg-gray-100 border border-gray-200 flex items-center justify-center">
+            <div className="w-full aspect-video rounded-lg bg-gray-100 border border-gray-200 flex items-center justify-center">
               <Loader2 className="size-8 animate-spin text-gray-400" />
             </div>
           ) : (
@@ -46,11 +46,11 @@ export function LessonView({
               key={lesson.id}
               controls
               src={videoUrl}
-              className="w-full aspect-video rounded-[14px] bg-black"
+              className="w-full aspect-video rounded-lg bg-black"
             />
           )
         ) : (
-          <div className="w-full aspect-video rounded-[14px] bg-gray-100 border border-gray-200 flex flex-col items-center justify-center gap-2">
+          <div className="w-full aspect-video rounded-lg bg-gray-100 border border-gray-200 flex flex-col items-center justify-center gap-2">
             <PlayCircle className="size-10 text-gray-400" />
             <span className="text-sm text-gray-500">Урок без видео</span>
           </div>

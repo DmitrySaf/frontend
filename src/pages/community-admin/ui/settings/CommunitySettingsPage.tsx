@@ -189,7 +189,7 @@ export function CommunitySettingsPage({ slug }: { slug: string }) {
                       type="button"
                       onClick={() => setVisibility(option.value)}
                       className={cn(
-                        "flex-1 flex gap-3 p-3.5 rounded-[14px] border text-left transition-colors cursor-pointer",
+                        "flex-1 flex gap-3 p-3.5 rounded-lg border text-left transition-colors cursor-pointer",
                         isSelected
                           ? "border-gray-400 bg-gray-100 inset-ring inset-ring-gray-400"
                           : "border-gray-200 bg-white hover:bg-gray-50"
@@ -279,7 +279,7 @@ export function CommunitySettingsPage({ slug }: { slug: string }) {
             </div>
 
             {/* Danger-зона */}
-            <div className="rounded-2xl border border-danger/30 p-4.5 space-y-2">
+            <div className="rounded-2xl border border-danger/30 p-5 space-y-2">
               <p className="text-sm font-semibold text-black">Удалить сообщество</p>
               <p className="text-[13px] text-gray-600">
                 Сообщество, его контент и подписки будут удалены безвозвратно.

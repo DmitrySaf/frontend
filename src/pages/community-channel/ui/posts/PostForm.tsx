@@ -83,7 +83,7 @@ export function PostForm({ initialValues, submitLabel, onSubmit, onCancel }: Pos
       </div>
 
       {coverUrl ? (
-        <div className="relative overflow-hidden rounded-[14px] border border-gray-200">
+        <div className="relative overflow-hidden rounded-lg border border-gray-200">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={coverUrl} alt="Обложка поста" className="w-full max-h-72 object-cover" />
           <button

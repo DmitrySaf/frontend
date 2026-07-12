@@ -9,7 +9,7 @@ export default function MainLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex md:gap-2 bg-[#F5F5F5] md:p-2 h-dvh">
+    <div className="flex md:gap-2 bg-gray-100 md:p-2 h-dvh">
       {/* Rail на мобиле живёт внутри drawer'а сообщества; модалка создания — здесь (портал) */}
       <div className="hidden md:flex">
         <MainSidebar />

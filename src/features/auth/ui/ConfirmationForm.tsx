@@ -181,7 +181,7 @@ export function ConfirmationForm({
               onBlur={() => setFocusedIndex(null)}
               className={cn(
                 "w-12 h-14 text-center text-2xl font-mono text-black caret-primary-500",
-                "bg-white rounded-[14px] inset-ring inset-ring-gray-200 border-0",
+                "bg-white rounded-lg inset-ring inset-ring-gray-200 border-0",
                 "placeholder:text-gray-400",
                 "focus:outline-none focus:inset-ring-2 focus:inset-ring-primary-500",
                 "transition-shadow",

@@ -44,7 +44,7 @@ function UploadField({ label, hint, value, height, maxWidth, onChange }: UploadF
     <div className="space-y-2">
       <span className="text-sm font-medium text-black">{label}</span>
       <div
-        className="relative overflow-hidden rounded-[14px] border border-gray-200"
+        className="relative overflow-hidden rounded-lg border border-gray-200"
         style={{ height }}
       >
         {value ? (

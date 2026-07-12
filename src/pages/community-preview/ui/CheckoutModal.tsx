@@ -44,7 +44,7 @@ export function CheckoutModal({
         </DialogHeader>
 
         <div className="space-y-3">
-          <div className="flex items-center justify-between p-3.5 rounded-[14px] bg-gray-100 inset-ring inset-ring-gray-200">
+          <div className="flex items-center justify-between p-3.5 rounded-lg bg-gray-100 inset-ring inset-ring-gray-200">
             <div className="min-w-0">
               <p className="text-sm font-semibold text-black truncate">{tier.name}</p>
               <p className="text-[13px] font-mono text-gray-600">{formatTierPrice(tier)}</p>

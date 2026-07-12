@@ -31,9 +31,9 @@ interface CommunitySidebarProps {
 function StructureSkeleton() {
   return (
     <div className="p-3 space-y-3 animate-pulse">
-      <div className="h-3 w-20 rounded bg-gray-100" />
-      <div className="h-8 rounded-[9px] bg-gray-100" />
-      <div className="h-8 rounded-[9px] bg-gray-100" />
+      <div className="h-3 w-20 rounded bg-gray-200" />
+      <div className="h-8 rounded-[10px] bg-gray-200" />
+      <div className="h-8 rounded-[10px] bg-gray-200" />
     </div>
   );
 }

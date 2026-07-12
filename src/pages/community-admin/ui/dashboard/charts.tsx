@@ -51,10 +51,10 @@ export function RevenueBarChart({ data }: { data: MonthPoint[] }) {
                 className={cn(
                   "relative w-full rounded-t-[4px] transition-[height,background-color] duration-500 ease-out-quart",
                   isCurrent
-                    ? "bg-primary-600"
+                    ? "bg-primary-500"
                     : hovered === index
                       ? "bg-gray-300"
-                      : "bg-gray-100 border border-gray-200 border-b-0"
+                      : "bg-gray-100 border border-gray-300/70 border-b-0"
                 )}
                 style={{
                   height: mounted ? `${Math.max(heightPercent, 2)}%` : "2%",
@@ -106,7 +106,7 @@ export function MembersLineChart({ data }: { data: MonthPoint[] }) {
           points={polyline}
           pathLength={1}
           fill="none"
-          stroke="var(--color-primary-600)"
+          stroke="var(--color-primary-500)"
           strokeWidth="2"
           vectorEffect="non-scaling-stroke"
           strokeLinejoin="round"
@@ -130,7 +130,7 @@ export function MembersLineChart({ data }: { data: MonthPoint[] }) {
                 style={{ top: `${points[index].y}%` }}
               >
                 <div className="relative -translate-y-1/2">
-                  <div className="size-2.5 rounded-full bg-primary-600 ring-2 ring-white" />
+                  <div className="size-2.5 rounded-full bg-primary-500 ring-2 ring-white" />
                   <ChartTooltip
                     label={point.label}
                     value={`${point.value.toLocaleString("ru-RU")} участников`}

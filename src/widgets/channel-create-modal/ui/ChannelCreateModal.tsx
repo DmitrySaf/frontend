@@ -154,9 +154,9 @@ export function ChannelCreateModal({
                       type="button"
                       onClick={() => setValue("type", type, { shouldValidate: true })}
                       className={cn(
-                        "flex-1 flex flex-col items-center gap-2 py-4 px-2.5 rounded-[13px] border transition-[border-color,background-color,transform] duration-150 ease-out-quart active:scale-[0.98] cursor-pointer",
+                        "flex-1 flex flex-col items-center gap-2 py-4 px-2.5 rounded-lg border transition-[border-color,background-color,transform] duration-150 ease-out-quart active:scale-[0.98] cursor-pointer",
                         isSelected
-                          ? "border-primary-600 bg-primary-600/5 inset-ring inset-ring-primary-600"
+                          ? "border-primary-500 bg-primary-50 inset-ring inset-ring-primary-500"
                           : "border-gray-200 bg-white hover:bg-gray-50"
                       )}
                     >
@@ -206,7 +206,7 @@ export function ChannelCreateModal({
                   trigger={
                     <button
                       type="button"
-                      className="group w-full h-11 flex items-center gap-2 px-3.5 rounded-[14px] bg-white inset-ring inset-ring-gray-200 text-sm text-black cursor-pointer hover:bg-gray-50 transition-colors duration-150"
+                      className="group w-full h-11 flex items-center gap-2 px-3.5 rounded-lg bg-white inset-ring inset-ring-gray-200 text-sm text-black cursor-pointer hover:bg-gray-50 transition-colors duration-150"
                     >
                       <span className="flex-1 text-left truncate">{selectedCategoryName}</span>
                       <ChevronDown className="size-4 text-gray-500 transition-transform duration-200 ease-out-quart group-data-[state=open]:rotate-180" />
@@ -237,9 +237,9 @@ export function ChannelCreateModal({
                     type="button"
                     onClick={() => setValue("access", access, { shouldValidate: true })}
                     className={cn(
-                      "w-full flex items-center gap-3 px-3.5 py-2.5 rounded-[13px] border text-left transition-[border-color,background-color,transform] duration-150 ease-out-quart active:scale-[0.99] cursor-pointer",
+                      "w-full flex items-center gap-3 px-3.5 py-2.5 rounded-lg border text-left transition-[border-color,background-color,transform] duration-150 ease-out-quart active:scale-[0.99] cursor-pointer",
                       isSelected
-                        ? "border-primary-600 bg-primary-600/5 inset-ring inset-ring-primary-600"
+                        ? "border-primary-500 bg-primary-50 inset-ring inset-ring-primary-500"
                         : "border-gray-200 bg-white hover:bg-gray-50"
                     )}
                   >

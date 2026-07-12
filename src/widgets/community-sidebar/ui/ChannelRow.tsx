@@ -43,10 +43,10 @@ export default function ChannelRow({
       <Link
         href={`/communities/${communitySlug}/${channel.slug}`}
         className={cn(
-          "flex items-center gap-2 px-2.5 py-[7px] rounded-[9px] transition-colors duration-150 ease-out-quart",
+          "flex items-center gap-2 px-2.5 py-[7px] rounded-[10px] transition-colors duration-150 ease-out-quart",
           isActive
-            ? "bg-gray-200/40 inset-ring inset-ring-gray-200"
-            : "hover:bg-gray-200/25 active:bg-gray-200/40",
+            ? "bg-gray-200/70 inset-ring inset-ring-gray-300/70"
+            : "hover:bg-gray-200/45 active:bg-gray-200/70",
           isLockedForViewer && "opacity-70"
         )}
       >

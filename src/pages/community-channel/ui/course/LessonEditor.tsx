@@ -116,7 +116,7 @@ export function LessonEditor({ lesson, onSave, onDelete }: LessonEditorProps) {
           <div className="space-y-2">
             <span className="text-sm font-medium text-black">Видео</span>
             {isUploading ? (
-              <div className="w-full h-28 flex flex-col items-center justify-center gap-2 rounded-[14px] border border-dashed border-gray-300 text-gray-600">
+              <div className="w-full h-28 flex flex-col items-center justify-center gap-2 rounded-lg border border-dashed border-gray-300 text-gray-600">
                 <Loader2 className="size-5 animate-spin" />
                 <span className="text-sm font-medium">Загружаем видео…</span>
               </div>
@@ -126,10 +126,10 @@ export function LessonEditor({ lesson, onSave, onDelete }: LessonEditorProps) {
                   <video
                     controls
                     src={videoUrl}
-                    className="w-full aspect-video rounded-[14px] bg-black"
+                    className="w-full aspect-video rounded-lg bg-black"
                   />
                 ) : (
-                  <div className="w-full aspect-video rounded-[14px] bg-gray-100 border border-gray-200 flex items-center justify-center">
+                  <div className="w-full aspect-video rounded-lg bg-gray-100 border border-gray-200 flex items-center justify-center">
                     <Loader2 className="size-8 animate-spin text-gray-400" />
                   </div>
                 )}
@@ -166,7 +166,7 @@ export function LessonEditor({ lesson, onSave, onDelete }: LessonEditorProps) {
               <button
                 type="button"
                 onClick={() => fileInputRef.current?.click()}
-                className="w-full h-28 flex flex-col items-center justify-center gap-2 rounded-[14px] border border-dashed border-gray-300 text-gray-600 hover:border-gray-400 hover:text-black transition-colors cursor-pointer"
+                className="w-full h-28 flex flex-col items-center justify-center gap-2 rounded-lg border border-dashed border-gray-300 text-gray-600 hover:border-gray-400 hover:text-black transition-colors cursor-pointer"
               >
                 <Upload className="size-5" />
                 <span className="text-sm font-medium">Загрузить видео</span>

@@ -38,7 +38,7 @@ export function SettingsSidebar() {
           <Link
             href="/communities"
             aria-label="Назад к сообществам"
-            className="shrink-0 size-8 flex items-center justify-center rounded-full text-gray-600 hover:bg-gray-100 transition-colors"
+            className="shrink-0 size-8 flex items-center justify-center rounded-[10px] text-gray-600 hover:bg-gray-100 active:scale-90 transition-[background-color,transform] duration-150 ease-out-quart"
           >
             <ArrowLeft className="size-4" />
           </Link>
@@ -62,7 +62,7 @@ export function SettingsSidebar() {
             type="button"
             onClick={handleLogout}
             aria-label="Выйти из аккаунта"
-            className="shrink-0 size-8 flex items-center justify-center rounded-full text-danger hover:bg-danger/10 active:scale-90 transition-[background-color,transform] duration-150 ease-out-quart cursor-pointer"
+            className="shrink-0 size-8 flex items-center justify-center rounded-[10px] text-danger hover:bg-danger/10 active:scale-90 transition-[background-color,transform] duration-150 ease-out-quart cursor-pointer"
           >
             <LogOut className="size-4" />
           </button>

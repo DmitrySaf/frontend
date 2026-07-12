@@ -17,7 +17,7 @@ const buttonVariants = cva(
         ghost: "hover:bg-gray-100 active:bg-gray-200/60",
       },
       size: {
-        s: "h-8 px-2 text-xs rounded-md",
+        s: "h-9 px-3 text-[13px] rounded-[10px]",
         m: "h-11 px-3.5 text-sm rounded-xl",
         l: "h-12 px-4 text-base font-semibold rounded-xl",
       },
@@ -90,7 +90,7 @@ const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonPro
 
     // Icon size based on button size
     const iconSize = {
-      s: "size-3",
+      s: "size-4",
       m: "size-6",
       l: "size-6",
     };

@@ -2,6 +2,7 @@
 
 import { useCommunitiesQuery } from "@/entities/community";
 import { type TransactionItem, useMyTransactionsQuery } from "@/entities/subscription";
+import { SegmentedControl } from "@/shared/components";
 import { useSessionUserId } from "@/shared/composables";
 import { cn, formatRelativeTime } from "@/shared/utils";
 import { ArrowDownLeft, ArrowUpRight, Loader2, ReceiptText } from "lucide-react";
@@ -69,23 +70,7 @@ export function SettingsBilling() {
         <p className="text-sm text-gray-600">История платежей и выплат.</p>
       </div>
 
-      <div className="flex gap-2">
-        {FILTERS.map((option) => (
-          <button
-            key={option.value}
-            type="button"
-            onClick={() => setFilter(option.value)}
-            className={cn(
-              "px-3.5 h-8 rounded-full text-[13px] font-medium border transition-colors cursor-pointer",
-              filter === option.value
-                ? "bg-gray-100 border-gray-400 text-black"
-                : "bg-white border-gray-200 text-gray-600 hover:text-black"
-            )}
-          >
-            {option.label}
-          </button>
-        ))}
-      </div>
+      <SegmentedControl options={FILTERS} value={filter} onChange={setFilter} size="s" />
 
       {isLoading || isCommunitiesLoading ? (
         <div className="flex justify-center py-10">

@@ -186,3 +186,13 @@ widgets/{form-name}/
 - Prefer explicit types over inference for public APIs
 - Use `const` over `let` where possible
 - Async/await over `.then()` chains
+
+## graphify
+
+There is a knowledge graph of this codebase at `graphify-out/` (nodes, cross-file edges, communities). Use it where it is strong — not as a mandatory first step.
+
+- **`graphify explain "<symbol>"` and `graphify path "<A>" "<B>"` are reliable.** They resolve by exact symbol name and give precise callers/callees and relationships. Prefer them for "what touches X" and "how do A and B connect".
+- **`graphify query "<question>"` is for orientation only, and it is weak.** Seed nodes are picked by *lexical* match of question words against node labels, so a question phrased by behaviour ("post-login redirect") does not find code named by structure (`CommunityListPage`). Verified: it returned 189 nodes and missed the actual implementation. **Do not treat its output as authoritative, and do not skip grep/read because of it.**
+- Grep and file reads remain the right tool for "where is X implemented" and for reading actual logic. The graph complements them; it does not replace them.
+- `graphify-out/GRAPH_REPORT.md` — for a broad architecture pass only.
+- After changing code, `graphify update .` refreshes the graph (AST-only, no LLM cost). Note it does **not** rebuild the semantic/doc layer — concept→code edges come only from a full rebuild.

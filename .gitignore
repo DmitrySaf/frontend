@@ -49,3 +49,8 @@ next-env.d.ts
 # Playwright
 /test-results/
 /playwright-report/
+
+graphify-out/
+
+# Claude Code — локальные настройки/хуки, у каждого свои
+.claude/settings.json

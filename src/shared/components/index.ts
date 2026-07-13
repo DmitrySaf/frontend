@@ -31,3 +31,4 @@ export { Switch } from "./Switch";
 export { Tabs, type TabItem, type TabsProps, Tab, tabVariants, type TabProps } from "./Tabs";
 export { Textarea } from "./Textarea";
 export { Tooltip } from "./Tooltip";
+export { ThemeToggle } from "./ThemeToggle";

@@ -62,7 +62,7 @@ export function ChatComposer({ channelName, onSend, isSending }: ChatComposerPro
           placeholder={`Написать в #${channelName}…`}
           maxLength={MESSAGE_MAX_LENGTH}
           rows={1}
-          className="flex-1 resize-none bg-transparent text-sm text-black placeholder:text-gray-500 focus:outline-none leading-[1.45] max-h-[120px]"
+          className="flex-1 resize-none bg-transparent text-sm text-ink placeholder:text-gray-500 focus:outline-none leading-[1.45] max-h-[120px]"
         />
         <button
           type="button"

@@ -63,7 +63,7 @@ export function PostForm({ initialValues, submitLabel, onSubmit, onCancel }: Pos
           placeholder="Заголовок"
           maxLength={POST_TITLE_MAX_LENGTH}
           autoFocus
-          className="w-full bg-transparent text-lg font-bold text-black placeholder:text-gray-400 focus:outline-none"
+          className="w-full bg-transparent text-lg font-bold text-ink placeholder:text-gray-400 focus:outline-none"
         />
         {errors.title?.message && (
           <p className="mt-1 text-sm text-danger">{errors.title.message}</p>
@@ -90,7 +90,7 @@ export function PostForm({ initialValues, submitLabel, onSubmit, onCancel }: Pos
             type="button"
             onClick={() => setCoverUrl(null)}
             aria-label="Убрать обложку"
-            className="absolute top-2.5 right-2.5 size-8 flex items-center justify-center rounded-lg bg-white/90 border border-gray-200 text-gray-600 hover:text-black cursor-pointer"
+            className="absolute top-2.5 right-2.5 size-8 flex items-center justify-center rounded-lg bg-surface/90 border border-gray-200 text-gray-600 hover:text-ink cursor-pointer"
           >
             <X className="size-4" />
           </button>

@@ -24,7 +24,7 @@ export default function ProfileButton() {
 
   return (
     <div className="relative overflow-visible">
-      <div className="bg-white rounded-[18px] ring ring-gray-200 flex items-center overflow-hidden transition-[width,box-shadow] duration-300 ease-out-expo w-15 group hover:w-[300px] h-15 hover:shadow-md p-1 gap-1.5">
+      <div className="bg-surface rounded-[18px] ring ring-gray-200 flex items-center overflow-hidden transition-[width,box-shadow] duration-300 ease-out-expo w-15 group hover:w-[300px] h-15 hover:shadow-md p-1 gap-1.5">
         {/* Аватар + имя/ник — переход в настройки профиля */}
         <button
           type="button"

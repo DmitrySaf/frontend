@@ -134,7 +134,7 @@ export default function CommunitySidebar({ slug, className }: CommunitySidebarPr
   return (
     <div
       className={cn(
-        "w-64 shrink-0 bg-white border-r border-gray-200 flex flex-col h-full",
+        "w-64 shrink-0 bg-surface border-r border-gray-200 flex flex-col h-full",
         className
       )}
     >

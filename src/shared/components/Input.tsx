@@ -8,19 +8,23 @@ import { tv } from "tailwind-variants";
 const inputVariants = tv({
   slots: {
     inputWrapper:
-      "w-full inset-ring inset-ring-gray-200 transition-all flex focus-within:outline-0 focus-within:inset-ring-primary-500 focus-within:inset-ring-2 disabled:opacity-50",
-    inputContainer: "flex-1 flex",
+      "w-full flex items-center cursor-text inset-ring inset-ring-gray-200 transition-[box-shadow,opacity] duration-150 focus-within:outline-0 focus-within:inset-ring-2 focus-within:inset-ring-primary-500",
+    prefixElement: "shrink-0 flex items-center justify-center text-gray-500",
+    divider: "shrink-0 w-px h-5 bg-gray-200",
+    inputContainer: "flex-1 flex items-center min-w-0",
+    prefix: "shrink-0 select-none whitespace-nowrap text-gray-500 pointer-events-none",
+    input: "w-full min-w-0 bg-transparent placeholder:text-gray-500 focus:outline-0",
     helperText: "text-sm",
   },
   variants: {
     size: {
       l: {
-        inputWrapper: "h-12 rounded-xl text-base",
-        inputContainer: "py-3.5 px-4",
+        inputWrapper: "h-12 px-4 gap-3 rounded-xl text-base",
+        prefixElement: "size-6",
       },
       m: {
-        inputWrapper: "h-10 rounded-lg text-sm",
-        inputContainer: "py-3 px-3",
+        inputWrapper: "h-10 px-3 gap-2.5 rounded-lg text-sm",
+        prefixElement: "size-5",
       },
     },
     hasError: {
@@ -33,8 +37,14 @@ const inputVariants = tv({
       },
     },
     hasPrefixElement: {
+      // Иконка несёт собственный оптический отступ — компенсируем слева.
       true: {
-        inputContainer: "pl-1",
+        inputWrapper: "pl-3",
+      },
+    },
+    isDisabled: {
+      true: {
+        inputWrapper: "opacity-50 cursor-not-allowed",
       },
     },
   },
@@ -67,11 +77,7 @@ export interface InputProps {
    * Дополнительные опции для маски
    * Примеры: { lazy: false, placeholderChar: '_' }
    */
-  maskOptions?: any;
-  /** Вызывается при изменении значения маски */
-  // onAccept?: (value: string, maskRef: any) => void;
-  /** Вызывается при полном заполнении маски */
-  // onComplete?: (value: string, maskRef: any) => void;
+  maskOptions?: Record<string, unknown>;
 }
 
 const Input = ({
@@ -108,6 +114,7 @@ const Input = ({
     size,
     hasError: !!error,
     hasPrefixElement: !!prefixElement,
+    isDisabled: !!isDisabled,
   });
 
   const inputElement = mask ? (
@@ -126,7 +133,7 @@ const Input = ({
       placeholder={placeholder}
       disabled={isDisabled}
       autoComplete={autocomplete}
-      className="placeholder:text-gray-500 focus:outline-0 w-full"
+      className={styles.input()}
     />
   ) : (
     <input
@@ -137,19 +144,26 @@ const Input = ({
       maxLength={maxLength}
       autoComplete={autocomplete}
       onBlur={handleBlur}
-      className="placeholder:text-gray-500 focus:outline-0 w-full"
+      className={styles.input()}
     />
   );
 
   return (
     <div className="space-y-1">
       <label className="space-y-1 block">
-        {label && <div>{label}</div>}
+        {label && <div className="text-sm font-medium">{label}</div>}
 
         <div className={styles.inputWrapper()}>
-          {prefixElement && <div className="flex items-center pl-1">{prefixElement}</div>}
+          {prefixElement && (
+            <>
+              <div className={styles.prefixElement()}>{prefixElement}</div>
+              <div className={styles.divider()} />
+            </>
+          )}
+
           <div className={styles.inputContainer()}>
-            {prefix && <span className="pointer-events-none">{prefix}</span>}
+            {/* Префикс и значение читаются как одна строка — различаются только цветом */}
+            {prefix && <span className={styles.prefix()}>{prefix}</span>}
             {inputElement}
           </div>
         </div>

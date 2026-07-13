@@ -68,7 +68,7 @@ function AddCardModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-md" aria-describedby={undefined}>
         <DialogHeader>
           <DialogTitle>Добавить карту</DialogTitle>
         </DialogHeader>
@@ -155,7 +155,7 @@ export function SettingsPayment() {
       )}
 
       <div className="flex items-center justify-between">
-        <span className="text-sm font-medium text-black">Добавленные карты</span>
+        <span className="text-sm font-medium text-ink">Добавленные карты</span>
         <Button theme="outline" size="s" onClick={() => setIsAddOpen(true)}>
           <Plus className="size-3.5" />
           Добавить карту
@@ -172,7 +172,7 @@ export function SettingsPayment() {
             <div
               key={card.id}
               className={cn(
-                "flex items-center gap-3.5 p-4 rounded-2xl border bg-white",
+                "flex items-center gap-3.5 p-4 rounded-2xl border bg-surface",
                 card.isDefault
                   ? "border-gray-400 inset-ring inset-ring-gray-400"
                   : "border-gray-200"
@@ -192,7 +192,7 @@ export function SettingsPayment() {
               </div>
 
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-semibold font-mono text-black">
+                <p className="text-sm font-semibold font-mono text-ink">
                   {card.brand} •••• {card.last4}
                 </p>
                 <p className="text-xs text-gray-600 truncate">{card.holderName}</p>
@@ -221,7 +221,7 @@ export function SettingsPayment() {
           <div className="size-14 rounded-2xl bg-gray-100 border border-gray-200 flex items-center justify-center">
             <CreditCard className="size-6 text-gray-500" />
           </div>
-          <p className="text-[15px] font-semibold text-black">Нет привязанных карт</p>
+          <p className="text-[15px] font-semibold text-ink">Нет привязанных карт</p>
           <p className="text-sm text-gray-600 max-w-56">
             Добавьте карту, чтобы получать выплаты с продаж.
           </p>

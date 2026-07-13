@@ -82,7 +82,7 @@ export function ChatMessageItem({
       <div className="flex-1 min-w-0 pr-8 md:pr-0">
         {isGroupStart && (
           <div className="flex items-baseline gap-2">
-            <span className="text-sm font-bold text-black">{author.displayName}</span>
+            <span className="text-sm font-bold text-ink">{author.displayName}</span>
             {author.isCommunityOwner && (
               <span className="text-xs font-medium text-primary-600">автор</span>
             )}
@@ -112,7 +112,7 @@ export function ChatMessageItem({
                   setIsEditing(false);
                 }
               }}
-              className="w-full resize-none rounded-[10px] bg-white px-3 py-2 text-sm text-black inset-ring inset-ring-gray-200 focus:outline-none focus:inset-ring-2 focus:inset-ring-primary-500"
+              className="w-full resize-none rounded-[10px] bg-surface px-3 py-2 text-sm text-ink inset-ring inset-ring-gray-200 focus:outline-none focus:inset-ring-2 focus:inset-ring-primary-500"
             />
             <p className="text-xs text-gray-500">Enter — сохранить · Esc — отменить</p>
           </div>
@@ -134,7 +134,7 @@ export function ChatMessageItem({
               <button
                 type="button"
                 aria-label="Действия с сообщением"
-                className="size-7 flex items-center justify-center rounded-lg bg-white border border-gray-200 shadow-sm text-gray-500 hover:text-black cursor-pointer"
+                className="size-7 flex items-center justify-center rounded-lg bg-surface border border-gray-200 shadow-sm text-gray-500 hover:text-ink cursor-pointer"
               >
                 <MoreHorizontal className="size-4" />
               </button>

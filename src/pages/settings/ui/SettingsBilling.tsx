@@ -26,13 +26,13 @@ function TransactionRow({ item }: { item: TransactionItem }) {
         <Icon className="size-4 text-gray-600" />
       </div>
       <div className="flex-1 min-w-0">
-        <p className="text-sm font-semibold text-black truncate">{item.title}</p>
+        <p className="text-sm font-semibold text-ink truncate">{item.title}</p>
         <p className="text-xs text-gray-600">{formatRelativeTime(item.createdAt)}</p>
       </div>
       <span className="px-2.5 py-1 rounded-full bg-gray-100 text-xs font-medium text-gray-600">
         {item.statusLabel}
       </span>
-      <span className="text-sm font-semibold font-mono text-black whitespace-nowrap">
+      <span className="text-sm font-semibold font-mono text-ink whitespace-nowrap">
         {item.isIncoming ? "+" : "−"} ₽ {rubles}
       </span>
     </div>
@@ -87,7 +87,7 @@ export function SettingsBilling() {
           <div className="size-14 rounded-2xl bg-gray-100 border border-gray-200 flex items-center justify-center">
             <ReceiptText className="size-6 text-gray-500" />
           </div>
-          <p className="text-[15px] font-semibold text-black">Пока нет транзакций</p>
+          <p className="text-[15px] font-semibold text-ink">Пока нет транзакций</p>
           <p className="text-sm text-gray-600 max-w-56">
             Здесь появятся платежи и выплаты после первой продажи.
           </p>

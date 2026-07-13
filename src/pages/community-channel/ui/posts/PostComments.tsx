@@ -51,7 +51,7 @@ export function PostComments({ postId, channelId }: PostCommentsProps) {
               <Avatar name={author.displayName} src={author.avatarUrl} size="s" />
               <div className="flex-1 min-w-0">
                 <div className="flex items-baseline gap-2">
-                  <span className="text-[13px] font-semibold text-black">{author.displayName}</span>
+                  <span className="text-[13px] font-semibold text-ink">{author.displayName}</span>
                   {author.isCommunityOwner && (
                     <span className="text-xs font-medium text-primary-600">автор</span>
                   )}
@@ -82,7 +82,7 @@ export function PostComments({ postId, channelId }: PostCommentsProps) {
               }
             }}
             placeholder="Написать комментарий…"
-            className="flex-1 bg-transparent text-sm text-black placeholder:text-gray-500 focus:outline-none"
+            className="flex-1 bg-transparent text-sm text-ink placeholder:text-gray-500 focus:outline-none"
           />
           <button
             type="button"

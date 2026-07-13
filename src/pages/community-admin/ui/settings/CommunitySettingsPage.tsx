@@ -178,7 +178,7 @@ export function CommunitySettingsPage({ slug }: { slug: string }) {
 
             {/* Видимость */}
             <div className="space-y-2">
-              <span className="text-sm font-medium text-black">Видимость</span>
+              <span className="text-sm font-medium text-ink">Видимость</span>
               <div className="flex gap-2.5">
                 {VISIBILITY_OPTIONS.map((option) => {
                   const Icon = option.icon;
@@ -192,12 +192,12 @@ export function CommunitySettingsPage({ slug }: { slug: string }) {
                         "flex-1 flex gap-3 p-3.5 rounded-lg border text-left transition-colors cursor-pointer",
                         isSelected
                           ? "border-gray-400 bg-gray-100 inset-ring inset-ring-gray-400"
-                          : "border-gray-200 bg-white hover:bg-gray-50"
+                          : "border-gray-200 bg-surface hover:bg-gray-50"
                       )}
                     >
                       <Icon className="size-[18px] shrink-0 mt-0.5 text-gray-600" />
                       <span>
-                        <span className="block text-sm font-semibold text-black">
+                        <span className="block text-sm font-semibold text-ink">
                           {option.title}
                         </span>
                         <span className="block mt-0.5 text-xs text-gray-600">
@@ -213,7 +213,7 @@ export function CommunitySettingsPage({ slug }: { slug: string }) {
             {/* Тарифы подписки */}
             <div className="space-y-2.5">
               <div className="flex items-center justify-between">
-                <span className="text-sm font-medium text-black">Тарифы подписки</span>
+                <span className="text-sm font-medium text-ink">Тарифы подписки</span>
                 <Button
                   theme="ghost"
                   size="s"
@@ -229,11 +229,11 @@ export function CommunitySettingsPage({ slug }: { slug: string }) {
                   {tiers.map((tier) => (
                     <div
                       key={tier.id}
-                      className="flex items-center gap-3.5 p-3.5 rounded-2xl border border-gray-200 bg-white shadow-sm"
+                      className="flex items-center gap-3.5 p-3.5 rounded-2xl border border-gray-200 bg-surface shadow-sm"
                     >
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2">
-                          <span className="text-sm font-semibold text-black truncate">
+                          <span className="text-sm font-semibold text-ink truncate">
                             {tier.name}
                           </span>
                           {tier.discountPercent != null && (
@@ -256,7 +256,7 @@ export function CommunitySettingsPage({ slug }: { slug: string }) {
                         type="button"
                         onClick={() => setTierModal({ open: true, tier })}
                         aria-label="Изменить тариф"
-                        className="text-gray-500 hover:text-black transition-colors cursor-pointer"
+                        className="text-gray-500 hover:text-ink transition-colors cursor-pointer"
                       >
                         <Pencil className="size-4" />
                       </button>
@@ -280,7 +280,7 @@ export function CommunitySettingsPage({ slug }: { slug: string }) {
 
             {/* Danger-зона */}
             <div className="rounded-2xl border border-danger/30 p-5 space-y-2">
-              <p className="text-sm font-semibold text-black">Удалить сообщество</p>
+              <p className="text-sm font-semibold text-ink">Удалить сообщество</p>
               <p className="text-[13px] text-gray-600">
                 Сообщество, его контент и подписки будут удалены безвозвратно.
               </p>

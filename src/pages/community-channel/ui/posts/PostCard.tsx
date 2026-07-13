@@ -80,14 +80,14 @@ export function PostCard({ post, isAdmin, onDelete }: PostCardProps) {
   };
 
   return (
-    <article className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+    <article className="bg-surface rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
       <div className="p-5 space-y-3">
         {/* Автор */}
         <div className="flex items-center gap-2.5">
           <Avatar name={author.displayName} src={author.avatarUrl} size="m" className="size-9" />
           <div className="flex-1 min-w-0">
             <div className="flex items-baseline gap-1.5">
-              <span className="text-[13px] font-semibold text-black truncate">
+              <span className="text-[13px] font-semibold text-ink truncate">
                 {author.displayName}
               </span>
               {author.isCommunityOwner && (
@@ -97,7 +97,7 @@ export function PostCard({ post, isAdmin, onDelete }: PostCardProps) {
             <div className="text-xs text-gray-500">{formatRelativeTime(post.createdAt)}</div>
           </div>
           {post.pinned && (
-            <span className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#DEFCAD] text-xs font-medium text-black">
+            <span className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#DEFCAD] text-xs font-medium text-ink">
               <Pin className="size-3" />
               Закреплено
             </span>
@@ -108,7 +108,7 @@ export function PostCard({ post, isAdmin, onDelete }: PostCardProps) {
                 <button
                   type="button"
                   aria-label="Действия с постом"
-                  className="size-8 flex items-center justify-center rounded-lg text-gray-500 hover:text-black hover:bg-gray-100 transition-colors cursor-pointer"
+                  className="size-8 flex items-center justify-center rounded-lg text-gray-500 hover:text-ink hover:bg-gray-100 transition-colors cursor-pointer"
                 >
                   <MoreHorizontal className="size-[18px]" />
                 </button>
@@ -128,7 +128,7 @@ export function PostCard({ post, isAdmin, onDelete }: PostCardProps) {
           />
         ) : (
           <>
-            <h2 className="text-lg font-bold text-black leading-[1.25]">{post.title}</h2>
+            <h2 className="text-lg font-bold text-ink leading-[1.25]">{post.title}</h2>
             <p className="text-sm text-gray-800 leading-[1.5] whitespace-pre-wrap break-words">
               {post.content}
               {post.editedAt && (
@@ -141,7 +141,12 @@ export function PostCard({ post, isAdmin, onDelete }: PostCardProps) {
 
       {!isEditing && post.coverUrl && (
         // eslint-disable-next-line @next/next/no-img-element
-        <img src={post.coverUrl} alt="" className="w-full max-h-96 object-cover" />
+        <img
+          src={post.coverUrl}
+          alt=""
+          loading="lazy"
+          className="w-full max-h-96 object-cover"
+        />
       )}
 
       {!isEditing && (
@@ -156,7 +161,7 @@ export function PostCard({ post, isAdmin, onDelete }: PostCardProps) {
             onClick={() => toggleLike.mutate({ postId: post.id, channelId: post.channelId })}
             className={cn(
               "flex items-center gap-1.5 text-[13px] transition-[color,transform] duration-150 ease-out-quart active:scale-90 cursor-pointer",
-              post.likedByMe ? "text-danger" : "text-gray-600 hover:text-black"
+              post.likedByMe ? "text-danger" : "text-gray-600 hover:text-ink"
             )}
           >
             <Heart
@@ -171,7 +176,7 @@ export function PostCard({ post, isAdmin, onDelete }: PostCardProps) {
             onClick={() => setAreCommentsOpen(!areCommentsOpen)}
             className={cn(
               "flex items-center gap-1.5 text-[13px] transition-[color,transform] duration-150 ease-out-quart active:scale-90 cursor-pointer",
-              areCommentsOpen ? "text-black" : "text-gray-600 hover:text-black"
+              areCommentsOpen ? "text-ink" : "text-gray-600 hover:text-ink"
             )}
           >
             <MessageCircle className="size-[17px]" />
@@ -186,7 +191,7 @@ export function PostCard({ post, isAdmin, onDelete }: PostCardProps) {
             aria-label="В закладки"
             className={cn(
               "transition-[color,transform] duration-150 ease-out-quart active:scale-90 cursor-pointer",
-              post.bookmarkedByMe ? "text-black" : "text-gray-500 hover:text-black"
+              post.bookmarkedByMe ? "text-ink" : "text-gray-500 hover:text-ink"
             )}
           >
             <Bookmark className={cn("size-[17px]", post.bookmarkedByMe && "fill-current")} />

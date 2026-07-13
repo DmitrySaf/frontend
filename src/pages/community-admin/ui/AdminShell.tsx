@@ -24,12 +24,12 @@ export function AdminShell({ slug, title, subtitle, actions, children }: AdminSh
   // Guard: разделы доступны только админам (в т.ч. в режиме «Смотреть как участник»)
   if (!isAdmin) {
     return (
-      <div className="flex-1 flex items-center justify-center bg-white">
+      <div className="flex-1 flex items-center justify-center bg-surface">
         <div className="flex flex-col items-center gap-3 max-w-xs text-center animate-in fade-in zoom-in-95 duration-300 ease-out-quart">
           <div className="size-14 rounded-2xl bg-gray-100 border border-gray-200 flex items-center justify-center">
             <ShieldAlert className="size-6 text-gray-500" />
           </div>
-          <p className="text-[15px] font-semibold text-black">Нет доступа</p>
+          <p className="text-[15px] font-semibold text-ink">Нет доступа</p>
           <p className="text-sm text-gray-600">
             Раздел доступен только администраторам сообщества.
           </p>
@@ -43,7 +43,7 @@ export function AdminShell({ slug, title, subtitle, actions, children }: AdminSh
 
   return (
     <div className="flex-1 flex flex-col min-h-0">
-      <div className="shrink-0 flex items-center gap-2.5 md:gap-3.5 px-3 md:px-6 py-3 border-b border-gray-200 bg-white">
+      <div className="shrink-0 flex items-center gap-2.5 md:gap-3.5 px-3 md:px-6 h-12 border-b border-gray-200 bg-surface">
         <Button
           theme="ghost"
           size="s"
@@ -52,7 +52,7 @@ export function AdminShell({ slug, title, subtitle, actions, children }: AdminSh
           aria-label="Назад к сообществу"
         />
         <div className="flex-1 min-w-0">
-          <p className="text-[15px] font-bold text-black truncate">{title}</p>
+          <p className="text-[15px] font-bold text-ink truncate">{title}</p>
           {subtitle && <p className="text-xs text-gray-600 truncate">{subtitle}</p>}
         </div>
         <span className="hidden sm:inline text-[11px] font-medium uppercase tracking-wide text-gray-500">
@@ -61,7 +61,7 @@ export function AdminShell({ slug, title, subtitle, actions, children }: AdminSh
         {actions}
       </div>
 
-      <div className="flex-1 min-h-0 overflow-y-auto bg-white">{children}</div>
+      <div className="flex-1 min-h-0 overflow-y-auto bg-surface">{children}</div>
     </div>
   );
 }

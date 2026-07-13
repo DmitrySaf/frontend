@@ -6,7 +6,7 @@ import {
   useCommunityLogosQuery,
   useCreateCommunityMutation,
 } from "@/entities/community";
-import { Avatar, Button, Tooltip } from "@/shared/components";
+import { Avatar, Button, ThemeToggle, Tooltip } from "@/shared/components";
 import { CommunityCreateModal } from "@/widgets/community-create-modal";
 import { Plus } from "lucide-react";
 import Image from "next/image";
@@ -76,7 +76,7 @@ export default function MainSidebar({ withCreateModal = true }: MainSidebarProps
                       className="shadow-sm"
                     />
                     {isActive && (
-                      <div className="absolute -right-[6px] top-1/2 -translate-y-1/2 w-[3px] h-3.5 bg-black rounded-r-[4px] animate-in fade-in zoom-in-50 duration-200 ease-out-quart" />
+                      <div className="absolute -right-[6px] top-1/2 -translate-y-1/2 w-[3px] h-3.5 bg-ink rounded-r-[4px] animate-in fade-in zoom-in-50 duration-200 ease-out-quart" />
                     )}
                   </Link>
                 </Tooltip>
@@ -94,7 +94,10 @@ export default function MainSidebar({ withCreateModal = true }: MainSidebarProps
           </div>
         </div>
 
-        <ProfileButton />
+        <div className="flex flex-col items-center gap-1 pb-1">
+          <ThemeToggle />
+          <ProfileButton />
+        </div>
       </div>
     </>
   );

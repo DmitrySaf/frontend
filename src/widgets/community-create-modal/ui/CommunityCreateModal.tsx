@@ -55,7 +55,7 @@ export function CommunityCreateModal({ isOpen, onClose, onSubmit }: CommunityCre
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-md" aria-describedby={undefined}>
         <DialogHeader>
           <DialogTitle>Создать новое сообщество</DialogTitle>
         </DialogHeader>

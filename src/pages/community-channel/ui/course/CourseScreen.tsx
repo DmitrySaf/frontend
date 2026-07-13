@@ -87,7 +87,7 @@ export function CourseScreen({ channel }: { channel: Channel }) {
     <div className="flex-1 flex flex-col min-h-0">
       {/* Панель режима (модель A): Просмотр ↔ Редактирование */}
       {isAdmin && (
-        <div className="shrink-0 flex items-center justify-end px-4 py-2 border-b border-gray-200 bg-white">
+        <div className="shrink-0 flex items-center justify-end px-4 h-12 border-b border-gray-200 bg-surface">
           <SegmentedControl<CourseMode>
             size="s"
             value={mode}
@@ -129,7 +129,7 @@ export function CourseScreen({ channel }: { channel: Channel }) {
             <button
               type="button"
               onClick={() => setIsListOpenOnMobile(true)}
-              className="md:hidden shrink-0 flex items-center gap-1.5 px-4 py-2.5 text-[13px] font-medium text-gray-600 border-b border-gray-200 bg-white cursor-pointer"
+              className="md:hidden shrink-0 flex items-center gap-1.5 px-4 h-12 text-[13px] font-medium text-gray-600 border-b border-gray-200 bg-surface cursor-pointer"
             >
               <ArrowLeft className="size-4" />К списку уроков
             </button>
@@ -201,7 +201,7 @@ function EmptyPane({ title, description }: { title: string; description: string 
         <div className="size-14 rounded-2xl bg-gray-100 border border-gray-200 flex items-center justify-center">
           <BookOpen className="size-6 text-gray-500" />
         </div>
-        <p className="text-[15px] font-semibold text-black">{title}</p>
+        <p className="text-[15px] font-semibold text-ink">{title}</p>
         <p className="text-sm text-gray-600">{description}</p>
       </div>
     </div>

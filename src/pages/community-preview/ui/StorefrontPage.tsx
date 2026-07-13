@@ -39,7 +39,7 @@ function NotFoundScreen({ isAuthed }: { isAuthed: boolean }) {
       <PublicHeader isAuthed={isAuthed} />
       <div className="flex-1 flex items-center justify-center">
         <div className="text-center space-y-2">
-          <p className="text-2xl font-bold text-black">Страница не найдена</p>
+          <p className="text-2xl font-bold text-ink">Страница не найдена</p>
           <p className="text-sm text-gray-600">
             Возможно, ссылка устарела или сообщества не существует.
           </p>
@@ -53,7 +53,7 @@ function LoadingScreen() {
   // Скелетон повторяет каркас витрины — страница «складывается», а не мигает спиннером
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
-      <div className="h-14 bg-white border-b border-gray-200" />
+      <div className="h-14 bg-surface border-b border-gray-200" />
       <div className="flex-1 px-4 py-7">
         <div className="max-w-[1000px] mx-auto flex flex-col lg:flex-row gap-7 animate-pulse">
           <div className="flex-1 min-w-0 space-y-7">
@@ -227,7 +227,7 @@ export function StorefrontPage({ slug, inviteCode }: StorefrontPageProps) {
                 size="l"
                 shape="square"
               />
-              <h1 className="text-[26px] font-bold text-black leading-tight">
+              <h1 className="text-[26px] font-bold text-ink leading-tight">
                 {community.displayName}
               </h1>
             </div>
@@ -240,15 +240,15 @@ export function StorefrontPage({ slug, inviteCode }: StorefrontPageProps) {
 
             {storefront.features.length > 0 && (
               <div className="mt-7 space-y-3">
-                <h3 className="text-[17px] font-bold text-black">Что внутри</h3>
+                <h3 className="text-[17px] font-bold text-ink">Что внутри</h3>
                 {storefront.features.map((feature, index) => {
                   const Icon = getFeatureIcon(feature.icon);
                   return (
                     <div key={index} className="flex items-center gap-3">
-                      <div className="size-9 shrink-0 rounded-[10px] bg-white border border-gray-200 flex items-center justify-center">
+                      <div className="size-9 shrink-0 rounded-[10px] bg-surface border border-gray-200 flex items-center justify-center">
                         <Icon className="size-[18px] text-gray-600" />
                       </div>
-                      <span className="text-sm text-black">{feature.text}</span>
+                      <span className="text-sm text-ink">{feature.text}</span>
                     </div>
                   );
                 })}
@@ -270,7 +270,7 @@ export function StorefrontPage({ slug, inviteCode }: StorefrontPageProps) {
             />
 
             {/* Карточка автора */}
-            <div className="rounded-2xl border border-gray-200 bg-white shadow-sm p-3.5 flex items-center gap-3">
+            <div className="rounded-2xl border border-gray-200 bg-surface shadow-sm p-3.5 flex items-center gap-3">
               <Avatar
                 name={owner?.displayName ?? community.displayName}
                 src={owner?.avatarUrl ?? community.logoUrl}
@@ -278,7 +278,7 @@ export function StorefrontPage({ slug, inviteCode }: StorefrontPageProps) {
                 shape={owner ? "circle" : "square"}
               />
               <div>
-                <p className="text-sm font-semibold text-black">
+                <p className="text-sm font-semibold text-ink">
                   {owner?.displayName ?? community.displayName}
                 </p>
                 <p className="text-xs text-gray-600">

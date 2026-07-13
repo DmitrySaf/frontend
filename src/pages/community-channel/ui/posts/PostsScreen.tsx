@@ -44,7 +44,7 @@ export function PostsScreen({ channel }: { channel: Channel }) {
             <div className="size-14 rounded-2xl bg-gray-100 border border-gray-200 flex items-center justify-center">
               <Newspaper className="size-6 text-gray-500" />
             </div>
-            <p className="text-[15px] font-semibold text-black">Пока нет постов</p>
+            <p className="text-[15px] font-semibold text-ink">Пока нет постов</p>
             <p className="text-sm text-gray-600 max-w-56">
               Опубликуйте первый пост — участники увидят его в этой ленте.
             </p>

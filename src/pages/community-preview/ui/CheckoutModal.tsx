@@ -46,11 +46,11 @@ export function CheckoutModal({
         <div className="space-y-3">
           <div className="flex items-center justify-between p-3.5 rounded-lg bg-gray-100 inset-ring inset-ring-gray-200">
             <div className="min-w-0">
-              <p className="text-sm font-semibold text-black truncate">{tier.name}</p>
+              <p className="text-sm font-semibold text-ink truncate">{tier.name}</p>
               <p className="text-[13px] font-mono text-gray-600">{formatTierPrice(tier)}</p>
             </div>
             {tier.discountPercent != null && (
-              <span className="px-2 py-0.5 rounded-full bg-white text-xs font-medium text-gray-600">
+              <span className="px-2 py-0.5 rounded-full bg-surface text-xs font-medium text-gray-600">
                 −{tier.discountPercent}%
               </span>
             )}
@@ -58,7 +58,7 @@ export function CheckoutModal({
 
           <div className="flex items-center justify-between px-1">
             <span className="text-sm text-gray-600">Итого</span>
-            <span className="text-lg font-bold font-mono text-black">₽ {rubles}</span>
+            <span className="text-lg font-bold font-mono text-ink">₽ {rubles}</span>
           </div>
 
           <div className="flex items-start gap-2.5 p-3 rounded-[12px] bg-[#fbf3da] border border-[#e7d29a]">

@@ -7,7 +7,7 @@ export default function NotFound() {
       <div className="text-center space-y-5 animate-in fade-in slide-in-from-bottom-2 duration-400">
         <p className="text-[64px] leading-none font-bold font-mono text-gray-300">404</p>
         <div className="space-y-1.5">
-          <p className="text-2xl font-bold text-black">Страница не найдена</p>
+          <p className="text-2xl font-bold text-ink">Страница не найдена</p>
           <p className="text-sm text-gray-600">
             Возможно, ссылка устарела или страницы никогда не существовало.
           </p>

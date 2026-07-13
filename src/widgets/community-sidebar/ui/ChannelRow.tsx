@@ -53,13 +53,13 @@ export default function ChannelRow({
         <Icon
           className={cn(
             "size-[17px] shrink-0 transition-colors duration-150",
-            isActive ? "text-black" : "text-gray-500"
+            isActive ? "text-ink" : "text-gray-500"
           )}
         />
         <span
           className={cn(
             "flex-1 min-w-0 truncate text-sm",
-            isActive ? "font-semibold text-black" : "font-medium text-gray-700"
+            isActive ? "font-semibold text-ink" : "font-medium text-gray-700"
           )}
         >
           {channel.name}
@@ -76,7 +76,7 @@ export default function ChannelRow({
               <button
                 type="button"
                 aria-label="Действия с табом"
-                className="size-6 flex items-center justify-center rounded-md bg-white border border-gray-200 shadow-sm text-gray-500 hover:text-black active:scale-90 transition-[color,transform] duration-150 ease-out-quart cursor-pointer"
+                className="size-6 flex items-center justify-center rounded-md bg-surface border border-gray-200 shadow-sm text-gray-500 hover:text-ink active:scale-90 transition-[color,transform] duration-150 ease-out-quart cursor-pointer"
               >
                 <MoreHorizontal className="size-3.5" />
               </button>

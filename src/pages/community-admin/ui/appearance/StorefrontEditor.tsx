@@ -61,19 +61,19 @@ export function StorefrontEditor({ value, onChange }: StorefrontEditorProps) {
     <div className="space-y-5">
       {/* Описание витрины */}
       <div className="space-y-2">
-        <span className="text-sm font-medium text-black">Описание на витрине</span>
+        <span className="text-sm font-medium text-ink">Описание на витрине</span>
         <textarea
           value={value.description}
           onChange={(event) => onChange({ ...value, description: event.target.value })}
           placeholder="Расскажите гостям, что они получат внутри"
           rows={4}
-          className="w-full resize-none rounded-xl bg-white px-3 py-3 text-sm text-black inset-ring inset-ring-gray-200 placeholder:text-gray-500 focus:outline-none focus:inset-ring-2 focus:inset-ring-primary-500 transition-shadow"
+          className="w-full resize-none rounded-xl bg-surface px-3 py-3 text-sm text-ink inset-ring inset-ring-gray-200 placeholder:text-gray-500 focus:outline-none focus:inset-ring-2 focus:inset-ring-primary-500 transition-shadow"
         />
       </div>
 
       {/* Медиа-галерея */}
       <div className="space-y-2">
-        <span className="text-sm font-medium text-black">Медиа-галерея</span>
+        <span className="text-sm font-medium text-ink">Медиа-галерея</span>
         <div className="grid grid-cols-3 gap-2.5">
           {value.media.map((url, index) => (
             <div
@@ -81,14 +81,14 @@ export function StorefrontEditor({ value, onChange }: StorefrontEditorProps) {
               className="relative aspect-[4/3] overflow-hidden rounded-[12px] border border-gray-200"
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={url} alt="" className="size-full object-cover" />
+              <img src={url} alt="" loading="lazy" className="size-full object-cover" />
               <button
                 type="button"
                 onClick={() =>
                   onChange({ ...value, media: value.media.filter((_, i) => i !== index) })
                 }
                 aria-label="Убрать изображение"
-                className="absolute top-1.5 right-1.5 size-6 flex items-center justify-center rounded-md bg-white/90 border border-gray-200 text-gray-600 hover:text-black cursor-pointer"
+                className="absolute top-1.5 right-1.5 size-6 flex items-center justify-center rounded-md bg-surface/90 border border-gray-200 text-gray-600 hover:text-ink cursor-pointer"
               >
                 <X className="size-3.5" />
               </button>
@@ -104,7 +104,7 @@ export function StorefrontEditor({ value, onChange }: StorefrontEditorProps) {
             <button
               type="button"
               onClick={() => mediaInputRef.current?.click()}
-              className="aspect-[4/3] flex flex-col items-center justify-center gap-1.5 rounded-[12px] border border-dashed border-gray-300 text-gray-600 hover:border-gray-400 hover:text-black transition-colors cursor-pointer"
+              className="aspect-[4/3] flex flex-col items-center justify-center gap-1.5 rounded-[12px] border border-dashed border-gray-300 text-gray-600 hover:border-gray-400 hover:text-ink transition-colors cursor-pointer"
             >
               <ImagePlus className="size-5" />
               <span className="text-xs font-medium">Добавить</span>
@@ -123,7 +123,7 @@ export function StorefrontEditor({ value, onChange }: StorefrontEditorProps) {
 
       {/* Что внутри */}
       <div className="space-y-2">
-        <span className="text-sm font-medium text-black">Что внутри</span>
+        <span className="text-sm font-medium text-ink">Что внутри</span>
         <div className="space-y-2">
           {value.features.map((feature, index) => {
             const meta =
@@ -137,7 +137,7 @@ export function StorefrontEditor({ value, onChange }: StorefrontEditorProps) {
                     <button
                       type="button"
                       aria-label="Иконка пункта"
-                      className="h-10 px-2.5 flex items-center gap-1 rounded-[12px] bg-white inset-ring inset-ring-gray-200 text-gray-600 hover:bg-gray-50 cursor-pointer"
+                      className="h-10 px-2.5 flex items-center gap-1 rounded-[12px] bg-surface inset-ring inset-ring-gray-200 text-gray-600 hover:bg-gray-50 cursor-pointer"
                     >
                       <Icon className="size-[18px]" />
                       <ChevronDown className="size-3.5" />
@@ -154,7 +154,7 @@ export function StorefrontEditor({ value, onChange }: StorefrontEditorProps) {
                   value={feature.text}
                   onChange={(event) => updateFeature(index, { text: event.target.value })}
                   placeholder="Например, курсы и разборы"
-                  className="flex-1 h-10 rounded-[12px] bg-white px-3 text-sm text-black inset-ring inset-ring-gray-200 placeholder:text-gray-500 focus:outline-none focus:inset-ring-2 focus:inset-ring-primary-500 transition-shadow"
+                  className="flex-1 h-10 rounded-[12px] bg-surface px-3 text-sm text-ink inset-ring inset-ring-gray-200 placeholder:text-gray-500 focus:outline-none focus:inset-ring-2 focus:inset-ring-primary-500 transition-shadow"
                 />
                 <button
                   type="button"

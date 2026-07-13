@@ -80,7 +80,7 @@ export function TierFormModal({ isOpen, onClose, onSubmit, tier }: TierFormModal
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-md" aria-describedby={undefined}>
         <DialogHeader>
           <DialogTitle>{tier ? "Изменить тариф" : "Новый тариф"}</DialogTitle>
         </DialogHeader>
@@ -96,7 +96,7 @@ export function TierFormModal({ isOpen, onClose, onSubmit, tier }: TierFormModal
           />
 
           <div className="space-y-2">
-            <span className="text-sm font-medium text-black">Тип оплаты</span>
+            <span className="text-sm font-medium text-ink">Тип оплаты</span>
             <SegmentedControl<TierKind>
               value={kind}
               onChange={(value) => setValue("kind", value, { shouldValidate: true })}

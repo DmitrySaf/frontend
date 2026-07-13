@@ -25,7 +25,7 @@ export function PostComposer({ channelId }: { channelId: string }) {
   };
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-3.5">
+    <div className="bg-surface rounded-2xl border border-gray-200 shadow-sm p-3.5">
       {isExpanded ? (
         <PostForm
           submitLabel="Опубликовать"

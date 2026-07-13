@@ -27,7 +27,7 @@ function LessonIcon({ lesson }: { lesson: Lesson }) {
         "size-[22px] shrink-0 rounded-full border flex items-center justify-center transition-colors duration-200",
         lesson.completed
           ? "bg-primary-500 border-primary-500 animate-in zoom-in-75 duration-300 ease-out-quart"
-          : "bg-white border-gray-200"
+          : "bg-surface border-gray-200"
       )}
     >
       <Icon className={cn("size-3", lesson.completed ? "text-white" : "text-gray-600")} />
@@ -66,7 +66,7 @@ function ModuleTitleEditor({
         if (event.key === "Enter") submit();
         if (event.key === "Escape") onCancel();
       }}
-      className="flex-1 min-w-0 bg-white rounded-md px-1.5 py-0.5 text-[11px] font-bold uppercase tracking-[.05em] text-black inset-ring inset-ring-primary-500 focus:outline-none"
+      className="flex-1 min-w-0 bg-surface rounded-md px-1.5 py-0.5 text-[11px] font-bold uppercase tracking-[.05em] text-ink inset-ring inset-ring-primary-500 focus:outline-none"
     />
   );
 }
@@ -91,13 +91,13 @@ export function LessonList({
   return (
     <div
       className={cn(
-        "w-full md:w-64 shrink-0 md:border-r border-gray-200 bg-white flex flex-col min-h-0",
+        "w-full md:w-64 shrink-0 md:border-r border-gray-200 bg-surface flex flex-col min-h-0",
         className
       )}
     >
       {/* Заголовок курса + прогресс */}
       <div className="shrink-0 px-4 pt-4 pb-3 border-b border-gray-200">
-        <p className="text-sm font-bold text-black truncate">{course.title}</p>
+        <p className="text-sm font-bold text-ink truncate">{course.title}</p>
         {course.totalLessons > 0 && (
           <div className="mt-2 flex items-center gap-2">
             <div className="flex-1 h-1.5 rounded-full bg-gray-100 overflow-hidden">
@@ -138,7 +138,7 @@ export function LessonList({
                         type="button"
                         onClick={() => setEditingModuleId(module.id)}
                         aria-label="Переименовать модуль"
-                        className="text-gray-500 hover:text-black active:scale-90 transition-[color,transform] duration-150 cursor-pointer"
+                        className="text-gray-500 hover:text-ink active:scale-90 transition-[color,transform] duration-150 cursor-pointer"
                       >
                         <Pencil className="size-3" />
                       </button>
@@ -179,7 +179,7 @@ export function LessonList({
                     <span
                       className={cn(
                         "flex-1 min-w-0 truncate text-[13px]",
-                        isActive ? "font-semibold text-black" : "font-medium text-gray-700"
+                        isActive ? "font-semibold text-ink" : "font-medium text-gray-700"
                       )}
                     >
                       {lesson.title}
@@ -197,7 +197,7 @@ export function LessonList({
                 <button
                   type="button"
                   onClick={() => onCreateLesson(module.id)}
-                  className="w-full flex items-center gap-2.5 px-2.5 py-[7px] rounded-[10px] text-[13px] font-medium text-gray-500 hover:text-black hover:bg-gray-200/45 transition-colors duration-150 cursor-pointer"
+                  className="w-full flex items-center gap-2.5 px-2.5 py-[7px] rounded-[10px] text-[13px] font-medium text-gray-500 hover:text-ink hover:bg-gray-200/45 transition-colors duration-150 cursor-pointer"
                 >
                   <Plus className="size-4" />
                   Добавить урок
@@ -224,7 +224,7 @@ export function LessonList({
             <button
               type="button"
               onClick={() => setIsAddingModule(true)}
-              className="mt-3.5 w-full flex items-center justify-center gap-2 px-2.5 py-2 rounded-[10px] border border-dashed border-gray-300 text-[13px] font-medium text-gray-600 hover:border-gray-400 hover:text-black transition-colors cursor-pointer"
+              className="mt-3.5 w-full flex items-center justify-center gap-2 px-2.5 py-2 rounded-[10px] border border-dashed border-gray-300 text-[13px] font-medium text-gray-600 hover:border-gray-400 hover:text-ink transition-colors cursor-pointer"
             >
               <Plus className="size-4" />
               Добавить модуль

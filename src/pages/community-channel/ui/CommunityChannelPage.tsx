@@ -44,7 +44,7 @@ export function CommunityChannelPage({ slug, tabSlug }: CommunityChannelPageProp
     return (
       <CenteredState>
         <div className="flex flex-col items-center gap-2 text-center">
-          <p className="text-[15px] font-semibold text-black">Таб не найден</p>
+          <p className="text-[15px] font-semibold text-ink">Таб не найден</p>
           <p className="text-sm text-gray-600">Возможно, его удалили или ссылка устарела.</p>
         </div>
       </CenteredState>
@@ -61,7 +61,7 @@ export function CommunityChannelPage({ slug, tabSlug }: CommunityChannelPageProp
             <div className="size-14 rounded-2xl bg-gray-100 border border-gray-200 flex items-center justify-center">
               <Lock className="size-6 text-gray-500" />
             </div>
-            <p className="text-[15px] font-semibold text-black">Нужен доступ</p>
+            <p className="text-[15px] font-semibold text-ink">Нужен доступ</p>
             <p className="text-sm text-gray-600">
               Этот таб приватный — попросите у администратора ссылку-приглашение.
             </p>

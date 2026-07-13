@@ -148,17 +148,18 @@ export function ConfirmationForm({
         Icon={ChevronLeft}
         theme="ghost"
         size="l"
+        aria-label="Назад к вводу почты"
         onClick={onBackToEmail}
         className="absolute top-4 left-4"
       />
 
       <div className="space-y-4 mt-4">
         <div className="space-y-1.5">
-          <p className="text-base font-semibold text-black text-center">
+          <p className="text-base font-semibold text-ink text-center">
             Введите код подтверждения
           </p>
           <p className="text-sm text-gray-600 text-center">
-            Мы отправили код на <span className="font-medium text-black">{email}</span>
+            Мы отправили код на <span className="font-medium text-ink">{email}</span>
           </p>
         </div>
 
@@ -172,6 +173,7 @@ export function ConfirmationForm({
               type="text"
               inputMode="numeric"
               maxLength={1}
+              aria-label={`Цифра ${index + 1} из ${CODE_LENGTH}`}
               value={digit}
               placeholder={focusedIndex === index ? "" : "·"}
               onChange={(e) => handleInput(e.target.value, index)}
@@ -180,8 +182,8 @@ export function ConfirmationForm({
               onFocus={() => setFocusedIndex(index)}
               onBlur={() => setFocusedIndex(null)}
               className={cn(
-                "w-12 h-14 text-center text-2xl font-mono text-black caret-primary-500",
-                "bg-white rounded-lg inset-ring inset-ring-gray-200 border-0",
+                "w-12 h-14 text-center text-2xl font-mono text-ink caret-primary-500",
+                "bg-surface rounded-lg inset-ring inset-ring-gray-200 border-0",
                 "placeholder:text-gray-400",
                 "focus:outline-none focus:inset-ring-2 focus:inset-ring-primary-500",
                 "transition-shadow",
@@ -199,13 +201,13 @@ export function ConfirmationForm({
       <p className="text-sm text-gray-600 text-center">
         Не получили код?{" "}
         {cooldown > 0 ? (
-          <span className="text-gray-500">Отправить заново через {cooldown} с</span>
+          <span className="text-gray-500 tabular-nums">Отправить заново через {cooldown} с</span>
         ) : (
           <button
             type="button"
             onClick={handleResend}
             disabled={isLoading}
-            className="font-semibold text-black hover:underline disabled:opacity-50 cursor-pointer"
+            className="font-semibold text-ink hover:underline disabled:opacity-50 cursor-pointer"
           >
             Отправить заново
           </button>

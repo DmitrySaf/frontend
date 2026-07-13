@@ -27,7 +27,7 @@ function Tooltip({ content, side = "top", children, className }: TooltipProps) {
             side={side}
             sideOffset={6}
             className={cn(
-              "z-50 max-w-[220px] rounded-xl bg-black px-3 py-2",
+              "z-[var(--z-tooltip)] max-w-[220px] rounded-xl bg-black px-3 py-2",
               "text-[12.5px] font-medium leading-[1.45] text-white shadow-lg",
               "origin-[var(--radix-tooltip-content-transform-origin)] duration-150 ease-out-quart",
               "data-[state=delayed-open]:animate-in data-[state=closed]:animate-out data-[state=closed]:duration-100",

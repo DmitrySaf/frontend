@@ -50,7 +50,7 @@ export function MediaCarousel({ media, alt }: MediaCarouselProps) {
               )}
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={url} alt="" className="size-full object-cover" />
+              <img src={url} alt="" loading="lazy" className="size-full object-cover" />
             </button>
           ))}
         </div>

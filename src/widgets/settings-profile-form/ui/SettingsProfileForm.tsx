@@ -42,7 +42,7 @@ export function SettingsProfileForm({ initValues, onSubmit, isLoading }: Setting
     return (
       <div className="flex items-center justify-center p-8">
         <div className="text-center space-y-4">
-          <Loader2 className="w-8 h-8 animate-spin mx-auto text-blue-500" />
+          <Loader2 className="w-8 h-8 animate-spin mx-auto text-primary-500" />
           <p className="text-gray-600">Загружаем настройки...</p>
         </div>
       </div>
@@ -81,19 +81,25 @@ export function SettingsProfileForm({ initValues, onSubmit, isLoading }: Setting
 
         {/* Social Links Section */}
         <div className="space-y-2">
-          <h2 className="text-2xl font-semibold">Социальные сети</h2>
+          <h2 className="text-lg font-semibold text-ink">Социальные сети</h2>
 
           {/* Static social networks */}
           <div className="space-y-2">
             {SOCIAL_NETWORKS.map((social) => (
               <Input
+                key={social.id}
                 name={social.id}
                 size="m"
                 prefix={social.prefix}
                 prefixElement={
-                  <div className="flex items-center justify-center w-8 h-8 border border-gray-400 rounded-[10px] shadow">
-                    <Image src={social.icon} alt={social.id} width={24} height={24} unoptimized />
-                  </div>
+                  <Image
+                    src={social.icon}
+                    alt={social.id}
+                    width={20}
+                    height={20}
+                    className="size-5 object-contain"
+                    unoptimized
+                  />
                 }
                 error={errors[social.id]?.message}
               />
@@ -102,11 +108,7 @@ export function SettingsProfileForm({ initValues, onSubmit, isLoading }: Setting
               name="website"
               size="m"
               prefix="https://"
-              prefixElement={
-                <div className="flex items-center justify-center w-8 h-8 border border-gray-400 rounded-[10px]">
-                  <Globe className="w-6 h-6" />
-                </div>
-              }
+              prefixElement={<Globe className="size-5" />}
               error={errors.customLinks?.[0]?.url?.message}
             />
           </div>

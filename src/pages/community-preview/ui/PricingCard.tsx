@@ -29,7 +29,7 @@ export function PricingCard({
   const isFree = tiers.length === 0;
 
   return (
-    <div className="rounded-2xl border border-gray-200 bg-white shadow-sm p-5 space-y-3.5">
+    <div className="rounded-2xl border border-gray-200 bg-surface shadow-sm p-5 space-y-3.5">
       {!isMember && !isFree && (
         <div className="space-y-2">
           {tiers.map((tier) => {
@@ -43,7 +43,7 @@ export function PricingCard({
                   "w-full flex items-center gap-3 p-3 rounded-lg border-2 text-left transition-[border-color,background-color,transform] duration-150 ease-out-quart active:scale-[0.99] cursor-pointer",
                   isSelected
                     ? "border-primary-500 bg-primary-50"
-                    : "border-gray-200 bg-white hover:bg-gray-50"
+                    : "border-gray-200 bg-surface hover:bg-gray-50"
                 )}
               >
                 <span
@@ -51,11 +51,11 @@ export function PricingCard({
                     "size-4 shrink-0 rounded-full border-2 transition-[border-color,background-color,box-shadow] duration-200 ease-out-quart",
                     isSelected
                       ? "border-primary-500 bg-primary-500 shadow-[inset_0_0_0_3px_#fff]"
-                      : "border-gray-300 bg-white"
+                      : "border-gray-300 bg-surface"
                   )}
                 />
                 <span className="flex-1 min-w-0">
-                  <span className="block text-sm font-semibold text-black truncate">
+                  <span className="block text-sm font-semibold text-ink truncate">
                     {tier.name}
                   </span>
                   <span className="block text-[13px] font-mono text-gray-600">

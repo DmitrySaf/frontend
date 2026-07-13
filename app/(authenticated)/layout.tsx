@@ -15,7 +15,7 @@ export default function MainLayout({
         <MainSidebar />
       </div>
       <main className="flex-1 min-w-0">
-        <div className="flex justify-center md:rounded-md bg-white border-0 md:border border-solid border-gray-200 flex-1 h-full overflow-auto">
+        <div className="flex justify-center md:rounded-md bg-surface border-0 md:border border-solid border-gray-200 flex-1 h-full overflow-auto">
           {children}
         </div>
       </main>

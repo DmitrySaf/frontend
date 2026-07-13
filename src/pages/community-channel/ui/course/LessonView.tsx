@@ -69,7 +69,7 @@ export function LessonView({
           )}
         </div>
 
-        <h2 className="text-[22px] font-bold text-black leading-[1.2]">{lesson.title}</h2>
+        <h2 className="text-[22px] font-bold text-ink leading-[1.2]">{lesson.title}</h2>
 
         {lesson.description && (
           <p className="text-sm text-gray-800 leading-[1.6] whitespace-pre-wrap">

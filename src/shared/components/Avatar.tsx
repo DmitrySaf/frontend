@@ -65,7 +65,7 @@ const Avatar = React.forwardRef<React.ComponentRef<typeof AvatarPrimitive.Root>,
         )}
         <AvatarPrimitive.Fallback
           className={cn(
-            "flex size-full items-center justify-center font-semibold text-black",
+            "flex size-full items-center justify-center font-semibold text-ink",
             colorFromName(name)
           )}
         >

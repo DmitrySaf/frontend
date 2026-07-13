@@ -6,7 +6,7 @@ import { cn } from "@/shared/utils";
 import Link from "next/link";
 
 const buttonVariants = cva(
-  "inline-flex cursor-pointer items-center justify-center gap-2 whitespace-nowrap text-sm font-medium transition-[background-color,border-color,color,box-shadow,transform,opacity] duration-150 ease-out-quart active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500/45 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0",
+  "inline-flex cursor-pointer items-center justify-center gap-2 whitespace-nowrap text-sm font-semibold tracking-[-0.01em] transition-[background-color,border-color,color,box-shadow,transform,opacity] duration-150 ease-out-quart active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500/45 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0",
   {
     variants: {
       theme: {
@@ -17,9 +17,9 @@ const buttonVariants = cva(
         ghost: "hover:bg-gray-100 active:bg-gray-200/60",
       },
       size: {
-        s: "h-9 px-3 text-[13px] rounded-[10px]",
-        m: "h-11 px-3.5 text-sm rounded-xl",
-        l: "h-12 px-4 text-base font-semibold rounded-xl",
+        s: "h-9 px-3.5 text-[13px] rounded-[10px]",
+        m: "h-11 px-4 text-sm rounded-xl",
+        l: "h-12 px-5 text-base rounded-xl",
       },
       iconOnly: {
         true: "aspect-square p-0",
@@ -41,8 +41,7 @@ const buttonVariants = cva(
 type BaseButtonProps = {
   // Content
   children?: React.ReactNode;
-  // TODO: пофиксить
-  Icon?: any;
+  Icon?: React.ComponentType<{ className?: string }>;
 
   // Styling & Variants
   className?: string;
@@ -53,6 +52,9 @@ type BaseButtonProps = {
   // Behavior
   isLoading?: boolean;
   isDisabled?: boolean;
+
+  // A11y (обязателен для иконочных кнопок без текста)
+  "aria-label"?: string;
 };
 
 type ButtonAsButton = BaseButtonProps & {

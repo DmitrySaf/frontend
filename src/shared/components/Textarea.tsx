@@ -26,17 +26,17 @@ export interface TextareaProps {
 }
 
 const textareaVariants = cva(
-  "w-full text-base border focus:outline-none focus:border-black transition-colors resize-none disabled:opacity-50 disabled:cursor-not-allowed",
+  "w-full inset-ring inset-ring-gray-200 placeholder:text-gray-500 focus:outline-0 focus:inset-ring-2 focus:inset-ring-primary-500 transition-all resize-none disabled:opacity-50 disabled:cursor-not-allowed",
   {
     variants: {
       size: {
-        l: "py-3.5 px-4 rounded-xl",
-        m: "py-3 px-3 rounded-xl",
-        s: "py-1.5 px-3 rounded-xl",
+        l: "text-base py-3.5 px-4 rounded-xl",
+        m: "text-sm py-3 px-3 rounded-lg",
+        s: "text-sm py-1.5 px-3 rounded-[10px]",
       },
       hasError: {
-        true: "border-red-300 focus:ring-red-500",
-        false: "border-gray-300 focus:ring-blue-500",
+        true: "inset-ring-danger focus:inset-ring-danger",
+        false: "",
       },
     },
     defaultVariants: {
@@ -64,20 +64,22 @@ const Textarea = ({
 
   return (
     <div className="space-y-1">
-      {label && <label className="block font-medium text-gray-700">{label}</label>}
-      <textarea
-        {...register(name)}
-        disabled={disabled}
-        maxLength={maxLength}
-        rows={rows}
-        placeholder={placeholder}
-        className={cn(textareaVariants({ size, hasError: !!error }), className)}
-      />
+      <label className="space-y-1 block">
+        {label && <div className="text-sm font-medium">{label}</div>}
+        <textarea
+          {...register(name)}
+          disabled={disabled}
+          maxLength={maxLength}
+          rows={rows}
+          placeholder={placeholder}
+          className={cn(textareaVariants({ size, hasError: !!error }), className)}
+        />
+      </label>
 
       <div className="flex justify-between items-center">
         <div className="space-y-1">
-          {description && <p className="text-sm text-gray-600">{description}</p>}
-          {error && <p className="text-sm text-red-500">{error}</p>}
+          {description && <p className="text-sm text-gray-500">{description}</p>}
+          {error && <p className="text-sm text-danger">{error}</p>}
         </div>
 
         {showCounter && maxLength && (

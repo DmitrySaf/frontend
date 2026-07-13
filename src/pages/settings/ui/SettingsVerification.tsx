@@ -54,7 +54,7 @@ function Banner({
     neutral: {
       bg: "bg-gray-100",
       border: "border-gray-200",
-      ink: "text-black",
+      ink: "text-ink",
       sub: "text-gray-600",
     },
     pending: {
@@ -75,7 +75,7 @@ function Banner({
     <div className={cn("flex items-start gap-4 rounded-[18px] border p-5", tones.bg, tones.border)}>
       <div
         className={cn(
-          "size-[46px] shrink-0 rounded-lg bg-white border flex items-center justify-center",
+          "size-[46px] shrink-0 rounded-lg bg-surface border flex items-center justify-center",
           tones.border
         )}
       >
@@ -174,7 +174,7 @@ export function SettingsVerification() {
             <div className="space-y-5">
               {/* Шаг 1 — тип */}
               <div className="space-y-2">
-                <span className="text-sm font-medium text-black">Кто вы</span>
+                <span className="text-sm font-medium text-ink">Кто вы</span>
                 <div className="grid grid-cols-2 gap-2.5">
                   {KIND_OPTIONS.map((option) => {
                     const Icon = option.icon;
@@ -188,12 +188,12 @@ export function SettingsVerification() {
                           "flex gap-3 p-3.5 rounded-lg border text-left transition-colors cursor-pointer",
                           isSelected
                             ? "border-gray-400 bg-gray-100 inset-ring inset-ring-gray-400"
-                            : "border-gray-200 bg-white hover:bg-gray-50"
+                            : "border-gray-200 bg-surface hover:bg-gray-50"
                         )}
                       >
                         <Icon className="size-[18px] shrink-0 mt-0.5 text-gray-600" />
                         <span>
-                          <span className="block text-sm font-semibold text-black">
+                          <span className="block text-sm font-semibold text-ink">
                             {option.title}
                           </span>
                           <span className="block mt-0.5 text-xs text-gray-600">

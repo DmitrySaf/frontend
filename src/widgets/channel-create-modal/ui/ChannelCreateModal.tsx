@@ -133,7 +133,7 @@ export function ChannelCreateModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-md" aria-describedby={undefined}>
         <DialogHeader>
           <DialogTitle>{isEditing ? "Настройки таба" : "Новый таб"}</DialogTitle>
         </DialogHeader>
@@ -142,7 +142,7 @@ export function ChannelCreateModal({
           {/* Тип таба — только при создании */}
           {!isEditing && (
             <div className="space-y-2">
-              <span className="text-sm font-medium text-black">Тип</span>
+              <span className="text-sm font-medium text-ink">Тип</span>
               <div className="flex gap-2.5">
                 {CHANNEL_TYPES.map((type) => {
                   const meta = CHANNEL_TYPE_META[type];
@@ -157,7 +157,7 @@ export function ChannelCreateModal({
                         "flex-1 flex flex-col items-center gap-2 py-4 px-2.5 rounded-lg border transition-[border-color,background-color,transform] duration-150 ease-out-quart active:scale-[0.98] cursor-pointer",
                         isSelected
                           ? "border-primary-500 bg-primary-50 inset-ring inset-ring-primary-500"
-                          : "border-gray-200 bg-white hover:bg-gray-50"
+                          : "border-gray-200 bg-surface hover:bg-gray-50"
                       )}
                     >
                       <Icon
@@ -169,7 +169,7 @@ export function ChannelCreateModal({
                       <span
                         className={cn(
                           "text-[13px] font-semibold transition-colors duration-150",
-                          isSelected ? "text-black" : "text-gray-600"
+                          isSelected ? "text-ink" : "text-gray-600"
                         )}
                       >
                         {meta.name}
@@ -192,7 +192,7 @@ export function ChannelCreateModal({
 
           {/* Категория */}
           <div className="space-y-2">
-            <span className="text-sm font-medium text-black">Категория</span>
+            <span className="text-sm font-medium text-ink">Категория</span>
             {isCreatingCategory ? (
               <Input
                 name="newCategoryName"
@@ -206,7 +206,7 @@ export function ChannelCreateModal({
                   trigger={
                     <button
                       type="button"
-                      className="group w-full h-11 flex items-center gap-2 px-3.5 rounded-lg bg-white inset-ring inset-ring-gray-200 text-sm text-black cursor-pointer hover:bg-gray-50 transition-colors duration-150"
+                      className="group w-full h-11 flex items-center gap-2 px-3.5 rounded-lg bg-surface inset-ring inset-ring-gray-200 text-sm text-ink cursor-pointer hover:bg-gray-50 transition-colors duration-150"
                     >
                       <span className="flex-1 text-left truncate">{selectedCategoryName}</span>
                       <ChevronDown className="size-4 text-gray-500 transition-transform duration-200 ease-out-quart group-data-[state=open]:rotate-180" />
@@ -225,7 +225,7 @@ export function ChannelCreateModal({
 
           {/* Доступ (спецификация приватности) */}
           <div className="space-y-2">
-            <span className="text-sm font-medium text-black">Доступ</span>
+            <span className="text-sm font-medium text-ink">Доступ</span>
             <div className="space-y-1.5">
               {CHANNEL_ACCESSES.map((access) => {
                 const meta = CHANNEL_ACCESS_META[access];
@@ -240,7 +240,7 @@ export function ChannelCreateModal({
                       "w-full flex items-center gap-3 px-3.5 py-2.5 rounded-lg border text-left transition-[border-color,background-color,transform] duration-150 ease-out-quart active:scale-[0.99] cursor-pointer",
                       isSelected
                         ? "border-primary-500 bg-primary-50 inset-ring inset-ring-primary-500"
-                        : "border-gray-200 bg-white hover:bg-gray-50"
+                        : "border-gray-200 bg-surface hover:bg-gray-50"
                     )}
                   >
                     <Icon
@@ -250,7 +250,7 @@ export function ChannelCreateModal({
                       )}
                     />
                     <span className="flex-1 min-w-0">
-                      <span className="block text-[13px] font-semibold text-black">
+                      <span className="block text-[13px] font-semibold text-ink">
                         {meta.name}
                       </span>
                       <span className="block text-xs text-gray-600">{meta.description}</span>

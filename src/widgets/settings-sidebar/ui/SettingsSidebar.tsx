@@ -33,7 +33,7 @@ export function SettingsSidebar() {
   return (
     <>
       {/* Мобильная навигация: горизонтальные пиллы */}
-      <div className="md:hidden border-b border-gray-200 bg-white">
+      <div className="md:hidden border-b border-gray-200 bg-surface">
         <div className="flex items-center gap-1.5 px-3 py-2.5 overflow-x-auto">
           <Link
             href="/communities"
@@ -51,7 +51,7 @@ export function SettingsSidebar() {
                 href={href}
                 className={cn(
                   "shrink-0 px-3 py-1.5 rounded-full text-[13px] font-medium transition-colors",
-                  isActive ? "bg-black text-white" : "bg-gray-100 text-gray-600 hover:text-black"
+                  isActive ? "bg-ink text-surface" : "bg-gray-100 text-gray-600 hover:text-ink"
                 )}
               >
                 {section.name}

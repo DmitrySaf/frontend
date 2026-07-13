@@ -39,7 +39,7 @@ const Switch = React.forwardRef<HTMLButtonElement, SwitchProps>(
       >
         <span
           className={cn(
-            "inline-flex size-5 items-center justify-center transform rounded-full bg-white shadow-sm transition-transform duration-200 ease-out-quart",
+            "inline-flex size-5 items-center justify-center transform rounded-full bg-surface shadow-sm transition-transform duration-200 ease-out-quart",
             checked && !disabled ? "translate-x-[22px]" : "translate-x-0.5"
           )}
         >

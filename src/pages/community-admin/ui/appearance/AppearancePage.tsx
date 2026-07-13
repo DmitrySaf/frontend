@@ -42,7 +42,7 @@ function UploadField({ label, hint, value, height, maxWidth, onChange }: UploadF
 
   return (
     <div className="space-y-2">
-      <span className="text-sm font-medium text-black">{label}</span>
+      <span className="text-sm font-medium text-ink">{label}</span>
       <div
         className="relative overflow-hidden rounded-lg border border-gray-200"
         style={{ height }}
@@ -169,7 +169,7 @@ export function AppearancePage({ slug }: { slug: string }) {
             </p>
 
             <div className="pt-2 border-t border-gray-200 space-y-1">
-              <p className="text-[15px] font-bold text-black">Витрина</p>
+              <p className="text-[15px] font-bold text-ink">Витрина</p>
               <p className="text-xs text-gray-500">
                 Публичная страница для гостей — оформляется отдельно; из сообщества берутся только
                 название и логотип.
@@ -180,8 +180,8 @@ export function AppearancePage({ slug }: { slug: string }) {
 
           {/* Live-превью публичной карточки */}
           <div className="w-full lg:w-[300px] shrink-0 space-y-2">
-            <span className="text-sm font-medium text-black">Превью карточки</span>
-            <div className="rounded-2xl border border-gray-200 bg-white shadow-sm overflow-hidden">
+            <span className="text-sm font-medium text-ink">Превью карточки</span>
+            <div className="rounded-2xl border border-gray-200 bg-surface shadow-sm overflow-hidden">
               <div className="h-[120px] bg-gray-100">
                 {coverUrl && (
                   // eslint-disable-next-line @next/next/no-img-element
@@ -198,7 +198,7 @@ export function AppearancePage({ slug }: { slug: string }) {
                     className="size-[52px] ring-2 ring-white"
                   />
                 </div>
-                <p className="text-base font-bold text-black">{profile.displayName}</p>
+                <p className="text-base font-bold text-ink">{profile.displayName}</p>
                 {profile.description && (
                   <p className="text-[13px] text-gray-600 line-clamp-2">{profile.description}</p>
                 )}

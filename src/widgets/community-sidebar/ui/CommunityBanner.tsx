@@ -120,7 +120,7 @@ export default function CommunityBanner({
             <Avatar name={name} src={logoUrl} size="m" shape="square" />
             <span className="text-sm font-bold text-white truncate drop-shadow-md">{name}</span>
           </div>
-          <div className="shrink-0 rounded-[10px] bg-white">{menu}</div>
+          <div className="shrink-0 rounded-[10px] bg-surface">{menu}</div>
         </div>
       </div>
     );
@@ -132,7 +132,7 @@ export default function CommunityBanner({
       <div className="h-full flex items-center justify-between gap-2 px-2.5">
         <div className="flex items-center gap-2 min-w-0">
           <Avatar name={name} src={logoUrl} size="m" shape="square" />
-          <span className="text-sm font-bold text-black truncate">{name}</span>
+          <span className="text-sm font-bold text-ink truncate">{name}</span>
         </div>
         {menu}
       </div>

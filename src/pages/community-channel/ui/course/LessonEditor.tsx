@@ -114,7 +114,7 @@ export function LessonEditor({ lesson, onSave, onDelete }: LessonEditorProps) {
 
           {/* Видео (необязательно) */}
           <div className="space-y-2">
-            <span className="text-sm font-medium text-black">Видео</span>
+            <span className="text-sm font-medium text-ink">Видео</span>
             {isUploading ? (
               <div className="w-full h-28 flex flex-col items-center justify-center gap-2 rounded-lg border border-dashed border-gray-300 text-gray-600">
                 <Loader2 className="size-5 animate-spin" />
@@ -166,7 +166,7 @@ export function LessonEditor({ lesson, onSave, onDelete }: LessonEditorProps) {
               <button
                 type="button"
                 onClick={() => fileInputRef.current?.click()}
-                className="w-full h-28 flex flex-col items-center justify-center gap-2 rounded-lg border border-dashed border-gray-300 text-gray-600 hover:border-gray-400 hover:text-black transition-colors cursor-pointer"
+                className="w-full h-28 flex flex-col items-center justify-center gap-2 rounded-lg border border-dashed border-gray-300 text-gray-600 hover:border-gray-400 hover:text-ink transition-colors cursor-pointer"
               >
                 <Upload className="size-5" />
                 <span className="text-sm font-medium">Загрузить видео</span>

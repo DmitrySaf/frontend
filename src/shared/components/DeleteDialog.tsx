@@ -64,10 +64,10 @@ export function DeleteDialog({
 
         {/* split: варианты равноценны — на мобильном 50/50, обе в зоне пальца */}
         <DialogFooter layout="split">
-          <Button theme="secondary" size="m" onClick={onClose} isDisabled={isPending}>
+          <Button theme="secondary" size="l" onClick={onClose} isDisabled={isPending}>
             {cancelText}
           </Button>
-          <Button theme="destructiveTonal" size="m" onClick={handleDelete} isLoading={isPending}>
+          <Button theme="destructiveTonal" size="l" onClick={handleDelete} isLoading={isPending}>
             {confirmText}
           </Button>
         </DialogFooter>

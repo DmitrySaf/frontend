@@ -93,10 +93,10 @@ export default function CommunityBanner({
       trigger={
         <Button
           theme="ghost"
-          size="s"
+          size="m"
           Icon={ChevronDown}
           aria-label="Меню сообщества"
-          className="[&>svg]:transition-transform [&>svg]:duration-200 [&>svg]:ease-out-quart [&[data-state=open]>svg]:rotate-180"
+          className="[&_svg]:transition-transform [&_svg]:duration-200 [&_svg]:ease-out-quart [&[data-state=open]_svg]:rotate-180"
         />
       }
       items={[...adminItems, ...memberItems]}

@@ -110,11 +110,10 @@ function AddCardModal({
           />
 
           <DialogFooter>
-            <Button type="button" theme="secondary" size="m" onClick={handleClose}>
+            <Button type="button" theme="secondary" size="l" onClick={handleClose}>
               Отмена
             </Button>
-            <Button type="submit" theme="primary" size="m" isLoading={isSubmitting}>
-              <Plus className="size-4" />
+            <Button type="submit" theme="primary" size="l" Icon={Plus} isLoading={isSubmitting}>
               Добавить
             </Button>
           </DialogFooter>
@@ -161,8 +160,7 @@ export function SettingsPayment() {
 
       <div className="flex items-center justify-between">
         <span className="text-sm font-medium text-ink">Добавленные карты</span>
-        <Button theme="outline" size="s" onClick={() => setIsAddOpen(true)}>
-          <Plus className="size-3.5" />
+        <Button theme="outline" size="m" Icon={Plus} onClick={() => setIsAddOpen(true)}>
           Добавить карту
         </Button>
       </div>
@@ -230,8 +228,7 @@ export function SettingsPayment() {
           <p className="text-sm text-gray-600 max-w-56">
             Добавьте карту, чтобы получать выплаты с продаж.
           </p>
-          <Button theme="primary" size="m" onClick={() => setIsAddOpen(true)}>
-            <Plus className="size-4" />
+          <Button theme="primary" size="l" Icon={Plus} onClick={() => setIsAddOpen(true)}>
             Добавить карту
           </Button>
         </div>

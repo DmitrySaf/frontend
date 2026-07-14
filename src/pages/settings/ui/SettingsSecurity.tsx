@@ -99,7 +99,7 @@ export function SettingsSecurity() {
               <Button
                 type="button"
                 theme="primary"
-                size="l"
+                size="xl"
                 onClick={handleEmailUpdate}
                 isDisabled={!emailMethods.watch("email") || updateAuthUser.isPending}
                 isLoading={updateAuthUser.isPending}

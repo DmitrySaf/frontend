@@ -148,7 +148,7 @@ export function SettingsVerification() {
         >
           {/* Симуляция до подключения провайдера проверки */}
           <div className="pt-1.5">
-            <Button theme="ghost" size="s" onClick={handleSimulateApprove}>
+            <Button theme="ghost" size="m" onClick={handleSimulateApprove}>
               Симулировать одобрение (тестовый режим)
             </Button>
           </div>
@@ -163,7 +163,7 @@ export function SettingsVerification() {
           >
             {!isFlowOpen && (
               <div className="pt-1.5">
-                <Button theme="primary" size="m" onClick={() => setIsFlowOpen(true)}>
+                <Button theme="primary" size="l" onClick={() => setIsFlowOpen(true)}>
                   Пройти верификацию
                 </Button>
               </div>
@@ -223,13 +223,13 @@ export function SettingsVerification() {
                   <div className="flex items-center gap-2.5">
                     <Button
                       theme="primary"
-                      size="m"
+                      size="l"
                       onClick={handleSubmit}
                       isLoading={isSubmitting}
                     >
                       Отправить на проверку
                     </Button>
-                    <Button theme="ghost" size="m" onClick={() => setIsFlowOpen(false)}>
+                    <Button theme="ghost" size="l" onClick={() => setIsFlowOpen(false)}>
                       Отмена
                     </Button>
                   </div>

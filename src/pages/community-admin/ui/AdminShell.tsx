@@ -33,7 +33,7 @@ export function AdminShell({ slug, title, subtitle, actions, children }: AdminSh
           <p className="text-sm text-gray-600">
             Раздел доступен только администраторам сообщества.
           </p>
-          <Button theme="outline" size="m" onClick={() => router.push(`/communities/${slug}`)}>
+          <Button theme="outline" size="l" onClick={() => router.push(`/communities/${slug}`)}>
             Вернуться в сообщество
           </Button>
         </div>
@@ -46,7 +46,7 @@ export function AdminShell({ slug, title, subtitle, actions, children }: AdminSh
       <div className="shrink-0 flex items-center gap-2.5 md:gap-3.5 px-3 md:px-6 h-12 border-b border-gray-200 bg-surface">
         <Button
           theme="ghost"
-          size="s"
+          size="m"
           Icon={ArrowLeft}
           onClick={() => router.push(`/communities/${slug}`)}
           aria-label="Назад к сообществу"

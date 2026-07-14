@@ -143,7 +143,7 @@ export function LessonEditor({ lesson, onSave, onDelete }: LessonEditorProps) {
                   <div className="flex-1" />
                   <Button
                     theme="outline"
-                    size="s"
+                    size="m"
                     type="button"
                     onClick={() => fileInputRef.current?.click()}
                   >
@@ -151,7 +151,7 @@ export function LessonEditor({ lesson, onSave, onDelete }: LessonEditorProps) {
                   </Button>
                   <Button
                     theme="ghost"
-                    size="s"
+                    size="m"
                     type="button"
                     Icon={X}
                     onClick={() => {
@@ -185,18 +185,17 @@ export function LessonEditor({ lesson, onSave, onDelete }: LessonEditorProps) {
           </div>
 
           <div className="flex items-center gap-3 pt-1">
-            <Button theme="primary" size="m" type="submit" isLoading={isSubmitting}>
+            <Button theme="primary" size="l" type="submit" isLoading={isSubmitting}>
               Сохранить урок
             </Button>
             <div className="flex-1" />
             <Button
-              theme="ghost"
-              size="m"
+              theme="destructiveGhost"
+              size="l"
               type="button"
+              Icon={Trash2}
               onClick={() => onDelete(lesson.id)}
-              className="text-danger hover:bg-danger/10"
             >
-              <Trash2 className="size-4" />
               Удалить урок
             </Button>
           </div>

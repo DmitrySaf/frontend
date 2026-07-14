@@ -114,10 +114,10 @@ export function PostForm({ initialValues, submitLabel, onSubmit, onCancel }: Pos
       />
 
       <div className="flex items-center justify-end gap-2 pt-1">
-        <Button theme="ghost" size="m" type="button" onClick={onCancel}>
+        <Button theme="ghost" size="l" type="button" onClick={onCancel}>
           Отмена
         </Button>
-        <Button theme="primary" size="m" type="submit" isLoading={isSubmitting}>
+        <Button theme="primary" size="l" type="submit" isLoading={isSubmitting}>
           {submitLabel}
         </Button>
       </div>

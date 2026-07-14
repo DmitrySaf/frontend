@@ -147,7 +147,7 @@ export function ConfirmationForm({
       <Button
         Icon={ChevronLeft}
         theme="ghost"
-        size="l"
+        size="xl"
         aria-label="Назад к вводу почты"
         onClick={onBackToEmail}
         className="absolute top-4 left-4"

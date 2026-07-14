@@ -69,7 +69,7 @@ export function CheckoutModal({
             </p>
           </div>
 
-          <Button theme="primary" size="l" fluid onClick={onConfirm} isLoading={isPending}>
+          <Button theme="primary" size="xl" fluid onClick={onConfirm} isLoading={isPending}>
             Оплатить ₽ {rubles}
           </Button>
         </div>

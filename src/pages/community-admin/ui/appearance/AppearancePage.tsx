@@ -60,14 +60,13 @@ function UploadField({ label, hint, value, height, maxWidth, onChange }: UploadF
           {value && (
             <Button
               theme="outline"
-              size="s"
+              size="m"
               Icon={X}
               onClick={() => onChange(null)}
               aria-label="Убрать"
             />
           )}
-          <Button theme="outline" size="s" onClick={() => inputRef.current?.click()}>
-            <Upload className="size-3.5" />
+          <Button theme="outline" size="m" Icon={Upload} onClick={() => inputRef.current?.click()}>
             Загрузить
           </Button>
         </div>
@@ -131,7 +130,7 @@ export function AppearancePage({ slug }: { slug: string }) {
       actions={
         <Button
           theme="primary"
-          size="s"
+          size="m"
           onClick={handleSave}
           isDisabled={!isDirty}
           isLoading={updateProfile.isPending || updateStorefront.isPending}
@@ -202,7 +201,7 @@ export function AppearancePage({ slug }: { slug: string }) {
                 {profile.description && (
                   <p className="text-[13px] text-gray-600 line-clamp-2">{profile.description}</p>
                 )}
-                <Button theme="primary" size="m" fluid>
+                <Button theme="primary" size="l" fluid>
                   Присоединиться
                 </Button>
                 <p className="flex items-center justify-center gap-1.5 text-xs text-gray-500">

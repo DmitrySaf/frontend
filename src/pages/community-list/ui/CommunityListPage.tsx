@@ -49,7 +49,7 @@ export function CommunityListPage() {
             Публикуйте посты, ведите курсы и общайтесь с участниками — всё в одном месте.
           </p>
         </div>
-        <Button theme="primary" size="l" onClick={() => setCreateParam("community")}>
+        <Button theme="primary" size="xl" onClick={() => setCreateParam("community")}>
           Создать сообщество
         </Button>
       </div>

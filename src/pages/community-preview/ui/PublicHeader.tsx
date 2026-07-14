@@ -15,11 +15,11 @@ export function PublicHeader({ isAuthed }: PublicHeaderProps) {
       </Link>
 
       {isAuthed ? (
-        <Button theme="outline" size="m" href="/communities">
+        <Button theme="outline" size="l" href="/communities">
           Открыть приложение
         </Button>
       ) : (
-        <Button theme="outline" size="m" href="/login">
+        <Button theme="outline" size="l" href="/login">
           Войти
         </Button>
       )}

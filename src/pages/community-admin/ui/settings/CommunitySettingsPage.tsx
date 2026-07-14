@@ -135,7 +135,7 @@ export function CommunitySettingsPage({ slug }: { slug: string }) {
       actions={
         <Button
           theme="primary"
-          size="s"
+          size="m"
           onClick={handleSave}
           isDisabled={!isDirty}
           isLoading={updateProfile.isPending}
@@ -216,10 +216,10 @@ export function CommunitySettingsPage({ slug }: { slug: string }) {
                 <span className="text-sm font-medium text-ink">Тарифы подписки</span>
                 <Button
                   theme="ghost"
-                  size="s"
+                  size="m"
+                  Icon={Plus}
                   onClick={() => setTierModal({ open: true, tier: null })}
                 >
-                  <Plus className="size-3.5" />
                   Добавить тариф
                 </Button>
               </div>
@@ -284,7 +284,7 @@ export function CommunitySettingsPage({ slug }: { slug: string }) {
               <p className="text-[13px] text-gray-600">
                 Сообщество, его контент и подписки будут удалены безвозвратно.
               </p>
-              <Button theme="destructive" size="s" onClick={() => setIsDeleteCommunityOpen(true)}>
+              <Button theme="destructive" size="m" onClick={() => setIsDeleteCommunityOpen(true)}>
                 Удалить сообщество
               </Button>
             </div>

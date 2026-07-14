@@ -146,10 +146,10 @@ export function TierFormModal({ isOpen, onClose, onSubmit, tier }: TierFormModal
           </div>
 
           <DialogFooter>
-            <Button type="button" theme="secondary" size="m" onClick={handleClose}>
+            <Button type="button" theme="secondary" size="l" onClick={handleClose}>
               Отмена
             </Button>
-            <Button type="submit" theme="primary" size="m" isLoading={isSubmitting}>
+            <Button type="submit" theme="primary" size="l" isLoading={isSubmitting}>
               {tier ? "Сохранить" : "Создать"}
             </Button>
           </DialogFooter>

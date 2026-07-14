@@ -91,7 +91,7 @@ export default function MainSidebar({ withCreateModal = true }: MainSidebarProps
             <Tooltip content="Создать сообщество" side="right">
               <Button
                 theme="primary"
-                size="l"
+                size="xl"
                 Icon={Plus}
                 aria-label="Создать сообщество"
                 onClick={() => setCreateParam("community")}

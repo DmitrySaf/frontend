@@ -51,7 +51,7 @@ export default function ProfileButton() {
         {/* Иконки справа */}
         <div className="flex items-center gap-1 flex-shrink-0 opacity-0 transition-opacity duration-0 pr-0.5 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto group-hover:delay-100">
           <Dropdown
-            trigger={<Button theme="ghost" size="l" Icon={MoreHorizontal} />}
+            trigger={<Button theme="ghost" size="xl" Icon={MoreHorizontal} />}
             side="top"
             items={[
               {
@@ -65,7 +65,7 @@ export default function ProfileButton() {
 
           <Button
             theme="ghost"
-            size="l"
+            size="xl"
             Icon={Settings}
             onClick={() => router.push("/settings/profile")}
           />

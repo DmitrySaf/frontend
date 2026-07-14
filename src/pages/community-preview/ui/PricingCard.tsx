@@ -74,11 +74,11 @@ export function PricingCard({
       )}
 
       {isMember ? (
-        <Button theme="primary" size="l" fluid onClick={onOpenCommunity}>
+        <Button theme="primary" size="xl" fluid onClick={onOpenCommunity}>
           Открыть сообщество
         </Button>
       ) : (
-        <Button theme="primary" size="l" fluid onClick={onJoin} isLoading={isJoining}>
+        <Button theme="primary" size="xl" fluid onClick={onJoin} isLoading={isJoining}>
           {isFree ? "Присоединиться бесплатно" : "Присоединиться"}
         </Button>
       )}

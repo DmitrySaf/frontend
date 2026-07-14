@@ -81,30 +81,30 @@ export function LessonView({
         <div className="flex items-center gap-3 pt-2">
           <Button
             theme="outline"
-            size="m"
+            size="l"
+            Icon={ArrowLeft}
             isDisabled={!previous}
             onClick={() => previous && onSelectLesson(previous)}
           >
-            <ArrowLeft className="size-4" />
             Назад
           </Button>
           <Button
             theme="primary"
-            size="m"
+            size="l"
+            IconRight={ArrowRight}
             isDisabled={!next || next.locked}
             onClick={() => next && onSelectLesson(next)}
           >
             Следующий урок
-            <ArrowRight className="size-4" />
           </Button>
           <div className="flex-1" />
           <Button
             theme={lesson.completed ? "outline" : "ghost"}
-            size="m"
+            size="l"
+            Icon={Check}
             isLoading={isTogglingComplete}
             onClick={() => onToggleComplete(lesson.id)}
           >
-            <Check className="size-4" />
             {lesson.completed ? "Пройдено" : "Отметить пройденным"}
           </Button>
         </div>

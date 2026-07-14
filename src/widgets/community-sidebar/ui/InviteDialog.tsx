@@ -115,7 +115,7 @@ export default function InviteDialog({
 
             <div className="flex items-center justify-between gap-2">
               <span className="text-xs text-gray-500">Использована: {invite?.uses ?? 0} раз</span>
-              <Button theme="ghost" size="s" onClick={handleRevoke} isLoading={isRevoking}>
+              <Button theme="ghost" size="m" onClick={handleRevoke} isLoading={isRevoking}>
                 Отозвать ссылку
               </Button>
             </div>

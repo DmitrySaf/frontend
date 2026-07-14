@@ -174,7 +174,8 @@ export function StorefrontEditor({ value, onChange }: StorefrontEditorProps) {
         {value.features.length < MAX_FEATURES && (
           <Button
             theme="ghost"
-            size="s"
+            size="m"
+            Icon={Plus}
             onClick={() =>
               onChange({
                 ...value,
@@ -182,7 +183,6 @@ export function StorefrontEditor({ value, onChange }: StorefrontEditorProps) {
               })
             }
           >
-            <Plus className="size-3.5" />
             Добавить пункт
           </Button>
         )}

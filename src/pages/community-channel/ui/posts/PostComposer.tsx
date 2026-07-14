@@ -42,7 +42,7 @@ export function PostComposer({ channelId }: { channelId: string }) {
           >
             Написать пост для сообщества…
           </button>
-          <Button theme="primary" size="s" onClick={() => setIsExpanded(true)}>
+          <Button theme="primary" size="m" onClick={() => setIsExpanded(true)}>
             Опубликовать
           </Button>
         </div>

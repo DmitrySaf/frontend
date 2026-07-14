@@ -1,7 +1,6 @@
 "use client";
 
-import { Button } from "@/shared/components";
-import Image from "next/image";
+import { Button, LogoLockup } from "@/shared/components";
 import Link from "next/link";
 
 interface PublicHeaderProps {
@@ -11,9 +10,8 @@ interface PublicHeaderProps {
 export function PublicHeader({ isAuthed }: PublicHeaderProps) {
   return (
     <header className="shrink-0 h-15 bg-surface border-b border-gray-200 px-4 md:px-6 flex items-center justify-between">
-      <Link href="/" className="flex items-center gap-2.5">
-        <Image src="/logo.svg" alt="Bean" width={32} height={32} />
-        <span className="text-lg font-bold tracking-[-0.02em] text-ink">Bean</span>
+      <Link href="/" className="flex items-center">
+        <LogoLockup height={30} />
       </Link>
 
       {isAuthed ? (

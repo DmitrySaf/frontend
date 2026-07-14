@@ -7,8 +7,8 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
+  LogoTile,
 } from "@/shared/components";
-import Image from "next/image";
 
 interface AuthRequiredDialogProps {
   isOpen: boolean;
@@ -26,7 +26,7 @@ export function AuthRequiredDialog({ isOpen, onClose, onSuccess }: AuthRequiredD
       <DialogContent className="sm:max-w-sm">
         <DialogHeader>
           <div className="mx-auto mb-1">
-            <Image src="/logo.svg" alt="Bean" width={44} height={44} />
+            <LogoTile size={44} />
           </div>
           {/* px-10 перебивает базовый pr-10 (резерв под крестик) — заголовок остаётся по центру */}
           <DialogTitle className="px-10 text-center">Войдите, чтобы вступить</DialogTitle>

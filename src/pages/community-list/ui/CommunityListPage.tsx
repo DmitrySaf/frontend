@@ -1,9 +1,8 @@
 "use client";
 
 import { getLastVisitedCommunity, useCommunitiesQuery } from "@/entities/community";
-import { Button } from "@/shared/components";
+import { Button, LogoTile } from "@/shared/components";
 import { Loader2 } from "lucide-react";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useQueryState } from "nuqs";
 import { useEffect } from "react";
@@ -43,7 +42,7 @@ export function CommunityListPage() {
   return (
     <div className="flex-1 flex items-center justify-center">
       <div className="flex flex-col items-center gap-4 max-w-sm text-center px-6 animate-in fade-in zoom-in-95 slide-in-from-bottom-2 duration-400 ease-out-quart">
-        <Image src="/logo.svg" alt="Bean" width={56} height={56} />
+        <LogoTile size={56} />
         <div className="space-y-1.5">
           <h1 className="text-2xl font-bold text-ink">Создайте своё сообщество</h1>
           <p className="text-base text-gray-600">

@@ -6,10 +6,9 @@ import {
   useCommunityLogosQuery,
   useCreateCommunityMutation,
 } from "@/entities/community";
-import { Avatar, Button, ThemeToggle, Tooltip } from "@/shared/components";
+import { Avatar, Button, LogoTile, ThemeToggle, Tooltip } from "@/shared/components";
 import { CommunityCreateModal } from "@/widgets/community-create-modal";
 import { Plus } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useQueryState } from "nuqs";
@@ -56,9 +55,16 @@ export default function MainSidebar({ withCreateModal = true }: MainSidebarProps
       )}
       <div className="w-15 flex flex-col">
         <div className="flex-1 flex flex-col gap-3 w-12 self-center">
-          <Link href="/communities">
-            <Image src="/logo.svg" alt="Bean" width={48} height={48} priority />
+          <Link
+            href="/communities"
+            aria-label="Bean — все сообщества"
+            className="transition-transform duration-150 ease-out-quart hover:scale-[1.04] active:scale-95"
+          >
+            <LogoTile size={48} />
           </Link>
+          {/* Хайрлайн отделяет знак от списка сообществ — паттерн рейла Discord.
+              Обводки плитки мало: без разделителя знак читается как первое сообщество. */}
+          <div aria-hidden="true" className="h-px bg-gray-200" />
           <div className="flex flex-col gap-2">
             {communities?.map((community) => {
               const isActive = activeCommunitySlug === community.name;

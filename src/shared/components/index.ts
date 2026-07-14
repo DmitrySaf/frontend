@@ -1,5 +1,14 @@
 export { Avatar } from "./Avatar";
 export { Button, buttonVariants } from "./Button";
+export {
+  LogoMark,
+  LogoTile,
+  LogoLockup,
+  LOGO_TILE_VARIANTS,
+  LOGO_TONES,
+  type LogoTileVariant,
+  type LogoTone,
+} from "./Logo";
 export { DeleteDialog } from "./DeleteDialog";
 export {
   Dialog,

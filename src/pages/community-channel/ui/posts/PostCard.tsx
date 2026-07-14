@@ -96,8 +96,10 @@ export function PostCard({ post, isAdmin, onDelete }: PostCardProps) {
             </div>
             <div className="text-xs text-gray-500">{formatRelativeTime(post.createdAt)}</div>
           </div>
+          {/* Нейтральный, а не бренд-лайм: «Закреплено» — состояние поста.
+              Цвет айдентики не должен ничего означать, кроме принадлежности. */}
           {post.pinned && (
-            <span className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#DEFCAD] text-xs font-medium text-ink">
+            <span className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-gray-200 text-xs font-medium text-gray-700">
               <Pin className="size-3" />
               Закреплено
             </span>

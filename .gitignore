@@ -54,3 +54,5 @@ graphify-out/
 
 # Claude Code — локальные настройки/хуки, у каждого свои
 .claude/settings.json
+
+apple-design/

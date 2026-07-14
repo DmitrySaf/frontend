@@ -74,7 +74,7 @@ export function ChannelCreateModal({
   });
 
   const {
-    formState: { errors, isSubmitting },
+    formState: { errors, isSubmitting, isDirty },
     reset,
     watch,
     setValue,
@@ -133,7 +133,12 @@ export function ChannelCreateModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="sm:max-w-md" aria-describedby={undefined}>
+      {/* Форма: заполненную не закрыть случайным кликом снаружи — только явной «Отменой» */}
+      <DialogContent
+        className="sm:max-w-md"
+        aria-describedby={undefined}
+        dismissOnOutside={!isDirty}
+      >
         <DialogHeader>
           <DialogTitle>{isEditing ? "Настройки таба" : "Новый таб"}</DialogTitle>
         </DialogHeader>
@@ -250,9 +255,7 @@ export function ChannelCreateModal({
                       )}
                     />
                     <span className="flex-1 min-w-0">
-                      <span className="block text-[13px] font-semibold text-ink">
-                        {meta.name}
-                      </span>
+                      <span className="block text-[13px] font-semibold text-ink">{meta.name}</span>
                       <span className="block text-xs text-gray-600">{meta.description}</span>
                     </span>
                   </button>
@@ -267,7 +270,7 @@ export function ChannelCreateModal({
           </div>
 
           <DialogFooter>
-            <Button type="button" theme="ghost" size="m" onClick={handleClose}>
+            <Button type="button" theme="secondary" size="m" onClick={handleClose}>
               Отмена
             </Button>
             <Button type="submit" theme="primary" size="m" isLoading={isSubmitting}>

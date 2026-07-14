@@ -53,17 +53,21 @@ export function DeleteDialog({
 
   return (
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>
-      <DialogContent className="sm:max-w-md">
+      {/* Подтверждение = вынужденный выбор: ни крестика, ни клика снаружи. Случайный тап
+          не должен отвечать на вопрос, а третий (неподписанный) выход провоцирует закрыть
+          окно не читая. Остаются два подписанных действия и Esc. */}
+      <DialogContent className="sm:max-w-md" showClose={false} dismissOnOutside={false}>
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription>{description}</DialogDescription>
         </DialogHeader>
 
-        <DialogFooter>
-          <Button theme="outline" size="m" onClick={onClose} isDisabled={isPending}>
+        {/* split: варианты равноценны — на мобильном 50/50, обе в зоне пальца */}
+        <DialogFooter layout="split">
+          <Button theme="secondary" size="m" onClick={onClose} isDisabled={isPending}>
             {cancelText}
           </Button>
-          <Button theme="destructive" size="m" onClick={handleDelete} isLoading={isPending}>
+          <Button theme="destructiveTonal" size="m" onClick={handleDelete} isLoading={isPending}>
             {confirmText}
           </Button>
         </DialogFooter>

@@ -92,20 +92,28 @@ export default function InviteDialog({
           </div>
         ) : (
           <div className="space-y-2.5">
-            <div className="flex items-center gap-2">
-              <div className="flex-1 min-w-0 h-11 flex items-center px-3.5 rounded-lg bg-gray-100 inset-ring inset-ring-gray-200">
-                <span className="truncate text-sm text-gray-600 font-mono">{inviteLink}</span>
-              </div>
-              <Button
-                theme="outline"
-                size="m"
-                Icon={isCopied ? Check : Copy}
+            {/* Копирование живёт внутри поля: ссылка и действие над ней — один объект.
+                min-w-0 на обёртке и на тексте обязателен — иначе длинный URL распирает
+                flex-строку и модалка едет по горизонтали вместо усечения. */}
+            <div className="flex h-12 w-full min-w-0 items-center gap-2 rounded-xl bg-surface pl-3.5 pr-1.5 inset-ring inset-ring-gray-200">
+              <span className="min-w-0 flex-1 truncate font-mono text-sm text-gray-600">
+                {inviteLink}
+              </span>
+              <button
+                type="button"
                 onClick={handleCopy}
                 aria-label="Скопировать ссылку"
-              />
+                className="shrink-0 size-9 flex items-center justify-center rounded-lg bg-fill text-gray-600 transition-[background-color,color,transform] duration-150 ease-out-quart hover:bg-fill-hover hover:text-ink active:scale-95 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500/45"
+              >
+                {isCopied ? (
+                  <Check className="size-4 text-primary-500" />
+                ) : (
+                  <Copy className="size-4" />
+                )}
+              </button>
             </div>
 
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between gap-2">
               <span className="text-xs text-gray-500">Использована: {invite?.uses ?? 0} раз</span>
               <Button theme="ghost" size="s" onClick={handleRevoke} isLoading={isRevoking}>
                 Отозвать ссылку

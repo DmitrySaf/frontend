@@ -27,7 +27,7 @@ export function CommunityCreateModal({ isOpen, onClose, onSubmit }: CommunityCre
     defaultValues: DEFAULT_CREATE_PROJECT_VALUES,
   });
   const {
-    formState: { errors, isSubmitting },
+    formState: { errors, isSubmitting, isDirty },
     reset,
     watch,
     setValue,
@@ -55,7 +55,12 @@ export function CommunityCreateModal({ isOpen, onClose, onSubmit }: CommunityCre
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="sm:max-w-md" aria-describedby={undefined}>
+      {/* Форма: заполненную не закрыть случайным кликом снаружи — только явной «Отменой» */}
+      <DialogContent
+        className="sm:max-w-md"
+        aria-describedby={undefined}
+        dismissOnOutside={!isDirty}
+      >
         <DialogHeader>
           <DialogTitle>Создать новое сообщество</DialogTitle>
         </DialogHeader>
@@ -80,7 +85,10 @@ export function CommunityCreateModal({ isOpen, onClose, onSubmit }: CommunityCre
           />
 
           <DialogFooter>
-            <Button type="submit" theme="primary" size="l" fluid isLoading={isSubmitting}>
+            <Button type="button" theme="secondary" size="m" onClick={handleClose}>
+              Отмена
+            </Button>
+            <Button type="submit" theme="primary" size="m" isLoading={isSubmitting}>
               Создать
             </Button>
           </DialogFooter>

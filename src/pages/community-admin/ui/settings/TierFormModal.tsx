@@ -48,7 +48,7 @@ export function TierFormModal({ isOpen, onClose, onSubmit, tier }: TierFormModal
   });
 
   const {
-    formState: { errors, isSubmitting },
+    formState: { errors, isSubmitting, isDirty },
     reset,
     watch,
     setValue,
@@ -80,7 +80,12 @@ export function TierFormModal({ isOpen, onClose, onSubmit, tier }: TierFormModal
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="sm:max-w-md" aria-describedby={undefined}>
+      {/* Форма: заполненную не закрыть случайным кликом снаружи — только явной «Отменой» */}
+      <DialogContent
+        className="sm:max-w-md"
+        aria-describedby={undefined}
+        dismissOnOutside={!isDirty}
+      >
         <DialogHeader>
           <DialogTitle>{tier ? "Изменить тариф" : "Новый тариф"}</DialogTitle>
         </DialogHeader>
@@ -141,7 +146,7 @@ export function TierFormModal({ isOpen, onClose, onSubmit, tier }: TierFormModal
           </div>
 
           <DialogFooter>
-            <Button type="button" theme="ghost" size="m" onClick={handleClose}>
+            <Button type="button" theme="secondary" size="m" onClick={handleClose}>
               Отмена
             </Button>
             <Button type="submit" theme="primary" size="m" isLoading={isSubmitting}>

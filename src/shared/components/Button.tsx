@@ -11,9 +11,16 @@ const buttonVariants = cva(
     variants: {
       theme: {
         primary: "bg-primary-500 text-white shadow hover:bg-primary-400 active:bg-primary-600",
+        // Серая заливка вместо рамки — парная кнопка к primary в футере модалки
+        secondary: "bg-fill text-ink hover:bg-fill-hover active:bg-fill-hover/70",
         outline:
           "border border-input bg-background shadow-sm hover:bg-accent active:bg-gray-100/80",
         destructive: "bg-danger text-white shadow-sm hover:bg-danger/90 active:bg-danger/85",
+        // Тональный деструктив — для подтверждений. Сплошная заливка там вредна: в паре
+        // 50/50 она делает необратимое действие самой крупной и плотной мишенью окна,
+        // перевешивая безопасный выход. Красный обязан читаться как опасность, а не как
+        // главный акцент — плотность остаётся у «Отмены» (iOS-логика алерта).
+        destructiveTonal: "bg-danger/10 text-danger hover:bg-danger/15 active:bg-danger/20",
         ghost: "hover:bg-gray-100 active:bg-gray-200/60",
       },
       size: {
@@ -45,7 +52,7 @@ type BaseButtonProps = {
 
   // Styling & Variants
   className?: string;
-  theme: "primary" | "outline" | "destructive" | "ghost";
+  theme: "primary" | "secondary" | "destructiveTonal" | "outline" | "destructive" | "ghost";
   size: "s" | "m" | "l";
   fluid?: boolean;
 

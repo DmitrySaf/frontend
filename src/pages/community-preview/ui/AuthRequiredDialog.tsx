@@ -28,7 +28,8 @@ export function AuthRequiredDialog({ isOpen, onClose, onSuccess }: AuthRequiredD
           <div className="mx-auto mb-1">
             <Image src="/logo.svg" alt="Bean" width={44} height={44} />
           </div>
-          <DialogTitle className="text-center">Войдите, чтобы вступить</DialogTitle>
+          {/* px-10 перебивает базовый pr-10 (резерв под крестик) — заголовок остаётся по центру */}
+          <DialogTitle className="px-10 text-center">Войдите, чтобы вступить</DialogTitle>
           <DialogDescription className="text-center">
             Создайте аккаунт или войдите — вступление продолжится автоматически.
           </DialogDescription>

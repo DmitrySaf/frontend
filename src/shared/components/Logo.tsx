@@ -62,14 +62,18 @@ interface LogoTileProps {
   className?: string;
 }
 
-/* Плитка знака. От аватарок сообществ (тот же size-12 + rounded-xl, но заливка
-   светлым пастельным, насыщенность ~0.023) отличает подложка — спутать нельзя. */
+/* Плитка знака. От аватарок сообществ (тот же size-12, но заливка светлым пастельным,
+   насыщенность ~0.023) отличает подложка — спутать нельзя.
+
+   Радиус 14px обязан совпадать с `Avatar size="l" shape="square"`: в рейле плитка стоит
+   вплотную к аватаркам 48px, и разные углы на одной высоте читаются как брак. Если
+   меняется радиус аватарки — меняется и здесь. */
 function LogoTile({ variant = "acid-on-black", size = 48, className }: LogoTileProps) {
   return (
     <div
       style={{ width: size, height: size }}
       className={cn(
-        "flex items-center justify-center rounded-xl ring-1",
+        "flex items-center justify-center rounded-[14px] ring-1",
         LOGO_TILE_VARIANTS[variant],
         className
       )}

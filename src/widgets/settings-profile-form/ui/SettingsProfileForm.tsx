@@ -60,11 +60,11 @@ export function SettingsProfileForm({ initValues, onSubmit, isLoading }: Setting
         onSubmit={handleSubmit(onSubmit)}
         className={cn("relative space-y-6", !isDirty && "pb-[102px]")}
       >
-        <Input name="name" size="l" label="Имя" error={errors.name?.message} />
+        <Input name="name" size="xl" label="Имя" error={errors.name?.message} />
 
         <Input
           name="username"
-          size="l"
+          size="xl"
           label="Имя пользователя"
           prefix="@"
           error={errors.username?.message}
@@ -74,7 +74,7 @@ export function SettingsProfileForm({ initValues, onSubmit, isLoading }: Setting
           name="bio"
           label="О себе"
           placeholder="Расскажите о себе"
-          size="l"
+          size="xl"
           rows={3}
           error={errors.bio?.message}
         />
@@ -89,7 +89,7 @@ export function SettingsProfileForm({ initValues, onSubmit, isLoading }: Setting
               <Input
                 key={social.id}
                 name={social.id}
-                size="m"
+                size="l"
                 prefix={social.prefix}
                 prefixElement={
                   <Image
@@ -106,7 +106,7 @@ export function SettingsProfileForm({ initValues, onSubmit, isLoading }: Setting
             ))}
             <Input
               name="website"
-              size="m"
+              size="l"
               prefix="https://"
               prefixElement={<Globe className="size-5" />}
               error={errors.customLinks?.[0]?.url?.message}

@@ -20,10 +20,34 @@ interface SegmentedControlProps<T extends string> {
   className?: string;
 }
 
-/**
- * Сегмент-контрол по DS: утопленный трек #F5F5F5, активный сегмент —
- * белая пилюля (rounded-9 внутри rounded-12), скользящая между сегментами
- */
+/* Сегмент-контрол: утопленный трек, активный сегмент — светлая пилюля, скользящая
+   между сегментами.
+
+   Радиусы здесь НЕ выбираются, а выводятся: у вложенных скруглений внешний радиус
+   обязан равняться внутреннему плюс отступ, иначе углы не концентричны и между
+   пилюлей и треком видна щель переменной толщины. Раньше было p-3px + трек r16 при
+   пилюле r10 — то есть 16 против положенных 13.
+
+   При отступе 2px закон сходится со шкалой контролов, и все четыре числа оказываются
+   «своими»:
+     s: пилюля 28 r8  + 2×2 → трек 32, радиус 8+2  = 10
+     m: пилюля 32 r10 + 2×2 → трек 36, радиус 10+2 = 12
+   Высоты трека (32 и 36) попадают ровно в ступени s и m лестницы Button/Input. */
+const TRACK = {
+  s: "p-[2px] rounded-[10px]",
+  m: "p-[2px] rounded-[12px]",
+};
+
+const SEGMENT = {
+  s: "px-2.5 h-7 text-xs rounded-[8px]",
+  m: "px-3.5 h-8 text-sm rounded-[10px]",
+};
+
+const PILL = {
+  s: "rounded-[8px]",
+  m: "rounded-[10px]",
+};
+
 function SegmentedControl<T extends string>({
   options,
   value,
@@ -37,7 +61,7 @@ function SegmentedControl<T extends string>({
   return (
     <div
       role="tablist"
-      className={cn("inline-flex items-center gap-0.5 p-[3px] rounded-xl bg-gray-100", className)}
+      className={cn("inline-flex items-center gap-0.5 bg-gray-100", TRACK[size], className)}
     >
       {options.map((option) => {
         const Icon = option.icon;
@@ -50,8 +74,8 @@ function SegmentedControl<T extends string>({
             type="button"
             onClick={() => onChange(option.value)}
             className={cn(
-              "relative flex items-center gap-1.5 rounded-[10px] font-medium transition-colors duration-150 cursor-pointer",
-              size === "s" ? "px-2.5 h-7 text-xs" : "px-3.5 h-8 text-sm",
+              "relative flex items-center gap-1.5 font-medium transition-colors duration-150 cursor-pointer",
+              SEGMENT[size],
               isActive ? "text-ink" : "text-gray-600 hover:text-ink"
             )}
           >
@@ -63,7 +87,10 @@ function SegmentedControl<T extends string>({
                     ? { duration: 0 }
                     : { type: "spring", bounce: 0.15, duration: 0.35 }
                 }
-                className="absolute inset-0 rounded-[10px] bg-surface shadow-sm inset-ring inset-ring-gray-200"
+                className={cn(
+                  "absolute inset-0 bg-surface shadow-sm inset-ring inset-ring-gray-200",
+                  PILL[size]
+                )}
               />
             )}
             <span className="relative flex items-center gap-1.5">

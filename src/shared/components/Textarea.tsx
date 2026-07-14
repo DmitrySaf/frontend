@@ -9,7 +9,7 @@ export interface TextareaProps {
   name: string;
 
   // Custom Props
-  size: "l" | "m" | "s";
+  size: "m" | "l" | "xl";
   label?: string;
   error?: string;
   description?: string;
@@ -29,10 +29,14 @@ const textareaVariants = cva(
   "w-full inset-ring inset-ring-gray-200 placeholder:text-gray-500 focus:outline-0 focus:inset-ring-2 focus:inset-ring-primary-500 transition-all resize-none disabled:opacity-50 disabled:cursor-not-allowed",
   {
     variants: {
+      // Ступени и радиусы — как у Input и Button. Кегль 16px на всех: ниже 16px
+      // Safari на iOS зумит страницу при фокусе (см. комментарий в Input.tsx).
+      // Прежняя ступень `s` удалена: она отличалась от `m` только паддингом
+      // (py-1.5 против py-3) при одинаковом кегле — это не ступень.
       size: {
-        l: "text-base py-3.5 px-4 rounded-xl",
-        m: "text-sm py-3 px-3 rounded-lg",
-        s: "text-sm py-1.5 px-3 rounded-[10px]",
+        m: "text-base py-2 px-3 rounded-[10px]",
+        l: "text-base py-2.5 px-3.5 rounded-[12px]",
+        xl: "text-base py-3 px-4 rounded-[14px]",
       },
       hasError: {
         true: "inset-ring-danger focus:inset-ring-danger",
@@ -40,7 +44,7 @@ const textareaVariants = cva(
       },
     },
     defaultVariants: {
-      size: "m",
+      size: "l",
       hasError: false,
     },
   }

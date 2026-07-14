@@ -28,8 +28,10 @@ interface AvatarProps {
   // Custom Props
   name: string;
   src?: string | null;
+  /** Контентная шкала (32/40/48), НЕ лестница контролов Button/Input — аватарка не
+      выстраивается с кнопкой кромка в кромку, ей незачем совпадать с её высотами. */
   size?: "s" | "m" | "l";
-  /** square — сообщества (rounded-xl), circle — люди (rounded-full) */
+  /** square — сообщества, circle — люди */
   shape?: "square" | "circle";
 
   // Styling
@@ -42,6 +44,18 @@ const sizeClasses = {
   l: "size-12 text-lg",
 };
 
+/* Радиус square растёт вместе с размером, а не стоит константой. Раньше на всех трёх
+   размерах висел один `rounded-xl` (16px) — отношение радиуса к стороне выходило
+   0.50 / 0.40 / 0.33, и аватарка 32px превращалась почти в круг, хотя `square`
+   существует ровно затем, чтобы отличаться от `circle`. Отношение ≈0.28–0.31 — то же,
+   что у кнопок и полей. Плитка логотипа в рейле стоит вплотную к аватаркам 48px,
+   поэтому её радиус (Logo.tsx) обязан совпадать с `l`. */
+const squareRadius = {
+  s: "rounded-[10px]",
+  m: "rounded-[12px]",
+  l: "rounded-[14px]",
+};
+
 const Avatar = React.forwardRef<React.ComponentRef<typeof AvatarPrimitive.Root>, AvatarProps>(
   ({ name, src, size = "m", shape = "circle", className }, ref) => {
     const initial = name.trim().charAt(0).toUpperCase() || "?";
@@ -52,7 +66,7 @@ const Avatar = React.forwardRef<React.ComponentRef<typeof AvatarPrimitive.Root>,
         className={cn(
           "relative flex shrink-0 overflow-hidden select-none",
           sizeClasses[size],
-          shape === "square" ? "rounded-xl" : "rounded-full",
+          shape === "square" ? squareRadius[size] : "rounded-full",
           className
         )}
       >

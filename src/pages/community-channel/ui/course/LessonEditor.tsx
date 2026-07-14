@@ -97,7 +97,7 @@ export function LessonEditor({ lesson, onSave, onDelete }: LessonEditorProps) {
         <Form methods={methods} onSubmit={handleSubmit} className="space-y-4">
           <Input
             name="title"
-            size="m"
+            size="l"
             label="Название урока"
             maxLength={LESSON_TITLE_MAX_LENGTH}
             error={errors.title?.message}
@@ -105,7 +105,7 @@ export function LessonEditor({ lesson, onSave, onDelete }: LessonEditorProps) {
 
           <Textarea
             name="description"
-            size="m"
+            size="l"
             label="Описание"
             placeholder="О чём этот урок"
             rows={4}

@@ -188,7 +188,7 @@ export function ChannelCreateModal({
 
           <Input
             name="name"
-            size="m"
+            size="l"
             label="Название таба"
             placeholder={NAME_PLACEHOLDERS[selectedType]}
             maxLength={CHANNEL_NAME_MAX_LENGTH}
@@ -201,7 +201,7 @@ export function ChannelCreateModal({
             {isCreatingCategory ? (
               <Input
                 name="newCategoryName"
-                size="m"
+                size="l"
                 placeholder="Название новой категории"
                 error={errors.categoryId?.message}
               />

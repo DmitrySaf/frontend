@@ -17,13 +17,25 @@ const inputVariants = tv({
     helperText: "text-sm",
   },
   variants: {
+    /* Ступени — те же, что у Button (36/44/48): поле и кнопка одной ступени обязаны
+       совпадать по высоте, иначе в строке «поле + кнопка» они не сядут по одной линии.
+       Радиус растёт со ступенью по тому же закону — отношение к высоте ≈0.28.
+
+       Кегль — 16px на ВСЕХ ступенях, и это не эстетика: Safari на iOS принудительно
+       зумит страницу при фокусе на поле с кеглем меньше 16px. Apple делает так же —
+       у него текстовое поле 17pt независимо от высоты. Поэтому ступень меняет высоту,
+       паддинг, радиус и иконку, но никогда не кегль. */
     size: {
-      l: {
-        inputWrapper: "h-12 px-4 gap-3 rounded-xl text-base",
-        prefixElement: "size-6",
-      },
       m: {
-        inputWrapper: "h-10 px-3 gap-2.5 rounded-lg text-sm",
+        inputWrapper: "h-9 px-3 gap-2 rounded-[10px] text-base",
+        prefixElement: "size-4",
+      },
+      l: {
+        inputWrapper: "h-11 px-3.5 gap-2.5 rounded-[12px] text-base",
+        prefixElement: "size-[18px]",
+      },
+      xl: {
+        inputWrapper: "h-12 px-4 gap-3 rounded-[14px] text-base",
         prefixElement: "size-5",
       },
     },
@@ -52,7 +64,7 @@ const inputVariants = tv({
 
 export interface InputProps {
   name: string;
-  size: "l" | "m";
+  size: "m" | "l" | "xl";
   // Custom Props
   label?: string;
   placeholder?: string;

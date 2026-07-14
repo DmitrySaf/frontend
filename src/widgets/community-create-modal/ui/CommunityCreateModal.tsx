@@ -68,7 +68,7 @@ export function CommunityCreateModal({ isOpen, onClose, onSubmit }: CommunityCre
         <Form methods={methods} onSubmit={handleSubmit} className="space-y-4">
           <Input
             name="displayName"
-            size="l"
+            size="xl"
             label="Название сообщества"
             placeholder="Введите название сообщества"
             error={errors.displayName?.message}
@@ -76,7 +76,7 @@ export function CommunityCreateModal({ isOpen, onClose, onSubmit }: CommunityCre
 
           <Input
             name="name"
-            size="l"
+            size="xl"
             label="URL"
             description="Уникальное имя — подставляется автоматически"
             prefix="bean.com/"

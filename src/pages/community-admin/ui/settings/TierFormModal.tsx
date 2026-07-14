@@ -93,7 +93,7 @@ export function TierFormModal({ isOpen, onClose, onSubmit, tier }: TierFormModal
         <Form methods={methods} onSubmit={handleSubmit} className="space-y-4">
           <Input
             name="name"
-            size="m"
+            size="l"
             label="Название"
             placeholder="Например, Месячный"
             maxLength={TIER_NAME_MAX_LENGTH}
@@ -116,7 +116,7 @@ export function TierFormModal({ isOpen, onClose, onSubmit, tier }: TierFormModal
             <div className="flex-1">
               <Input
                 name="priceRubles"
-                size="m"
+                size="l"
                 label="Цена, ₽"
                 placeholder="990"
                 error={errors.priceRubles?.message}
@@ -126,7 +126,7 @@ export function TierFormModal({ isOpen, onClose, onSubmit, tier }: TierFormModal
               <div className="flex-1">
                 <Input
                   name="periodMonths"
-                  size="m"
+                  size="l"
                   label="Период, мес"
                   placeholder="1"
                   error={errors.periodMonths?.message}
@@ -136,7 +136,7 @@ export function TierFormModal({ isOpen, onClose, onSubmit, tier }: TierFormModal
             <div className="flex-1">
               <Input
                 name="discountPercent"
-                size="m"
+                size="l"
                 label="Скидка, %"
                 placeholder="—"
                 description="Необязательно"

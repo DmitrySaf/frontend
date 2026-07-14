@@ -94,7 +94,7 @@ export function SettingsSecurity() {
           <Form methods={emailMethods} onSubmit={(e) => e.preventDefault()}>
             <div className="mt-4 flex items-end gap-2">
               <div className="flex-1">
-                <Input name="email" label="Новый email" size="l" placeholder="example@email.com" />
+                <Input name="email" label="Новый email" size="xl" placeholder="example@email.com" />
               </div>
               <Button
                 type="button"

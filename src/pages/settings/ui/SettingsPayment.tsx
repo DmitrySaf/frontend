@@ -81,28 +81,28 @@ function AddCardModal({
         <Form methods={methods} onSubmit={handleSubmit} className="space-y-3.5">
           <Input
             name="lastName"
-            size="m"
+            size="l"
             label="Фамилия"
             placeholder="Паровозов"
             error={errors.lastName?.message}
           />
           <Input
             name="firstName"
-            size="m"
+            size="l"
             label="Имя"
             placeholder="Аркадий"
             error={errors.firstName?.message}
           />
           <Input
             name="middleName"
-            size="m"
+            size="l"
             label="Отчество"
             placeholder="Петрович"
             error={errors.middleName?.message}
           />
           <Input
             name="cardNumber"
-            size="m"
+            size="l"
             label="Номер карты"
             placeholder="0000 0000 0000 0000"
             mask="0000 0000 0000 0000"

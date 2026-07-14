@@ -153,14 +153,14 @@ export function CommunitySettingsPage({ slug }: { slug: string }) {
           <div className="p-4 md:p-6 max-w-2xl space-y-6">
             <Input
               name="displayName"
-              size="m"
+              size="l"
               label="Название сообщества"
               error={errors.displayName?.message}
             />
 
             <Textarea
               name="description"
-              size="m"
+              size="l"
               label="Описание"
               placeholder="Расскажите, о чём ваше сообщество"
               rows={3}
@@ -169,7 +169,7 @@ export function CommunitySettingsPage({ slug }: { slug: string }) {
 
             <Input
               name="slug"
-              size="m"
+              size="l"
               label="Публичный адрес"
               prefix="bean.com/"
               isDisabled

@@ -13,13 +13,13 @@ const inputVariants = tv({
     // Иконки по краям — без разделителя: иконка, зазор, текст (как поле поиска Apple).
     // Размер жёстко навязывается слотом (*:size-…), чтобы call-site не приносил свой.
     iconSlot: "shrink-0 flex items-center justify-center text-gray-500 pointer-events-none",
-    // Крестик очистки — заливка-круг, тот же язык, что кружок закрытия модалки
+    /* Встроенные кнопки поля (очистка, действие) — ghost-прямоугольники. Радиус не
+       выбирается, а выводится законом концентричности (§4.3): радиус поля − зазор до
+       кромки. m: 10−4=6, l: 12−6=6, xl: 14−6=8. Фон появляется только на ховере. */
     clearButton:
-      "shrink-0 flex items-center justify-center rounded-full bg-fill text-gray-500 cursor-pointer transition-[background-color,color] duration-150 hover:bg-fill-hover hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500/45",
-    // Кнопка-действие справа (копировать и т.п.) — круглая ghost: круг всегда
-    // концентричен радиусу поля, закон «внутренний = внешний − зазор» не нарушается
+      "shrink-0 flex items-center justify-center text-gray-500 cursor-pointer transition-[background-color,color] duration-150 hover:bg-fill hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500/45",
     actionButton:
-      "shrink-0 flex items-center justify-center rounded-full text-gray-600 cursor-pointer transition-[background-color,color,transform] duration-150 ease-out-quart hover:bg-fill hover:text-ink active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500/45",
+      "shrink-0 flex items-center justify-center text-gray-600 cursor-pointer transition-[background-color,color,transform] duration-150 ease-out-quart hover:bg-fill hover:text-ink active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500/45",
     actionIcon: "flex items-center justify-center pointer-events-none *:size-full *:object-contain",
     inputContainer: "flex-1 flex items-center min-w-0",
     prefix: "shrink-0 select-none whitespace-nowrap text-gray-500 pointer-events-none",
@@ -34,22 +34,22 @@ const inputVariants = tv({
       m: {
         inputWrapper: "h-9 px-3 gap-2 rounded-[10px] text-base",
         iconSlot: "size-4 *:size-4 *:object-contain",
-        clearButton: "size-[18px] [&_svg]:size-2.5",
-        actionButton: "size-7",
+        clearButton: "size-[18px] rounded-[6px] [&_svg]:size-2.5",
+        actionButton: "size-7 rounded-[6px]",
         actionIcon: "size-4",
       },
       l: {
         inputWrapper: "h-11 px-3.5 gap-2.5 rounded-[12px] text-base",
         iconSlot: "size-[18px] *:size-[18px] *:object-contain",
-        clearButton: "size-5 [&_svg]:size-3",
-        actionButton: "size-8",
+        clearButton: "size-5 rounded-[6px] [&_svg]:size-3",
+        actionButton: "size-8 rounded-[6px]",
         actionIcon: "size-[18px]",
       },
       xl: {
         inputWrapper: "h-12 px-4 gap-3 rounded-[14px] text-base",
         iconSlot: "size-5 *:size-5 *:object-contain",
-        clearButton: "size-[22px] [&_svg]:size-3",
-        actionButton: "size-9",
+        clearButton: "size-[22px] rounded-[8px] [&_svg]:size-3",
+        actionButton: "size-9 rounded-[8px]",
         actionIcon: "size-5",
       },
     },

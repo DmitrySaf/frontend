@@ -70,10 +70,11 @@ const CLEAR_POS = {
   xl: "top-3 right-3",
 };
 
+// Ghost-прямоугольник, радиус по закону концентричности — как у крестика в Input
 const CLEAR_SIZE = {
-  m: "size-[18px] [&_svg]:size-2.5",
-  l: "size-5 [&_svg]:size-3",
-  xl: "size-[22px] [&_svg]:size-3",
+  m: "size-[18px] rounded-[6px] [&_svg]:size-2.5",
+  l: "size-5 rounded-[6px] [&_svg]:size-3",
+  xl: "size-[22px] rounded-[8px] [&_svg]:size-3",
 };
 
 const Textarea = ({
@@ -117,7 +118,7 @@ const Textarea = ({
               type="button"
               aria-label="Очистить"
               className={cn(
-                "absolute flex items-center justify-center rounded-full bg-fill text-gray-500 cursor-pointer transition-[background-color,color] duration-150 hover:bg-fill-hover hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500/45",
+                "absolute flex items-center justify-center text-gray-500 cursor-pointer transition-[background-color,color] duration-150 hover:bg-fill hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500/45",
                 CLEAR_POS[size],
                 CLEAR_SIZE[size]
               )}

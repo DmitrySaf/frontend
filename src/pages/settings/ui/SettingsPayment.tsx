@@ -113,7 +113,7 @@ function AddCardModal({
             <Button type="button" theme="secondary" size="l" onClick={handleClose}>
               Отмена
             </Button>
-            <Button type="submit" theme="primary" size="l" Icon={Plus} isLoading={isSubmitting}>
+            <Button type="submit" theme="primary" size="l" isLoading={isSubmitting}>
               Добавить
             </Button>
           </DialogFooter>

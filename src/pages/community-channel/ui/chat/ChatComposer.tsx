@@ -50,7 +50,7 @@ export function ChatComposer({ channelName, onSend, isSending }: ChatComposerPro
 
   return (
     <div className="shrink-0 px-3 md:px-6 pb-3 md:pb-4 pt-2">
-      <div className="relative flex items-end gap-3 px-3.5 py-2.5 rounded-lg bg-gray-100 inset-ring inset-ring-gray-200 focus-within:inset-ring-2 focus-within:inset-ring-primary-500 transition-shadow">
+      <div className="relative flex items-end gap-3 px-3.5 py-2.5 rounded-[12px] bg-gray-100 inset-ring inset-ring-gray-200 focus-within:inset-ring-2 focus-within:inset-ring-primary-500 transition-shadow">
         <textarea
           ref={textareaRef}
           value={value}
@@ -62,7 +62,7 @@ export function ChatComposer({ channelName, onSend, isSending }: ChatComposerPro
           placeholder={`Написать в #${channelName}…`}
           maxLength={MESSAGE_MAX_LENGTH}
           rows={1}
-          className="flex-1 resize-none bg-transparent text-sm text-ink placeholder:text-gray-500 focus:outline-none leading-[1.45] max-h-[120px]"
+          className="flex-1 resize-none bg-transparent text-base text-ink placeholder:text-gray-500 focus:outline-none leading-[1.45] max-h-[120px]"
         />
         <button
           type="button"

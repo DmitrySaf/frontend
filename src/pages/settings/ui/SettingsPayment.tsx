@@ -190,7 +190,7 @@ export function SettingsPayment() {
                 {card.isDefault && <span className="size-2.5 rounded-full bg-primary-500" />}
               </button>
 
-              <div className="w-11 h-[30px] shrink-0 rounded-[7px] border border-gray-200 bg-gray-100 flex items-center justify-center">
+              <div className="w-11 h-[30px] shrink-0 rounded-[8px] border border-gray-200 bg-gray-100 flex items-center justify-center">
                 <CreditCard className="size-[18px] text-gray-600" />
               </div>
 

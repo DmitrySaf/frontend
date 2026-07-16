@@ -112,7 +112,7 @@ export function ChatMessageItem({
                   setIsEditing(false);
                 }
               }}
-              className="w-full resize-none rounded-[10px] bg-surface px-3 py-2 text-sm text-ink inset-ring inset-ring-gray-200 focus:outline-none focus:inset-ring-2 focus:inset-ring-primary-500"
+              className="w-full resize-none rounded-[10px] bg-surface px-3 py-2 text-base text-ink inset-ring inset-ring-gray-200 focus:outline-none focus:inset-ring-2 focus:inset-ring-primary-500"
             />
             <p className="text-xs text-gray-500">Enter — сохранить · Esc — отменить</p>
           </div>

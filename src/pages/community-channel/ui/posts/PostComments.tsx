@@ -70,7 +70,7 @@ export function PostComments({ postId, channelId }: PostCommentsProps) {
 
       <div className="flex items-center gap-2.5">
         <Avatar name={profile?.displayName ?? "Вы"} src={profile?.avatarUrl} size="s" />
-        <div className="flex-1 flex items-center gap-2 px-3 h-10 rounded-[12px] bg-gray-100 inset-ring inset-ring-gray-200 focus-within:inset-ring-2 focus-within:inset-ring-primary-500 transition-shadow">
+        <div className="flex-1 flex items-center gap-2 px-3 h-9 rounded-[10px] bg-gray-100 inset-ring inset-ring-gray-200 focus-within:inset-ring-2 focus-within:inset-ring-primary-500 transition-shadow">
           <input
             value={value}
             maxLength={COMMENT_MAX_LENGTH}
@@ -82,7 +82,7 @@ export function PostComments({ postId, channelId }: PostCommentsProps) {
               }
             }}
             placeholder="Написать комментарий…"
-            className="flex-1 bg-transparent text-sm text-ink placeholder:text-gray-500 focus:outline-none"
+            className="flex-1 bg-transparent text-base text-ink placeholder:text-gray-500 focus:outline-none"
           />
           <button
             type="button"

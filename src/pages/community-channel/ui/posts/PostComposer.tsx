@@ -38,7 +38,7 @@ export function PostComposer({ channelId }: { channelId: string }) {
           <button
             type="button"
             onClick={() => setIsExpanded(true)}
-            className="flex-1 h-11 px-3.5 flex items-center rounded-[12px] bg-gray-100 inset-ring inset-ring-gray-200 text-sm text-gray-500 text-left hover:bg-gray-50 transition-colors cursor-pointer"
+            className="flex-1 h-11 px-3.5 flex items-center rounded-[12px] bg-gray-100 inset-ring inset-ring-gray-200 text-base text-gray-500 text-left hover:bg-gray-50 transition-colors cursor-pointer"
           >
             Написать пост для сообщества…
           </button>

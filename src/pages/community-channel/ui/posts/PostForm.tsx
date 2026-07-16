@@ -75,7 +75,7 @@ export function PostForm({ initialValues, submitLabel, onSubmit, onCancel }: Pos
           {...register("content")}
           placeholder="Расскажите подробнее…"
           rows={4}
-          className="w-full resize-none bg-transparent text-sm text-gray-800 leading-[1.5] placeholder:text-gray-400 focus:outline-none"
+          className="w-full resize-none bg-transparent text-base text-gray-800 leading-[1.5] placeholder:text-gray-400 focus:outline-none"
         />
         {errors.content?.message && (
           <p className="mt-1 text-sm text-danger">{errors.content.message}</p>
@@ -90,7 +90,7 @@ export function PostForm({ initialValues, submitLabel, onSubmit, onCancel }: Pos
             type="button"
             onClick={() => setCoverUrl(null)}
             aria-label="Убрать обложку"
-            className="absolute top-2.5 right-2.5 size-8 flex items-center justify-center rounded-lg bg-surface/90 border border-gray-200 text-gray-600 hover:text-ink cursor-pointer"
+            className="absolute top-2.5 right-2.5 size-8 flex items-center justify-center rounded-[10px] bg-surface/90 border border-gray-200 text-gray-600 hover:text-ink cursor-pointer"
           >
             <X className="size-4" />
           </button>
@@ -99,7 +99,7 @@ export function PostForm({ initialValues, submitLabel, onSubmit, onCancel }: Pos
         <button
           type="button"
           onClick={() => fileInputRef.current?.click()}
-          className="flex items-center gap-2 px-3.5 h-10 rounded-[12px] border border-dashed border-gray-300 text-sm text-gray-600 hover:border-gray-400 hover:text-gray-800 transition-colors cursor-pointer"
+          className="flex items-center gap-2 px-3.5 h-9 rounded-[10px] border border-dashed border-gray-300 text-sm text-gray-600 hover:border-gray-400 hover:text-gray-800 transition-colors cursor-pointer"
         >
           <ImagePlus className="size-4" />
           Добавить обложку

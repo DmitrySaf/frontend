@@ -5,7 +5,7 @@ import * as React from "react";
 import { cn } from "@/shared/utils";
 
 const tabVariants = cva(
-  "w-full flex items-center space-x-2.5 pl-3 pr-4 py-2.5 rounded-lg text-left transition-colors duration-150 ease-out-quart font-semibold cursor-pointer",
+  "w-full flex items-center space-x-2.5 pl-3 pr-4 py-2.5 rounded-[10px] text-left transition-colors duration-150 ease-out-quart font-semibold cursor-pointer",
   {
     variants: {
       isActive: {

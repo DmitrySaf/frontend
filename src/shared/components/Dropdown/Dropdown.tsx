@@ -17,7 +17,9 @@ const DropdownMenuContent = React.forwardRef<
       ref={ref}
       sideOffset={sideOffset}
       className={cn(
-        "z-[var(--z-dropdown)] min-w-[200px] overflow-hidden rounded-xl border border-gray-200 bg-surface p-1 shadow-lg",
+        // Радиусы явные (rounded-xl тут 16px из-за @theme): контейнер 12, пункты 8 —
+        // концентрично при p-1: внутренний = внешний − зазор 4 (закон §4.3)
+        "z-[var(--z-dropdown)] min-w-[200px] overflow-hidden rounded-[12px] border border-gray-200 bg-surface p-1 shadow-lg",
         "origin-[var(--radix-dropdown-menu-content-transform-origin)] duration-200 ease-out-expo data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:duration-150 data-[state=closed]:ease-out-quart data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-1 data-[side=left]:slide-in-from-right-1 data-[side=right]:slide-in-from-left-1 data-[side=top]:slide-in-from-bottom-1",
         className
       )}
@@ -36,7 +38,7 @@ const DropdownMenuItem = React.forwardRef<
   <DropdownMenuPrimitive.Item
     ref={ref}
     className={cn(
-      "relative flex cursor-pointer select-none items-center rounded-lg px-4 py-2.5 text-sm font-medium outline-none transition-colors",
+      "relative flex cursor-pointer select-none items-center rounded-[8px] px-4 py-2.5 text-sm font-medium outline-none transition-colors",
       "text-gray-700 hover:bg-gray-100 hover:text-gray-900",
       "focus:bg-gray-100 focus:text-gray-900",
       "data-[disabled]:pointer-events-none data-[disabled]:opacity-50",

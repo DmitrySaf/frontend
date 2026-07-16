@@ -103,7 +103,7 @@ export default function InviteDialog({
                 type="button"
                 onClick={handleCopy}
                 aria-label="Скопировать ссылку"
-                className="shrink-0 size-9 flex items-center justify-center rounded-[8px] bg-fill text-gray-600 transition-[background-color,color,transform] duration-150 ease-out-quart hover:bg-fill-hover hover:text-ink active:scale-95 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500/45"
+                className="shrink-0 size-9 flex items-center justify-center rounded-[8px] text-gray-600 transition-[background-color,color,transform] duration-150 ease-out-quart hover:bg-fill hover:text-ink active:scale-95 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500/45"
               >
                 {isCopied ? (
                   <Check className="size-4 text-primary-500" />

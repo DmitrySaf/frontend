@@ -91,15 +91,8 @@ export function SettingsProfileForm({ initValues, onSubmit, isLoading }: Setting
                 name={social.id}
                 size="l"
                 prefix={social.prefix}
-                prefixElement={
-                  <Image
-                    src={social.icon}
-                    alt={social.id}
-                    width={20}
-                    height={20}
-                    className="size-5 object-contain"
-                    unoptimized
-                  />
+                Icon={
+                  <Image src={social.icon} alt={social.id} width={20} height={20} unoptimized />
                 }
                 error={errors[social.id]?.message}
               />
@@ -108,7 +101,7 @@ export function SettingsProfileForm({ initValues, onSubmit, isLoading }: Setting
               name="website"
               size="l"
               prefix="https://"
-              prefixElement={<Globe className="size-5" />}
+              Icon={Globe}
               error={errors.customLinks?.[0]?.url?.message}
             />
           </div>

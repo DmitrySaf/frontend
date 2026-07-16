@@ -1,6 +1,7 @@
 "use client";
 
-import { useMemo } from "react";
+import { X } from "lucide-react";
+import { isValidElement, useMemo } from "react";
 import { useFormContext } from "react-hook-form";
 import { IMaskInput } from "react-imask";
 import { tv } from "tailwind-variants";
@@ -9,34 +10,47 @@ const inputVariants = tv({
   slots: {
     inputWrapper:
       "w-full flex items-center cursor-text inset-ring inset-ring-gray-200 transition-[box-shadow,opacity] duration-150 focus-within:outline-0 focus-within:inset-ring-2 focus-within:inset-ring-primary-500",
-    prefixElement: "shrink-0 flex items-center justify-center text-gray-500",
-    divider: "shrink-0 w-px h-5 bg-gray-200",
+    // Иконки по краям — без разделителя: иконка, зазор, текст (как поле поиска Apple).
+    // Размер жёстко навязывается слотом (*:size-…), чтобы call-site не приносил свой.
+    iconSlot: "shrink-0 flex items-center justify-center text-gray-500 pointer-events-none",
+    // Крестик очистки — заливка-круг, тот же язык, что кружок закрытия модалки
+    clearButton:
+      "shrink-0 flex items-center justify-center rounded-full bg-fill text-gray-500 cursor-pointer transition-[background-color,color] duration-150 hover:bg-fill-hover hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500/45",
+    // Кнопка-действие справа (копировать и т.п.) — круглая ghost: круг всегда
+    // концентричен радиусу поля, закон «внутренний = внешний − зазор» не нарушается
+    actionButton:
+      "shrink-0 flex items-center justify-center rounded-full text-gray-600 cursor-pointer transition-[background-color,color,transform] duration-150 ease-out-quart hover:bg-fill hover:text-ink active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500/45",
+    actionIcon: "flex items-center justify-center pointer-events-none *:size-full *:object-contain",
     inputContainer: "flex-1 flex items-center min-w-0",
     prefix: "shrink-0 select-none whitespace-nowrap text-gray-500 pointer-events-none",
     input: "w-full min-w-0 bg-transparent placeholder:text-gray-500 focus:outline-0",
     helperText: "text-sm",
   },
   variants: {
-    /* Ступени — те же, что у Button (36/44/48): поле и кнопка одной ступени обязаны
-       совпадать по высоте, иначе в строке «поле + кнопка» они не сядут по одной линии.
-       Радиус растёт со ступенью по тому же закону — отношение к высоте ≈0.28.
-
-       Кегль — 16px на ВСЕХ ступенях, и это не эстетика: Safari на iOS принудительно
-       зумит страницу при фокусе на поле с кеглем меньше 16px. Apple делает так же —
-       у него текстовое поле 17pt независимо от высоты. Поэтому ступень меняет высоту,
-       паддинг, радиус и иконку, но никогда не кегль. */
+    /* Лестница контролов (см. DESIGN.md §4.3): высоты и радиусы — те же, что у Button.
+       Кегль — 16px на ВСЕХ ступенях: ниже Safari на iOS зумит страницу при фокусе.
+       Иконки едут со ступенью: 16/18/20. */
     size: {
       m: {
         inputWrapper: "h-9 px-3 gap-2 rounded-[10px] text-base",
-        prefixElement: "size-4",
+        iconSlot: "size-4 *:size-4 *:object-contain",
+        clearButton: "size-[18px] [&_svg]:size-2.5",
+        actionButton: "size-7",
+        actionIcon: "size-4",
       },
       l: {
         inputWrapper: "h-11 px-3.5 gap-2.5 rounded-[12px] text-base",
-        prefixElement: "size-[18px]",
+        iconSlot: "size-[18px] *:size-[18px] *:object-contain",
+        clearButton: "size-5 [&_svg]:size-3",
+        actionButton: "size-8",
+        actionIcon: "size-[18px]",
       },
       xl: {
         inputWrapper: "h-12 px-4 gap-3 rounded-[14px] text-base",
-        prefixElement: "size-5",
+        iconSlot: "size-5 *:size-5 *:object-contain",
+        clearButton: "size-[22px] [&_svg]:size-3",
+        actionButton: "size-9",
+        actionIcon: "size-5",
       },
     },
     hasError: {
@@ -48,10 +62,11 @@ const inputVariants = tv({
         helperText: "text-gray-500",
       },
     },
-    hasPrefixElement: {
-      // Иконка несёт собственный оптический отступ — компенсируем слева.
+    // Моно — для ссылок, кодов, номеров карт (правило DESIGN.md §3: моно = цифры/коды)
+    mono: {
       true: {
-        inputWrapper: "pl-3",
+        input: "font-mono",
+        prefix: "font-mono",
       },
     },
     isDisabled: {
@@ -59,8 +74,25 @@ const inputVariants = tv({
         inputWrapper: "opacity-50 cursor-not-allowed",
       },
     },
+    // Кнопка справа крупнее текстового паддинга — поле поджимается, чтобы она
+    // стояла у кромки (как кнопка копирования в поле инвайта)
+    trailing: {
+      action: {},
+      clear: {},
+      none: {},
+    },
   },
+  compoundVariants: [
+    { trailing: "action", size: "m", class: { inputWrapper: "pr-1" } },
+    { trailing: "action", size: "l", class: { inputWrapper: "pr-1.5" } },
+    { trailing: "action", size: "xl", class: { inputWrapper: "pr-1.5" } },
+    { trailing: "clear", size: "m", class: { inputWrapper: "pr-2" } },
+    { trailing: "clear", size: "l", class: { inputWrapper: "pr-2" } },
+    { trailing: "clear", size: "xl", class: { inputWrapper: "pr-2.5" } },
+  ],
 });
+
+type IconProp = React.ComponentType<{ className?: string }> | React.ReactElement;
 
 export interface InputProps {
   name: string;
@@ -71,8 +103,19 @@ export interface InputProps {
   error?: string;
   description?: string;
   maxLength?: number;
+  /** Текстовый префикс одной строкой со значением («bean.com/») */
   prefix?: string;
-  prefixElement?: React.ReactNode;
+  /** Иконка слева: lucide-компонент или готовый элемент (напр. next/image) — размер задаёт ступень */
+  Icon?: IconProp;
+  /** Иконка справа. Сама по себе — декоративная; с onIconRightClick — круглая кнопка-действие */
+  IconRight?: IconProp;
+  /** Делает IconRight кнопкой (копировать, показать пароль…). aria-label обязателен */
+  onIconRightClick?: () => void;
+  iconRightLabel?: string;
+  /** Крестик очистки при непустом значении (паттерн iOS text field) */
+  isClearable?: boolean;
+  /** Моно-шрифт значения — ссылки, коды, номера карт */
+  mono?: boolean;
   autocomplete?: string;
   isDisabled?: boolean;
   onBlur?: () => void;
@@ -92,13 +135,30 @@ export interface InputProps {
   maskOptions?: Record<string, unknown>;
 }
 
+function renderIcon(icon: IconProp, slotClass: string) {
+  if (isValidElement(icon)) {
+    return <span className={slotClass}>{icon}</span>;
+  }
+  const IconComponent = icon as React.ComponentType<{ className?: string }>;
+  return (
+    <span className={slotClass}>
+      <IconComponent />
+    </span>
+  );
+}
+
 const Input = ({
   name,
   size,
   label,
   maxLength,
   prefix,
-  prefixElement,
+  Icon,
+  IconRight,
+  onIconRightClick,
+  iconRightLabel,
+  isClearable,
+  mono,
   autocomplete = "off",
   error,
   description,
@@ -122,12 +182,20 @@ const Input = ({
     customOnBlur?.();
   };
 
+  const showClear = !!isClearable && !!currentValue && !isDisabled;
+  const trailing = onIconRightClick ? "action" : showClear ? "clear" : "none";
+
   const styles = inputVariants({
     size,
     hasError: !!error,
-    hasPrefixElement: !!prefixElement,
+    mono: !!mono,
     isDisabled: !!isDisabled,
+    trailing,
   });
+
+  const handleClear = () => {
+    setValue(name, "", { shouldDirty: true, shouldValidate: true });
+  };
 
   const inputElement = mask ? (
     <IMaskInput
@@ -166,18 +234,41 @@ const Input = ({
         {label && <div className="text-sm font-medium">{label}</div>}
 
         <div className={styles.inputWrapper()}>
-          {prefixElement && (
-            <>
-              <div className={styles.prefixElement()}>{prefixElement}</div>
-              <div className={styles.divider()} />
-            </>
-          )}
+          {Icon && renderIcon(Icon, styles.iconSlot())}
 
           <div className={styles.inputContainer()}>
             {/* Префикс и значение читаются как одна строка — различаются только цветом */}
             {prefix && <span className={styles.prefix()}>{prefix}</span>}
             {inputElement}
           </div>
+
+          {/* mousedown гасится, чтобы клик по крестику не уводил фокус из поля:
+              после очистки продолжают печатать (поведение iOS) */}
+          {showClear && (
+            <button
+              type="button"
+              aria-label="Очистить"
+              className={styles.clearButton()}
+              onMouseDown={(e) => e.preventDefault()}
+              onClick={handleClear}
+            >
+              <X />
+            </button>
+          )}
+
+          {IconRight &&
+            (onIconRightClick ? (
+              <button
+                type="button"
+                aria-label={iconRightLabel}
+                className={styles.actionButton()}
+                onClick={onIconRightClick}
+              >
+                {renderIcon(IconRight, styles.actionIcon())}
+              </button>
+            ) : (
+              renderIcon(IconRight, styles.iconSlot())
+            ))}
         </div>
       </label>
 

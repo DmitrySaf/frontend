@@ -7,7 +7,6 @@ export {
   getCommunityProfile,
   updateCommunityProfile,
 } from "./api";
-export { useCommunitiesServerQuery, useCommunityServerQuery } from "./queries.server";
 export {
   useCommunitiesQuery,
   useCommunityQuery,

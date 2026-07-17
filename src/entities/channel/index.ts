@@ -26,6 +26,7 @@ export {
   CHANNEL_ACCESS_META,
   transformChannel,
   transformCommunityStructure,
+  pickFirstChannel,
   createChannelSchema,
   CHANNEL_NAME_MAX_LENGTH,
   type CreateChannelFormData,

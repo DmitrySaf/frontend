@@ -4,4 +4,5 @@ export {
   getLastVisitedCommunity,
   setLastVisitedCommunity,
   clearLastVisitedCommunity,
+  LAST_VISITED_COMMUNITY_COOKIE,
 } from "./lastVisited";

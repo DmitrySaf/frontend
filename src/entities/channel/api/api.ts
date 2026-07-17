@@ -11,8 +11,10 @@ import type {
   UpdateChannelInput,
 } from "./types";
 
-const CATEGORY_FIELDS = "id, community_id, name, position, created_at";
-const CHANNEL_FIELDS =
+// Экспортируются для server-only варианта (channel/api/server.ts) — единый источник
+// полей, чтобы серверный и клиентский запрос структуры не разъезжались
+export const CATEGORY_FIELDS = "id, community_id, name, position, created_at";
+export const CHANNEL_FIELDS =
   "id, community_id, category_id, type, name, slug, access, position, created_at";
 
 /**

@@ -1,6 +1,6 @@
 "use client";
 
-import { useCommunityStructureQuery } from "@/entities/channel";
+import { pickFirstChannel, useCommunityStructureQuery } from "@/entities/channel";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { ChannelSkeleton } from "./ChannelSkeleton";
@@ -15,10 +15,7 @@ export function CommunityFirstChannelRedirect({ slug }: { slug: string }) {
   useEffect(() => {
     if (isLoading || !structure) return;
 
-    const firstChannel =
-      structure.uncategorized[0] ??
-      structure.categories.flatMap((category) => category.channels)[0];
-
+    const firstChannel = pickFirstChannel(structure);
     if (firstChannel) {
       router.replace(`/communities/${slug}/${firstChannel.slug}`);
     }

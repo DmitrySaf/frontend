@@ -17,11 +17,11 @@ import {
   useTiersQuery,
   useUpdateTierMutation,
 } from "@/entities/tier";
-import { Button, DeleteDialog, Input, Switch, Textarea } from "@/shared/components";
+import { Button, DeleteDialog, Input, Skeleton, Switch, Textarea } from "@/shared/components";
 import { REQUIRED_MESSAGE } from "@/shared/constants";
 import { cn } from "@/shared/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { EyeOff, Globe, Link2, Loader2, Pencil, Plus, Trash2 } from "lucide-react";
+import { EyeOff, Globe, Link2, Pencil, Plus, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
@@ -145,8 +145,11 @@ export function CommunitySettingsPage({ slug }: { slug: string }) {
       }
     >
       {isLoading || !profile ? (
-        <div className="h-full flex items-center justify-center">
-          <Loader2 className="size-6 animate-spin text-gray-500" />
+        <div className="p-4 md:p-6 space-y-5 max-w-2xl">
+          <Skeleton height={40} radius={10} />
+          <Skeleton height={40} radius={10} />
+          <Skeleton height={96} radius={12} />
+          <Skeleton height={160} radius={16} />
         </div>
       ) : (
         <FormProvider {...methods}>
@@ -197,9 +200,7 @@ export function CommunitySettingsPage({ slug }: { slug: string }) {
                     >
                       <Icon className="size-[18px] shrink-0 mt-0.5 text-gray-600" />
                       <span>
-                        <span className="block text-sm font-semibold text-ink">
-                          {option.title}
-                        </span>
+                        <span className="block text-sm font-semibold text-ink">{option.title}</span>
                         <span className="block mt-0.5 text-xs text-gray-600">
                           {option.description}
                         </span>

@@ -14,6 +14,8 @@ export interface CommunityRole {
   actualRole: MemberRole;
   isAdmin: boolean;
   isViewingAsMember: boolean;
+  /** Членство ещё грузится — роль неизвестна (не путать с ролью «участник») */
+  isLoading: boolean;
   setViewAsMember: (value: boolean) => void;
 }
 
@@ -24,7 +26,7 @@ export interface CommunityRole {
  */
 export function useCommunityRole(slug: string): CommunityRole {
   const queryClient = useQueryClient();
-  const { data: membership } = useMyMembershipQuery(slug);
+  const { data: membership, isPending } = useMyMembershipQuery(slug);
 
   const { data: viewAs } = useQuery({
     queryKey: viewAsQueryKey(slug),
@@ -54,6 +56,8 @@ export function useCommunityRole(slug: string): CommunityRole {
     actualRole,
     isAdmin: role === "owner" || role === "admin",
     isViewingAsMember,
+    // enabled: !!slug — у отключённого запроса isPending «висит» true, поэтому гейтим слагом
+    isLoading: isPending && !!slug,
     setViewAsMember,
   };
 }

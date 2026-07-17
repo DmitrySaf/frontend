@@ -340,6 +340,31 @@
     }
   }
 
+  /* Скелетон-примитив (см. shared/components/Skeleton.tsx).
+     Два независимых свойства, чтобы не конфликтовать: reveal — по opacity
+     (появление с задержкой 120мс: быстрый ответ не мигает), пульс — по фону.
+     База gray-200, пульс к gray-300 (на светлой gray-100 был бы невидим —
+     долг этапа 15). Токены переворачиваются в .dark автоматически. */
+  .skeleton {
+    opacity: 0;
+    background-color: hsl(var(--gray-200));
+    animation:
+      skeleton-reveal 160ms var(--ease-out-quart) 120ms forwards,
+      skeleton-pulse 1.6s ease-in-out 120ms infinite;
+  }
+
+  @keyframes skeleton-reveal {
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes skeleton-pulse {
+    50% {
+      background-color: hsl(var(--gray-300));
+    }
+  }
+
   /* Лайк-«пружинка» */
   .animate-heart-pop {
     animation: heart-pop 350ms var(--ease-out-quart);

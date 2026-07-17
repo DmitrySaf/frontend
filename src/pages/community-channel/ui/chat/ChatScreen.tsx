@@ -10,10 +10,9 @@ import {
   useSendMessageMutation,
   useUpdateMessageMutation,
 } from "@/entities/message";
-import { DeleteDialog } from "@/shared/components";
+import { DeleteDialog, Skeleton } from "@/shared/components";
 import { useSessionUserId } from "@/shared/composables";
 import { dayKey, formatDayLabel } from "@/shared/utils";
-import { Loader2 } from "lucide-react";
 import { useParams } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useAuthorView } from "../useAuthorView";
@@ -60,6 +59,31 @@ function DayDivider({ label }: { label: string }) {
       <div className="flex-1 h-px bg-gray-200" />
       <span className="text-xs text-gray-500">{label}</span>
       <div className="flex-1 h-px bg-gray-200" />
+    </div>
+  );
+}
+
+// Скелетон истории: ряды «аватар + пузырь» разной ширины (Discord-style)
+const CHAT_SKELETON_ROWS = [
+  { id: "a", width: 220 },
+  { id: "b", width: 320 },
+  { id: "c", width: 180 },
+  { id: "d", width: 280 },
+  { id: "e", width: 150 },
+];
+
+function ChatSkeleton() {
+  return (
+    <div className="px-4 pt-4 space-y-5">
+      {CHAT_SKELETON_ROWS.map((row) => (
+        <div key={row.id} className="flex gap-3">
+          <Skeleton circle width={36} className="shrink-0" />
+          <div className="space-y-1.5">
+            <Skeleton width={120} height={12} radius={6} />
+            <Skeleton width={row.width} height={14} radius={6} />
+          </div>
+        </div>
+      ))}
     </div>
   );
 }
@@ -115,9 +139,7 @@ export function ChatScreen({ channel }: { channel: Channel }) {
     <div className="flex-1 flex flex-col min-h-0">
       <div ref={scrollRef} data-live={isLive} className="flex-1 min-h-0 overflow-y-auto pb-3">
         {isLoading ? (
-          <div className="h-full flex items-center justify-center">
-            <Loader2 className="size-6 animate-spin text-gray-500" />
-          </div>
+          <ChatSkeleton />
         ) : (
           days.map((day) => (
             <div key={day.key}>

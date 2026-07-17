@@ -17,11 +17,12 @@ import {
   DialogTitle,
   Form,
   Input,
+  Skeleton,
 } from "@/shared/components";
 import { REQUIRED_MESSAGE } from "@/shared/constants";
 import { cn } from "@/shared/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { BadgeCheck, Check, CreditCard, Loader2, Plus, Trash2 } from "lucide-react";
+import { BadgeCheck, Check, CreditCard, Plus, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -166,8 +167,9 @@ export function SettingsPayment() {
       </div>
 
       {isLoading ? (
-        <div className="flex justify-center py-10">
-          <Loader2 className="size-6 animate-spin text-gray-500" />
+        <div className="space-y-3">
+          <Skeleton height={64} radius={12} />
+          <Skeleton height={64} radius={12} />
         </div>
       ) : cards && cards.length > 0 ? (
         <div className="space-y-2.5">

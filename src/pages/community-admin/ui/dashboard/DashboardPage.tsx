@@ -2,7 +2,8 @@
 
 import { useCommunityQuery } from "@/entities/community";
 import { type StatCard, formatRub, useCommunityStatsQuery } from "@/entities/subscription";
-import { Loader2, TrendingDown, TrendingUp } from "lucide-react";
+import { Skeleton } from "@/shared/components";
+import { TrendingDown, TrendingUp } from "lucide-react";
 import { AdminShell } from "../AdminShell";
 import { MembersLineChart, RevenueBarChart } from "./charts";
 
@@ -30,8 +31,17 @@ export function DashboardPage({ slug }: { slug: string }) {
   return (
     <AdminShell slug={slug} title="Дашборд" subtitle={community?.displayName}>
       {isLoading || !stats ? (
-        <div className="h-full flex items-center justify-center">
-          <Loader2 className="size-6 animate-spin text-gray-500" />
+        <div className="p-4 md:p-6 space-y-5 max-w-5xl">
+          <div className="flex flex-col sm:flex-row gap-3.5">
+            {[0, 1, 2].map((index) => (
+              <Skeleton key={index} height={116} radius={16} className="flex-1" />
+            ))}
+          </div>
+          <div className="flex flex-col lg:flex-row gap-4">
+            <Skeleton height={280} radius={16} className="flex-[2]" />
+            <Skeleton height={280} radius={16} className="flex-1" />
+          </div>
+          <Skeleton height={160} radius={16} />
         </div>
       ) : (
         <div className="p-4 md:p-6 space-y-5 max-w-5xl">

@@ -1,9 +1,9 @@
 "use client";
 
 import { useCommunityStructureQuery } from "@/entities/channel";
-import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import { ChannelSkeleton } from "./ChannelSkeleton";
 
 /**
  * Вход в сообщество открывает его первый таб (как в Discord — отдельной «Главной» нет)
@@ -24,9 +24,5 @@ export function CommunityFirstChannelRedirect({ slug }: { slug: string }) {
     }
   }, [isLoading, structure, router, slug]);
 
-  return (
-    <div className="flex-1 flex items-center justify-center">
-      <Loader2 className="size-6 animate-spin text-gray-500" />
-    </div>
-  );
+  return <ChannelSkeleton />;
 }

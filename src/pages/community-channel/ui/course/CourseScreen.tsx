@@ -14,9 +14,9 @@ import {
   useUpdateLessonMutation,
 } from "@/entities/course";
 import { useCommunityRole } from "@/entities/member";
-import { DeleteDialog, SegmentedControl } from "@/shared/components";
+import { DeleteDialog, SegmentedControl, Skeleton } from "@/shared/components";
 import { cn } from "@/shared/utils";
-import { ArrowLeft, BookOpen, Eye, Loader2, Pencil } from "lucide-react";
+import { ArrowLeft, BookOpen, Eye, Pencil } from "lucide-react";
 import { useParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { LessonEditor } from "./LessonEditor";
@@ -62,8 +62,20 @@ export function CourseScreen({ channel }: { channel: Channel }) {
 
   if (isLoading || !course) {
     return (
-      <div className="flex-1 flex items-center justify-center">
-        <Loader2 className="size-6 animate-spin text-gray-500" />
+      <div className="flex-1 flex min-h-0">
+        {/* Столбец списка уроков */}
+        <div className="hidden md:flex flex-col gap-2 w-72 shrink-0 border-r border-gray-200 p-3">
+          <Skeleton height={14} width={120} radius={6} className="mb-1" />
+          {[0, 1, 2, 3].map((index) => (
+            <Skeleton key={index} height={40} radius={10} />
+          ))}
+        </div>
+        {/* Область урока */}
+        <div className="flex-1 min-w-0 p-4 md:p-6 space-y-4">
+          <Skeleton height={200} radius={16} />
+          <Skeleton height={24} width="60%" radius={8} />
+          <Skeleton height={80} radius={12} />
+        </div>
       </div>
     );
   }

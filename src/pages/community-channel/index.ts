@@ -1,1 +1,1 @@
-export { CommunityChannelPage, CommunityFirstChannelRedirect } from "./ui";
+export { ChannelSkeleton, CommunityChannelPage, CommunityFirstChannelRedirect } from "./ui";

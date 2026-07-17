@@ -7,9 +7,9 @@ import {
   useUpdateStorefrontMutation,
 } from "@/entities/storefront";
 import { useCommunityStatsQuery } from "@/entities/subscription";
-import { Avatar, Button } from "@/shared/components";
+import { Avatar, Button, Skeleton } from "@/shared/components";
 import { fileToDataUrl } from "@/shared/utils";
-import { ImageIcon, Loader2, Upload, Users, X } from "lucide-react";
+import { ImageIcon, Upload, Users, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { AdminShell } from "../AdminShell";
@@ -140,8 +140,15 @@ export function AppearancePage({ slug }: { slug: string }) {
       }
     >
       {isLoading || !profile ? (
-        <div className="h-full flex items-center justify-center">
-          <Loader2 className="size-6 animate-spin text-gray-500" />
+        <div className="p-4 md:p-6 flex flex-col lg:flex-row gap-6 lg:gap-8">
+          <div className="flex-1 min-w-0 max-w-xl space-y-5">
+            <Skeleton height={160} radius={16} />
+            <Skeleton height={40} radius={10} />
+            <Skeleton height={96} radius={12} />
+          </div>
+          <div className="flex-1 min-w-0">
+            <Skeleton height={320} radius={16} />
+          </div>
         </div>
       ) : (
         <div className="p-4 md:p-6 flex flex-col lg:flex-row gap-6 lg:gap-8">

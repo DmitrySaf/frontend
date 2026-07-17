@@ -7,7 +7,7 @@ import {
   useUpdateAuthUserMutation,
   useUpdateProfileMutation,
 } from "@/entities/profile";
-import { Button, Form, Input } from "@/shared/components";
+import { Button, Form, Input, Skeleton } from "@/shared/components";
 import { SettingsSecurityForm } from "@/widgets/settings-security-form";
 import { useCallback, useMemo } from "react";
 import { useForm } from "react-hook-form";
@@ -87,7 +87,11 @@ export function SettingsSecurity() {
           <div className="space-y-2">
             <label className="text-sm font-medium text-gray-700">Текущий email</label>
             <div className="px-4 py-2.5 bg-gray-100 border border-gray-200 rounded-lg text-gray-700">
-              {authUser?.email || "Не указан"}
+              {isLoadingAuth ? (
+                <Skeleton width={180} height={20} radius={6} />
+              ) : (
+                authUser?.email || "Не указан"
+              )}
             </div>
           </div>
 

@@ -11,7 +11,7 @@ import {
 } from "@/entities/channel";
 import { useCommunityProfileQuery } from "@/entities/community";
 import { leaveCommunity, useCommunityRole, useInvalidateMyMembership } from "@/entities/member";
-import { DeleteDialog } from "@/shared/components";
+import { DeleteDialog, Skeleton } from "@/shared/components";
 import { cn } from "@/shared/utils";
 import { ChannelCreateModal } from "@/widgets/channel-create-modal";
 import { usePathname, useRouter } from "next/navigation";
@@ -30,10 +30,10 @@ interface CommunitySidebarProps {
 
 function StructureSkeleton() {
   return (
-    <div className="p-3 space-y-3 animate-pulse">
-      <div className="h-3 w-20 rounded bg-gray-200" />
-      <div className="h-8 rounded-[10px] bg-gray-200" />
-      <div className="h-8 rounded-[10px] bg-gray-200" />
+    <div className="p-3 space-y-3">
+      <Skeleton width={80} height={12} radius={4} />
+      <Skeleton height={32} radius={10} />
+      <Skeleton height={32} radius={10} />
     </div>
   );
 }

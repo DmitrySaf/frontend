@@ -2,10 +2,10 @@
 
 import { useCommunitiesQuery } from "@/entities/community";
 import { type TransactionItem, useMyTransactionsQuery } from "@/entities/subscription";
-import { SegmentedControl } from "@/shared/components";
+import { SegmentedControl, Skeleton } from "@/shared/components";
 import { useSessionUserId } from "@/shared/composables";
 import { cn, formatRelativeTime } from "@/shared/utils";
-import { ArrowDownLeft, ArrowUpRight, Loader2, ReceiptText } from "lucide-react";
+import { ArrowDownLeft, ArrowUpRight, ReceiptText } from "lucide-react";
 import { useMemo, useState } from "react";
 
 type Filter = "all" | "income" | "payouts";
@@ -73,8 +73,10 @@ export function SettingsBilling() {
       <SegmentedControl options={FILTERS} value={filter} onChange={setFilter} size="s" />
 
       {isLoading || isCommunitiesLoading ? (
-        <div className="flex justify-center py-10">
-          <Loader2 className="size-6 animate-spin text-gray-500" />
+        <div className="space-y-3">
+          <Skeleton height={56} radius={12} />
+          <Skeleton height={56} radius={12} />
+          <Skeleton height={56} radius={12} />
         </div>
       ) : filtered.length > 0 ? (
         <div>

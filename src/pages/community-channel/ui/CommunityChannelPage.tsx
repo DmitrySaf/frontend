@@ -2,7 +2,8 @@
 
 import { useCommunityStructureQuery, useMyChannelGrantsQuery } from "@/entities/channel";
 import { useCommunityRole } from "@/entities/member";
-import { Loader2, Lock } from "lucide-react";
+import { Lock } from "lucide-react";
+import { ChannelSkeleton } from "./ChannelSkeleton";
 import { ChannelTitleBar } from "./ChannelTitleBar";
 import { ChatScreen } from "./chat/ChatScreen";
 import { CourseScreen } from "./course/CourseScreen";
@@ -23,11 +24,7 @@ export function CommunityChannelPage({ slug, tabSlug }: CommunityChannelPageProp
   const { isAdmin } = useCommunityRole(slug);
 
   if (isLoading || !structure) {
-    return (
-      <CenteredState>
-        <Loader2 className="size-6 animate-spin text-gray-500" />
-      </CenteredState>
-    );
+    return <ChannelSkeleton />;
   }
 
   const allChannels = [

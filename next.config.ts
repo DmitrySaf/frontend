@@ -1,7 +1,11 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  // Корень Turbopack: в домашней директории есть посторонний package-lock.json,
+  // из-за которого Turbopack иначе выбирает неверный root (см. build-warning Next 16)
+  turbopack: {
+    root: __dirname,
+  },
   images: {
     remotePatterns: [
       {

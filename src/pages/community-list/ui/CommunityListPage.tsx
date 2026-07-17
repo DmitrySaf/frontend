@@ -1,8 +1,7 @@
 "use client";
 
 import { getLastVisitedCommunity, useCommunitiesQuery } from "@/entities/community";
-import { Button, LogoTile } from "@/shared/components";
-import { Loader2 } from "lucide-react";
+import { Button, LogoTile, Skeleton } from "@/shared/components";
 import { useRouter } from "next/navigation";
 import { useQueryState } from "nuqs";
 import { useEffect } from "react";
@@ -31,10 +30,19 @@ export function CommunityListPage() {
     router.replace(`/communities/${target.name}`);
   }, [isLoading, communities, router, createParam]);
 
+  // Пока грузится список / готовится редирект в сообщество — нейтральный каркас
+  // (в блоке D резолв уедет на сервер и эта ветка почти исчезнет)
   if (isLoading || hasCommunities) {
     return (
-      <div className="flex-1 flex items-center justify-center">
-        <Loader2 className="size-6 animate-spin text-gray-500" />
+      <div className="flex-1 flex flex-col min-h-0">
+        <div className="shrink-0 flex items-center gap-2 px-4 md:px-6 h-12 border-b border-gray-200 bg-surface">
+          <Skeleton circle width={19} />
+          <Skeleton width={160} height={14} radius={6} />
+        </div>
+        <div className="flex-1 p-4 md:p-6 space-y-4">
+          <Skeleton height={72} radius={14} />
+          <Skeleton height={120} radius={14} />
+        </div>
       </div>
     );
   }

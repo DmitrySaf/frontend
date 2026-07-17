@@ -35,6 +35,7 @@ export { HydrationBoundary } from "./HydrationBoundary";
 export { Input } from "./Input";
 export { SegmentedControl } from "./SegmentedControl";
 export { Separator } from "./Separator";
+export { Skeleton } from "./Skeleton";
 export { Toaster } from "./Sonner";
 export { Switch } from "./Switch";
 export { Tabs, type TabItem, type TabsProps, Tab, tabVariants, type TabProps } from "./Tabs";

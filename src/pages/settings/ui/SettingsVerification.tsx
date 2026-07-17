@@ -7,9 +7,9 @@ import {
   useInvalidateMyVerification,
   useMyVerificationQuery,
 } from "@/entities/verification";
-import { Button } from "@/shared/components";
+import { Button, Skeleton } from "@/shared/components";
 import { cn } from "@/shared/utils";
-import { BadgeCheck, Briefcase, Building2, Clock, Loader2, ShieldCheck, User } from "lucide-react";
+import { BadgeCheck, Briefcase, Building2, Clock, ShieldCheck, User } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -129,8 +129,9 @@ export function SettingsVerification() {
       </div>
 
       {isLoading || !verification ? (
-        <div className="flex justify-center py-10">
-          <Loader2 className="size-6 animate-spin text-gray-500" />
+        <div className="space-y-4">
+          <Skeleton height={72} radius={12} />
+          <Skeleton height={120} radius={16} />
         </div>
       ) : verification.status === "approved" ? (
         <Banner

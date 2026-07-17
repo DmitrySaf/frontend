@@ -15,16 +15,6 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  webpack: (config, { dev }) => {
-    // Ensure stagewise is only included in development builds
-    if (!dev) {
-      config.resolve.alias = {
-        ...config.resolve.alias,
-        "@stagewise/toolbar-next": false,
-      };
-    }
-    return config;
-  },
   async redirects() {
     return [
       // Basic redirect

@@ -1,1 +1,1 @@
-export { StorefrontPage } from "./ui";
+export { StorefrontPage, StorefrontSkeleton } from "./ui";

@@ -139,6 +139,7 @@ export default function CommunitySidebar({ slug, className }: CommunitySidebarPr
       )}
     >
       <CommunityBanner
+        slug={slug}
         name={community?.displayName ?? slug}
         coverUrl={community?.coverUrl}
         logoUrl={community?.logoUrl}
@@ -147,7 +148,6 @@ export default function CommunitySidebar({ slug, className }: CommunitySidebarPr
         canModerate={actualRole !== "member"}
         isViewingAsMember={isViewingAsMember}
         onToggleViewAsMember={() => setViewAsMember(!isViewingAsMember)}
-        onOpenAdminSection={(section) => router.push(`/communities/${slug}/admin/${section}`)}
         onInvite={() => setIsInviteOpen(true)}
         onLeave={() => setIsLeaveOpen(true)}
       />

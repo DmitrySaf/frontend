@@ -2,6 +2,7 @@
 
 import { cn } from "@/shared/utils";
 import * as DropdownMenuPrimitive from "@radix-ui/react-dropdown-menu";
+import Link from "next/link";
 import * as React from "react";
 
 // Base Radix UI primitives (for advanced usage if needed)
@@ -66,7 +67,10 @@ DropdownMenuSeparator.displayName = DropdownMenuPrimitive.Separator.displayName;
 interface DropdownItemConfig {
   icon?: React.ComponentType<{ className?: string }>;
   label: string;
-  onClick: () => void;
+  /** Действие пункта. Взаимоисключимо с href (навигация — декларативным Link). */
+  onClick?: () => void;
+  /** Навигационный пункт: рендерится как next/link (prefetch, cmd-click в новой вкладке). */
+  href?: string;
   variant?: "default" | "danger";
   disabled?: boolean;
 }
@@ -105,20 +109,40 @@ function Dropdown({ trigger, items, align = "end", side = "bottom", className }:
           }
 
           const Icon = item.icon;
-          return (
-            <DropdownMenuItem
-              key={index}
-              onClick={item.onClick}
-              disabled={item.disabled}
-              className={cn(
-                item.variant === "danger" &&
-                  "text-danger hover:bg-danger/10 hover:text-danger focus:bg-danger/10 focus:text-danger"
-              )}
-            >
+          const dangerClass =
+            item.variant === "danger" &&
+            "text-danger hover:bg-danger/10 hover:text-danger focus:bg-danger/10 focus:text-danger";
+          const content = (
+            <>
               {Icon && (
                 <Icon className={cn("mr-2 h-4 w-4", item.variant === "danger" && "text-danger")} />
               )}
               <span>{item.label}</span>
+            </>
+          );
+
+          // Навигационный пункт — декларативный Link (prefetch маршрута, cmd-click)
+          if (item.href) {
+            return (
+              <DropdownMenuItem
+                key={item.label}
+                disabled={item.disabled}
+                asChild
+                className={cn(dangerClass)}
+              >
+                <Link href={item.href}>{content}</Link>
+              </DropdownMenuItem>
+            );
+          }
+
+          return (
+            <DropdownMenuItem
+              key={item.label}
+              onClick={item.onClick}
+              disabled={item.disabled}
+              className={cn(dangerClass)}
+            >
+              {content}
             </DropdownMenuItem>
           );
         })}

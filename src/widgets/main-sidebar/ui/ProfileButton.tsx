@@ -11,7 +11,6 @@ import {
   DropdownMenuTrigger,
 } from "@/shared/components";
 import { CircleHelp, FileText, LifeBuoy, MoreHorizontal, Settings, Shield } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { Fragment, useState } from "react";
 import { toast } from "sonner";
 import ProfileCardDialog from "./ProfileCardDialog";
@@ -26,7 +25,6 @@ const STUB_MENU_ITEMS = [
 ] as const;
 
 export default function ProfileButton() {
-  const router = useRouter();
   const { data: profile } = useProfileQuery();
   const [isCardOpen, setIsCardOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -108,7 +106,7 @@ export default function ProfileButton() {
               size="xl"
               Icon={Settings}
               aria-label="Настройки"
-              onClick={() => router.push("/settings/profile")}
+              href="/settings/profile"
             />
           </div>
         </div>

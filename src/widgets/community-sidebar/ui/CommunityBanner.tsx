@@ -19,6 +19,8 @@ import {
 } from "lucide-react";
 
 interface CommunityBannerProps {
+  /** Slug сообщества — для href админ-разделов */
+  slug: string;
   name: string;
   coverUrl?: string | null;
   logoUrl?: string | null;
@@ -27,7 +29,6 @@ interface CommunityBannerProps {
   canModerate: boolean;
   isViewingAsMember: boolean;
   onToggleViewAsMember: () => void;
-  onOpenAdminSection: (section: "settings" | "appearance" | "dashboard") => void;
   onInvite: () => void;
   onLeave: () => void;
   /** Владелец не может покинуть сообщество — пункт скрыт */
@@ -36,6 +37,7 @@ interface CommunityBannerProps {
 }
 
 export default function CommunityBanner({
+  slug,
   name,
   coverUrl,
   logoUrl,
@@ -43,7 +45,6 @@ export default function CommunityBanner({
   canModerate,
   isViewingAsMember,
   onToggleViewAsMember,
-  onOpenAdminSection,
   onInvite,
   onLeave,
   canLeave,
@@ -55,10 +56,10 @@ export default function CommunityBanner({
         {
           icon: Settings,
           label: "Настройки сообщества",
-          onClick: () => onOpenAdminSection("settings"),
+          href: `/communities/${slug}/admin/settings`,
         },
-        { icon: Palette, label: "Внешний вид", onClick: () => onOpenAdminSection("appearance") },
-        { icon: LayoutDashboard, label: "Дашборд", onClick: () => onOpenAdminSection("dashboard") },
+        { icon: Palette, label: "Внешний вид", href: `/communities/${slug}/admin/appearance` },
+        { icon: LayoutDashboard, label: "Дашборд", href: `/communities/${slug}/admin/dashboard` },
         "separator",
       ]
     : [];

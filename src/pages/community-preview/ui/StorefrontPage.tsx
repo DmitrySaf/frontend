@@ -12,7 +12,7 @@ import {
 } from "@/entities/storefront";
 import { purchaseTier, useInvalidateCommunitySales } from "@/entities/subscription";
 import type { Tier } from "@/entities/tier";
-import { Avatar, Skeleton } from "@/shared/components";
+import { Avatar } from "@/shared/components";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
@@ -22,6 +22,7 @@ import { CheckoutModal } from "./CheckoutModal";
 import { MediaCarousel } from "./MediaCarousel";
 import { PricingCard } from "./PricingCard";
 import { PublicHeader } from "./PublicHeader";
+import { StorefrontSkeleton } from "./StorefrontSkeleton";
 
 interface StorefrontPageProps {
   slug: string;
@@ -43,35 +44,6 @@ function NotFoundScreen({ isAuthed }: { isAuthed: boolean }) {
           <p className="text-sm text-gray-600">
             Возможно, ссылка устарела или сообщества не существует.
           </p>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function LoadingScreen() {
-  // Скелетон повторяет каркас витрины — страница «складывается», а не мигает спиннером
-  return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
-      <div className="h-14 bg-surface border-b border-gray-200" />
-      <div className="flex-1 px-4 py-7">
-        <div className="max-w-[1000px] mx-auto flex flex-col lg:flex-row gap-7">
-          <div className="flex-1 min-w-0 space-y-7">
-            <Skeleton className="w-full aspect-[21/9]" radius={16} />
-            <div className="flex items-center gap-3">
-              <Skeleton width={48} height={48} radius={12} />
-              <Skeleton width={208} height={24} radius={14} />
-            </div>
-            <div className="space-y-2.5">
-              <Skeleton height={14} radius={4} />
-              <Skeleton width="80%" height={14} radius={4} />
-              <Skeleton width="66%" height={14} radius={4} />
-            </div>
-          </div>
-          <div className="w-full lg:w-80 shrink-0 space-y-3.5">
-            <Skeleton height={224} radius={16} />
-            <Skeleton height={64} radius={16} />
-          </div>
         </div>
       </div>
     </div>
@@ -119,7 +91,7 @@ export function StorefrontPage({ slug, inviteCode }: StorefrontPageProps) {
   const selectedTier: Tier | null = visibleTiers.find((tier) => tier.id === selectedTierId) ?? null;
 
   if (isViewLoading || isAuthLoading) {
-    return <LoadingScreen />;
+    return <StorefrontSkeleton />;
   }
 
   // Несуществующее сообщество и hidden без доступа — один и тот же экран

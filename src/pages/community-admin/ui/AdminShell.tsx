@@ -1,9 +1,9 @@
 "use client";
 
 import { useCommunityRole } from "@/entities/member";
-import { Button, Skeleton } from "@/shared/components";
+import { Button } from "@/shared/components";
 import { ArrowLeft, ShieldAlert } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { AdminShellSkeleton } from "./AdminShellSkeleton";
 
 interface AdminShellProps {
   slug: string;
@@ -18,27 +18,12 @@ interface AdminShellProps {
  * админа» и слотом действий
  */
 export function AdminShell({ slug, title, subtitle, actions, children }: AdminShellProps) {
-  const router = useRouter();
   const { isAdmin, isLoading } = useCommunityRole(slug);
 
   // Пока роль неизвестна — каркас шапки, а не «Нет доступа»: иначе экран отказа
   // мигал бы у настоящих админов на время загрузки членства
   if (isLoading) {
-    return (
-      <div className="flex-1 flex flex-col min-h-0">
-        <div className="shrink-0 flex items-center gap-2.5 md:gap-3.5 px-3 md:px-6 h-12 border-b border-gray-200 bg-surface">
-          <Skeleton circle width={36} />
-          <div className="flex-1 min-w-0 space-y-1.5">
-            <Skeleton width={120} height={14} radius={6} />
-            <Skeleton width={80} height={10} radius={4} />
-          </div>
-        </div>
-        <div className="flex-1 p-4 md:p-6 space-y-4">
-          <Skeleton height={72} radius={16} />
-          <Skeleton height={160} radius={16} />
-        </div>
-      </div>
-    );
+    return <AdminShellSkeleton />;
   }
 
   // Guard: разделы доступны только админам (в т.ч. в режиме «Смотреть как участник»)
@@ -53,7 +38,7 @@ export function AdminShell({ slug, title, subtitle, actions, children }: AdminSh
           <p className="text-sm text-gray-600">
             Раздел доступен только администраторам сообщества.
           </p>
-          <Button theme="outline" size="l" onClick={() => router.push(`/communities/${slug}`)}>
+          <Button theme="outline" size="l" href={`/communities/${slug}`}>
             Вернуться в сообщество
           </Button>
         </div>
@@ -68,7 +53,7 @@ export function AdminShell({ slug, title, subtitle, actions, children }: AdminSh
           theme="ghost"
           size="m"
           Icon={ArrowLeft}
-          onClick={() => router.push(`/communities/${slug}`)}
+          href={`/communities/${slug}`}
           aria-label="Назад к сообществу"
         />
         <div className="flex-1 min-w-0">

@@ -29,6 +29,23 @@ export const usePostCommentsQuery = (channelId: string, postId: string, enabled:
 };
 
 /**
+ * Префетч постов канала (наводка/тач по строке канала). Дедуп бесплатно от TanStack:
+ * не выстрелит, если данные свежее staleTime, и склеится с in-flight запросом.
+ */
+export const usePrefetchPosts = () => {
+  const queryClient = useQueryClient();
+
+  return (channelId: string) => {
+    if (!channelId) return;
+    queryClient.prefetchQuery({
+      queryKey: postQueryKeys.posts(channelId),
+      queryFn: () => getPosts(channelId),
+      staleTime: 60 * 1000,
+    });
+  };
+};
+
+/**
  * Хук для инвалидации постов канала
  */
 export const useInvalidatePosts = () => {

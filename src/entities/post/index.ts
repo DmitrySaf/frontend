@@ -10,6 +10,7 @@ export {
   postQueryKeys,
   usePostsQuery,
   usePostCommentsQuery,
+  usePrefetchPosts,
   usePostsRealtime,
   useInvalidatePosts,
   useCreatePostMutation,

@@ -1,6 +1,6 @@
 export { getMessages, sendMessage, updateMessage, deleteMessage } from "./api";
 export { messageQueryKeys } from "./constants";
-export { useMessagesQuery, useInvalidateMessages } from "./queries";
+export { useMessagesQuery, usePrefetchMessages, useInvalidateMessages } from "./queries";
 export { useMessagesRealtime } from "./realtime";
 export {
   useSendMessageMutation,

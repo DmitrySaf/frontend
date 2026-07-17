@@ -5,6 +5,7 @@ export {
   deleteMessage,
   messageQueryKeys,
   useMessagesQuery,
+  usePrefetchMessages,
   useMessagesRealtime,
   useInvalidateMessages,
   useSendMessageMutation,

@@ -7,6 +7,7 @@ export {
   channelQueryKeys,
   useCommunityStructureQuery,
   useMyChannelGrantsQuery,
+  usePrefetchCommunityStructure,
   useInvalidateCommunityStructure,
   useCreateChannelMutation,
   useUpdateChannelMutation,

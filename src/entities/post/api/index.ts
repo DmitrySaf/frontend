@@ -9,7 +9,12 @@ export {
   addComment,
 } from "./api";
 export { postQueryKeys } from "./constants";
-export { usePostsQuery, usePostCommentsQuery, useInvalidatePosts } from "./queries";
+export {
+  usePostsQuery,
+  usePostCommentsQuery,
+  usePrefetchPosts,
+  useInvalidatePosts,
+} from "./queries";
 export { usePostsRealtime } from "./realtime";
 export {
   useCreatePostMutation,

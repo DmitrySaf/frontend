@@ -13,6 +13,7 @@ export {
   courseQueryKeys,
   useCourseQuery,
   useLessonVideoUrlQuery,
+  usePrefetchCourse,
   useInvalidateCourse,
   useUpdateCourseMutation,
   useCreateModuleMutation,

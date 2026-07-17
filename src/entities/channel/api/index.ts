@@ -9,6 +9,7 @@ export { channelQueryKeys } from "./constants";
 export {
   useCommunityStructureQuery,
   useMyChannelGrantsQuery,
+  usePrefetchCommunityStructure,
   useInvalidateCommunityStructure,
 } from "./queries";
 export {

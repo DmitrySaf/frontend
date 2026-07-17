@@ -17,6 +17,7 @@ import { ChannelCreateModal } from "@/widgets/channel-create-modal";
 import { usePathname, useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
+import { usePrefetchChannelContent } from "../model/usePrefetchChannelContent";
 import CategorySection from "./CategorySection";
 import ChannelRow from "./ChannelRow";
 import CommunityBanner from "./CommunityBanner";
@@ -51,6 +52,7 @@ export default function CommunitySidebar({ slug, className }: CommunitySidebarPr
   const createChannel = useCreateChannelMutation();
   const updateChannel = useUpdateChannelMutation();
   const deleteChannel = useDeleteChannelMutation(slug);
+  const prefetchChannelContent = usePrefetchChannelContent();
 
   const canLeave = actualRole === "member";
 
@@ -125,6 +127,7 @@ export default function CommunitySidebar({ slug, className }: CommunitySidebarPr
       isActive={channel.slug === activeTabSlug}
       isLockedForViewer={isChannelLocked(channel)}
       isAdmin={isAdmin}
+      onPrefetch={prefetchChannelContent}
       onOpenSettings={() => setEditingChannel(channel)}
       onOpenInvite={() => setChannelInvite(channel)}
       onDelete={() => setDeletingChannel(channel)}

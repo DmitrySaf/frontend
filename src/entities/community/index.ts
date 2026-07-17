@@ -10,6 +10,7 @@ export {
   useCommunityQuery,
   useCommunityProfileQuery,
   useCommunityLogosQuery,
+  usePrefetchCommunity,
   useInvalidateCommunities,
   useInvalidateCommunityProfile,
   useCreateCommunityMutation,

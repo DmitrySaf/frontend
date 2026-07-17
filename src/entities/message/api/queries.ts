@@ -16,6 +16,22 @@ export const useMessagesQuery = (channelId: string) => {
 };
 
 /**
+ * Префетч сообщений канала (наводка/тач по строке канала)
+ */
+export const usePrefetchMessages = () => {
+  const queryClient = useQueryClient();
+
+  return (channelId: string) => {
+    if (!channelId) return;
+    queryClient.prefetchQuery({
+      queryKey: messageQueryKeys.messages(channelId),
+      queryFn: () => getMessages(channelId),
+      staleTime: 60 * 1000,
+    });
+  };
+};
+
+/**
  * Хук для инвалидации сообщений канала
  */
 export const useInvalidateMessages = () => {

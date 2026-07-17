@@ -12,7 +12,12 @@ export {
   getLessonVideoUrl,
 } from "./api";
 export { courseQueryKeys } from "./constants";
-export { useCourseQuery, useLessonVideoUrlQuery, useInvalidateCourse } from "./queries";
+export {
+  useCourseQuery,
+  useLessonVideoUrlQuery,
+  usePrefetchCourse,
+  useInvalidateCourse,
+} from "./queries";
 export {
   useUpdateCourseMutation,
   useCreateModuleMutation,

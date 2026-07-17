@@ -12,6 +12,7 @@ export {
   useCommunityQuery,
   useCommunityProfileQuery,
   useCommunityLogosQuery,
+  usePrefetchCommunity,
   useInvalidateCommunities,
   useInvalidateCommunityProfile,
 } from "./queries.browser";

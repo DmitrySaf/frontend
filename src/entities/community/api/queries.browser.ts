@@ -56,6 +56,29 @@ export const useCommunityLogosQuery = () => {
 };
 
 /**
+ * Префетч сообщества и его профиля (наводка на плитку в рейле) — к моменту клика
+ * шапка/сайдбар сообщества берут данные из кэша
+ */
+export const usePrefetchCommunity = () => {
+  const queryClient = useQueryClient();
+  const client = useBrowserClient();
+
+  return (name: string) => {
+    if (!name) return;
+    queryClient.prefetchQuery({
+      queryKey: communityQueryKeys.community(name),
+      queryFn: () => getCommunity(client, name),
+      staleTime: 1000 * 60 * 10,
+    });
+    queryClient.prefetchQuery({
+      queryKey: communityQueryKeys.profile(name),
+      queryFn: () => getCommunityProfile(client, name),
+      staleTime: 1000 * 60 * 10,
+    });
+  };
+};
+
+/**
  * Хук для инвалидации кэша сообществ
  */
 export const useInvalidateCommunities = () => {

@@ -6,13 +6,14 @@ import {
   useCommunityLogosQuery,
   useCreateCommunityMutation,
 } from "@/entities/community";
-import { Avatar, Button, LogoTile, ThemeToggle, Tooltip } from "@/shared/components";
+import { Button, LogoTile, ThemeToggle, Tooltip } from "@/shared/components";
 import { CommunityCreateModal } from "@/widgets/community-create-modal";
 import { Plus } from "lucide-react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useQueryState } from "nuqs";
 import { useCallback } from "react";
+import { CommunityRailTile } from "./CommunityRailTile";
 import ProfileButton from "./ProfileButton";
 
 interface MainSidebarProps {
@@ -66,28 +67,15 @@ export default function MainSidebar({ withCreateModal = true }: MainSidebarProps
               Обводки плитки мало: без разделителя знак читается как первое сообщество. */}
           <div aria-hidden="true" className="h-px bg-gray-200" />
           <div className="flex flex-col gap-2">
-            {communities?.map((community) => {
-              const isActive = activeCommunitySlug === community.name;
-              return (
-                <Tooltip key={community.name} content={community.displayName} side="right">
-                  <Link
-                    href={`/communities/${community.name}`}
-                    className="relative block transition-transform duration-150 ease-out-quart hover:scale-[1.04] active:scale-95"
-                  >
-                    <Avatar
-                      name={community.displayName}
-                      src={communityLogos?.[community.name]}
-                      size="l"
-                      shape="square"
-                      className="shadow-sm"
-                    />
-                    {isActive && (
-                      <div className="absolute -right-[6px] top-1/2 -translate-y-1/2 w-[3px] h-3.5 bg-ink rounded-r-[4px] animate-in fade-in zoom-in-50 duration-200 ease-out-quart" />
-                    )}
-                  </Link>
-                </Tooltip>
-              );
-            })}
+            {communities?.map((community) => (
+              <CommunityRailTile
+                key={community.name}
+                slug={community.name}
+                displayName={community.displayName}
+                logoUrl={communityLogos?.[community.name]}
+                isActive={activeCommunitySlug === community.name}
+              />
+            ))}
             <Tooltip content="Создать сообщество" side="right">
               <Button
                 theme="primary"

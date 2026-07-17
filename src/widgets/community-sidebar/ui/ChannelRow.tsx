@@ -2,6 +2,7 @@
 
 import { CHANNEL_TYPE_META, type Channel } from "@/entities/channel";
 import { Dropdown, type DropdownItemConfig } from "@/shared/components";
+import { useHoverIntent } from "@/shared/composables";
 import { cn } from "@/shared/utils";
 import { Link2, Lock, MoreHorizontal, Settings2, Trash2 } from "lucide-react";
 import Link from "next/link";
@@ -13,6 +14,8 @@ interface ChannelRowProps {
   /** Участник без гранта на private-канал — замок, клик ведёт на экран «нужен доступ» */
   isLockedForViewer: boolean;
   isAdmin: boolean;
+  /** Префетч контента канала по намерению (наведение/тач) */
+  onPrefetch: (channel: Channel, isLocked: boolean) => void;
   onOpenSettings: () => void;
   onOpenInvite: () => void;
   onDelete: () => void;
@@ -24,11 +27,13 @@ export default function ChannelRow({
   isActive,
   isLockedForViewer,
   isAdmin,
+  onPrefetch,
   onOpenSettings,
   onOpenInvite,
   onDelete,
 }: ChannelRowProps) {
   const Icon = CHANNEL_TYPE_META[channel.type].icon;
+  const prefetchHandlers = useHoverIntent(() => onPrefetch(channel, isLockedForViewer));
 
   const adminItems: DropdownItemConfig[] = [
     { icon: Settings2, label: "Настройки таба", onClick: onOpenSettings },
@@ -42,6 +47,7 @@ export default function ChannelRow({
     <div className="group relative">
       <Link
         href={`/communities/${communitySlug}/${channel.slug}`}
+        {...prefetchHandlers}
         className={cn(
           "flex items-center gap-2 px-2.5 py-[7px] rounded-[10px] transition-colors duration-150 ease-out-quart",
           isActive

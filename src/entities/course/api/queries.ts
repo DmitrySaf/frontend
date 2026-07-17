@@ -28,6 +28,23 @@ export const useLessonVideoUrlQuery = (videoPath: string | null) => {
 };
 
 /**
+ * Префетч курса канала (наводка/тач по строке канала). getCourse требует и id, и имя —
+ * оба есть на объекте Channel в строке сайдбара.
+ */
+export const usePrefetchCourse = () => {
+  const queryClient = useQueryClient();
+
+  return (channelId: string, channelName: string) => {
+    if (!channelId) return;
+    queryClient.prefetchQuery({
+      queryKey: courseQueryKeys.course(channelId),
+      queryFn: () => getCourse(channelId, channelName),
+      staleTime: 60 * 1000,
+    });
+  };
+};
+
+/**
  * Хук для инвалидации курса
  */
 export const useInvalidateCourse = () => {

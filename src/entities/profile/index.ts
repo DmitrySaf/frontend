@@ -4,5 +4,5 @@ export {
   useUpdateProfileMutation,
   useUpdateAuthUserMutation,
 } from "./api";
-export { transformPrivacySettingsToApi } from "./model";
+export { transformPrivacySettingsToApi, SOCIAL_PLATFORM_META, getSocialLinkHref } from "./model";
 export type { Profile, PrivacySettings, AuthUser } from "./api";

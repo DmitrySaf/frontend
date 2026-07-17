@@ -81,12 +81,16 @@ export function SettingsSidebar() {
               shape="circle"
               className="size-16"
             />
-            <div>
+            {/* w-full + min-w-0 — граница усечения; без них flex-детям некуда «сжаться»
+                и длинное имя/ник выезжали за рамки сайдбара вместо троеточия */}
+            <div className="w-full min-w-0">
               <h2 className="flex items-center justify-center gap-1 font-bold text-gray-900">
-                {profile?.displayName ?? "…"}
+                <span className="min-w-0 truncate">{profile?.displayName ?? "…"}</span>
                 {isVerified && <BadgeCheck className="size-4 shrink-0 text-primary-600" />}
               </h2>
-              {profile?.username && <p className="text-sm text-gray-500">@{profile.username}</p>}
+              {profile?.username && (
+                <p className="truncate text-sm text-gray-500">@{profile.username}</p>
+              )}
             </div>
           </div>
         </div>

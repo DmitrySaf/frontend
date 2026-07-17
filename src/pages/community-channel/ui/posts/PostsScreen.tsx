@@ -3,7 +3,7 @@
 import type { Channel } from "@/entities/channel";
 import { useCommunityRole } from "@/entities/member";
 import { useDeletePostMutation, usePostsQuery, usePostsRealtime } from "@/entities/post";
-import { DeleteDialog, Skeleton } from "@/shared/components";
+import { ContentErrorState, DeleteDialog, Skeleton } from "@/shared/components";
 import { Newspaper } from "lucide-react";
 import { useParams } from "next/navigation";
 import { useState } from "react";
@@ -11,7 +11,7 @@ import { PostCard } from "./PostCard";
 import { PostComposer } from "./PostComposer";
 
 export function PostsScreen({ channel }: { channel: Channel }) {
-  const { data: posts, isLoading } = usePostsQuery(channel.id);
+  const { data: posts, isLoading, isError, refetch } = usePostsQuery(channel.id);
   usePostsRealtime(channel.id);
   const deletePost = useDeletePostMutation();
   const [deletingPostId, setDeletingPostId] = useState<string | null>(null);
@@ -29,7 +29,9 @@ export function PostsScreen({ channel }: { channel: Channel }) {
       >
         {canPost && <PostComposer channelId={channel.id} />}
 
-        {isLoading ? (
+        {isError && !posts ? (
+          <ContentErrorState onRetry={() => refetch()} />
+        ) : isLoading ? (
           <div className="space-y-4">
             <Skeleton height={132} radius={16} />
             <Skeleton height={96} radius={16} />

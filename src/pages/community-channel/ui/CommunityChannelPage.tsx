@@ -2,6 +2,7 @@
 
 import { useCommunityStructureQuery, useMyChannelGrantsQuery } from "@/entities/channel";
 import { useCommunityRole } from "@/entities/member";
+import { ContentErrorState } from "@/shared/components";
 import { Lock } from "lucide-react";
 import { ChannelSkeleton } from "./ChannelSkeleton";
 import { ChannelTitleBar } from "./ChannelTitleBar";
@@ -19,9 +20,14 @@ function CenteredState({ children }: { children: React.ReactNode }) {
 }
 
 export function CommunityChannelPage({ slug, tabSlug }: CommunityChannelPageProps) {
-  const { data: structure, isLoading } = useCommunityStructureQuery(slug);
+  const { data: structure, isLoading, isError, refetch } = useCommunityStructureQuery(slug);
   const { data: grants } = useMyChannelGrantsQuery();
   const { isAdmin } = useCommunityRole(slug);
+
+  // Ошибка загрузки структуры без данных в кэше — error+Retry вместо вечного скелетона
+  if (isError && !structure) {
+    return <ContentErrorState onRetry={() => refetch()} />;
+  }
 
   if (isLoading || !structure) {
     return <ChannelSkeleton />;

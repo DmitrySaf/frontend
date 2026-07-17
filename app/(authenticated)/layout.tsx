@@ -1,3 +1,4 @@
+import { OfflineBanner } from "@/shared/components";
 import { MainSidebar } from "@/widgets/main-sidebar";
 
 // Аутентифицированная зона зависит от сессии (cookies) — статический пререндер не имеет смысла
@@ -10,6 +11,7 @@ export default function MainLayout({
 }) {
   return (
     <div className="flex md:gap-2 bg-gray-100 md:p-2 h-dvh">
+      <OfflineBanner />
       {/* Rail на мобиле живёт внутри drawer'а сообщества; модалка создания — здесь (портал) */}
       <div className="hidden md:flex">
         <MainSidebar />

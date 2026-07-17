@@ -10,7 +10,7 @@ import {
   useSendMessageMutation,
   useUpdateMessageMutation,
 } from "@/entities/message";
-import { DeleteDialog, Skeleton } from "@/shared/components";
+import { ContentErrorState, DeleteDialog, Skeleton } from "@/shared/components";
 import { useSessionUserId } from "@/shared/composables";
 import { dayKey, formatDayLabel } from "@/shared/utils";
 import { useParams } from "next/navigation";
@@ -89,7 +89,7 @@ function ChatSkeleton() {
 }
 
 export function ChatScreen({ channel }: { channel: Channel }) {
-  const { data: messages, isLoading } = useMessagesQuery(channel.id);
+  const { data: messages, isLoading, isError, refetch } = useMessagesQuery(channel.id);
   useMessagesRealtime(channel.id);
   const resolveAuthor = useAuthorView();
   const myUserId = useSessionUserId();
@@ -138,7 +138,9 @@ export function ChatScreen({ channel }: { channel: Channel }) {
   return (
     <div className="flex-1 flex flex-col min-h-0">
       <div ref={scrollRef} data-live={isLive} className="flex-1 min-h-0 overflow-y-auto pb-3">
-        {isLoading ? (
+        {isError && !messages ? (
+          <ContentErrorState onRetry={() => refetch()} />
+        ) : isLoading ? (
           <ChatSkeleton />
         ) : (
           days.map((day) => (

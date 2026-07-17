@@ -1,4 +1,5 @@
 export { cn } from "./cn";
+export { isTransientError } from "./isTransientError";
 export {
   formatTimeShort,
   formatDayLabel,

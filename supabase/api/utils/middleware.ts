@@ -1,6 +1,7 @@
 import { createServerClient } from "@supabase/ssr";
 import { type NextRequest, NextResponse } from "next/server";
 import { SUPABASE_PUBLISHABLE_KEY, SUPABASE_URL } from "./env";
+import { createFetchWithTimeout } from "./fetch-with-timeout";
 
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({
@@ -8,6 +9,8 @@ export async function updateSession(request: NextRequest) {
   });
 
   const supabase = createServerClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
+    // Таймаут на getClaims — зависший JWKS-fetch не должен блокировать навигацию
+    global: { fetch: createFetchWithTimeout() },
     cookies: {
       getAll() {
         return request.cookies.getAll();

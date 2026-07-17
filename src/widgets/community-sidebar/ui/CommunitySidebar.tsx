@@ -14,6 +14,7 @@ import { leaveCommunity, useCommunityRole, useInvalidateMyMembership } from "@/e
 import { DeleteDialog, Skeleton } from "@/shared/components";
 import { cn } from "@/shared/utils";
 import { ChannelCreateModal } from "@/widgets/channel-create-modal";
+import { RotateCw } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
@@ -44,7 +45,7 @@ export default function CommunitySidebar({ slug, className }: CommunitySidebarPr
   const router = useRouter();
 
   const { data: community } = useCommunityProfileQuery(slug);
-  const { data: structure, isLoading } = useCommunityStructureQuery(slug);
+  const { data: structure, isLoading, isError, refetch } = useCommunityStructureQuery(slug);
   const { data: grants } = useMyChannelGrantsQuery();
   const { isAdmin, actualRole, isViewingAsMember, setViewAsMember } = useCommunityRole(slug);
   const invalidateMembership = useInvalidateMyMembership();
@@ -156,7 +157,18 @@ export default function CommunitySidebar({ slug, className }: CommunitySidebarPr
       />
 
       <div className="flex-1 overflow-y-auto px-2.5 pb-3">
-        {isLoading || !visibleStructure ? (
+        {isError && !structure ? (
+          <div className="p-3">
+            <button
+              type="button"
+              onClick={() => refetch()}
+              className="w-full flex items-center justify-center gap-2 py-2 rounded-[10px] text-sm font-medium text-gray-600 hover:bg-gray-100 transition-colors cursor-pointer"
+            >
+              <RotateCw className="size-3.5" />
+              Не загрузилось — повторить
+            </button>
+          </div>
+        ) : isLoading || !visibleStructure ? (
           <StructureSkeleton />
         ) : (
           <>

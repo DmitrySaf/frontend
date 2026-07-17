@@ -14,7 +14,7 @@ import {
   useUpdateLessonMutation,
 } from "@/entities/course";
 import { useCommunityRole } from "@/entities/member";
-import { DeleteDialog, SegmentedControl, Skeleton } from "@/shared/components";
+import { ContentErrorState, DeleteDialog, SegmentedControl, Skeleton } from "@/shared/components";
 import { cn } from "@/shared/utils";
 import { ArrowLeft, BookOpen, Eye, Pencil } from "lucide-react";
 import { useParams } from "next/navigation";
@@ -26,7 +26,7 @@ import { LessonView } from "./LessonView";
 type CourseMode = "view" | "edit";
 
 export function CourseScreen({ channel }: { channel: Channel }) {
-  const { data: course, isLoading } = useCourseQuery(channel.id, channel.name);
+  const { data: course, isLoading, isError, refetch } = useCourseQuery(channel.id, channel.name);
 
   const createModule = useCreateModuleMutation(channel.id);
   const renameModule = useRenameModuleMutation(channel.id);
@@ -59,6 +59,10 @@ export function CourseScreen({ channel }: { channel: Channel }) {
       allLessons.find((lesson) => !lesson.completed && !lesson.locked) ?? allLessons[0];
     setSelectedLessonId(target?.id ?? null);
   }, [course, allLessons, selectedLesson]);
+
+  if (isError && !course) {
+    return <ContentErrorState onRetry={() => refetch()} />;
+  }
 
   if (isLoading || !course) {
     return (

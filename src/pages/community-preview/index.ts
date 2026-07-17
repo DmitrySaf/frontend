@@ -1,1 +1,1 @@
-export { StorefrontPage, StorefrontSkeleton } from "./ui";
+export { StorefrontPage, StorefrontSkeleton, StorefrontNotFound } from "./ui";

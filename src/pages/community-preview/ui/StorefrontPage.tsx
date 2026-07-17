@@ -22,6 +22,7 @@ import { CheckoutModal } from "./CheckoutModal";
 import { MediaCarousel } from "./MediaCarousel";
 import { PricingCard } from "./PricingCard";
 import { PublicHeader } from "./PublicHeader";
+import { StorefrontNotFound } from "./StorefrontNotFound";
 import { StorefrontSkeleton } from "./StorefrontSkeleton";
 
 interface StorefrontPageProps {
@@ -33,32 +34,18 @@ function getFeatureIcon(name: string) {
   return (STOREFRONT_FEATURE_ICONS[name] ?? STOREFRONT_FEATURE_ICONS[DEFAULT_FEATURE_ICON]).icon;
 }
 
-/** Единообразный 404: hidden-сообщество неотличимо от несуществующего */
-function NotFoundScreen({ isAuthed }: { isAuthed: boolean }) {
-  return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
-      <PublicHeader isAuthed={isAuthed} />
-      <div className="flex-1 flex items-center justify-center">
-        <div className="text-center space-y-2">
-          <p className="text-2xl font-bold text-ink">Страница не найдена</p>
-          <p className="text-sm text-gray-600">
-            Возможно, ссылка устарела или сообщества не существует.
-          </p>
-        </div>
-      </div>
-    </div>
-  );
-}
-
 export function StorefrontPage({ slug, inviteCode }: StorefrontPageProps) {
   const router = useRouter();
   const queryClient = useQueryClient();
 
-  const { data: authUser, isLoading: isAuthLoading } = useAuthUserQuery();
+  // Auth грузится клиентом и НЕ гейтит рендер: иначе SSR (где auth ещё не известен)
+  // отдавал бы скелетон вместо контента, ломая SEO. isAuthed=false до загрузки —
+  // анонимный вид (основной зритель витрины); авторизованный обновится за <100мс.
+  const { data: authUser } = useAuthUserQuery();
   const isAuthed = !!authUser?.email;
 
-  // Вся витрина приходит одним RPC-запросом: сервер сам решает,
-  // доступна ли страница (hidden без инвайта → null → 404)
+  // Вся витрина приходит одним RPC-запросом (SSR-предзагрузка → гидрация): сервер
+  // сам решает, доступна ли страница (hidden без инвайта → null → 404 на сервере)
   const { data: view, isLoading: isViewLoading } = useStorefrontViewQuery(slug, inviteCode);
 
   const invalidateMembership = useInvalidateMyMembership();
@@ -70,7 +57,10 @@ export function StorefrontPage({ slug, inviteCode }: StorefrontPageProps) {
   const [isJoining, setIsJoining] = useState(false);
 
   const validInvite = view?.invite?.valid ? view.invite : null;
-  const isMember = isAuthed && !!view?.viewer.isMember;
+  // Членство берём из серверного viewer (посчитан RPC с куками зрителя) — авторитетно
+  // и доступно сразу после гидрации, без ожидания клиентского auth (иначе член видел
+  // бы «Присоединиться» до загрузки auth). isAuthed гейтит только флоу вступления ниже.
+  const isMember = !!view?.viewer.isMember;
 
   // Тарифы уже отфильтрованы сервером (скрытые — только по валидному инвайту)
   const visibleTiers: Tier[] = useMemo(
@@ -90,13 +80,13 @@ export function StorefrontPage({ slug, inviteCode }: StorefrontPageProps) {
   );
   const selectedTier: Tier | null = visibleTiers.find((tier) => tier.id === selectedTierId) ?? null;
 
-  if (isViewLoading || isAuthLoading) {
+  if (isViewLoading) {
     return <StorefrontSkeleton />;
   }
 
   // Несуществующее сообщество и hidden без доступа — один и тот же экран
   if (!view) {
-    return <NotFoundScreen isAuthed={isAuthed} />;
+    return <StorefrontNotFound isAuthed={isAuthed} />;
   }
 
   const { community, storefront, owner } = view;

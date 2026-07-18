@@ -22,8 +22,10 @@ export function StorefrontSkeleton() {
               <Skeleton width="80%" height={14} radius={4} />
               <Skeleton width="66%" height={14} radius={4} />
             </div>
+            {/* Мобильный порядок этапа 17.7: карточка тарифов сразу после описания */}
+            <Skeleton className="lg:hidden" height={224} radius={16} />
           </div>
-          <div className="w-full lg:w-80 shrink-0 space-y-3.5">
+          <div className="hidden lg:block w-full lg:w-80 shrink-0 space-y-3.5">
             <Skeleton height={224} radius={16} />
             <Skeleton height={64} radius={16} />
           </div>

@@ -52,11 +52,15 @@ test.describe("Гость", () => {
     const errors = watchErrors(page);
     await page.goto("/pixel");
     await expect(page.getByRole("heading", { name: "Пиксель" })).toBeVisible();
-    await expect(page.getByRole("button", { name: "Присоединиться" })).toBeVisible();
-    await expect(page.getByText("Базовый")).toBeVisible();
-    await expect(page.getByText("Годовой")).toBeVisible();
-    await expect(page.getByText("Навсегда")).toBeVisible();
-    await expect(page.getByText("Автор сообщества")).toBeVisible();
+    // Карточка тарифов рендерится в двух адаптивных слотах (мобильный + десктопная
+    // колонка, этап 17.7) — контент в DOM дважды, скрытый слот отсекаем visible:true
+    await expect(
+      page.getByRole("button", { name: "Присоединиться" }).filter({ visible: true })
+    ).toBeVisible();
+    await expect(page.getByText("Базовый").filter({ visible: true })).toBeVisible();
+    await expect(page.getByText("Годовой").filter({ visible: true })).toBeVisible();
+    await expect(page.getByText("Навсегда").filter({ visible: true })).toBeVisible();
+    await expect(page.getByText("Автор сообщества").filter({ visible: true })).toBeVisible();
     expect(errors).toEqual([]);
   });
 
@@ -93,7 +97,9 @@ test.describe("Автор", () => {
       const errors = watchErrors(page);
       await page.goto(path);
       for (const marker of markers) {
-        await expect(page.getByText(marker).first()).toBeVisible();
+        // visible:true — витрина (/pixel) рендерит карточку в двух адаптивных слотах,
+        // на десктопе первый в DOM (мобильный) скрыт; на остальных страницах безвредно
+        await expect(page.getByText(marker).filter({ visible: true }).first()).toBeVisible();
       }
       expect(errors).toEqual([]);
     });

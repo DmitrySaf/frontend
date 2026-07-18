@@ -6,7 +6,7 @@ import { MainSidebar } from "@/widgets/main-sidebar";
 import { Menu } from "lucide-react";
 import { AnimatePresence, type PanInfo, motion, useReducedMotion } from "motion/react";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 interface CommunityShellProps {
   slug: string;
@@ -29,8 +29,31 @@ export function CommunityShell({ slug, children }: CommunityShellProps) {
     setIsDrawerOpen(false);
   }, [pathname]);
 
+  // Свайп от левой кромки открывает drawer (закрытие свайпом уже есть).
+  // Слушатели на контейнере, а не на оверлейной полосе: полоса поверх контента
+  // крала бы тапы у бургера. Жест: старт ≤24px от края, горизонталь > вертикали.
+  const edgeSwipe = useRef({ x: 0, y: 0, active: false });
+  const handleTouchStart = (event: React.TouchEvent) => {
+    if (window.matchMedia("(min-width: 768px)").matches) return;
+    const touch = event.touches[0];
+    edgeSwipe.current = { x: touch.clientX, y: touch.clientY, active: touch.clientX <= 24 };
+  };
+  const handleTouchMove = (event: React.TouchEvent) => {
+    if (!edgeSwipe.current.active) return;
+    const touch = event.touches[0];
+    const dx = touch.clientX - edgeSwipe.current.x;
+    const dy = Math.abs(touch.clientY - edgeSwipe.current.y);
+    if (dx > 30 && dx > dy * 1.5) {
+      edgeSwipe.current.active = false;
+      setIsDrawerOpen(true);
+    } else if (dy > 30) {
+      // Вертикальный скролл — жест не наш
+      edgeSwipe.current.active = false;
+    }
+  };
+
   return (
-    <div className="flex w-full h-full">
+    <div className="flex w-full h-full" onTouchStart={handleTouchStart} onTouchMove={handleTouchMove}>
       {/* Десктопный сайдбар */}
       <div className="hidden md:flex h-full">
         <CommunitySidebar slug={slug} />

@@ -25,7 +25,7 @@ export default function CategorySection({
         <button
           type="button"
           onClick={() => setIsOpen(!isOpen)}
-          className="flex items-center gap-1 flex-1 min-w-0 cursor-pointer text-gray-500 hover:text-gray-700 transition-colors duration-150"
+          className="flex items-center gap-1 flex-1 min-w-0 min-h-9 lg:min-h-0 cursor-pointer text-gray-500 hover:text-gray-700 transition-colors duration-150"
         >
           <ChevronDown
             className={cn(
@@ -42,7 +42,7 @@ export default function CategorySection({
             type="button"
             onClick={onAddChannel}
             aria-label="Новый таб"
-            className="md:opacity-0 md:group-hover:opacity-100 cursor-pointer text-gray-500 hover:text-gray-800 active:scale-90 transition-[color,opacity,transform] duration-150 ease-out-quart"
+            className="touch-hit md:opacity-0 md:group-hover:opacity-100 cursor-pointer text-gray-500 hover:text-gray-800 active:scale-90 transition-[color,opacity,transform] duration-150 ease-out-quart"
           >
             <Plus className="size-3.5" />
           </button>

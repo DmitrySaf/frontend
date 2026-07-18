@@ -49,7 +49,7 @@ export default function ChannelRow({
         href={`/communities/${communitySlug}/${channel.slug}`}
         {...prefetchHandlers}
         className={cn(
-          "flex items-center gap-2 px-2.5 py-[7px] rounded-[10px] transition-colors duration-150 ease-out-quart",
+          "flex items-center gap-2 px-2.5 py-[7px] min-h-11 lg:min-h-0 rounded-[10px] transition-colors duration-150 ease-out-quart",
           isActive
             ? "bg-gray-200/70 inset-ring inset-ring-gray-300/70"
             : "hover:bg-gray-200/45 active:bg-gray-200/70",
@@ -82,7 +82,7 @@ export default function ChannelRow({
               <button
                 type="button"
                 aria-label="Действия с табом"
-                className="size-6 flex items-center justify-center rounded-md bg-surface border border-gray-200 shadow-sm text-gray-500 hover:text-ink active:scale-90 transition-[color,transform] duration-150 ease-out-quart cursor-pointer"
+                className="touch-hit size-6 flex items-center justify-center rounded-md bg-surface border border-gray-200 shadow-sm text-gray-500 hover:text-ink active:scale-90 transition-[color,transform] duration-150 ease-out-quart cursor-pointer"
               >
                 <MoreHorizontal className="size-3.5" />
               </button>

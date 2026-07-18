@@ -179,10 +179,11 @@ export function CommunitySettingsPage({ slug }: { slug: string }) {
               description="Изменение адреса станет доступно позже"
             />
 
-            {/* Видимость */}
+            {/* Видимость: на мобиле — стек в колонку (три карточки в ряд ломали текст
+                по буквам и обрезались краем экрана, аудит 17.7); на sm+ — ряд */}
             <div className="space-y-2">
               <span className="text-sm font-medium text-ink">Видимость</span>
-              <div className="flex gap-2.5">
+              <div className="flex flex-col gap-2.5 sm:flex-row">
                 {VISIBILITY_OPTIONS.map((option) => {
                   const Icon = option.icon;
                   const isSelected = visibility === option.value;
@@ -257,7 +258,7 @@ export function CommunitySettingsPage({ slug }: { slug: string }) {
                         type="button"
                         onClick={() => setTierModal({ open: true, tier })}
                         aria-label="Изменить тариф"
-                        className="text-gray-500 hover:text-ink transition-colors cursor-pointer"
+                        className="touch-hit shrink-0 text-gray-500 hover:text-ink transition-colors cursor-pointer"
                       >
                         <Pencil className="size-4" />
                       </button>
@@ -265,7 +266,7 @@ export function CommunitySettingsPage({ slug }: { slug: string }) {
                         type="button"
                         onClick={() => setDeletingTierId(tier.id)}
                         aria-label="Удалить тариф"
-                        className="text-gray-500 hover:text-danger transition-colors cursor-pointer"
+                        className="touch-hit shrink-0 text-gray-500 hover:text-danger transition-colors cursor-pointer"
                       >
                         <Trash2 className="size-4" />
                       </button>

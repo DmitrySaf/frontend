@@ -187,7 +187,7 @@ export function SettingsPayment() {
                 type="button"
                 onClick={() => setDefault.mutate(card.id)}
                 aria-label="Выбрать для выплат"
-                className="size-5 shrink-0 rounded-full border border-gray-300 flex items-center justify-center cursor-pointer"
+                className="touch-hit size-5 shrink-0 rounded-full border border-gray-300 flex items-center justify-center cursor-pointer"
               >
                 {card.isDefault && <span className="size-2.5 rounded-full bg-primary-500" />}
               </button>
@@ -203,8 +203,10 @@ export function SettingsPayment() {
                 <p className="text-xs text-gray-600 truncate">{card.holderName}</p>
               </div>
 
+              {/* Пилл-подпись скрыта на узких (её роль дублирует рамка-ring карточки),
+                  иначе она сжимала имя владельца и налезала на корзину */}
               {card.isDefault && (
-                <span className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-gray-100 text-xs font-medium text-gray-700">
+                <span className="hidden sm:flex items-center gap-1 px-2.5 py-1 rounded-full bg-gray-100 text-xs font-medium text-gray-700">
                   <Check className="size-3" />
                   Выбрана для выплат
                 </span>
@@ -214,7 +216,7 @@ export function SettingsPayment() {
                 type="button"
                 onClick={() => setDeletingCardId(card.id)}
                 aria-label="Удалить карту"
-                className="text-gray-500 hover:text-danger transition-colors cursor-pointer"
+                className="touch-hit shrink-0 text-gray-500 hover:text-danger transition-colors cursor-pointer"
               >
                 <Trash2 className="size-4" />
               </button>

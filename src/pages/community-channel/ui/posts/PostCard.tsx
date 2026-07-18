@@ -91,7 +91,9 @@ export function PostCard({ post, isAdmin, onDelete }: PostCardProps) {
                 {author.displayName}
               </span>
               {author.isCommunityOwner && (
-                <span className="text-xs font-medium text-primary-600">· автор</span>
+                <span className="shrink-0 whitespace-nowrap text-xs font-medium text-primary-600">
+                  · автор
+                </span>
               )}
             </div>
             <div className="text-xs text-gray-500">{formatRelativeTime(post.createdAt)}</div>
@@ -101,7 +103,8 @@ export function PostCard({ post, isAdmin, onDelete }: PostCardProps) {
           {post.pinned && (
             <span className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-gray-200 text-xs font-medium text-gray-700">
               <Pin className="size-3" />
-              Закреплено
+              {/* На узких экранах пилл сжимал имя автора до пары букв — остаётся иконка */}
+              <span className="hidden sm:inline">Закреплено</span>
             </span>
           )}
           {menuItems.length > 0 && !isEditing && (
@@ -110,7 +113,7 @@ export function PostCard({ post, isAdmin, onDelete }: PostCardProps) {
                 <button
                   type="button"
                   aria-label="Действия с постом"
-                  className="size-8 flex items-center justify-center rounded-lg text-gray-500 hover:text-ink hover:bg-gray-100 transition-colors cursor-pointer"
+                  className="touch-hit size-8 flex items-center justify-center rounded-lg text-gray-500 hover:text-ink hover:bg-gray-100 transition-colors cursor-pointer"
                 >
                   <MoreHorizontal className="size-[18px]" />
                 </button>
@@ -143,26 +146,22 @@ export function PostCard({ post, isAdmin, onDelete }: PostCardProps) {
 
       {!isEditing && post.coverUrl && (
         // eslint-disable-next-line @next/next/no-img-element
-        <img
-          src={post.coverUrl}
-          alt=""
-          loading="lazy"
-          className="w-full max-h-96 object-cover"
-        />
+        <img src={post.coverUrl} alt="" loading="lazy" className="w-full max-h-96 object-cover" />
       )}
 
       {!isEditing && (
         <div
           className={cn(
-            "flex items-center gap-5 px-5 py-3",
+            "flex items-center gap-1 px-4 py-1.5",
             post.coverUrl && "border-t border-gray-200"
           )}
         >
+          {/* Реакции: тап-область min-h-11 (иконки остаются 17px) — раньше цель 20px */}
           <button
             type="button"
             onClick={() => toggleLike.mutate({ postId: post.id, channelId: post.channelId })}
             className={cn(
-              "flex items-center gap-1.5 text-[13px] transition-[color,transform] duration-150 ease-out-quart active:scale-90 cursor-pointer",
+              "flex items-center gap-1.5 min-h-11 px-2 text-[13px] transition-[color,transform] duration-150 ease-out-quart active:scale-90 cursor-pointer",
               post.likedByMe ? "text-danger" : "text-gray-600 hover:text-ink"
             )}
           >
@@ -177,7 +176,7 @@ export function PostCard({ post, isAdmin, onDelete }: PostCardProps) {
             type="button"
             onClick={() => setAreCommentsOpen(!areCommentsOpen)}
             className={cn(
-              "flex items-center gap-1.5 text-[13px] transition-[color,transform] duration-150 ease-out-quart active:scale-90 cursor-pointer",
+              "flex items-center gap-1.5 min-h-11 px-2 text-[13px] transition-[color,transform] duration-150 ease-out-quart active:scale-90 cursor-pointer",
               areCommentsOpen ? "text-ink" : "text-gray-600 hover:text-ink"
             )}
           >
@@ -192,7 +191,7 @@ export function PostCard({ post, isAdmin, onDelete }: PostCardProps) {
             onClick={() => toggleBookmark.mutate({ postId: post.id, channelId: post.channelId })}
             aria-label="В закладки"
             className={cn(
-              "transition-[color,transform] duration-150 ease-out-quart active:scale-90 cursor-pointer",
+              "flex items-center justify-center size-11 transition-[color,transform] duration-150 ease-out-quart active:scale-90 cursor-pointer",
               post.bookmarkedByMe ? "text-ink" : "text-gray-500 hover:text-ink"
             )}
           >

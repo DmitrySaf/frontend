@@ -134,7 +134,7 @@ export function ChatMessageItem({
               <button
                 type="button"
                 aria-label="Действия с сообщением"
-                className="size-7 flex items-center justify-center rounded-lg bg-surface border border-gray-200 shadow-sm text-gray-500 hover:text-ink cursor-pointer"
+                className="touch-hit size-7 flex items-center justify-center rounded-lg bg-surface border border-gray-200 shadow-sm text-gray-500 hover:text-ink cursor-pointer"
               >
                 <MoreHorizontal className="size-4" />
               </button>

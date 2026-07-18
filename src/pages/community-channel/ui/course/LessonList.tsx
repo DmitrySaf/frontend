@@ -134,21 +134,22 @@ export function LessonList({
                   </span>
                   {isEditMode && (
                     <div className="flex items-center gap-1 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-150">
+                      {/* На таче иконки видимы всегда — даём им тап-площадку 36px + touch-hit */}
                       <button
                         type="button"
                         onClick={() => setEditingModuleId(module.id)}
                         aria-label="Переименовать модуль"
-                        className="text-gray-500 hover:text-ink active:scale-90 transition-[color,transform] duration-150 cursor-pointer"
+                        className="touch-hit size-9 md:size-auto flex items-center justify-center rounded-lg text-gray-500 hover:text-ink active:scale-90 transition-[color,transform] duration-150 cursor-pointer"
                       >
-                        <Pencil className="size-3" />
+                        <Pencil className="size-3.5 md:size-3" />
                       </button>
                       <button
                         type="button"
                         onClick={() => onDeleteModule(module.id)}
                         aria-label="Удалить модуль"
-                        className="text-gray-500 hover:text-danger active:scale-90 transition-[color,transform] duration-150 cursor-pointer"
+                        className="touch-hit size-9 md:size-auto flex items-center justify-center rounded-lg text-gray-500 hover:text-danger active:scale-90 transition-[color,transform] duration-150 cursor-pointer"
                       >
-                        <Trash2 className="size-3" />
+                        <Trash2 className="size-3.5 md:size-3" />
                       </button>
                     </div>
                   )}
@@ -167,7 +168,7 @@ export function LessonList({
                     disabled={isDisabled}
                     onClick={() => onSelectLesson(lesson)}
                     className={cn(
-                      "w-full flex items-center gap-2.5 px-2.5 py-[7px] rounded-[10px] text-left transition-colors duration-150 ease-out-quart",
+                      "w-full flex items-center gap-2.5 px-2.5 py-[7px] min-h-11 md:min-h-0 rounded-[10px] text-left transition-colors duration-150 ease-out-quart",
                       isActive
                         ? "bg-gray-200/70 inset-ring inset-ring-gray-300/70"
                         : isDisabled
@@ -197,7 +198,7 @@ export function LessonList({
                 <button
                   type="button"
                   onClick={() => onCreateLesson(module.id)}
-                  className="w-full flex items-center gap-2.5 px-2.5 py-[7px] rounded-[10px] text-[13px] font-medium text-gray-500 hover:text-ink hover:bg-gray-200/45 transition-colors duration-150 cursor-pointer"
+                  className="w-full flex items-center gap-2.5 px-2.5 py-[7px] min-h-11 md:min-h-0 rounded-[10px] text-[13px] font-medium text-gray-500 hover:text-ink hover:bg-gray-200/45 transition-colors duration-150 cursor-pointer"
                 >
                   <Plus className="size-4" />
                   Добавить урок

@@ -184,17 +184,25 @@ export function LessonEditor({ lesson, onSave, onDelete }: LessonEditorProps) {
             />
           </div>
 
-          <div className="flex items-center gap-3 pt-1">
-            <Button theme="primary" size="l" type="submit" isLoading={isSubmitting}>
+          {/* Мобиле: стек во всю ширину (два l-ряда не помещаются на 320) */}
+          <div className="flex flex-col gap-2.5 pt-1 md:flex-row md:items-center md:gap-3">
+            <Button
+              theme="primary"
+              size="l"
+              type="submit"
+              isLoading={isSubmitting}
+              className="w-full md:w-auto"
+            >
               Сохранить урок
             </Button>
-            <div className="flex-1" />
+            <div className="hidden md:block flex-1" />
             <Button
               theme="destructiveGhost"
               size="l"
               type="button"
               Icon={Trash2}
               onClick={() => onDelete(lesson.id)}
+              className="w-full md:w-auto"
             >
               Удалить урок
             </Button>

@@ -77,8 +77,20 @@ export function LessonView({
           </p>
         )}
 
-        {/* Навигация */}
-        <div className="flex items-center gap-3 pt-2">
+        {/* Навигация: на мобиле «Отметить пройденным» — главное действие во всю ширину,
+            под ним пара «Назад»/«Далее» (ряд из трёх l-кнопок не помещается уже на 390);
+            на md+ прежний ряд с «Отметить» справа */}
+        <div className="grid grid-cols-2 gap-2.5 pt-2 md:flex md:items-center md:gap-3">
+          <Button
+            theme={lesson.completed ? "outline" : "primary"}
+            size="l"
+            Icon={Check}
+            isLoading={isTogglingComplete}
+            onClick={() => onToggleComplete(lesson.id)}
+            className="col-span-2 md:hidden"
+          >
+            {lesson.completed ? "Пройдено" : "Отметить пройденным"}
+          </Button>
           <Button
             theme="outline"
             size="l"
@@ -95,15 +107,17 @@ export function LessonView({
             isDisabled={!next || next.locked}
             onClick={() => next && onSelectLesson(next)}
           >
-            Следующий урок
+            <span className="md:hidden">Далее</span>
+            <span className="hidden md:inline">Следующий урок</span>
           </Button>
-          <div className="flex-1" />
+          <div className="hidden md:block flex-1" />
           <Button
             theme={lesson.completed ? "outline" : "ghost"}
             size="l"
             Icon={Check}
             isLoading={isTogglingComplete}
             onClick={() => onToggleComplete(lesson.id)}
+            className="hidden md:inline-flex"
           >
             {lesson.completed ? "Пройдено" : "Отметить пройденным"}
           </Button>

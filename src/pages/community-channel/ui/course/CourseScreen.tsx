@@ -99,20 +99,44 @@ export function CourseScreen({ channel }: { channel: Channel }) {
 
   const isEmpty = course.totalLessons === 0 && course.modules.length === 0;
 
+  const showBackOnMobile = !isEmpty && !isListOpenOnMobile;
+
   return (
     <div className="flex-1 flex flex-col min-h-0">
-      {/* Панель режима (модель A): Просмотр ↔ Редактирование */}
-      {isAdmin && (
-        <div className="shrink-0 flex items-center justify-end px-4 h-12 border-b border-gray-200 bg-surface">
-          <SegmentedControl<CourseMode>
-            size="s"
-            value={mode}
-            onChange={setMode}
-            options={[
-              { value: "view", label: "Просмотр", icon: Eye },
-              { value: "edit", label: "Редактирование", icon: Pencil },
-            ]}
-          />
+      {/* Единый служебный бар: «К списку уроков» (мобиле) + режим «Просмотр ↔
+          Редактирование» (админ). Раньше это были две полосы по 48px — на телефоне
+          над уроком скапливалось 4 бара хрома (аудит 17.7). */}
+      {(isAdmin || showBackOnMobile) && (
+        <div
+          className={cn(
+            "shrink-0 flex items-center gap-2 px-2 md:px-4 h-12 border-b border-gray-200 bg-surface",
+            !isAdmin && "md:hidden"
+          )}
+        >
+          {showBackOnMobile && (
+            <button
+              type="button"
+              onClick={() => setIsListOpenOnMobile(true)}
+              className="md:hidden flex items-center gap-1.5 min-h-11 px-2 text-[13px] font-medium text-gray-600 cursor-pointer whitespace-nowrap"
+            >
+              <ArrowLeft className="size-4" />
+              {/* На сверхузких (<360) рядом с сегмент-контролом остаётся только стрелка */}
+              <span className="hidden min-[360px]:inline">К урокам</span>
+            </button>
+          )}
+          {isAdmin && (
+            <div className="ml-auto">
+              <SegmentedControl<CourseMode>
+                size="s"
+                value={mode}
+                onChange={setMode}
+                options={[
+                  { value: "view", label: "Просмотр", icon: Eye },
+                  { value: "edit", label: "Редактирование", icon: Pencil },
+                ]}
+              />
+            </div>
+          )}
         </div>
       )}
 
@@ -140,17 +164,6 @@ export function CourseScreen({ channel }: { channel: Channel }) {
             isListOpenOnMobile && !isEmpty ? "hidden md:flex" : "flex"
           )}
         >
-          {/* Мобильный возврат к списку уроков */}
-          {!isEmpty && (
-            <button
-              type="button"
-              onClick={() => setIsListOpenOnMobile(true)}
-              className="md:hidden shrink-0 flex items-center gap-1.5 px-4 h-12 text-[13px] font-medium text-gray-600 border-b border-gray-200 bg-surface cursor-pointer"
-            >
-              <ArrowLeft className="size-4" />К списку уроков
-            </button>
-          )}
-
           {isEditMode ? (
             selectedLesson ? (
               <LessonEditor

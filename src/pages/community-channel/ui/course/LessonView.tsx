@@ -77,17 +77,17 @@ export function LessonView({
           </p>
         )}
 
-        {/* Навигация: на мобиле «Отметить пройденным» — главное действие во всю ширину,
-            под ним пара «Назад»/«Далее» (ряд из трёх l-кнопок не помещается уже на 390);
-            на md+ прежний ряд с «Отметить» справа */}
-        <div className="grid grid-cols-2 gap-2.5 pt-2 md:flex md:items-center md:gap-3">
+        {/* Навигация: до lg «Отметить пройденным» — главное действие во всю ширину,
+            под ним пара «Назад»/«Далее» (ряд из трёх l-кнопок не помещается ни на
+            телефоне, ни в планшетной колонке урока); на lg+ прежний ряд */}
+        <div className="grid grid-cols-2 gap-2.5 pt-2 lg:flex lg:items-center lg:gap-3">
           <Button
             theme={lesson.completed ? "outline" : "primary"}
             size="l"
             Icon={Check}
             isLoading={isTogglingComplete}
             onClick={() => onToggleComplete(lesson.id)}
-            className="col-span-2 md:hidden"
+            className="col-span-2 lg:hidden"
           >
             {lesson.completed ? "Пройдено" : "Отметить пройденным"}
           </Button>
@@ -107,17 +107,17 @@ export function LessonView({
             isDisabled={!next || next.locked}
             onClick={() => next && onSelectLesson(next)}
           >
-            <span className="md:hidden">Далее</span>
-            <span className="hidden md:inline">Следующий урок</span>
+            <span className="lg:hidden">Далее</span>
+            <span className="hidden lg:inline">Следующий урок</span>
           </Button>
-          <div className="hidden md:block flex-1" />
+          <div className="hidden lg:block flex-1" />
           <Button
             theme={lesson.completed ? "outline" : "ghost"}
             size="l"
             Icon={Check}
             isLoading={isTogglingComplete}
             onClick={() => onToggleComplete(lesson.id)}
-            className="hidden md:inline-flex"
+            className="hidden lg:inline-flex"
           >
             {lesson.completed ? "Пройдено" : "Отметить пройденным"}
           </Button>

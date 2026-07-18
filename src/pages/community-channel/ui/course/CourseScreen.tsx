@@ -42,7 +42,9 @@ export function CourseScreen({ channel }: { channel: Channel }) {
   const [mode, setMode] = useState<CourseMode>("view");
   const [selectedLessonId, setSelectedLessonId] = useState<string | null>(null);
   const [deleting, setDeleting] = useState<{ kind: "module" | "lesson"; id: string } | null>(null);
-  // На мобиле список и урок — два «экрана»: выбор урока открывает урок, «назад» возвращает к списку
+  // До lg список и урок — два «экрана»: выбор урока открывает урок, «назад» возвращает
+  // к списку. Планшетная полоса (md–lg) тоже: rail 60 + сайдбар 256 + список 256
+  // оставляли уроку ~165px — заголовок ломался по слову, кнопки резались краем
   const [isListOpenOnMobile, setIsListOpenOnMobile] = useState(true);
 
   const allLessons = useMemo(
@@ -68,7 +70,7 @@ export function CourseScreen({ channel }: { channel: Channel }) {
     return (
       <div className="flex-1 flex min-h-0">
         {/* Столбец списка уроков */}
-        <div className="hidden md:flex flex-col gap-2 w-72 shrink-0 border-r border-gray-200 p-3">
+        <div className="hidden lg:flex flex-col gap-2 w-72 shrink-0 border-r border-gray-200 p-3">
           <Skeleton height={14} width={120} radius={6} className="mb-1" />
           {[0, 1, 2, 3].map((index) => (
             <Skeleton key={index} height={40} radius={10} />
@@ -109,15 +111,15 @@ export function CourseScreen({ channel }: { channel: Channel }) {
       {(isAdmin || showBackOnMobile) && (
         <div
           className={cn(
-            "shrink-0 flex items-center gap-2 px-2 md:px-4 h-12 border-b border-gray-200 bg-surface",
-            !isAdmin && "md:hidden"
+            "shrink-0 flex items-center gap-2 px-2 lg:px-4 h-12 border-b border-gray-200 bg-surface",
+            !isAdmin && "lg:hidden"
           )}
         >
           {showBackOnMobile && (
             <button
               type="button"
               onClick={() => setIsListOpenOnMobile(true)}
-              className="md:hidden flex items-center gap-1.5 min-h-11 px-2 text-[13px] font-medium text-gray-600 cursor-pointer whitespace-nowrap"
+              className="lg:hidden flex items-center gap-1.5 min-h-11 px-2 text-[13px] font-medium text-gray-600 cursor-pointer whitespace-nowrap"
             >
               <ArrowLeft className="size-4" />
               {/* На сверхузких (<360) рядом с сегмент-контролом остаётся только стрелка */}
@@ -154,14 +156,14 @@ export function CourseScreen({ channel }: { channel: Channel }) {
             onRenameModule={(moduleId, title) => renameModule.mutate({ moduleId, title })}
             onDeleteModule={(moduleId) => setDeleting({ kind: "module", id: moduleId })}
             onCreateLesson={handleCreateLesson}
-            className={cn(!isListOpenOnMobile && "hidden md:flex")}
+            className={cn(!isListOpenOnMobile && "hidden lg:flex")}
           />
         )}
 
         <div
           className={cn(
             "flex-1 min-w-0 flex-col min-h-0",
-            isListOpenOnMobile && !isEmpty ? "hidden md:flex" : "flex"
+            isListOpenOnMobile && !isEmpty ? "hidden lg:flex" : "flex"
           )}
         >
           {isEditMode ? (

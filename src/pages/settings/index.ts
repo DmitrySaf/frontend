@@ -1,4 +1,5 @@
 export {
+  SettingsHome,
   SettingsProfile,
   SettingsSecurity,
   SettingsBilling,

@@ -1,3 +1,4 @@
+export { SettingsHome } from "./SettingsHome";
 export { SettingsProfile } from "./SettingsProfile";
 export { SettingsSecurity } from "./SettingsSecurity";
 export { SettingsVerification } from "./SettingsVerification";

@@ -101,12 +101,23 @@ export default function ProfileButton() {
               </DropdownMenuContent>
             </DropdownMenu>
 
+            {/* На мобиле шестерёнка ведёт в корень-список настроек (iOS-паттерн),
+                на десктопе — сразу в первую секцию (список там не существует) */}
+            <Button
+              theme="ghost"
+              size="xl"
+              Icon={Settings}
+              aria-label="Настройки"
+              href="/settings"
+              className="md:hidden"
+            />
             <Button
               theme="ghost"
               size="xl"
               Icon={Settings}
               aria-label="Настройки"
               href="/settings/profile"
+              className="hidden md:inline-flex"
             />
           </div>
         </div>

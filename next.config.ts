@@ -19,16 +19,8 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  async redirects() {
-    return [
-      // Basic redirect
-      {
-        source: "/settings",
-        destination: "/settings/profile",
-        permanent: true,
-      },
-    ];
-  },
+  // Редирект /settings → /settings/profile удалён (этап 17.7): на мобиле корень
+  // настроек — экран-список (iOS-паттерн), десктоп редиректит клиентски.
 };
 
 export default nextConfig;

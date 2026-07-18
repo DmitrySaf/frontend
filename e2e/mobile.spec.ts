@@ -34,9 +34,12 @@ test("сообщение отправляется с мобильного ком
   await expect(page.getByText(message)).toBeVisible();
 });
 
-test("настройки: мобильные пиллы навигации работают", async ({ page }) => {
-  await page.goto("/settings/profile");
-  await expect(page.getByText("Настройки аккаунта")).toBeVisible();
+test("настройки: iOS-список навигации работает", async ({ page }) => {
+  await page.goto("/settings");
+  await expect(page.getByRole("heading", { name: "Настройки" })).toBeVisible();
   await page.getByRole("link", { name: "Транзакции" }).click();
   await expect(page.getByText("Подписка — Базовый").first()).toBeVisible();
+  // «‹ Настройки» возвращает к списку
+  await page.getByRole("link", { name: "Настройки" }).click();
+  await expect(page.getByRole("link", { name: "Профиль" })).toBeVisible();
 });

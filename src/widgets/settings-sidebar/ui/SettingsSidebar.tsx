@@ -4,15 +4,12 @@ import { createBrowserClient } from "@/api/browser-client";
 import { useProfileQuery } from "@/entities/profile";
 import { useMyVerificationQuery } from "@/entities/verification";
 import { Avatar, Tabs } from "@/shared/components";
-import { cn } from "@/shared/utils";
-import { ArrowLeft, BadgeCheck, LogOut } from "lucide-react";
-import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { BadgeCheck, LogOut } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { SETTINGS_SECTIONS } from "../model";
 
 export function SettingsSidebar() {
   const router = useRouter();
-  const pathname = usePathname();
   const supabase = createBrowserClient();
   const { data: profile } = useProfileQuery();
   const { data: verification } = useMyVerificationQuery();
@@ -32,42 +29,8 @@ export function SettingsSidebar() {
 
   return (
     <>
-      {/* Мобильная навигация: горизонтальные пиллы */}
-      <div className="md:hidden border-b border-gray-200 bg-surface">
-        <div className="flex items-center gap-1.5 px-3 py-2.5 overflow-x-auto">
-          <Link
-            href="/communities"
-            aria-label="Назад к сообществам"
-            className="shrink-0 size-8 flex items-center justify-center rounded-[10px] text-gray-600 hover:bg-gray-100 active:scale-90 transition-[background-color,transform] duration-150 ease-out-quart"
-          >
-            <ArrowLeft className="size-4" />
-          </Link>
-          {SETTINGS_SECTIONS.map((section) => {
-            const href = `/settings/${section.id}`;
-            const isActive = pathname === href;
-            return (
-              <Link
-                key={section.id}
-                href={href}
-                className={cn(
-                  "shrink-0 px-3 py-1.5 rounded-full text-[13px] font-medium transition-colors",
-                  isActive ? "bg-ink text-surface" : "bg-gray-100 text-gray-600 hover:text-ink"
-                )}
-              >
-                {section.name}
-              </Link>
-            );
-          })}
-          <button
-            type="button"
-            onClick={handleLogout}
-            aria-label="Выйти из аккаунта"
-            className="shrink-0 size-8 flex items-center justify-center rounded-[10px] text-danger hover:bg-danger/10 active:scale-90 transition-[background-color,transform] duration-150 ease-out-quart cursor-pointer"
-          >
-            <LogOut className="size-4" />
-          </button>
-        </div>
-      </div>
+      {/* Мобильной навигации здесь больше нет: <md корень /settings — экран-список
+          (SettingsHome), «‹ Настройки» секций рендерит layout. */}
 
       {/* Десктопный сайдбар */}
       <div className="hidden md:block max-w-[230px]">

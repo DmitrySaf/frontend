@@ -325,6 +325,41 @@
   }
 }
 
+/* Safe-area (viewport-fit=cover в app/layout.tsx): нижняя кромка — home-индикатор,
+   боковые — landscape-чёлка. Числовые варианты держат базовый отступ там, где
+   inset нулевой (десктоп, Android без жестов): pb-safe-3 = max(12px, inset). */
+@utility pb-safe {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+@utility pb-safe-* {
+  padding-bottom: max(--spacing(--value(integer)), env(safe-area-inset-bottom));
+}
+@utility pt-safe-* {
+  padding-top: max(--spacing(--value(integer)), env(safe-area-inset-top));
+}
+@utility pl-safe {
+  padding-left: env(safe-area-inset-left);
+}
+@utility pr-safe {
+  padding-right: env(safe-area-inset-right);
+}
+
+/* Тач-цель ≥44px без изменения визуала (HIG): прозрачный псевдоэлемент растягивает
+   область клика до 44px по каждой оси. Для мелких иконок-кнопок (send, «···», «+»).
+   Соседние цели могут перекрываться слоями — применять там, где между ними ≥8px. */
+@utility touch-hit {
+  position: relative;
+  &::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: max(100%, 44px);
+    height: max(100%, 44px);
+    transform: translate(-50%, -50%);
+  }
+}
+
 @layer utilities {
   /* Появление нового контента (сообщения, комментарии): @starting-style срабатывает
      только для узлов, вставленных ПОСЛЕ первичного рендера (контейнер помечается data-live),

@@ -49,7 +49,7 @@ export function ChatComposer({ channelName, onSend, isSending }: ChatComposerPro
   };
 
   return (
-    <div className="shrink-0 px-3 md:px-6 pb-3 md:pb-4 pt-2">
+    <div className="shrink-0 px-3 md:px-6 pb-safe-3 md:pb-4 pt-2">
       <div className="relative flex items-end gap-3 px-3.5 py-2.5 rounded-[12px] bg-gray-100 inset-ring inset-ring-gray-200 focus-within:inset-ring-2 focus-within:inset-ring-primary-500 transition-shadow">
         <textarea
           ref={textareaRef}
@@ -70,7 +70,7 @@ export function ChatComposer({ channelName, onSend, isSending }: ChatComposerPro
           disabled={!canSend}
           aria-label="Отправить"
           className={cn(
-            "shrink-0 pb-0.5 transition-[color,transform,opacity] duration-150 ease-out-quart cursor-pointer",
+            "shrink-0 pb-0.5 touch-hit transition-[color,transform,opacity] duration-150 ease-out-quart cursor-pointer",
             canSend
               ? "text-primary-600 hover:text-primary-500 active:scale-90"
               : "text-gray-400 opacity-70 cursor-default"

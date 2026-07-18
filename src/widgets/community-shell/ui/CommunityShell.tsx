@@ -51,7 +51,7 @@ export function CommunityShell({ slug, children }: CommunityShellProps) {
               transition={{ duration: shouldReduceMotion ? 0.01 : 0.2, ease: "easeOut" }}
             />
             <motion.div
-              className="absolute inset-y-0 left-0 flex w-[85vw] max-w-[340px] bg-gray-100 py-2 pl-1 shadow-xl"
+              className="absolute inset-y-0 left-0 flex w-[85vw] max-w-[340px] bg-gray-100 pt-2 pb-safe-2 pl-1 shadow-xl"
               initial={shouldReduceMotion ? { opacity: 0 } : { x: "-100%" }}
               animate={shouldReduceMotion ? { opacity: 1 } : { x: 0 }}
               exit={shouldReduceMotion ? { opacity: 0 } : { x: "-100%" }}
@@ -83,7 +83,7 @@ export function CommunityShell({ slug, children }: CommunityShellProps) {
             type="button"
             aria-label="Открыть меню"
             onClick={() => setIsDrawerOpen(true)}
-            className="size-9 flex items-center justify-center rounded-lg text-gray-600 hover:text-ink hover:bg-gray-100 transition-colors cursor-pointer"
+            className="size-9 touch-hit flex items-center justify-center rounded-lg text-gray-600 hover:text-ink hover:bg-gray-100 transition-colors cursor-pointer"
           >
             <Menu className="size-5" />
           </button>

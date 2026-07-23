@@ -3,7 +3,7 @@
 import { useCommunityStructureQuery, useMyChannelGrantsQuery } from "@/entities/channel";
 import { useCommunityRole } from "@/entities/member";
 import { ContentErrorState } from "@/shared/components";
-import { Lock } from "lucide-react";
+import { LockBold24 } from "@frosted-ui/icons";
 import { ChannelSkeleton } from "./ChannelSkeleton";
 import { ChannelTitleBar } from "./ChannelTitleBar";
 import { ChatScreen } from "./chat/ChatScreen";
@@ -62,7 +62,7 @@ export function CommunityChannelPage({ slug, tabSlug }: CommunityChannelPageProp
         <CenteredState>
           <div className="flex flex-col items-center gap-3 max-w-xs text-center">
             <div className="size-14 rounded-2xl bg-gray-100 border border-gray-200 flex items-center justify-center">
-              <Lock className="size-6 text-gray-500" />
+              <LockBold24 className="size-6 text-gray-500" />
             </div>
             <p className="text-[15px] font-semibold text-ink">Нужен доступ</p>
             <p className="text-sm text-gray-600">

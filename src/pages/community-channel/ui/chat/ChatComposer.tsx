@@ -2,7 +2,7 @@
 
 import { MESSAGE_MAX_LENGTH } from "@/entities/message";
 import { cn } from "@/shared/utils";
-import { SendHorizontal } from "lucide-react";
+import { PaperAirplaneRightBold20 } from "@frosted-ui/icons";
 import { useRef, useState } from "react";
 
 const COUNTER_THRESHOLD = MESSAGE_MAX_LENGTH - 200;
@@ -76,7 +76,7 @@ export function ChatComposer({ channelName, onSend, isSending }: ChatComposerPro
               : "text-gray-400 opacity-70 cursor-default"
           )}
         >
-          <SendHorizontal className="size-5" />
+          <PaperAirplaneRightBold20 className="size-5" />
         </button>
       </div>
 

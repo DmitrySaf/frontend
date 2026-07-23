@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "@/shared/utils";
-import { ImageIcon } from "lucide-react";
+import { Photo32 } from "@frosted-ui/icons";
 import { useState } from "react";
 
 interface MediaCarouselProps {
@@ -15,7 +15,7 @@ export function MediaCarousel({ media, alt }: MediaCarouselProps) {
   if (media.length === 0) {
     return (
       <div className="w-full aspect-[21/9] rounded-2xl bg-gray-100 border border-gray-200 flex flex-col items-center justify-center gap-2 text-gray-400">
-        <ImageIcon className="size-9" />
+        <Photo32 className="size-9" />
       </div>
     );
   }

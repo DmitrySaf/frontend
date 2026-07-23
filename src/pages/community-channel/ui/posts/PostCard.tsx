@@ -3,7 +3,6 @@
 import {
   type Post,
   type PostFormData,
-  useToggleBookmarkMutation,
   useToggleLikeMutation,
   useTogglePinMutation,
   useUpdatePostMutation,
@@ -12,15 +11,15 @@ import { Avatar, Dropdown, type DropdownItemConfig } from "@/shared/components";
 import { useSessionUserId } from "@/shared/composables";
 import { cn, formatRelativeTime } from "@/shared/utils";
 import {
-  Bookmark,
-  Heart,
-  MessageCircle,
-  MoreHorizontal,
-  Pencil,
-  Pin,
-  PinOff,
-  Trash2,
-} from "lucide-react";
+  HeartBold16,
+  MessageBold16,
+  Pencil16,
+  Pin12,
+  Pin16,
+  ThreeDotsHorizontalBold20,
+  Trash16,
+  Unpin16,
+} from "@frosted-ui/icons";
 import { useState } from "react";
 import { useAuthorView } from "../useAuthorView";
 import { PostComments } from "./PostComments";
@@ -43,16 +42,15 @@ export function PostCard({ post, isAdmin, onDelete }: PostCardProps) {
   const updatePost = useUpdatePostMutation();
   const togglePin = useTogglePinMutation();
   const toggleLike = useToggleLikeMutation();
-  const toggleBookmark = useToggleBookmarkMutation();
 
   const isOwn = myUserId !== null && post.authorId === myUserId;
 
   const menuItems: DropdownItemConfig[] = [
-    ...(isOwn ? [{ icon: Pencil, label: "Редактировать", onClick: () => setIsEditing(true) }] : []),
+    ...(isOwn ? [{ icon: Pencil16, label: "Редактировать", onClick: () => setIsEditing(true) }] : []),
     ...(isAdmin
       ? [
           {
-            icon: post.pinned ? PinOff : Pin,
+            icon: post.pinned ? Unpin16 : Pin16,
             label: post.pinned ? "Открепить" : "Закрепить",
             onClick: () =>
               togglePin.mutate({
@@ -64,7 +62,7 @@ export function PostCard({ post, isAdmin, onDelete }: PostCardProps) {
         ]
       : []),
     ...(isOwn || isAdmin
-      ? [{ icon: Trash2, label: "Удалить", onClick: onDelete, variant: "danger" as const }]
+      ? [{ icon: Trash16, label: "Удалить", onClick: onDelete, variant: "danger" as const }]
       : []),
   ];
 
@@ -102,7 +100,7 @@ export function PostCard({ post, isAdmin, onDelete }: PostCardProps) {
               Цвет айдентики не должен ничего означать, кроме принадлежности. */}
           {post.pinned && (
             <span className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-gray-200 text-xs font-medium text-gray-700">
-              <Pin className="size-3" />
+              <Pin12 className="size-3" />
               {/* На узких экранах пилл сжимал имя автора до пары букв — остаётся иконка */}
               <span className="hidden sm:inline">Закреплено</span>
             </span>
@@ -115,7 +113,7 @@ export function PostCard({ post, isAdmin, onDelete }: PostCardProps) {
                   aria-label="Действия с постом"
                   className="touch-hit size-8 flex items-center justify-center rounded-lg text-gray-500 hover:text-ink hover:bg-gray-100 transition-colors cursor-pointer"
                 >
-                  <MoreHorizontal className="size-[18px]" />
+                  <ThreeDotsHorizontalBold20 className="size-[18px]" />
                 </button>
               }
               items={menuItems}
@@ -165,7 +163,7 @@ export function PostCard({ post, isAdmin, onDelete }: PostCardProps) {
               post.likedByMe ? "text-danger" : "text-gray-600 hover:text-ink"
             )}
           >
-            <Heart
+            <HeartBold16
               key={post.likedByMe ? "liked" : "idle"}
               className={cn("size-[17px]", post.likedByMe && "fill-current animate-heart-pop")}
             />
@@ -180,22 +178,8 @@ export function PostCard({ post, isAdmin, onDelete }: PostCardProps) {
               areCommentsOpen ? "text-ink" : "text-gray-600 hover:text-ink"
             )}
           >
-            <MessageCircle className="size-[17px]" />
+            <MessageBold16 className="size-[17px]" />
             {post.commentsCount > 0 && post.commentsCount}
-          </button>
-
-          <div className="flex-1" />
-
-          <button
-            type="button"
-            onClick={() => toggleBookmark.mutate({ postId: post.id, channelId: post.channelId })}
-            aria-label="В закладки"
-            className={cn(
-              "flex items-center justify-center size-11 transition-[color,transform] duration-150 ease-out-quart active:scale-90 cursor-pointer",
-              post.bookmarkedByMe ? "text-ink" : "text-gray-500 hover:text-ink"
-            )}
-          >
-            <Bookmark className={cn("size-[17px]", post.bookmarkedByMe && "fill-current")} />
           </button>
         </div>
       )}

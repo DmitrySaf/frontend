@@ -7,11 +7,18 @@ import {
   useInvalidateMyVerification,
   useMyVerificationQuery,
 } from "@/entities/verification";
-import { Button, Skeleton } from "@/shared/components";
+import { Button, Skeleton, toast } from "@/shared/components";
 import { cn } from "@/shared/utils";
-import { BadgeCheck, Briefcase, Building2, Clock, ShieldCheck, User } from "lucide-react";
+import {
+  BankBold20,
+  ClockBold24,
+  SealCheckmarkBold24,
+  ShieldCheckmarkBold20,
+  ShieldCheckmarkBold24,
+  ShopBold20,
+  UserBold20,
+} from "@frosted-ui/icons";
 import { useState } from "react";
-import { toast } from "sonner";
 
 const KIND_OPTIONS: {
   value: VerificationKind;
@@ -19,15 +26,15 @@ const KIND_OPTIONS: {
   title: string;
   description: string;
 }[] = [
-  { value: "passport", icon: User, title: "Паспорт", description: "Физическое лицо" },
+  { value: "passport", icon: UserBold20, title: "Паспорт", description: "Физическое лицо" },
   {
     value: "self_employed",
-    icon: Briefcase,
+    icon: ShopBold20,
     title: "Самозанятый",
     description: "Налог на профдоход",
   },
-  { value: "ip", icon: ShieldCheck, title: "ИП", description: "Индивидуальный предприниматель" },
-  { value: "ooo", icon: Building2, title: "ООО", description: "Юридическое лицо" },
+  { value: "ip", icon: ShieldCheckmarkBold20, title: "ИП", description: "Индивидуальный предприниматель" },
+  { value: "ooo", icon: BankBold20, title: "ООО", description: "Юридическое лицо" },
 ];
 
 const KIND_LABELS: Record<VerificationKind, string> = {
@@ -136,20 +143,20 @@ export function SettingsVerification() {
       ) : verification.status === "approved" ? (
         <Banner
           tone="passed"
-          icon={BadgeCheck}
+          icon={SealCheckmarkBold24}
           title="Верификация пройдена"
           description="Личность подтверждена. Значок отображается в профиле, выплаты на карту доступны."
         />
       ) : verification.status === "pending" ? (
         <Banner
           tone="pending"
-          icon={Clock}
+          icon={ClockBold24}
           title="Верификация в процессе"
           description="Документы на проверке. Обычно занимает до 2 рабочих дней — мы пришлём уведомление."
         >
           {/* Симуляция до подключения провайдера проверки */}
           <div className="pt-1.5">
-            <Button theme="ghost" size="m" onClick={handleSimulateApprove}>
+            <Button theme="ghost" size="md" onClick={handleSimulateApprove}>
               Симулировать одобрение (тестовый режим)
             </Button>
           </div>
@@ -158,13 +165,13 @@ export function SettingsVerification() {
         <>
           <Banner
             tone="neutral"
-            icon={BadgeCheck}
+            icon={SealCheckmarkBold24}
             title="Аккаунт не верифицирован"
             description="Подтвердите личность, чтобы получать выплаты и значок рядом с именем."
           >
             {!isFlowOpen && (
               <div className="pt-1.5">
-                <Button theme="primary" size="l" onClick={() => setIsFlowOpen(true)}>
+                <Button theme="primary" size="lg" onClick={() => setIsFlowOpen(true)}>
                   Пройти верификацию
                 </Button>
               </div>
@@ -211,7 +218,7 @@ export function SettingsVerification() {
               {selectedKind && (
                 <div className="space-y-3">
                   <div className="h-52 rounded-lg border border-dashed border-gray-300 bg-gray-50 flex flex-col items-center justify-center gap-2 text-center px-6">
-                    <ShieldCheck className="size-6 text-gray-400" />
+                    <ShieldCheckmarkBold24 className="size-6 text-gray-400" />
                     <p className="text-sm font-medium text-gray-600">
                       Здесь появится форма проверки документов ({KIND_LABELS[selectedKind]})
                     </p>
@@ -224,13 +231,13 @@ export function SettingsVerification() {
                   <div className="flex items-center gap-2.5">
                     <Button
                       theme="primary"
-                      size="l"
+                      size="lg"
                       onClick={handleSubmit}
                       isLoading={isSubmitting}
                     >
                       Отправить на проверку
                     </Button>
-                    <Button theme="ghost" size="l" onClick={() => setIsFlowOpen(false)}>
+                    <Button theme="ghost" size="lg" onClick={() => setIsFlowOpen(false)}>
                       Отмена
                     </Button>
                   </div>

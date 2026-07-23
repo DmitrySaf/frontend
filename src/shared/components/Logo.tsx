@@ -73,7 +73,7 @@ function LogoTile({ variant = "acid-on-black", size = 48, className }: LogoTileP
     <div
       style={{ width: size, height: size }}
       className={cn(
-        "flex items-center justify-center rounded-[14px] ring-1",
+        "flex items-center justify-center rounded-(--radius-control-xl) ring-1",
         LOGO_TILE_VARIANTS[variant],
         className
       )}

@@ -20,8 +20,8 @@ import {
 import { Button, DeleteDialog, Input, Skeleton, Switch, Textarea } from "@/shared/components";
 import { REQUIRED_MESSAGE } from "@/shared/constants";
 import { cn } from "@/shared/utils";
+import { EyeSlashed20, GlobeBold20, LinkBold20, Pencil16, PlusBold16, Trash16 } from "@frosted-ui/icons";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { EyeOff, Globe, Link2, Pencil, Plus, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
@@ -45,19 +45,19 @@ const VISIBILITY_OPTIONS: {
 }[] = [
   {
     value: "hidden",
-    icon: EyeOff,
+    icon: EyeSlashed20,
     title: "Скрытое",
     description: "По прямой ссылке — 404, вход только по приглашению",
   },
   {
     value: "unlisted",
-    icon: Link2,
+    icon: LinkBold20,
     title: "По ссылке",
     description: "Витрину видит любой, у кого есть ссылка",
   },
   {
     value: "live",
-    icon: Globe,
+    icon: GlobeBold20,
     title: "Открытое",
     description: "Витрина доступна всем",
   },
@@ -135,7 +135,7 @@ export function CommunitySettingsPage({ slug }: { slug: string }) {
       actions={
         <Button
           theme="primary"
-          size="m"
+          size="md"
           onClick={handleSave}
           isDisabled={!isDirty}
           isLoading={updateProfile.isPending}
@@ -156,14 +156,14 @@ export function CommunitySettingsPage({ slug }: { slug: string }) {
           <div className="p-4 md:p-6 max-w-2xl space-y-6">
             <Input
               name="displayName"
-              size="l"
+              size="lg"
               label="Название сообщества"
               error={errors.displayName?.message}
             />
 
             <Textarea
               name="description"
-              size="l"
+              size="lg"
               label="Описание"
               placeholder="Расскажите, о чём ваше сообщество"
               rows={3}
@@ -172,7 +172,7 @@ export function CommunitySettingsPage({ slug }: { slug: string }) {
 
             <Input
               name="slug"
-              size="l"
+              size="lg"
               label="Публичный адрес"
               prefix="bean.com/"
               isDisabled
@@ -218,8 +218,8 @@ export function CommunitySettingsPage({ slug }: { slug: string }) {
                 <span className="text-sm font-medium text-ink">Тарифы подписки</span>
                 <Button
                   theme="ghost"
-                  size="m"
-                  Icon={Plus}
+                  size="md"
+                  Icon={PlusBold16}
                   onClick={() => setTierModal({ open: true, tier: null })}
                 >
                   Добавить тариф
@@ -260,7 +260,7 @@ export function CommunitySettingsPage({ slug }: { slug: string }) {
                         aria-label="Изменить тариф"
                         className="touch-hit shrink-0 text-gray-500 hover:text-ink transition-colors cursor-pointer"
                       >
-                        <Pencil className="size-4" />
+                        <Pencil16 className="size-4" />
                       </button>
                       <button
                         type="button"
@@ -268,7 +268,7 @@ export function CommunitySettingsPage({ slug }: { slug: string }) {
                         aria-label="Удалить тариф"
                         className="touch-hit shrink-0 text-gray-500 hover:text-danger transition-colors cursor-pointer"
                       >
-                        <Trash2 className="size-4" />
+                        <Trash16 className="size-4" />
                       </button>
                     </div>
                   ))}
@@ -286,7 +286,7 @@ export function CommunitySettingsPage({ slug }: { slug: string }) {
               <p className="text-[13px] text-gray-600">
                 Сообщество, его контент и подписки будут удалены безвозвратно.
               </p>
-              <Button theme="destructive" size="m" onClick={() => setIsDeleteCommunityOpen(true)}>
+              <Button theme="destructive" size="md" onClick={() => setIsDeleteCommunityOpen(true)}>
                 Удалить сообщество
               </Button>
             </div>

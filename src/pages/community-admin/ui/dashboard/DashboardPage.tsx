@@ -3,12 +3,12 @@
 import { useCommunityQuery } from "@/entities/community";
 import { type StatCard, formatRub, useCommunityStatsQuery } from "@/entities/subscription";
 import { Skeleton } from "@/shared/components";
-import { TrendingDown, TrendingUp } from "lucide-react";
+import { ArrowDownRightBold16, ArrowUpRightBold16 } from "@frosted-ui/icons";
 import { AdminShell } from "../AdminShell";
 import { MembersLineChart, RevenueBarChart } from "./charts";
 
 function StatCardItem({ card, index }: { card: StatCard; index: number }) {
-  const TrendIcon = card.isUp ? TrendingUp : TrendingDown;
+  const TrendIcon = card.isUp ? ArrowUpRightBold16 : ArrowDownRightBold16;
   return (
     <div
       style={{ animationDelay: `${index * 60}ms` }}

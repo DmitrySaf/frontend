@@ -1,10 +1,9 @@
+import { toast } from "@/shared/components";
 import { useMutation } from "@tanstack/react-query";
-import { toast } from "sonner";
 import {
   addComment,
   createPost,
   deletePost,
-  toggleBookmark,
   toggleLike,
   togglePinPost,
   updatePost,
@@ -109,25 +108,6 @@ export const useToggleLikeMutation = () => {
     },
     onError: (error) => {
       toast.error("Не удалось поставить лайк", {
-        description: error instanceof Error ? error.message : "Попробуйте еще раз",
-      });
-    },
-  });
-};
-
-/**
- * Хук для закладки
- */
-export const useToggleBookmarkMutation = () => {
-  const invalidatePosts = useInvalidatePosts();
-
-  return useMutation({
-    mutationFn: (input: { postId: string; channelId: string }) => toggleBookmark(input.postId),
-    onSuccess: (_, variables) => {
-      invalidatePosts(variables.channelId);
-    },
-    onError: (error) => {
-      toast.error("Не удалось сохранить закладку", {
         description: error instanceof Error ? error.message : "Попробуйте еще раз",
       });
     },

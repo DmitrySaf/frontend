@@ -1,16 +1,18 @@
 "use client";
 
-import { cn } from "@/shared/utils";
+import { XMarkBold12 } from "@frosted-ui/icons";
 import { cva } from "class-variance-authority";
-import { X } from "lucide-react";
+import { useId } from "react";
 import { useFormContext } from "react-hook-form";
+
+import { cn } from "@/shared/utils";
 
 export interface TextareaProps {
   // Form integration
   name: string;
 
   // Custom Props
-  size: "m" | "l" | "xl";
+  size: "md" | "lg" | "xl";
   label?: string;
   error?: string;
   description?: string;
@@ -28,18 +30,18 @@ export interface TextareaProps {
   rows?: number;
 }
 
+/* Движок не нужен: RHF register + нативный <textarea>. Хром — на самом поле (inset-ring как
+   единственная рамка, радиус/паддинг по шкале контролов). border-0/shadow-none/focus:ring-0
+   держат поле чистым от UA-стилей. Кегль 16px на всех ступенях (ниже Safari на iOS зумит). */
 const textareaVariants = cva(
-  "w-full inset-ring inset-ring-gray-200 placeholder:text-gray-500 focus:outline-0 focus:inset-ring-2 focus:inset-ring-primary-500 transition-all resize-none disabled:opacity-50 disabled:cursor-not-allowed",
+  "w-full inset-ring inset-ring-gray-200 border-0 bg-transparent shadow-none placeholder:text-gray-500 focus:outline-0 focus:ring-0 focus:inset-ring-2 focus:inset-ring-primary-500 transition-all resize-none disabled:opacity-50 disabled:cursor-not-allowed",
   {
     variants: {
-      // Ступени и радиусы — как у Input и Button. Кегль 16px на всех: ниже 16px
-      // Safari на iOS зумит страницу при фокусе (см. комментарий в Input.tsx).
-      // Прежняя ступень `s` удалена: она отличалась от `m` только паддингом
-      // (py-1.5 против py-3) при одинаковом кегле — это не ступень.
+      // Ступени и радиусы — как у Input и Button (--radius-control-*). Кегль 16px везде.
       size: {
-        m: "text-base py-2 px-3 rounded-[10px]",
-        l: "text-base py-2.5 px-3.5 rounded-[12px]",
-        xl: "text-base py-3 px-4 rounded-[14px]",
+        md: "text-base py-2 px-3 rounded-(--radius-control-md)",
+        lg: "text-base py-2.5 px-3.5 rounded-(--radius-control-lg)",
+        xl: "text-base py-3 px-4 rounded-(--radius-control-xl)",
       },
       hasError: {
         true: "inset-ring-danger focus:inset-ring-danger",
@@ -52,12 +54,12 @@ const textareaVariants = cva(
       },
     },
     compoundVariants: [
-      { hasClear: true, size: "m", class: "pr-9" },
-      { hasClear: true, size: "l", class: "pr-10" },
+      { hasClear: true, size: "md", class: "pr-9" },
+      { hasClear: true, size: "lg", class: "pr-10" },
       { hasClear: true, size: "xl", class: "pr-10" },
     ],
     defaultVariants: {
-      size: "l",
+      size: "lg",
       hasError: false,
     },
   }
@@ -65,15 +67,15 @@ const textareaVariants = cva(
 
 // Позиция крестика повторяет внутренний паддинг ступени
 const CLEAR_POS = {
-  m: "top-2 right-2",
-  l: "top-2.5 right-2.5",
+  md: "top-2 right-2",
+  lg: "top-2.5 right-2.5",
   xl: "top-3 right-3",
 };
 
 // Ghost-прямоугольник, радиус по закону концентричности — как у крестика в Input
 const CLEAR_SIZE = {
-  m: "size-[18px] rounded-[6px] [&_svg]:size-2.5",
-  l: "size-5 rounded-[6px] [&_svg]:size-3",
+  md: "size-[18px] rounded-[6px] [&_svg]:size-2.5",
+  lg: "size-5 rounded-[6px] [&_svg]:size-3",
   xl: "size-[22px] rounded-[8px] [&_svg]:size-3",
 };
 
@@ -93,20 +95,34 @@ const Textarea = ({
 }: TextareaProps) => {
   const { register, setValue, watch } = useFormContext();
   const currentValue = watch(name) || "";
+  const textareaId = useId();
 
   const showClear = !!isClearable && !!currentValue && !disabled;
 
   return (
     <div className="space-y-1">
-      <label className="space-y-1 block">
-        {label && <div className="text-sm font-medium">{label}</div>}
+      <div className="space-y-1">
+        {label && (
+          <label
+            htmlFor={textareaId}
+            className={cn(
+              "block text-sm font-medium text-ink",
+              disabled && "opacity-50",
+              error && "text-danger"
+            )}
+          >
+            {label}
+          </label>
+        )}
         <div className="relative">
           <textarea
             {...register(name)}
+            id={textareaId}
             disabled={disabled}
             maxLength={maxLength}
             rows={rows}
             placeholder={placeholder}
+            aria-invalid={!!error || undefined}
             className={cn(
               textareaVariants({ size, hasError: !!error, hasClear: showClear }),
               className
@@ -125,11 +141,11 @@ const Textarea = ({
               onMouseDown={(e) => e.preventDefault()}
               onClick={() => setValue(name, "", { shouldDirty: true, shouldValidate: true })}
             >
-              <X />
+              <XMarkBold12 />
             </button>
           )}
         </div>
-      </label>
+      </div>
 
       <div className="flex justify-between items-center">
         <div className="space-y-1">

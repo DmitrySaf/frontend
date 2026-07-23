@@ -21,8 +21,8 @@ import {
 } from "@/shared/components";
 import { REQUIRED_MESSAGE } from "@/shared/constants";
 import { cn } from "@/shared/utils";
+import { CheckmarkBold12, CreditCardBold20, CreditCardBold24, PlusBold16, SealCheckmarkBold20, Trash16 } from "@frosted-ui/icons";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { BadgeCheck, Check, CreditCard, Plus, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -82,28 +82,28 @@ function AddCardModal({
         <Form methods={methods} onSubmit={handleSubmit} className="space-y-3.5">
           <Input
             name="lastName"
-            size="l"
+            size="lg"
             label="Фамилия"
             placeholder="Паровозов"
             error={errors.lastName?.message}
           />
           <Input
             name="firstName"
-            size="l"
+            size="lg"
             label="Имя"
             placeholder="Аркадий"
             error={errors.firstName?.message}
           />
           <Input
             name="middleName"
-            size="l"
+            size="lg"
             label="Отчество"
             placeholder="Петрович"
             error={errors.middleName?.message}
           />
           <Input
             name="cardNumber"
-            size="l"
+            size="lg"
             label="Номер карты"
             placeholder="0000 0000 0000 0000"
             mask="0000 0000 0000 0000"
@@ -111,10 +111,10 @@ function AddCardModal({
           />
 
           <DialogFooter>
-            <Button type="button" theme="secondary" size="l" onClick={handleClose}>
+            <Button type="button" theme="secondary" size="lg" onClick={handleClose}>
               Отмена
             </Button>
-            <Button type="submit" theme="primary" size="l" isLoading={isSubmitting}>
+            <Button type="submit" theme="primary" size="lg" isLoading={isSubmitting}>
               Добавить
             </Button>
           </DialogFooter>
@@ -145,7 +145,7 @@ export function SettingsPayment() {
 
       {!isVerified && (
         <div className="flex items-center gap-3 rounded-lg border border-gray-200 bg-gray-100 px-4 py-3">
-          <BadgeCheck className="size-[18px] shrink-0 text-gray-600" />
+          <SealCheckmarkBold20 className="size-[18px] shrink-0 text-gray-600" />
           <p className="flex-1 text-sm text-gray-700">
             Чтобы получать выплаты,{" "}
             <Link
@@ -161,7 +161,7 @@ export function SettingsPayment() {
 
       <div className="flex items-center justify-between">
         <span className="text-sm font-medium text-ink">Добавленные карты</span>
-        <Button theme="outline" size="m" Icon={Plus} onClick={() => setIsAddOpen(true)}>
+        <Button theme="outline" size="md" Icon={PlusBold16} onClick={() => setIsAddOpen(true)}>
           Добавить карту
         </Button>
       </div>
@@ -193,7 +193,7 @@ export function SettingsPayment() {
               </button>
 
               <div className="w-11 h-[30px] shrink-0 rounded-[8px] border border-gray-200 bg-gray-100 flex items-center justify-center">
-                <CreditCard className="size-[18px] text-gray-600" />
+                <CreditCardBold20 className="size-[18px] text-gray-600" />
               </div>
 
               <div className="flex-1 min-w-0">
@@ -207,7 +207,7 @@ export function SettingsPayment() {
                   иначе она сжимала имя владельца и налезала на корзину */}
               {card.isDefault && (
                 <span className="hidden sm:flex items-center gap-1 px-2.5 py-1 rounded-full bg-gray-100 text-xs font-medium text-gray-700">
-                  <Check className="size-3" />
+                  <CheckmarkBold12 className="size-3" />
                   Выбрана для выплат
                 </span>
               )}
@@ -218,7 +218,7 @@ export function SettingsPayment() {
                 aria-label="Удалить карту"
                 className="touch-hit shrink-0 text-gray-500 hover:text-danger transition-colors cursor-pointer"
               >
-                <Trash2 className="size-4" />
+                <Trash16 className="size-4" />
               </button>
             </div>
           ))}
@@ -226,13 +226,13 @@ export function SettingsPayment() {
       ) : (
         <div className="flex flex-col items-center gap-3 py-12 text-center">
           <div className="size-14 rounded-2xl bg-gray-100 border border-gray-200 flex items-center justify-center">
-            <CreditCard className="size-6 text-gray-500" />
+            <CreditCardBold24 className="size-6 text-gray-500" />
           </div>
           <p className="text-[15px] font-semibold text-ink">Нет привязанных карт</p>
           <p className="text-sm text-gray-600 max-w-56">
             Добавьте карту, чтобы получать выплаты с продаж.
           </p>
-          <Button theme="primary" size="l" Icon={Plus} onClick={() => setIsAddOpen(true)}>
+          <Button theme="primary" size="lg" Icon={PlusBold16} onClick={() => setIsAddOpen(true)}>
             Добавить карту
           </Button>
         </div>

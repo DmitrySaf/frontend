@@ -9,14 +9,14 @@ import {
 } from "@/shared/components";
 import { cn } from "@/shared/utils";
 import {
-  ChevronDown,
-  Eye,
-  LayoutDashboard,
-  LogOut,
-  Palette,
-  Settings,
-  UserPlus,
-} from "lucide-react";
+  AddUser16,
+  ChevronDownBold16,
+  DashboardBold16,
+  EyeBold16,
+  GearBold16,
+  LogoutBold16,
+  Palette16,
+} from "@frosted-ui/icons";
 
 interface CommunityBannerProps {
   /** Slug сообщества — для href админ-разделов */
@@ -54,12 +54,12 @@ export default function CommunityBanner({
     ? [
         { note: "только для админа" },
         {
-          icon: Settings,
+          icon: GearBold16,
           label: "Настройки сообщества",
           href: `/communities/${slug}/admin/settings`,
         },
-        { icon: Palette, label: "Внешний вид", href: `/communities/${slug}/admin/appearance` },
-        { icon: LayoutDashboard, label: "Дашборд", href: `/communities/${slug}/admin/dashboard` },
+        { icon: Palette16, label: "Внешний вид", href: `/communities/${slug}/admin/appearance` },
+        { icon: DashboardBold16, label: "Дашборд", href: `/communities/${slug}/admin/dashboard` },
         "separator",
       ]
     : [];
@@ -69,18 +69,18 @@ export default function CommunityBanner({
     ...(canModerate
       ? [
           {
-            icon: Eye,
+            icon: EyeBold16,
             label: isViewingAsMember ? "Вернуться к виду владельца" : "Смотреть как участник",
             onClick: onToggleViewAsMember,
           },
           "separator" as const,
         ]
       : []),
-    { icon: UserPlus, label: "Пригласить в сообщество", onClick: onInvite },
+    { icon: AddUser16, label: "Пригласить в сообщество", onClick: onInvite },
     ...(canLeave
       ? [
           {
-            icon: LogOut,
+            icon: LogoutBold16,
             label: "Покинуть сообщество",
             onClick: onLeave,
             variant: "danger" as const,
@@ -94,10 +94,10 @@ export default function CommunityBanner({
       trigger={
         <Button
           theme="ghost"
-          size="m"
-          Icon={ChevronDown}
+          size="md"
+          Icon={ChevronDownBold16}
           aria-label="Меню сообщества"
-          className="[&_svg]:transition-transform [&_svg]:duration-200 [&_svg]:ease-out-quart [&[data-state=open]_svg]:rotate-180"
+          className="[&_svg]:transition-transform [&_svg]:duration-200 [&_svg]:ease-out-quart [&[aria-expanded=true]_svg]:rotate-180"
         />
       }
       items={[...adminItems, ...memberItems]}

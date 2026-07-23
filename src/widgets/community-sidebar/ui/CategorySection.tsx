@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "@/shared/utils";
-import { ChevronDown, Plus } from "lucide-react";
+import { ChevronDownBold12, PlusBold16 } from "@frosted-ui/icons";
 import { useState } from "react";
 
 interface CategorySectionProps {
@@ -27,7 +27,7 @@ export default function CategorySection({
           onClick={() => setIsOpen(!isOpen)}
           className="flex items-center gap-1 flex-1 min-w-0 min-h-9 lg:min-h-0 cursor-pointer text-gray-500 hover:text-gray-700 transition-colors duration-150"
         >
-          <ChevronDown
+          <ChevronDownBold12
             className={cn(
               "size-3 shrink-0 transition-transform duration-200 ease-out-quart",
               !isOpen && "-rotate-90"
@@ -44,7 +44,7 @@ export default function CategorySection({
             aria-label="Новый таб"
             className="touch-hit md:opacity-0 md:group-hover:opacity-100 cursor-pointer text-gray-500 hover:text-gray-800 active:scale-90 transition-[color,opacity,transform] duration-150 ease-out-quart"
           >
-            <Plus className="size-3.5" />
+            <PlusBold16 className="size-3.5" />
           </button>
         )}
       </div>

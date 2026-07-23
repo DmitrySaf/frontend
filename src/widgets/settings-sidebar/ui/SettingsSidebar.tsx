@@ -4,7 +4,7 @@ import { createBrowserClient } from "@/api/browser-client";
 import { useProfileQuery } from "@/entities/profile";
 import { useMyVerificationQuery } from "@/entities/verification";
 import { Avatar, Tabs } from "@/shared/components";
-import { BadgeCheck, LogOut } from "lucide-react";
+import { LogoutBold20, SealCheckmarkBold16 } from "@frosted-ui/icons";
 import { useRouter } from "next/navigation";
 import { SETTINGS_SECTIONS } from "../model";
 
@@ -49,7 +49,7 @@ export function SettingsSidebar() {
             <div className="w-full min-w-0">
               <h2 className="flex items-center justify-center gap-1 font-bold text-gray-900">
                 <span className="min-w-0 truncate">{profile?.displayName ?? "…"}</span>
-                {isVerified && <BadgeCheck className="size-4 shrink-0 text-primary-600" />}
+                {isVerified && <SealCheckmarkBold16 className="size-4 shrink-0 text-primary-600" />}
               </h2>
               {profile?.username && (
                 <p className="truncate text-sm text-gray-500">@{profile.username}</p>
@@ -64,12 +64,14 @@ export function SettingsSidebar() {
         </div>
         <div className="h-px bg-gray-300 rounded-xl ml-3 mr-4 my-2" />
 
+        {/* Выход — нейтральный, в тон неактивных пунктов навигации (реш. №7): красный
+            акцент здесь лишний, выход из аккаунта не деструктивное действие. */}
         <button
           type="button"
           onClick={handleLogout}
-          className="text-danger hover:bg-danger/10 active:bg-danger/15 w-full flex items-center space-x-2.5 pl-3 pr-4 py-2.5 rounded-lg text-left transition-colors duration-150 cursor-pointer font-semibold"
+          className="w-full flex items-center space-x-2.5 pl-3 pr-4 py-2.5 rounded-[10px] text-left text-gray-800 transition-colors duration-150 ease-out-quart cursor-pointer font-semibold hover:bg-gray-200/45 hover:text-ink active:bg-gray-200/70"
         >
-          <LogOut className="size-5 flex-shrink-0" />
+          <LogoutBold20 className="size-5 flex-shrink-0" />
           <span>Выйти из аккаунта</span>
         </button>
       </div>

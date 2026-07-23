@@ -3,7 +3,7 @@
 import { MESSAGE_MAX_LENGTH, type Message } from "@/entities/message";
 import { Avatar, Dropdown } from "@/shared/components";
 import { cn, formatTimeShort } from "@/shared/utils";
-import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
+import { Pencil16, ThreeDotsHorizontalBold16, Trash16 } from "@frosted-ui/icons";
 import { useEffect, useRef, useState } from "react";
 
 export interface MessageAuthorView {
@@ -62,9 +62,9 @@ export function ChatMessageItem({
   };
 
   const actions = [
-    ...(canEdit ? [{ icon: Pencil, label: "Редактировать", onClick: startEditing }] : []),
+    ...(canEdit ? [{ icon: Pencil16, label: "Редактировать", onClick: startEditing }] : []),
     ...(canDelete
-      ? [{ icon: Trash2, label: "Удалить", onClick: onDelete, variant: "danger" as const }]
+      ? [{ icon: Trash16, label: "Удалить", onClick: onDelete, variant: "danger" as const }]
       : []),
   ];
 
@@ -136,7 +136,7 @@ export function ChatMessageItem({
                 aria-label="Действия с сообщением"
                 className="touch-hit size-7 flex items-center justify-center rounded-lg bg-surface border border-gray-200 shadow-sm text-gray-500 hover:text-ink cursor-pointer"
               >
-                <MoreHorizontal className="size-4" />
+                <ThreeDotsHorizontalBold16 className="size-4" />
               </button>
             }
             items={actions}

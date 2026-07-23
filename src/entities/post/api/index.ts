@@ -5,7 +5,6 @@ export {
   deletePost,
   togglePinPost,
   toggleLike,
-  toggleBookmark,
   addComment,
 } from "./api";
 export { postQueryKeys } from "./constants";
@@ -22,7 +21,6 @@ export {
   useDeletePostMutation,
   useTogglePinMutation,
   useToggleLikeMutation,
-  useToggleBookmarkMutation,
   useAddCommentMutation,
 } from "./mutations";
 export type {

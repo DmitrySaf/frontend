@@ -3,7 +3,7 @@
 import { type Tier, formatTierPrice } from "@/entities/tier";
 import { Button } from "@/shared/components";
 import { cn } from "@/shared/utils";
-import { Users } from "lucide-react";
+import { PeopleBold16 } from "@frosted-ui/icons";
 
 interface PricingCardProps {
   tiers: Tier[];
@@ -85,7 +85,7 @@ export function PricingCard({
 
       {membersCount > 0 && (
         <p className="flex items-center justify-center gap-1.5 text-[13px] text-gray-600">
-          <Users className="size-[15px]" />
+          <PeopleBold16 className="size-[15px]" />
           {membersCount.toLocaleString("ru-RU")}{" "}
           {membersCount % 10 === 1 && membersCount % 100 !== 11
             ? "участник"

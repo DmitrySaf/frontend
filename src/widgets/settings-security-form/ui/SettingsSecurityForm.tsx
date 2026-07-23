@@ -1,8 +1,7 @@
 "use client";
 
-import { Button, Switch } from "@/shared/components";
+import { Button, Skeleton, Switch } from "@/shared/components";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2 } from "lucide-react";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { type SecuritySettingsData, securitySettingsSchema } from "../model";
@@ -36,10 +35,15 @@ export function SettingsSecurityForm({
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center p-8">
-        <div className="text-center space-y-4">
-          <Loader2 className="w-8 h-8 animate-spin mx-auto text-primary-500" />
-          <p className="text-gray-600">Загружаем настройки...</p>
+      <div className="pt-6 border-t border-gray-200">
+        <Skeleton width={140} height={24} radius={6} className="mb-6" />
+        <div className="space-y-4">
+          {[0, 1].map((i) => (
+            <div key={i} className="flex items-center justify-between">
+              <Skeleton width={180} height={16} radius={4} />
+              <Skeleton width={44} height={26} radius={999} />
+            </div>
+          ))}
         </div>
       </div>
     );

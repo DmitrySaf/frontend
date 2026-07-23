@@ -48,14 +48,15 @@ UI/страницами. **Полная версия с обоснованиям
 |---|---|---|
 | Секционные настройки | iOS drill-down список (не пиллы) | `SettingsHome`, `settings-layout` |
 | Оплата/вступление на длинной странице | липкий CTA-бар (IntersectionObserver, `<lg`) | `StorefrontCtaBar` |
-| Модалка на `<md` | bottom-sheet, свайп-вниз = клик снаружи (§4.1) | `Dialog` |
+| Модалка на `<md` | HeroUI Drawer `placement="bottom"` + `Drawer.Handle`, свайп-вниз = клик снаружи (§4.1) | `Dialog` |
 | Master-detail на планшете | список↔деталь чередуются до `lg` | `CourseScreen` |
-| Открытие drawer | свайп от левой кромки (≤24px) | `CommunityShell` |
-| Ряд из нескольких `size="l"` кнопок | перестроить (full-width + grid-cols-2 / стек), не сжимать | `LessonView` |
+| Боковое меню | HeroUI Drawer `placement="left"` + тонкий edge-swipe-триггер на открытие (≤24px) | `CommunityShell` |
+| Ряд из нескольких `size="lg"` кнопок | перестроить (full-width + grid-cols-2 / стек), не сжимать | `LessonView` |
 
 ## Анти-паттерны
 
 - ❌ Всё на одном `md` (планшет = мини-десктоп в тесноте).
 - ❌ Кнопка схлопывается до голой иконки при нехватке места (текст исчез) — это баг.
 - ❌ Дублирующие действия на мобиле (распирают строку).
-- ❌ `slide-in-from-bottom-full` у tailwindcss-animate (молча не генерируется) — свои `@keyframes`.
+- ❌ Свой pointer-drag / `@keyframes` для листов и боковых меню — берём **HeroUI Drawer** (drag-to-dismiss,
+     фокус-трап, scroll-lock, CSS-анимации без JS уже внутри). Кастома оставляем только тонкий edge-swipe-триггер на открытие.

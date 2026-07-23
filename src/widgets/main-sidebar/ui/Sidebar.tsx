@@ -8,7 +8,7 @@ import {
 } from "@/entities/community";
 import { Button, LogoTile, ThemeToggle, Tooltip } from "@/shared/components";
 import { CommunityCreateModal } from "@/widgets/community-create-modal";
-import { Plus } from "lucide-react";
+import { PlusBold16 } from "@frosted-ui/icons";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useQueryState } from "nuqs";
@@ -80,7 +80,7 @@ export default function MainSidebar({ withCreateModal = true }: MainSidebarProps
               <Button
                 theme="primary"
                 size="xl"
-                Icon={Plus}
+                Icon={PlusBold16}
                 aria-label="Создать сообщество"
                 onClick={() => setCreateParam("community")}
               />

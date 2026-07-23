@@ -1,8 +1,8 @@
 "use client";
 
+import { Tab as RACTab, TabList, Tabs as RACTabs } from "react-aria-components";
+
 import { cn } from "@/shared/utils";
-import { motion, useReducedMotion } from "motion/react";
-import { useId } from "react";
 
 interface SegmentedOption<T extends string> {
   value: T;
@@ -20,32 +20,29 @@ interface SegmentedControlProps<T extends string> {
   className?: string;
 }
 
-/* Сегмент-контрол: утопленный трек, активный сегмент — светлая пилюля, скользящая
-   между сегментами.
+/* Сегмент-контрол на RAC Tabs (роли tablist/tab + клавиатура/typeahead React Aria).
+   Скользящего индикатора, как у HeroUI, в RAC нет — активный сегмент рисуем сами через
+   data-[selected]: пилюля БЕЗ ОБВОДКИ, только тень (decision №10 «нет круглых кнопок»,
+   исключение для ползунков). Высоты/радиусы/паддинги — свои классы по шкале контролов.
 
-   Радиусы здесь НЕ выбираются, а выводятся: у вложенных скруглений внешний радиус
-   обязан равняться внутреннему плюс отступ, иначе углы не концентричны и между
-   пилюлей и треком видна щель переменной толщины. Раньше было p-3px + трек r16 при
-   пилюле r10 — то есть 16 против положенных 13.
-
-   При отступе 2px закон сходится со шкалой контролов, и все четыре числа оказываются
-   «своими»:
-     s: пилюля 28 r8  + 2×2 → трек 32, радиус 8+2  = 10
-     m: пилюля 32 r10 + 2×2 → трек 36, радиус 10+2 = 12
-   Высоты трека (32 и 36) попадают ровно в ступени s и m лестницы Button/Input. */
+   Радиусы здесь НЕ выбираются, а выводятся: у вложенных скруглений внешний радиус обязан
+   равняться внутреннему плюс отступ, иначе углы не концентричны. При отступе 2px:
+     s: пилюля 28 r8  + 2×2 → трек 32, радиус 8+2  = 10 (--radius-control-sm)
+     m: пилюля 32 r10 + 2×2 → трек 36, радиус 10+2 = 12 (--radius-control-lg)
+   Высоты трека (32 и 36) попадают ровно в ступени sm/md лестницы Button/Input. */
 const TRACK = {
-  s: "p-[2px] rounded-[10px]",
-  m: "p-[2px] rounded-[12px]",
+  s: "gap-0.5 p-[2px] rounded-(--radius-control-sm)",
+  m: "gap-0.5 p-[2px] rounded-(--radius-control-lg)",
 };
 
-const SEGMENT = {
-  s: "px-2.5 h-7 text-xs rounded-[8px]",
-  m: "px-3.5 h-8 text-sm rounded-[10px]",
+const TAB = {
+  s: "h-7 px-2.5 gap-1.5 text-xs rounded-[8px]",
+  m: "h-8 px-3.5 gap-1.5 text-sm rounded-[10px]",
 };
 
-const PILL = {
-  s: "rounded-[8px]",
-  m: "rounded-[10px]",
+const ICON_SIZE = {
+  s: "size-3.5",
+  m: "size-4",
 };
 
 function SegmentedControl<T extends string>({
@@ -55,52 +52,35 @@ function SegmentedControl<T extends string>({
   size = "m",
   className,
 }: SegmentedControlProps<T>) {
-  const id = useId();
-  const shouldReduceMotion = useReducedMotion();
-
   return (
-    <div
-      role="tablist"
-      className={cn("inline-flex items-center gap-0.5 bg-gray-100", TRACK[size], className)}
+    <RACTabs
+      selectedKey={value}
+      onSelectionChange={(key) => onChange(key as T)}
+      className={cn("w-fit", className)}
     >
-      {options.map((option) => {
-        const Icon = option.icon;
-        const isActive = option.value === value;
-        return (
-          <button
-            key={option.value}
-            role="tab"
-            aria-selected={isActive}
-            type="button"
-            onClick={() => onChange(option.value)}
-            className={cn(
-              "relative flex items-center gap-1.5 font-medium transition-colors duration-150 cursor-pointer",
-              SEGMENT[size],
-              isActive ? "text-ink" : "text-gray-600 hover:text-ink"
-            )}
-          >
-            {isActive && (
-              <motion.span
-                layoutId={`${id}-pill`}
-                transition={
-                  shouldReduceMotion
-                    ? { duration: 0 }
-                    : { type: "spring", bounce: 0.15, duration: 0.35 }
-                }
-                className={cn(
-                  "absolute inset-0 bg-surface shadow-sm inset-ring inset-ring-gray-200",
-                  PILL[size]
-                )}
-              />
-            )}
-            <span className="relative flex items-center gap-1.5">
-              {Icon && <Icon className={size === "s" ? "size-3.5" : "size-4"} />}
+      <TabList aria-label="Сегмент-контрол" className={cn("inline-flex bg-gray-100", TRACK[size])}>
+        {options.map((option) => {
+          const Icon = option.icon;
+          return (
+            <RACTab
+              key={option.value}
+              id={option.value}
+              className={cn(
+                "inline-flex cursor-pointer select-none items-center justify-center font-medium text-muted-foreground outline-none transition-colors",
+                "data-[hovered]:text-ink",
+                "data-[focus-visible]:ring-2 data-[focus-visible]:ring-primary-500/45",
+                // активный сегмент — пилюля: поверхность + мягкая тень, без обводки
+                "data-[selected]:bg-surface data-[selected]:text-ink data-[selected]:shadow-sm",
+                TAB[size]
+              )}
+            >
+              {Icon && <Icon className={ICON_SIZE[size]} />}
               {option.label}
-            </span>
-          </button>
-        );
-      })}
-    </div>
+            </RACTab>
+          );
+        })}
+      </TabList>
+    </RACTabs>
   );
 }
 

@@ -44,7 +44,13 @@ export function StorefrontCtaBar({
             </p>
           </div>
         )}
-        <Button theme="primary" size="l" onClick={onClick} isLoading={isJoining} className="flex-1">
+        <Button
+          theme="primary"
+          size="lg"
+          onClick={onClick}
+          isLoading={isJoining}
+          className="flex-1"
+        >
           {label}
         </Button>
       </div>

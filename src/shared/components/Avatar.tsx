@@ -1,10 +1,11 @@
 "use client";
 
-import { cn } from "@/shared/utils";
-import * as AvatarPrimitive from "@radix-ui/react-avatar";
-import * as React from "react";
+import { useState } from "react";
 
-// Детерминированная пастельная палитра для фолбэка с инициалами (Discord-style)
+import { cn } from "@/shared/utils";
+
+// Детерминированная пастельная палитра для фолбэка с инициалами (Discord-style).
+// TODO(ds, Этап B): увести хексы в токен-фолбэк при токен-аудите.
 const FALLBACK_COLORS = [
   "bg-[#FBE4E4]",
   "bg-[#F9EED8]",
@@ -38,57 +39,50 @@ interface AvatarProps {
   className?: string;
 }
 
-const sizeClasses = {
-  s: "size-8 text-sm",
-  m: "size-10 text-base",
-  l: "size-12 text-lg",
-};
+/* Контентная шкала 32/40/48 (size-8/10/12) — ровно то, что давал HeroUI Avatar sm/md/lg. */
+const sizeClasses = { s: "size-8", m: "size-10", l: "size-12" } as const;
 
-/* Радиус square растёт вместе с размером, а не стоит константой. Раньше на всех трёх
-   размерах висел один `rounded-xl` (16px) — отношение радиуса к стороне выходило
-   0.50 / 0.40 / 0.33, и аватарка 32px превращалась почти в круг, хотя `square`
-   существует ровно затем, чтобы отличаться от `circle`. Отношение ≈0.28–0.31 — то же,
-   что у кнопок и полей. Плитка логотипа в рейле стоит вплотную к аватаркам 48px,
-   поэтому её радиус (Logo.tsx) обязан совпадать с `l`. */
+const textSizeClasses = { s: "text-sm", m: "text-base", l: "text-lg" } as const;
+
+/* Радиус square растёт вместе с размером, а не стоит константой: отношение ≈0.28–0.31,
+   то же, что у кнопок и полей — поэтому берём ту же лестницу --radius-control-* (10/12/14),
+   а не отдельные литералы. Плитка логотипа в рейле (Logo.tsx) обязана совпадать с `l` (14). */
 const squareRadius = {
-  s: "rounded-[10px]",
-  m: "rounded-[12px]",
-  l: "rounded-[14px]",
-};
+  s: "rounded-(--radius-control-sm)",
+  m: "rounded-(--radius-control-lg)",
+  l: "rounded-(--radius-control-xl)",
+} as const;
 
-const Avatar = React.forwardRef<React.ComponentRef<typeof AvatarPrimitive.Root>, AvatarProps>(
-  ({ name, src, size = "m", shape = "circle", className }, ref) => {
-    const initial = name.trim().charAt(0).toUpperCase() || "?";
+/* Движок не нужен — это <img> поверх слоя-фолбэка. Инициал на пастельном фоне лежит базой
+   и проступает, пока картинка грузится или если не загрузилась (onError снимает <img>). */
+function Avatar({ name, src, size = "m", shape = "circle", className }: AvatarProps) {
+  const initial = name.trim().charAt(0).toUpperCase() || "?";
+  const [imgFailed, setImgFailed] = useState(false);
+  const showImage = Boolean(src) && !imgFailed;
 
-    return (
-      <AvatarPrimitive.Root
-        ref={ref}
-        className={cn(
-          "relative flex shrink-0 overflow-hidden select-none",
-          sizeClasses[size],
-          shape === "square" ? squareRadius[size] : "rounded-full",
-          className
-        )}
-      >
-        {src && (
-          <AvatarPrimitive.Image
-            src={src}
-            alt={name}
-            className="aspect-square size-full object-cover"
-          />
-        )}
-        <AvatarPrimitive.Fallback
-          className={cn(
-            "flex size-full items-center justify-center font-semibold text-ink",
-            colorFromName(name)
-          )}
-        >
-          {initial}
-        </AvatarPrimitive.Fallback>
-      </AvatarPrimitive.Root>
-    );
-  }
-);
-Avatar.displayName = "Avatar";
+  return (
+    <span
+      className={cn(
+        "relative inline-flex shrink-0 select-none items-center justify-center overflow-hidden",
+        sizeClasses[size],
+        shape === "circle" ? "rounded-full" : squareRadius[size],
+        colorFromName(name),
+        className
+      )}
+    >
+      <span className={cn("font-semibold text-ink", textSizeClasses[size])} aria-hidden={showImage}>
+        {initial}
+      </span>
+      {showImage && (
+        <img
+          src={src ?? undefined}
+          alt={name}
+          className="absolute inset-0 size-full object-cover"
+          onError={() => setImgFailed(true)}
+        />
+      )}
+    </span>
+  );
+}
 
 export { Avatar };

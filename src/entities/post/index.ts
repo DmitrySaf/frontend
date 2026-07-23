@@ -5,7 +5,6 @@ export {
   deletePost,
   togglePinPost,
   toggleLike,
-  toggleBookmark,
   addComment,
   postQueryKeys,
   usePostsQuery,
@@ -18,7 +17,6 @@ export {
   useDeletePostMutation,
   useTogglePinMutation,
   useToggleLikeMutation,
-  useToggleBookmarkMutation,
   useAddCommentMutation,
 } from "./api";
 export type { Post, PostAuthor, PostComment, CreatePostInput, UpdatePostInput } from "./api";

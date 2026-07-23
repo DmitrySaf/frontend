@@ -5,7 +5,7 @@ import { type TransactionItem, useMyTransactionsQuery } from "@/entities/subscri
 import { SegmentedControl, Skeleton } from "@/shared/components";
 import { useSessionUserId } from "@/shared/composables";
 import { cn, formatRelativeTime } from "@/shared/utils";
-import { ArrowDownLeft, ArrowUpRight, ReceiptText } from "lucide-react";
+import { ArrowDownLeftBold16, ArrowUpRightBold16, ReceiptBold24 } from "@frosted-ui/icons";
 import { useMemo, useState } from "react";
 
 type Filter = "all" | "income" | "payouts";
@@ -17,7 +17,7 @@ const FILTERS: { value: Filter; label: string }[] = [
 ];
 
 function TransactionRow({ item }: { item: TransactionItem }) {
-  const Icon = item.isIncoming ? ArrowDownLeft : ArrowUpRight;
+  const Icon = item.isIncoming ? ArrowDownLeftBold16 : ArrowUpRightBold16;
   const rubles = Math.round(item.amountKopeks / 100).toLocaleString("ru-RU");
 
   return (
@@ -87,7 +87,7 @@ export function SettingsBilling() {
       ) : (
         <div className="flex flex-col items-center gap-3 py-12 text-center">
           <div className="size-14 rounded-2xl bg-gray-100 border border-gray-200 flex items-center justify-center">
-            <ReceiptText className="size-6 text-gray-500" />
+            <ReceiptBold24 className="size-6 text-gray-500" />
           </div>
           <p className="text-[15px] font-semibold text-ink">Пока нет транзакций</p>
           <p className="text-sm text-gray-600 max-w-56">

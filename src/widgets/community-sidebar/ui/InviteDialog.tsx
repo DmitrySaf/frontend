@@ -12,10 +12,11 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
+  Skeleton,
+  toast,
 } from "@/shared/components";
-import { Check, Copy, Loader2 } from "lucide-react";
+import { CheckmarkBold16, CopyBold16 } from "@frosted-ui/icons";
 import { useState } from "react";
-import { toast } from "sonner";
 
 interface InviteDialogProps {
   isOpen: boolean;
@@ -87,9 +88,7 @@ export default function InviteDialog({
         </DialogHeader>
 
         {isLoading || !inviteLink ? (
-          <div className="h-11 flex items-center justify-center">
-            <Loader2 className="size-4 animate-spin text-gray-500" />
-          </div>
+          <Skeleton height={48} radius={14} />
         ) : (
           <div className="space-y-2.5">
             {/* Копирование живёт внутри поля: ссылка и действие над ней — один объект.
@@ -106,16 +105,16 @@ export default function InviteDialog({
                 className="shrink-0 size-9 flex items-center justify-center rounded-[8px] text-gray-600 transition-[background-color,color,transform] duration-150 ease-out-quart hover:bg-fill hover:text-ink active:scale-95 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500/45"
               >
                 {isCopied ? (
-                  <Check className="size-4 text-primary-500" />
+                  <CheckmarkBold16 className="size-4 text-primary-500" />
                 ) : (
-                  <Copy className="size-4" />
+                  <CopyBold16 className="size-4" />
                 )}
               </button>
             </div>
 
             <div className="flex items-center justify-between gap-2">
               <span className="text-xs text-gray-500">Использована: {invite?.uses ?? 0} раз</span>
-              <Button theme="ghost" size="m" onClick={handleRevoke} isLoading={isRevoking}>
+              <Button theme="ghost" size="md" onClick={handleRevoke} isLoading={isRevoking}>
                 Отозвать ссылку
               </Button>
             </div>

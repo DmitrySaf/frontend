@@ -1,5 +1,5 @@
+import { toast } from "@/shared/components";
 import { useMutation } from "@tanstack/react-query";
-import { toast } from "sonner";
 import { createCommunity, deleteCommunity, updateCommunityProfile } from "./api";
 import { useInvalidateCommunities, useInvalidateCommunityProfile } from "./queries.browser";
 

@@ -1,4 +1,4 @@
-import { BookOpen, MessageCircle, Newspaper, Star, Users, Video } from "lucide-react";
+import { BookBold20, Document20, MessageBold20, PeopleBold20, Star20, VideoFilled20 } from "@frosted-ui/icons";
 
 interface FeatureIconMeta {
   icon: React.ComponentType<{ className?: string }>;
@@ -7,12 +7,12 @@ interface FeatureIconMeta {
 
 // Фиксированный набор иконок для пунктов «Что внутри»
 export const STOREFRONT_FEATURE_ICONS: Record<string, FeatureIconMeta> = {
-  "book-open": { icon: BookOpen, name: "Курсы" },
-  newspaper: { icon: Newspaper, name: "Посты" },
-  "message-circle": { icon: MessageCircle, name: "Чат" },
-  users: { icon: Users, name: "Комьюнити" },
-  video: { icon: Video, name: "Эфиры" },
-  star: { icon: Star, name: "Другое" },
+  "book-open": { icon: BookBold20, name: "Курсы" },
+  newspaper: { icon: Document20, name: "Посты" },
+  "message-circle": { icon: MessageBold20, name: "Чат" },
+  users: { icon: PeopleBold20, name: "Комьюнити" },
+  video: { icon: VideoFilled20, name: "Эфиры" },
+  star: { icon: Star20, name: "Другое" },
 };
 
 export const DEFAULT_FEATURE_ICON = "star";

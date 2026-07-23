@@ -10,14 +10,13 @@ import {
   uploadLessonVideo,
   useLessonVideoUrlQuery,
 } from "@/entities/course";
-import { Button, Form, Input, Textarea } from "@/shared/components";
+import { Button, Form, Input, Skeleton, Textarea, toast } from "@/shared/components";
 import { formatDuration, getVideoFileDuration } from "@/shared/utils";
+import { ClockBold12, Trash16, UploadBold20, XMarkBold16 } from "@frosted-ui/icons";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Clock, Loader2, Trash2, Upload, X } from "lucide-react";
 import { useParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
-import { toast } from "sonner";
 
 interface LessonEditorProps {
   lesson: Lesson;
@@ -97,7 +96,7 @@ export function LessonEditor({ lesson, onSave, onDelete }: LessonEditorProps) {
         <Form methods={methods} onSubmit={handleSubmit} className="space-y-4">
           <Input
             name="title"
-            size="l"
+            size="lg"
             label="Название урока"
             maxLength={LESSON_TITLE_MAX_LENGTH}
             error={errors.title?.message}
@@ -105,7 +104,7 @@ export function LessonEditor({ lesson, onSave, onDelete }: LessonEditorProps) {
 
           <Textarea
             name="description"
-            size="l"
+            size="lg"
             label="Описание"
             placeholder="О чём этот урок"
             rows={4}
@@ -117,7 +116,7 @@ export function LessonEditor({ lesson, onSave, onDelete }: LessonEditorProps) {
             <span className="text-sm font-medium text-ink">Видео</span>
             {isUploading ? (
               <div className="w-full h-28 flex flex-col items-center justify-center gap-2 rounded-lg border border-dashed border-gray-300 text-gray-600">
-                <Loader2 className="size-5 animate-spin" />
+                <UploadBold20 className="size-5" />
                 <span className="text-sm font-medium">Загружаем видео…</span>
               </div>
             ) : videoPath ? (
@@ -129,21 +128,19 @@ export function LessonEditor({ lesson, onSave, onDelete }: LessonEditorProps) {
                     className="w-full aspect-video rounded-lg bg-black"
                   />
                 ) : (
-                  <div className="w-full aspect-video rounded-lg bg-gray-100 border border-gray-200 flex items-center justify-center">
-                    <Loader2 className="size-8 animate-spin text-gray-400" />
-                  </div>
+                  <Skeleton className="w-full aspect-video" radius={8} />
                 )}
                 <div className="flex items-center gap-3">
                   {durationSeconds != null && (
                     <span className="flex items-center gap-1 text-xs text-gray-500">
-                      <Clock className="size-3" />
+                      <ClockBold12 className="size-3" />
                       {formatDuration(durationSeconds)}
                     </span>
                   )}
                   <div className="flex-1" />
                   <Button
                     theme="outline"
-                    size="m"
+                    size="md"
                     type="button"
                     onClick={() => fileInputRef.current?.click()}
                   >
@@ -151,9 +148,9 @@ export function LessonEditor({ lesson, onSave, onDelete }: LessonEditorProps) {
                   </Button>
                   <Button
                     theme="ghost"
-                    size="m"
+                    size="md"
                     type="button"
-                    Icon={X}
+                    Icon={XMarkBold16}
                     onClick={() => {
                       setVideoPath(null);
                       setDurationSeconds(null);
@@ -168,7 +165,7 @@ export function LessonEditor({ lesson, onSave, onDelete }: LessonEditorProps) {
                 onClick={() => fileInputRef.current?.click()}
                 className="w-full h-28 flex flex-col items-center justify-center gap-2 rounded-lg border border-dashed border-gray-300 text-gray-600 hover:border-gray-400 hover:text-ink transition-colors cursor-pointer"
               >
-                <Upload className="size-5" />
+                <UploadBold20 className="size-5" />
                 <span className="text-sm font-medium">Загрузить видео</span>
                 <span className="text-xs text-gray-500">
                   Необязательно — урок может быть текстовым
@@ -189,7 +186,7 @@ export function LessonEditor({ lesson, onSave, onDelete }: LessonEditorProps) {
           <div className="flex flex-col gap-2.5 pt-1 lg:flex-row lg:items-center lg:gap-3">
             <Button
               theme="primary"
-              size="l"
+              size="lg"
               type="submit"
               isLoading={isSubmitting}
               className="w-full lg:w-auto"
@@ -199,9 +196,9 @@ export function LessonEditor({ lesson, onSave, onDelete }: LessonEditorProps) {
             <div className="hidden lg:block flex-1" />
             <Button
               theme="destructiveGhost"
-              size="l"
+              size="lg"
               type="button"
-              Icon={Trash2}
+              Icon={Trash16}
               onClick={() => onDelete(lesson.id)}
               className="w-full lg:w-auto"
             >

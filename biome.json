@@ -36,5 +36,45 @@
       "**/*.md",
       "**/*.css"
     ]
-  }
+  },
+  "overrides": [
+    {
+      "include": ["app/**", "src/**"],
+      "linter": {
+        "rules": {
+          "nursery": {
+            "noRestrictedImports": {
+              "level": "warn",
+              "options": {
+                "paths": {
+                  "@heroui/react": "Движок UI (HeroUI) импортируется только внутри src/shared/components/** — граница §2 плана RAC-гибрида. Снаружи используй обёртку из @/shared/components.",
+                  "react-aria-components": "Движок UI (React Aria) импортируется только внутри src/shared/components/** — граница §2 плана RAC-гибрида. Снаружи используй обёртку из @/shared/components."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "include": ["src/shared/components/**"],
+      "linter": {
+        "rules": {
+          "nursery": {
+            "noRestrictedImports": "off"
+          }
+        }
+      }
+    },
+    {
+      "include": ["src/widgets/community-shell/ui/CommunityShell.tsx"],
+      "linter": {
+        "rules": {
+          "nursery": {
+            "noRestrictedImports": "off"
+          }
+        }
+      }
+    }
+  ]
 }

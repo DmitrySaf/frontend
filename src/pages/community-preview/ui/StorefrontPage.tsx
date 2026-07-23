@@ -12,11 +12,10 @@ import {
 } from "@/entities/storefront";
 import { purchaseTier, useInvalidateCommunitySales } from "@/entities/subscription";
 import { type Tier, formatTierPrice } from "@/entities/tier";
-import { Avatar } from "@/shared/components";
+import { Avatar, toast } from "@/shared/components";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { toast } from "sonner";
 import { AuthRequiredDialog } from "./AuthRequiredDialog";
 import { CheckoutModal } from "./CheckoutModal";
 import { MediaCarousel } from "./MediaCarousel";
@@ -247,9 +246,7 @@ export function StorefrontPage({ slug, inviteCode }: StorefrontPageProps) {
         <p className="text-sm font-semibold text-ink">
           {owner?.displayName ?? community.displayName}
         </p>
-        <p className="text-xs text-gray-600">
-          {owner ? "Автор сообщества" : "Сообщество на Bean"}
-        </p>
+        <p className="text-xs text-gray-600">{owner ? "Автор сообщества" : "Сообщество на Bean"}</p>
       </div>
     </div>
   );

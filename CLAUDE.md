@@ -4,13 +4,14 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a Next.js 15 application with Supabase backend, following a modular Feature-Sliced Design architecture. The project uses:
+This is a Next.js 16 application with Supabase backend, following a modular Feature-Sliced Design architecture. The project uses:
 
-- **Next.js 15** with App Router
+- **Next.js 16** (App Router, Turbopack, React 19)
 - **Supabase** for authentication and database
 - **React Query** (@tanstack/react-query) for data fetching
 - **React Hook Form** + **Zod** for form validation
-- **Tailwind CSS** for styling
+- **Tailwind CSS v4** (CSS-first `@theme` in `app/globals.css`, no JS config)
+- **Hybrid UI engine** — the shared UI-kit is built on **`react-aria-components` (RAC)** for primitives (bucket A: Button, Input, Switch, Tabs, Tooltip, Dropdown, …) and **HeroUI v3** (`@heroui/react`) for heavy behavior (bucket B: Dialog, Drawer, Toast). Both engines live only inside `src/shared/components/**` (lint-enforced). Bean's Apple-like theme lives in our own wrapper classes + tokens. See DESIGN.md §4
 - **TypeScript** for type safety
 
 ## Common Commands
@@ -127,7 +128,7 @@ src/entities/{entity}/
 - Export invalidation hooks for cache management
 
 ### Mutations (mutations.ts)
-- Use `toast` from `sonner` for success/error notifications
+- Use `toast` from `@/shared/components` (HeroUI Toast; the shim aliases `.error`→`.danger`) for success/error notifications — never import from `sonner`
 - Always invalidate cache manually using invalidation hooks
 - Success toasts without description, error toasts with description
 
@@ -154,9 +155,12 @@ widgets/{form-name}/
 
 ## UI Components Standards
 
+- **Hybrid engine, our look**: The shared UI-kit (`src/shared/components`) runs on two engines, both invisible outside `shared/components` (enforced by `noRestrictedImports` in `biome.json`). **Bucket A — primitives on `react-aria-components` (RAC)** (Button, Switch, Tabs, SegmentedControl, Tooltip, Dropdown) or **no engine at all** (Input, Textarea, Avatar, Separator, Skeleton = RHF + native element / `<img>` / `<div>`). **Bucket B — heavy behavior on HeroUI v3** (Dialog, Drawer in CommunityShell, Toast). Never add Radix/shadcn. Sizing rides Bean's 4-step control ladder `sm/md/lg/xl` = 32/36/40/48 (see DESIGN.md §4), driven by our own classes (the engine's native sizes are not used).
+- **Neutralize chrome only for bucket B (HeroUI)**: HeroUI paints defaults on its base classes (`.button--primary` sets `--button-bg: var(--accent)`; `.input` adds border/shadow/padding/`sm:text-sm`) — neutralize with utility classes (utilities layer wins over HeroUI's `theme`/`components` layers). **RAC / no-engine primitives have nothing to neutralize** (headless = zero pixels; a bare `<button>` is reset by Tailwind preflight). Interactive states on RAC via `data-*` (`data-[selected]`, `data-[pressed]`, `data-[focus-visible]`); polymorphic Button (`<button>`/`<a>`) uses CSS pseudo-classes. One variant engine — **cva** (`tailwind-variants` removed); `cn()` = clsx + tailwind-merge. Gotcha: size tokens must be `text-(length:--var)` — bare `text-(--var)` is read as a color by tailwind-merge and eats `text-white` (→ black text).
+- **Collections need real React Aria nodes**: inside `Menu`/`ListBox`, every child must be a collection component (`Item`/`Header`/`Separator`) — a stray `<div>` collapses the whole collection to empty. Dropdown triggers wrap the existing button in `<Pressable>` (no extra DOM), never `Dropdown.Trigger` (double-button hydration error).
 - **PascalCase naming**: All components (e.g., `Button.tsx`, `Input.tsx`)
 - **Explicit props**: No `extends React.HTMLAttributes` - define all props explicitly
-- **Built-in styling**: Components include base styles (`rounded-xl`, states, etc.)
+- **Built-in styling**: Components include base styles (radius/kegль tokens, states, etc.)
 - **External styling**: Only layout/positioning classes (`w-full`, `mb-4`, etc.)
 
 ## Next.js Specific
@@ -189,7 +193,7 @@ widgets/{form-name}/
 
 ## graphify
 
-There is a knowledge graph of this codebase at `graphify-out/` (nodes, cross-file edges, communities). Use it where it is strong — not as a mandatory first step.
+There is a knowledge graph of this codebase at `graphify-out/` (nodes, cross-file edges, communities). **Orient with the graph first, then fall back to grep/read when it doesn't help** — a PreToolUse hook reminds you of this on shell calls. The graph compresses whole-codebase orientation hard (`graphify benchmark`: ~13x fewer tokens/query vs. dumping the corpus, up to ~140x on structural questions), so reaching for it first is usually the cheaper path. But it is not always the right tool, and falling back is expected — the rules below say when.
 
 - **`graphify explain "<symbol>"` and `graphify path "<A>" "<B>"` are reliable.** They resolve by exact symbol name and give precise callers/callees and relationships. Prefer them for "what touches X" and "how do A and B connect".
 - **`graphify query "<question>"` is for orientation only, and it is weak.** Seed nodes are picked by *lexical* match of question words against node labels, so a question phrased by behaviour ("post-login redirect") does not find code named by structure (`CommunityListPage`). Verified: it returned 189 nodes and missed the actual implementation. **Do not treat its output as authoritative, and do not skip grep/read because of it.**

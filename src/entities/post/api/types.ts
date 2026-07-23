@@ -26,12 +26,6 @@ export interface PostLikeRecord {
   user_id: string;
 }
 
-export interface PostBookmarkRecord {
-  id: string;
-  post_id: string;
-  user_id: string;
-}
-
 export interface PostCommentRecord {
   id: string;
   post_id: string;
@@ -61,7 +55,6 @@ export interface Post {
   likesCount: number;
   commentsCount: number;
   likedByMe: boolean;
-  bookmarkedByMe: boolean;
   author: PostAuthor | null;
 }
 

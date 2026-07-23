@@ -1,27 +1,27 @@
 "use client";
 
 import { useProfileQuery } from "@/entities/profile";
+import { Avatar, Button, Dropdown, toast } from "@/shared/components";
 import {
-  Avatar,
-  Button,
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/shared/components";
-import { CircleHelp, FileText, LifeBuoy, MoreHorizontal, Settings, Shield } from "lucide-react";
-import { Fragment, useState } from "react";
-import { toast } from "sonner";
+  DocumentLines16,
+  GearBold16,
+  HeadsetBold16,
+  QuestionCircleBold16,
+  ShieldBold16,
+  ThreeDotsHorizontalBold16,
+} from "@frosted-ui/icons";
+import { useState } from "react";
 import ProfileCardDialog from "./ProfileCardDialog";
 
 /* Юридика/помощь — пока заглушки: контент разделов не решён (см. docs/plan.md, этап 17.5).
    Меню уже стоит на месте, чтобы зафиксировать паттерн и точку входа. */
 const STUB_MENU_ITEMS = [
-  { icon: CircleHelp, label: "Справочный центр" },
-  { icon: LifeBuoy, label: "Поддержка" },
-  { icon: FileText, label: "Условия использования" },
-  { icon: Shield, label: "Политика конфиденциальности" },
+  { icon: QuestionCircleBold16, label: "Справочный центр" },
+  { icon: HeadsetBold16, label: "Поддержка" },
+  // разделитель отрезает юридику от помощи
+  "separator",
+  { icon: DocumentLines16, label: "Условия использования" },
+  { icon: ShieldBold16, label: "Политика конфиденциальности" },
 ] as const;
 
 export default function ProfileButton() {
@@ -83,30 +83,25 @@ export default function ProfileButton() {
           <div
             className={`flex flex-shrink-0 items-center gap-1 pr-0.5 transition-opacity duration-0 group-hover:delay-100 ${reveal}`}
           >
-            <DropdownMenu open={isMenuOpen} onOpenChange={setIsMenuOpen}>
-              <DropdownMenuTrigger asChild>
-                <Button theme="ghost" size="xl" Icon={MoreHorizontal} aria-label="Ещё" />
-              </DropdownMenuTrigger>
-              <DropdownMenuContent side="top" align="end">
-                {STUB_MENU_ITEMS.map(({ icon: Icon, label }, index) => (
-                  <Fragment key={label}>
-                    {/* Разделитель отрезает юридику от помощи */}
-                    {index === 2 && <DropdownMenuSeparator />}
-                    <DropdownMenuItem onClick={handleStub}>
-                      <Icon className="mr-2 h-4 w-4" />
-                      <span>{label}</span>
-                    </DropdownMenuItem>
-                  </Fragment>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
+            {/* Меню «⋯» (юридика/помощь) на shared <Dropdown>. onOpenChange держит пилюлю
+                раскрытой (data-expanded), пока открыт портал дропдауна — иначе она схлопнулась бы
+                под съехавшим триггером, стоило курсору уйти в портал. */}
+            <Dropdown
+              trigger={<Button theme="ghost" size="xl" Icon={ThreeDotsHorizontalBold16} aria-label="Ещё" />}
+              items={STUB_MENU_ITEMS.map((item) =>
+                item === "separator" ? item : { ...item, onClick: handleStub }
+              )}
+              side="top"
+              align="end"
+              onOpenChange={setIsMenuOpen}
+            />
 
             {/* На мобиле шестерёнка ведёт в корень-список настроек (iOS-паттерн),
                 на десктопе — сразу в первую секцию (список там не существует) */}
             <Button
               theme="ghost"
               size="xl"
-              Icon={Settings}
+              Icon={GearBold16}
               aria-label="Настройки"
               href="/settings"
               className="md:hidden"
@@ -114,7 +109,7 @@ export default function ProfileButton() {
             <Button
               theme="ghost"
               size="xl"
-              Icon={Settings}
+              Icon={GearBold16}
               aria-label="Настройки"
               href="/settings/profile"
               className="hidden md:inline-flex"

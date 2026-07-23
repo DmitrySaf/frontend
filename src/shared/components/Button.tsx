@@ -1,33 +1,42 @@
+"use client";
+
+import { HourGlassBold16 } from "@frosted-ui/icons";
 import { cva } from "class-variance-authority";
-import { Loader2 } from "lucide-react";
+import Link from "next/link";
 import * as React from "react";
+import { Button as AriaButton } from "react-aria-components";
 
 import { cn } from "@/shared/utils";
-import Link from "next/link";
 
-/* Шкала размеров (сетка 4px). Ступень — это не высота, а согласованный набор:
-   вместе с высотой едут кегль, трекинг, радиус и размер иконки.
+/* React Aria Components Button — только движок (фокус/клавиатура/press/isPending), не источник
+   оформления: RAC headless, ноль пикселей. Цвет и размер — целиком наши классы на своей
+   4-ступенчатой лестнице 32/36/40/48 (DESIGN.md §4.2). HeroUI-нейтрализаторов (--button-bg…)
+   больше нет — гасить нечего: у RAC нет дефолтной заливки, а голую <button> сбрасывает
+   Tailwind preflight.
 
-   Три правила, по которым выведены значения:
+   Состояния (hover/active/focus-visible) держим на CSS-псевдоклассах, а не на RAC data-*:
+   Button полиморфна (RAC <button> ЛИБО next/link <a>), а якорь RAC data-атрибутов не отдаёт;
+   :hover/:active/:focus-visible работают нативно на обоих, и ровно так же вёл себя прежний
+   HeroUI Button (тот же press-движок React Aria) — то есть паритет 1:1. Если позже уведём
+   ссылку под RAC RouterProvider — можно перевести на data-[hovered]/[pressed]. */
 
-   1. Кегль ≈ 0.36–0.40 высоты. 28→12, 32→13, 36→14, 44→15, 48→17.
-   2. Радиус растёт со ступенью, держа постоянное отношение ≈0.28 к высоте
-      (8/10/10/12/14) — это и есть «эппловская» форма: одинаковая оптическая
-      округлость на всех размерах, а не одинаковый радиус. Ср. Whop frosted-ui,
-      где отношение держится около 0.25 (6/8/10/14 на высотах 24/32/40/48).
-   3. Вес — константа 600 (как системная кнопка iOS: 17pt Semibold). По размерам
-      его не гоняет никто из референсов. Единственная оптическая поправка — трекинг:
-      он идёт против размера (+0.01em на 12–13px, 0 на 14px, −0.01em на 15–17px),
-      потому что у Onest нет оптических начертаний SF Text / SF Display, и разницу
-      плотности приходится компенсировать межбуквенным интервалом вручную.
+type ButtonTheme =
+  | "primary"
+  | "secondary"
+  | "destructiveTonal"
+  | "destructiveGhost"
+  | "outline"
+  | "destructive"
+  | "ghost";
 
-   48px остаётся в шкале не «за компанию» с 44: это ячейка рейла (аватарки
-   сообществ — те же 48), и кнопка «+» обязана попадать в неё. */
+type ButtonSize = "sm" | "md" | "lg" | "xl";
+
+/* Один variant-движок — cva (§9): статические оси (theme/size/shape/fluid) здесь; состояния
+   и производные (загрузка/disabled/iconOnly) — классами в cn() ниже. Радиус/кегль — лестничные
+   токены (--radius-control-*, --text-btn-*); высота/паддинг/gap лежат на сетке 4px. */
 const buttonVariants = cva(
-  // relative — опора для спиннера, который лежит абсолютом по центру (см. content ниже).
-  // Гашение (opacity-50) намеренно НЕ висит на disabled:-варианте: во время загрузки кнопка
-  // тоже disabled, но гаснуть не должна. Прозрачность выставляется явно, ниже в cn().
-  "relative inline-flex cursor-pointer items-center justify-center whitespace-nowrap font-semibold transition-[background-color,border-color,color,box-shadow,transform,opacity] duration-150 ease-out-quart active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500/45 focus-visible:ring-offset-2 [&_svg]:pointer-events-none [&_svg]:shrink-0",
+  // relative — опора для абсолютного спиннера; [&_svg]:mx-0/my-0 стабилизируют иконки.
+  "relative inline-flex cursor-pointer items-center justify-center whitespace-nowrap font-semibold transition-[background-color,border-color,color,box-shadow,transform,opacity] duration-150 ease-out-quart active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500/45 focus-visible:ring-offset-2 [&_svg]:pointer-events-none [&_svg]:mx-0 [&_svg]:my-0 [&_svg]:shrink-0",
   {
     variants: {
       theme: {
@@ -35,37 +44,29 @@ const buttonVariants = cva(
         // Серая заливка вместо рамки — парная кнопка к primary в футере модалки
         secondary: "bg-fill text-ink hover:bg-fill-hover active:bg-fill-hover/70",
         outline:
-          "border border-input bg-background shadow-sm hover:bg-accent active:bg-gray-100/80",
+          "border border-input bg-background shadow-sm hover:bg-gray-50 active:bg-gray-100/80",
         destructive: "bg-danger text-white shadow-sm hover:bg-danger/90 active:bg-danger/85",
-        // Тональный деструктив — для подтверждений. Сплошная заливка там вредна: в паре
-        // 50/50 она делает необратимое действие самой крупной и плотной мишенью окна,
-        // перевешивая безопасный выход. Красный обязан читаться как опасность, а не как
-        // главный акцент — плотность остаётся у «Отмены» (iOS-логика алерта).
+        // Тональный деструктив — для подтверждений: красный читается как опасность, не как акцент.
         destructiveTonal: "bg-danger/10 text-danger hover:bg-danger/15 active:bg-danger/20",
         // Призрачный деструктив — второстепенное удаление в ряду с обычными действиями
-        // («Удалить урок» рядом с «Сохранить»). Постоянная заливка там слишком громкая,
-        // поэтому фон появляется только на ховере.
         destructiveGhost: "text-danger hover:bg-danger/10 active:bg-danger/15",
         ghost: "hover:bg-gray-100 active:bg-gray-200/60",
       },
+      // size ОБЪЯВЛЕН ДО shape: cva клеит варианты в порядке ключей, а twMerge (cn ниже)
+      // оставляет последний конфликтующий rounded-* — так pill перебивает радиус ступени.
+      // Кегль — ОБЯЗАТЕЛЬНО text-(length:--…): голый text-(--var) двусмыслен (цвет ИЛИ размер),
+      // и twMerge относит его к цвету → съедает наш text-white/text-ink из theme (тот идёт раньше),
+      // color:var(--text-btn) = «13px» = невалидный цвет → текст падал в чёрный. length: снимает
+      // двусмысленность: это размер, конфликта с цветом нет.
       size: {
-        xs: "h-7 gap-1.5 px-2.5 rounded-[8px] text-xs tracking-[0.01em]",
-        s: "h-8 gap-2 px-3 rounded-[10px] text-[13px] tracking-[0.01em]",
-        m: "h-9 gap-2 px-3.5 rounded-[10px] text-sm tracking-normal",
-        l: "h-11 gap-2.5 px-[18px] rounded-[12px] text-[15px] tracking-[-0.01em]",
-        xl: "h-12 gap-3 px-6 rounded-[14px] text-[17px] tracking-[-0.01em]",
+        sm: "h-8 gap-2 px-3 rounded-(--radius-control-sm) text-(length:--text-btn-sm) leading-none tracking-[0.01em]",
+        md: "h-9 gap-2 px-3.5 rounded-(--radius-control-md) text-(length:--text-btn-md) leading-none tracking-normal",
+        lg: "h-10 gap-2.5 px-4 rounded-(--radius-control-lg) text-(length:--text-btn-lg) leading-none tracking-[-0.01em]",
+        xl: "h-12 gap-3 px-6 rounded-(--radius-control-xl) text-(length:--text-btn-xl) leading-none tracking-[-0.01em]",
       },
-      /* Форма поверх радиуса размера. Объявлена ПОСЛЕ size намеренно: twMerge оставляет
-         последний конфликтующий rounded-*, поэтому pill перебивает радиус ступени.
-         Круглая иконочная кнопка = iconOnly + shape="pill" (отдельный circle не нужен). */
       shape: {
         rounded: "",
         pill: "rounded-full",
-      },
-      // Квадрат с иконкой по центру: горизонтальный падинг убирается, радиус — от ступени
-      iconOnly: {
-        true: "aspect-square p-0",
-        false: "",
       },
       fluid: {
         true: "w-full",
@@ -73,21 +74,18 @@ const buttonVariants = cva(
       },
     },
     defaultVariants: {
-      theme: "primary",
-      size: "m",
       shape: "rounded",
       fluid: false,
     },
   }
 );
 
-// Иконка не масштабируется линейно с кнопкой: на мелких ступенях она обязана быть
-// заметно крупнее текста, на крупных — наоборот, иначе перевешивает подпись.
-const ICON_SIZE: Record<NonNullable<ButtonProps["size"]>, string> = {
-  xs: "size-3.5",
-  s: "size-4",
-  m: "size-4",
-  l: "size-[18px]",
+// Иконка не масштабируется линейно с кнопкой: на мелких ступенях крупнее текста,
+// на крупных — наоборот, иначе перевешивает подпись.
+const ICON_SIZE: Record<ButtonSize, string> = {
+  sm: "size-4",
+  md: "size-4",
+  lg: "size-4.5",
   xl: "size-5",
 };
 
@@ -103,16 +101,9 @@ type BaseButtonProps = {
 
   // Styling & Variants
   className?: string;
-  theme:
-    | "primary"
-    | "secondary"
-    | "destructiveTonal"
-    | "destructiveGhost"
-    | "outline"
-    | "destructive"
-    | "ghost";
-  size: "xs" | "s" | "m" | "l" | "xl";
-  /** `pill` — полное скругление (Apple-CTA, витрина); с `iconOnly` даёт круг */
+  theme: ButtonTheme;
+  size: ButtonSize;
+  /** `pill` — полное скругление; с `iconOnly` даёт круг */
   shape?: "rounded" | "pill";
   fluid?: boolean;
 
@@ -138,6 +129,8 @@ type ButtonAsLink = BaseButtonProps & {
 
 export type ButtonProps = ButtonAsButton | ButtonAsLink;
 
+// forwardRef нужен, чтобы кнопку можно было отдать RAC-обёрткам (напр. Tooltip через
+// <Focusable>, который cloneElement'ит focus-пропы + ref на реальный DOM-элемент).
 const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonProps>(
   (props, ref) => {
     const {
@@ -145,8 +138,8 @@ const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonPro
       className,
       theme,
       size,
-      shape,
-      fluid,
+      shape = "rounded",
+      fluid = false,
       Icon,
       IconRight,
       isLoading,
@@ -161,13 +154,12 @@ const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonPro
     const iconSize = ICON_SIZE[size];
 
     /* Загрузка не должна двигать кнопку. Подпись остаётся в потоке и держит ширину
-       (opacity-0), а спиннер ложится абсолютом по центру — ширина не меняется ни на
-       пиксель, мишень не уезжает из-под курсора в момент клика.
-       gap-[inherit] — чтобы внутренний ряд забрал gap ступени с самой кнопки. */
+     (opacity-0), а спиннер ложится абсолютом по центру — ширина не меняется ни на
+     пиксель, мишень не уезжает из-под курсора в момент клика. */
     const content = (
       <>
         {isLoading && (
-          <Loader2
+          <HourGlassBold16
             className={cn(
               iconSize,
               "absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 animate-spin"
@@ -188,7 +180,8 @@ const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonPro
     );
 
     const classes = cn(
-      buttonVariants({ theme, size, shape, fluid, iconOnly }),
+      buttonVariants({ theme, size, shape, fluid }),
+      iconOnly && "aspect-square p-0",
       // «Занят» ≠ «выключен»: во время загрузки кнопка сохраняет полный цвет и гаснет
       // только настоящий disabled. Клики блокируются в обоих случаях.
       isDisabled && !isLoading && "opacity-50",
@@ -197,11 +190,13 @@ const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonPro
       className
     );
 
+    // RAC Button не умеет быть ссылкой (AriaButtonProps исключает href/target/rel/elementType) —
+    // для href-варианта остаёмся на next/link (клиентская навигация Next), как и раньше.
     if (href) {
       return (
         <Link
+          ref={ref as React.Ref<HTMLAnchorElement>}
           className={classes}
-          ref={ref as React.ForwardedRef<HTMLAnchorElement>}
           aria-disabled={isDisabled || isLoading}
           aria-busy={isLoading || undefined}
           {...restProps}
@@ -213,20 +208,24 @@ const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonPro
     }
 
     return (
-      <button
+      <AriaButton
+        ref={ref as React.Ref<HTMLButtonElement>}
         className={classes}
-        ref={ref as React.ForwardedRef<HTMLButtonElement>}
-        disabled={isDisabled || isLoading}
-        aria-busy={isLoading || undefined}
+        isDisabled={isDisabled}
+        // isPending гасит press/hover, но сохраняет фокусируемость и объявляет aria-busy —
+        // это и есть «загрузка» без выпадения из tab-порядка.
+        isPending={isLoading}
         type={type}
-        onClick={onClick}
+        // Bean-контракт — onClick(MouseEvent); RAC отдаёт onPress(PressEvent) (клик+тач+клавиатура).
+        // Форвардим ту же функцию: ни один call-site не читает объект события (проверено grep'ом).
+        onPress={onClick as unknown as React.ComponentProps<typeof AriaButton>["onPress"]}
         {...restProps}
       >
         {content}
-      </button>
+      </AriaButton>
     );
   }
 );
 Button.displayName = "Button";
 
-export { Button, buttonVariants };
+export { Button };

@@ -2,7 +2,7 @@
 
 import { useCommunityRole } from "@/entities/member";
 import { Button } from "@/shared/components";
-import { ArrowLeft, ShieldAlert } from "lucide-react";
+import { ArrowLeftBold16, ShieldCrossBold24 } from "@frosted-ui/icons";
 import { AdminShellSkeleton } from "./AdminShellSkeleton";
 
 interface AdminShellProps {
@@ -32,13 +32,13 @@ export function AdminShell({ slug, title, subtitle, actions, children }: AdminSh
       <div className="flex-1 flex items-center justify-center bg-surface">
         <div className="flex flex-col items-center gap-3 max-w-xs text-center animate-in fade-in zoom-in-95 duration-300 ease-out-quart">
           <div className="size-14 rounded-2xl bg-gray-100 border border-gray-200 flex items-center justify-center">
-            <ShieldAlert className="size-6 text-gray-500" />
+            <ShieldCrossBold24 className="size-6 text-gray-500" />
           </div>
           <p className="text-[15px] font-semibold text-ink">Нет доступа</p>
           <p className="text-sm text-gray-600">
             Раздел доступен только администраторам сообщества.
           </p>
-          <Button theme="outline" size="l" href={`/communities/${slug}`}>
+          <Button theme="outline" size="lg" href={`/communities/${slug}`}>
             Вернуться в сообщество
           </Button>
         </div>
@@ -51,8 +51,8 @@ export function AdminShell({ slug, title, subtitle, actions, children }: AdminSh
       <div className="shrink-0 flex items-center gap-2.5 md:gap-3.5 px-3 md:px-6 h-12 border-b border-gray-200 bg-surface">
         <Button
           theme="ghost"
-          size="m"
-          Icon={ArrowLeft}
+          size="md"
+          Icon={ArrowLeftBold16}
           href={`/communities/${slug}`}
           aria-label="Назад к сообществу"
         />

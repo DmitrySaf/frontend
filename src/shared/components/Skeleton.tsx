@@ -15,12 +15,10 @@ interface SkeletonProps {
 const toDim = (value?: number | string) => (typeof value === "number" ? `${value}px` : value);
 
 /**
- * Единый примитив-скелетон. Без директив и хуков — рендерится и в серверных
- * `loading.tsx`, и в клиентских `isLoading`-ветках. Заливка `gray-200`
- * (сама переворачивается в тёмной теме), пульс — по фону, появление с
- * reveal-задержкой ~120мс: при быстром ответе родитель размонтируется раньше,
- * чем скелетон станет виден, поэтому короткая загрузка не «мигает».
- * Композиции (ряды, карточки, шапки) собираются инлайн из нескольких `<Skeleton>`.
+ * Скелетон-плейсхолдер. Движок не нужен: весь вид и анимация живут в `.skeleton-reveal`
+ * (см. globals.css) — reveal по opacity с задержкой 120мс (быстрый ответ не мигает) плюс
+ * мягкий пульс по фону. Раньше был обёрткой над HeroUI Skeleton с погашенной нативной
+ * анимацией (`animationType="none"`); HeroUI сюда ничего не давал, поэтому — просто div.
  */
 export function Skeleton({ width, height, radius = 8, circle, className }: SkeletonProps) {
   const size = circle ? (width ?? height) : undefined;
@@ -28,7 +26,7 @@ export function Skeleton({ width, height, radius = 8, circle, className }: Skele
   return (
     <div
       aria-hidden
-      className={cn("skeleton", className)}
+      className={cn("skeleton-reveal", className)}
       style={{
         width: toDim(circle ? size : width),
         height: toDim(circle ? size : height),

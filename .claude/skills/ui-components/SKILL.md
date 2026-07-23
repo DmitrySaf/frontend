@@ -1,6 +1,6 @@
 ---
 name: ui-components
-description: Standards and patterns for creating and using UI components in shared/components
+description: Standards and patterns for creating and using UI components in shared/components (hybrid engine — react-aria-components for primitives, HeroUI v3 for Dialog/Drawer/Toast; Bean/Apple-like theme)
 triggers:
   - "component"
   - "shared/components"
@@ -8,151 +8,159 @@ triggers:
   - "Button"
   - "Input"
   - "Dialog"
+  - "Dropdown"
   - "props interface"
   - "styling"
-  - "PascalCase"
+  - "heroui"
+  - "react-aria"
 ---
 
 # UI Components Guidelines
 
-Universal standards and patterns for creating and using UI components.
+Стандарты и паттерны создания и использования компонентов UI-кита.
+**Движок кита — гибрид: `react-aria-components` (RAC) для примитивов, HeroUI v3 для тяжёлого поведения (Dialog/Drawer/Toast). Визуальная система — всегда наша (Apple-like Bean).**
+Полная дизайн-правда — [DESIGN.md §4](../../../DESIGN.md); эстетика — скилл `apple-design`.
 
-## ⚠️ CRITICAL: Component Usage Priority
+## ⚠️ CRITICAL: приоритет использования
 
-### ALWAYS Use Existing UI Kit Components
+### Всегда используй готовый компонент кита
 
-**Before creating any new component or using native HTML elements, ALWAYS:**
+Прежде чем писать новый компонент или брать нативный HTML-тег:
 
-1. **Check if a UI kit component exists** in `src/shared/components/`
-2. **Use the existing component** instead of native HTML elements
-   - ❌ DON'T use `<button>` - use `<Button>` from UI kit
-   - ❌ DON'T use `<input>` - use `<Input>` from UI kit
-   - ❌ DON'T create custom dropdowns - use `<Dropdown>` from UI kit
-   - ✅ DO use `<Button theme="ghost" size="s" Icon={IconName} />`
+1. **Проверь `src/shared/components/`** — компонент почти наверняка уже есть.
+2. **Импортируй из барреля**, не из файла: ✅ `import { Button } from "@/shared/components"` — ❌ не `.../components/Button`.
+3. **Используй готовый вместо нативного тега:**
+   - ❌ `<button>` → ✅ `<Button theme="ghost" size="sm" Icon={IconName} />`
+   - ❌ `<input>` → ✅ `<Input name="..." size="lg" />`
+   - ❌ свой дропдаун на `useState` → ✅ `<Dropdown>` из кита
 
-### Creating New UI Components: Use shadcn as Foundation
+## Два движка, одна граница
 
-**When creating NEW components for the UI kit:**
+Кит стоит на **двух** движках, и оба видны **только внутри `src/shared/components/**`** — граница защищена линтом (`noRestrictedImports` в `biome.json`; временный allowlist — `CommunityShell`). Снаружи приложение знает лишь баррель `@/shared/components`; движок за фасадом заменяем, не трогая потребителей.
 
-1. **ALWAYS use shadcn as the base** (https://ui.shadcn.com)
-2. **Install the shadcn component** first using `pnpm dlx shadcn@latest add <component-name>`
-3. **Build on top of Radix UI primitives** (already used by shadcn)
-4. **Adapt styling** to match the project's design system
-5. **Never reinvent the wheel** - shadcn provides production-ready, accessible components
+| Bucket | Движок | Компоненты |
+|---|---|---|
+| **A — примитивы** | **RAC** (`react-aria-components`) | Button, Switch, Tabs, SegmentedControl, Tooltip, Dropdown |
+| **A — без движка** | нативный тег / RHF / `<img>` | Input, Textarea, Avatar, Separator, Skeleton |
+| **B — тяжёлое поведение** | **HeroUI v3** (`@heroui/react`) | Dialog (Modal+Sheet), Drawer (CommunityShell), Toast |
 
-**Example: Creating a Dropdown**
+Radix / shadcn / sonner из проекта удалены — **не возвращать**.
+
+### Новый компонент кита: keep-vs-migrate
+
+1. **Стилизованный примитив** (наша логика от движка не зависит) → **RAC** или вовсе без движка. По умолчанию сюда.
+2. **Тяжёлое поведение, которого в RAC нет из коробки** (dual-tree модалка, очередь тостов, drag-slide лист) → **HeroUI** (bucket B). Редкий случай, решает владелец.
+3. **Оборачивай движок в свой PascalCase-компонент** с Bean-API (`theme`/`size`/`name`/`error`), а не тащи движок в call-sites. Баррель — фасад.
+4. **Движок — поведение/a11y, а не источник вида.** Родные `size`/`variant`/`color` не передаём — размер и цвет задают наши классы.
+
 ```tsx
-// ✅ CORRECT: Use @radix-ui/react-dropdown-menu (shadcn base)
-import * as DropdownMenuPrimitive from "@radix-ui/react-dropdown-menu";
+// ✅ CORRECT (bucket A): RAC-примитив под нашим API
+import { Button as AriaButton } from "react-aria-components";
+export const Button = (props: ButtonProps) => <AriaButton className={ourClasses} {...} />;
 
-// ❌ WRONG: Custom implementation with useState and click handlers
-const [isOpen, setIsOpen] = useState(false);
+// ✅ CORRECT (bucket A без движка): нативный тег + наши классы
+export const Avatar = (props: AvatarProps) => <span className={ourClasses}><img .../></span>;
+
+// ❌ WRONG: вернуть Radix/shadcn (удалено из проекта)
+import * as DropdownMenuPrimitive from "@radix-ui/react-dropdown-menu";
 ```
 
-### Why This Matters
+### Почему так
 
-- **Accessibility**: shadcn/Radix UI components are fully accessible by default
-- **Consistency**: Using UI kit ensures consistent look and feel
-- **Maintainability**: Less custom code = easier to maintain
-- **Best Practices**: shadcn follows React best practices and patterns
-- **Time Savings**: Don't reinvent solved problems
+- **A11y**: React Aria (и RAC, и движок HeroUI) даёт фокус-менеджмент, клавиатуру, ARIA из коробки.
+- **Единый вид**: за фасадом барреля меняем движок, не трогая потребителей.
+- **Наш вид неизменен**: Apple-like тема живёт в наших классах/токенах, а не в дефолтах движка.
+
+## Оформление: RAC/без-движка гасить нечего; HeroUI — да (bucket B)
+
+- **RAC и без-движка (bucket A) — чистый лист.** У headless-RAC нет дефолтной заливки, а голую `<button>`/`<input>` сбрасывает Tailwind preflight. **Нейтрализаторов не нужно** — вешаем наши классы прямо на элемент. (Historical: у HeroUI-версий Button/Input стояли сбросы `[--button-bg:transparent]` и гашение слота input — при переходе на RAC они **сняты**.)
+- **HeroUI (bucket B) — хром гасить.** HeroUI красит дефолты на BEM-классах (`.button--primary` ставит `--button-bg: var(--accent)`; `.input` кладёт border/shadow/`sm:text-sm`). Каскад `@layer` — арбитр: HeroUI объявляет `@layer theme, base, components, utilities`; наши utility-классы лежат в **utilities**, старше `components`/`theme`, поэтому перебивают. Где вид держим мы — гасим переменные явно.
+
+### Состояния и варианты
+
+- **Состояния** (hover/press/focus/selected/disabled) у RAC — через `data-*`: `data-[selected]`, `data-[pressed]`, `data-[focus-visible]`, `data-[disabled]` (у контейнера — `group` + `group-data-[…]`). У **полиморфного** Button (`<button>` ЛИБО `<a>` через `next/link`) — CSS-псевдоклассы (`hover:`/`active:`/`focus-visible:`), т.к. якорь RAC data-* не отдаёт.
+- **Варианты** — один движок, **cva** (`tailwind-variants` удалён). cva — только статические оси (theme/size/shape); состояния — `data-*`-классами. `cn()` = clsx + tailwind-merge разруливает конфликты классов.
+- **Ловушка tailwind-merge:** токен-размер пишем `text-(length:--text-btn-md)`, **никогда** голым `text-(--text-btn-md)` — bare-форму twMerge принимает за цвет и съедает соседний `text-white`/`text-ink`, текст падает в чёрный (реальный баг). Так же `bg-(--…)`/`rounded-(--…)` однозначны и безопасны, а `text-(--…)` — нет.
+
+## Коллекции React Aria (Menu / ListBox / Tabs)
+
+Внутри `Menu`/`ListBox` **каждый ребёнок обязан быть collection-компонентом** (`Item`/`Header`/`Separator` из
+`react-aria-components` — все `createLeafComponent`). **Один голый `<div>` схлопывает всю коллекцию в 0 элементов.**
+Это реальный баг из миграции: заметка-`<div>` в меню → пустой дропдаун. Заметка → `<Header>`, разделитель → `<Separator>` (RAC, не наш `Separator`).
+
+## Триггеры оверлеев: Pressable / Focusable, не `.Trigger`
+
+Оборачивая **уже-интерактивный** элемент (наш `Button`, ссылку) в триггер дропдауна/тултипа — используй
+`<Pressable>` / `<Focusable>` из `react-aria-components`: они через `Children.only` + `cloneElement` вешают
+пропы/ref **прямо на ребёнка, без лишнего DOM**. Обёртка-`.Trigger` со своим `<div role="button">`
+→ «кнопка в кнопке» (дубль accessible-name, невалидная вложенность, падение strict-mode в e2e).
+Ребёнок обязан форвардить `ref` на фокусируемый DOM-узел (поэтому [Button.tsx](../../../src/shared/components/Button.tsx) — `forwardRef`).
 
 ## Core Principles
 
-### 1. Component Naming
+### 1. Именование
+- PascalCase для компонентов и файлов (`Button.tsx`, `Input.tsx`), экспорт под тем же именем.
 
-- All UI components MUST be named with PascalCase (e.g., `Button`, `Input`, `Textarea`)
-- Component files should use PascalCase naming (e.g., `Button.tsx`, `Input.tsx`)
-- Export components with their PascalCase names
+### 2. Встроенный вид
+- Компонент несёт весь базовый вид сам; снаружи — только layout/позиционирование (`w-full`, `mb-4`).
+- **Радиусы — из лестничных токенов**, не литералами: `rounded-(--radius-control-sm|md|lg|xl)` (10/10/12/14),
+  `--radius-card` (16), `--radius-modal` (24). Никаких `rounded-xl`/`rounded-[10px]` по месту. Правило «нет круглых кнопок» ([DESIGN.md §4.2](../../../DESIGN.md)) в силе — `pill` только осознанно.
 
-### 2. Built-in Styling
+### 3. Пропсы
+- Явный интерфейс пропсов; **никаких `extends React.HTMLAttributes`** — все пропы перечислены поимённо.
+- Группируй логически комментариями (Content, Styling & Variants, Behavior, A11y).
 
-- Components should include all necessary base styling internally
-- External styling should be minimal and only for layout/positioning
-- Use `rounded-xl` for consistent border radius across components
-- Components should handle their own responsive behavior
+## Размерная лестница контролов (4 ступени)
 
-### 3. Props Interface Standards
+Единая сетка `sm/md/lg/xl` = **32 / 36 / 40 / 48** ([DESIGN.md §4.2/4.3](../../../DESIGN.md)). Ступени 28 и 44 убраны.
 
-- Each component MUST have explicitly defined props interface
-- NO `extends React.HTMLAttributes` - all props must be explicitly defined
-- Use TypeScript interfaces for all component props
-- Add new props only as needed - start minimal and expand
-- Group props logically with comments (Custom Props, Styling, Events, Accessibility, etc.)
+| step | height | radius | kegль | icon | назначение |
+|---|---|---|---|---|---|
+| `sm` | 32 | 10 | 13 | 16 | плотные ряды, тулбары |
+| `md` | 36 | 10 | 14 | 16 | дефолт компонента |
+| `lg` | 40 | 12 | 16 | 18 | основная CTA / поля ввода / тач-цель |
+| `xl` | 48 | 14 | 17 | 20 | герой-CTA |
 
-## Universal Component Patterns
-
-### Props Interface Structure
+- **Button** знает все 4 ступени. **Input/Textarea** — только `md/lg/xl` (поле ≥16px кегль — иначе iOS Safari зумит при фокусе; 32px полям не даём).
+- Высоты/радиусы драйвим **своими классами** (`h-9/10/12`, `rounded-(--radius-control-*)`), движок размеров не навязывает.
+- Инвариант: поле и кнопка одной ступени садятся по одной линии (Button `lg`=40 ↔ Input `lg`=40).
 
 ```tsx
 interface ComponentProps {
-  size?: "s" | "m" | "l";
-  // Custom Props (component-specific functionality)
+  size: "sm" | "md" | "lg" | "xl";   // поля: "md" | "lg" | "xl"
+  theme?: "primary" | "secondary" | "ghost" | "outline" | "destructive";
+  // Custom Props
   label?: string;
   error?: string;
   isLoading?: boolean;
   isDisabled?: boolean;
-
-  // Standard Event Props (only those actually used)
-  onClick?: (event: React.MouseEvent<HTMLElement>) => void;
-  onChange?: (event: React.ChangeEvent<HTMLElement>) => void;
-  onFocus?: (event: React.FocusEvent<HTMLElement>) => void;
+  // Events (только реально используемые)
+  onClick?: (e: React.MouseEvent<HTMLElement>) => void;
 }
 ```
 
-### Component Implementation Standards
+## Реализация
 
-- Use `React.forwardRef` for components that need DOM refs
-- Handle internal state when necessary (forms, toggles, etc.)
-- Implement proper accessibility attributes
-- Use consistent error handling patterns
-- Include loading states for interactive components
+- `React.forwardRef` для компонентов, чей ref нужен RAC-обёрткам (Focusable/Pressable/Tooltip).
+- Состояния (`isLoading`/`isDisabled`/`hasError`) — внутри компонента, не снаружи.
+- «Занят» ≠ «выключен»: во время загрузки кнопка держит цвет и ширину (спиннер абсолютом), гаснет только настоящий `disabled`.
 
 ## Styling Guidelines
 
-### Internal Styling Rules
+**Внутри компонента (DO):** базовый вид, состояния (error/disabled/loading), радиусы из токенов, focus-visible-кольцо.
+**Снаружи (DON'T):** внутренний вид (`rounded-*`, `resize-none`), ручные label/loading при встроенной поддержке, ручные оверрайды цвета движка на call-site.
+**Снаружи (DO):** layout/позиционирование (`w-full`, `mb-4`, `flex`), варианты и размеры компонента (`theme="outline"`, `size="lg"`), встроенные пропы (`label`, `error`, `isLoading`).
 
-- ✅ **DO**: Include base styling in components (`rounded-xl`, `resize-none`, etc.)
-- ✅ **DO**: Handle state-based styling internally (error states, disabled, loading)
-- ✅ **DO**: Use consistent spacing and sizing patterns
-- ✅ **DO**: Implement proper focus and hover states
+## Чеклист нового компонента
 
-### External Styling Rules
-
-- ❌ **DON'T**: Add component-internal styling externally (`rounded-xl`, `resize-none`)
-- ❌ **DON'T**: Implement loading states manually when component has built-in support
-- ❌ **DON'T**: Create manual label elements when component has built-in label prop
-
-- ✅ **DO**: Use layout and positioning classes (`w-full`, `mb-4`, `flex`, etc.)
-- ✅ **DO**: Use component variants and sizes (`variant="outline"`, `size="lg"`)
-- ✅ **DO**: Use built-in props for functionality (`label`, `error`, `isLoading`)
-
-## Development Workflow
-
-### Adding New Props
-
-1. Identify the need for a new prop
-2. Add it to the interface with proper TypeScript typing
-3. Implement the functionality in the component
-4. Update component usage across the codebase
-5. Test accessibility and responsive behavior
-
-### Component Creation Checklist
-
-- [ ] PascalCase naming
-- [ ] Explicit props interface (no extends)
-- [ ] Built-in styling with `rounded-xl`
-- [ ] Error handling support
-- [ ] Loading states (for interactive components)
-- [ ] Accessibility attributes
-- [ ] Proper TypeScript typing
-- [ ] forwardRef implementation (if needed)
-- [ ] Consistent label patterns (for form components)
-
-## Interactive Component Patterns
-
-### Variants and Sizes
-
-- Implement variant system for different visual styles
-- Include size variations (s, m, l)
-- Use consistent naming patterns across components
+- [ ] Bucket выбран осознанно: примитив → RAC/без-движка; тяжёлое поведение → HeroUI. Не Radix/shadcn.
+- [ ] Движок импортируется только внутри `shared/components` (граница `biome.json` не нарушена)
+- [ ] PascalCase, импорт/экспорт через баррель
+- [ ] Явный интерфейс пропсов (без `extends`)
+- [ ] Размеры на лестнице `sm/md/lg/xl` (поля — `md/lg/xl`), радиусы из `--radius-control-*`
+- [ ] Варианты на cva; состояния — `data-*` (RAC) или CSS-псевдо (полиморфные); размер-токен `text-(length:--…)`
+- [ ] Хром HeroUI нейтрализован **только для bucket B**; у RAC/без-движка гасить нечего
+- [ ] Коллекции — только RAC-ноды (`Item`/`Header`/`Separator`); триггеры — `Pressable`/`Focusable`
+- [ ] Состояния error/disabled/loading, focus-visible, a11y-атрибуты
+- [ ] `forwardRef` если ref нужен обёрткам
+- [ ] Тосты — `toast` из `@/shared/components` (HeroUI Toast, bucket B; `.error`→`.danger`), НЕ `sonner`

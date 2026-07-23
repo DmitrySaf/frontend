@@ -1,32 +1,25 @@
-"use client";
-
-import * as SeparatorPrimitive from "@radix-ui/react-separator";
-import * as React from "react";
-
 import { cn } from "@/shared/utils";
 
 interface SeparatorProps {
   className?: string;
   orientation?: "horizontal" | "vertical";
-  decorative?: boolean;
 }
 
-const Separator = React.forwardRef<
-  React.ElementRef<typeof SeparatorPrimitive.Root>,
-  SeparatorProps
->(({ className, orientation = "horizontal", decorative = true, ...props }, ref) => (
-  <SeparatorPrimitive.Root
-    ref={ref}
-    decorative={decorative}
-    orientation={orientation}
-    className={cn(
-      "shrink-0 bg-border",
-      orientation === "horizontal" ? "h-[1px] w-full" : "h-full w-[1px]",
-      className
-    )}
-    {...props}
-  />
-));
-Separator.displayName = SeparatorPrimitive.Root.displayName;
+/* Декоративная линия-разделитель. Движок не нужен — стилизованный div. Роль ARIA не ставим:
+   для чисто визуального разделителя role="separator" — лишний шум для скринридера, а его
+   focusable-interactive требует таб-стоп, которого статичной линии не нужно. Цвет — токен
+   --color-border (переворачивается в .dark); толщину/отступы задаёт потребитель через className. */
+function Separator({ className, orientation = "horizontal" }: SeparatorProps) {
+  return (
+    <div
+      aria-hidden
+      className={cn(
+        "shrink-0 bg-border",
+        orientation === "horizontal" ? "h-px w-full" : "h-full w-px",
+        className
+      )}
+    />
+  );
+}
 
 export { Separator };

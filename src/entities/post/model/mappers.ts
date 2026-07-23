@@ -35,7 +35,6 @@ export const transformPosts = (data: PostsWithMeta): Post[] => {
   return data.posts
     .map((record): Post => {
       const postLikes = data.likes.filter((like) => like.post_id === record.id);
-      const postBookmarks = data.bookmarks.filter((bookmark) => bookmark.post_id === record.id);
       const postComments = data.comments.filter((comment) => comment.post_id === record.id);
 
       return {
@@ -52,9 +51,6 @@ export const transformPosts = (data: PostsWithMeta): Post[] => {
         commentsCount: postComments.length,
         likedByMe:
           data.myUserId !== null && postLikes.some((like) => like.user_id === data.myUserId),
-        bookmarkedByMe:
-          data.myUserId !== null &&
-          postBookmarks.some((bookmark) => bookmark.user_id === data.myUserId),
         author: transformAuthor(record.author),
       };
     })

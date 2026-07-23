@@ -1,5 +1,5 @@
+import { toast } from "@/shared/components";
 import { useMutation } from "@tanstack/react-query";
-import { toast } from "sonner";
 import { deleteMessage, sendMessage, updateMessage } from "./api";
 import { useInvalidateMessages } from "./queries";
 import type { DeleteMessageInput, SendMessageInput, UpdateMessageInput } from "./types";

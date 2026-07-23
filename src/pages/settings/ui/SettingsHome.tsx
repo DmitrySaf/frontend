@@ -5,7 +5,7 @@ import { useProfileQuery } from "@/entities/profile";
 import { useMyVerificationQuery } from "@/entities/verification";
 import { Avatar } from "@/shared/components";
 import { SETTINGS_SECTIONS } from "@/widgets/settings-sidebar";
-import { ArrowLeft, BadgeCheck, ChevronRight, LogOut } from "lucide-react";
+import { ArrowLeftBold20, ChevronRightBold16, LogoutBold20, SealCheckmarkBold16 } from "@frosted-ui/icons";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
@@ -52,7 +52,7 @@ export function SettingsHome() {
         aria-label="Назад"
         className="touch-hit -ml-2 size-9 flex items-center justify-center rounded-[10px] text-gray-600 hover:bg-gray-100 active:scale-90 transition-[background-color,transform] duration-150 ease-out-quart cursor-pointer"
       >
-        <ArrowLeft className="size-5" />
+        <ArrowLeftBold20 className="size-5" />
       </button>
 
       <h1 className="mt-2 text-2xl font-bold tracking-tight text-ink">Настройки</h1>
@@ -69,7 +69,7 @@ export function SettingsHome() {
         <div className="min-w-0">
           <p className="flex items-center gap-1 font-bold text-gray-900">
             <span className="min-w-0 truncate">{profile?.displayName ?? "…"}</span>
-            {isVerified && <BadgeCheck className="size-4 shrink-0 text-primary-600" />}
+            {isVerified && <SealCheckmarkBold16 className="size-4 shrink-0 text-primary-600" />}
           </p>
           {profile?.username && (
             <p className="truncate text-sm text-gray-500">@{profile.username}</p>
@@ -87,7 +87,7 @@ export function SettingsHome() {
           >
             <section.icon className="size-5 shrink-0 text-gray-600" />
             <span className="flex-1 min-w-0 truncate text-[15px] text-ink">{section.name}</span>
-            <ChevronRight className="size-4 shrink-0 text-gray-400" />
+            <ChevronRightBold16 className="size-4 shrink-0 text-gray-400" />
           </Link>
         ))}
       </div>
@@ -99,7 +99,7 @@ export function SettingsHome() {
           onClick={handleLogout}
           className="w-full flex items-center gap-3 min-h-12 px-4 text-danger font-semibold active:bg-danger/10 transition-colors duration-150 cursor-pointer"
         >
-          <LogOut className="size-5 shrink-0" />
+          <LogoutBold20 className="size-5 shrink-0" />
           <span>Выйти из аккаунта</span>
         </button>
       </div>

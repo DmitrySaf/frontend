@@ -1,7 +1,7 @@
 "use client";
 
 import { SettingsSidebar } from "@/widgets/settings-sidebar";
-import { ChevronLeft } from "lucide-react";
+import { ChevronLeftBold20 } from "@frosted-ui/icons";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -28,7 +28,7 @@ export default function SettingsLayout({
                 href="/settings"
                 className="md:hidden -ml-1.5 mb-2 inline-flex items-center gap-0.5 min-h-11 pr-2 text-[15px] font-medium text-primary-600 active:opacity-60 transition-opacity"
               >
-                <ChevronLeft className="size-5" />
+                <ChevronLeftBold20 className="size-5" />
                 Настройки
               </Link>
             )}

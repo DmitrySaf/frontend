@@ -3,7 +3,7 @@
 import type { CourseView, Lesson } from "@/entities/course";
 import { MODULE_TITLE_MAX_LENGTH } from "@/entities/course";
 import { cn, formatDuration } from "@/shared/utils";
-import { Check, Lock, Pencil, Play, Plus, Trash2 } from "lucide-react";
+import { CheckmarkBold12, LockBold12, Pencil16, PlayBold12, PlusBold16, Trash16 } from "@frosted-ui/icons";
 import { useState } from "react";
 
 interface LessonListProps {
@@ -19,7 +19,7 @@ interface LessonListProps {
 }
 
 function LessonIcon({ lesson }: { lesson: Lesson }) {
-  const Icon = lesson.locked ? Lock : lesson.completed ? Check : Play;
+  const Icon = lesson.locked ? LockBold12 : lesson.completed ? CheckmarkBold12 : PlayBold12;
   return (
     <div
       key={lesson.completed ? "done" : "todo"}
@@ -141,7 +141,7 @@ export function LessonList({
                         aria-label="Переименовать модуль"
                         className="touch-hit size-9 lg:size-auto flex items-center justify-center rounded-lg text-gray-500 hover:text-ink active:scale-90 transition-[color,transform] duration-150 cursor-pointer"
                       >
-                        <Pencil className="size-3.5 lg:size-3" />
+                        <Pencil16 className="size-3.5 lg:size-3" />
                       </button>
                       <button
                         type="button"
@@ -149,7 +149,7 @@ export function LessonList({
                         aria-label="Удалить модуль"
                         className="touch-hit size-9 lg:size-auto flex items-center justify-center rounded-lg text-gray-500 hover:text-danger active:scale-90 transition-[color,transform] duration-150 cursor-pointer"
                       >
-                        <Trash2 className="size-3.5 lg:size-3" />
+                        <Trash16 className="size-3.5 lg:size-3" />
                       </button>
                     </div>
                   )}
@@ -200,7 +200,7 @@ export function LessonList({
                   onClick={() => onCreateLesson(module.id)}
                   className="w-full flex items-center gap-2.5 px-2.5 py-[7px] min-h-11 lg:min-h-0 rounded-[10px] text-[13px] font-medium text-gray-500 hover:text-ink hover:bg-gray-200/45 transition-colors duration-150 cursor-pointer"
                 >
-                  <Plus className="size-4" />
+                  <PlusBold16 className="size-4" />
                   Добавить урок
                 </button>
               )}
@@ -227,7 +227,7 @@ export function LessonList({
               onClick={() => setIsAddingModule(true)}
               className="mt-3.5 w-full flex items-center justify-center gap-2 px-2.5 py-2 rounded-[10px] border border-dashed border-gray-300 text-[13px] font-medium text-gray-600 hover:border-gray-400 hover:text-ink transition-colors cursor-pointer"
             >
-              <Plus className="size-4" />
+              <PlusBold16 className="size-4" />
               Добавить модуль
             </button>
           ))}

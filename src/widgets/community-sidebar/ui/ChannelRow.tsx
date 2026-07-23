@@ -4,7 +4,7 @@ import { CHANNEL_TYPE_META, type Channel } from "@/entities/channel";
 import { Dropdown, type DropdownItemConfig } from "@/shared/components";
 import { useHoverIntent } from "@/shared/composables";
 import { cn } from "@/shared/utils";
-import { Link2, Lock, MoreHorizontal, Settings2, Trash2 } from "lucide-react";
+import { LinkBold16, LockBold12, SlidersInASquare16, ThreeDotsHorizontalBold16, Trash16 } from "@frosted-ui/icons";
 import Link from "next/link";
 
 interface ChannelRowProps {
@@ -36,11 +36,11 @@ export default function ChannelRow({
   const prefetchHandlers = useHoverIntent(() => onPrefetch(channel, isLockedForViewer));
 
   const adminItems: DropdownItemConfig[] = [
-    { icon: Settings2, label: "Настройки таба", onClick: onOpenSettings },
+    { icon: SlidersInASquare16, label: "Настройки таба", onClick: onOpenSettings },
     ...(channel.access !== "open"
-      ? [{ icon: Link2, label: "Ссылка-приглашение", onClick: onOpenInvite }]
+      ? [{ icon: LinkBold16, label: "Ссылка-приглашение", onClick: onOpenInvite }]
       : []),
-    { icon: Trash2, label: "Удалить таб", onClick: onDelete, variant: "danger" as const },
+    { icon: Trash16, label: "Удалить таб", onClick: onDelete, variant: "danger" as const },
   ];
 
   return (
@@ -71,7 +71,7 @@ export default function ChannelRow({
           {channel.name}
         </span>
         {(isLockedForViewer || (isAdmin && channel.access !== "open")) && (
-          <Lock className="size-3 shrink-0 text-gray-500" />
+          <LockBold12 className="size-3 shrink-0 text-gray-500" />
         )}
       </Link>
 
@@ -84,7 +84,7 @@ export default function ChannelRow({
                 aria-label="Действия с табом"
                 className="touch-hit size-6 flex items-center justify-center rounded-md bg-surface border border-gray-200 shadow-sm text-gray-500 hover:text-ink active:scale-90 transition-[color,transform] duration-150 ease-out-quart cursor-pointer"
               >
-                <MoreHorizontal className="size-3.5" />
+                <ThreeDotsHorizontalBold16 className="size-3.5" />
               </button>
             }
             items={adminItems}

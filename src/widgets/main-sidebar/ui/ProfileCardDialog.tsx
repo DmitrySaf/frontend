@@ -2,7 +2,7 @@
 
 import { SOCIAL_PLATFORM_META, getSocialLinkHref, useProfileQuery } from "@/entities/profile";
 import { Avatar, Button, Dialog, DialogContent, DialogTitle } from "@/shared/components";
-import { Globe, SquarePen } from "lucide-react";
+import { EditBold16, GlobeBold16 } from "@frosted-ui/icons";
 import { useRouter } from "next/navigation";
 
 interface ProfileCardDialogProps {
@@ -61,7 +61,7 @@ export default function ProfileCardDialog({ isOpen, onClose }: ProfileCardDialog
                       {meta.icon ? (
                         <img src={meta.icon} alt="" className="size-4" />
                       ) : (
-                        <Globe className="size-4" />
+                        <GlobeBold16 className="size-4" />
                       )}
                     </a>
                   );
@@ -86,9 +86,9 @@ export default function ProfileCardDialog({ isOpen, onClose }: ProfileCardDialog
 
           <Button
             theme="secondary"
-            size="m"
+            size="md"
             fluid
-            Icon={SquarePen}
+            Icon={EditBold16}
             onClick={handleEdit}
             className="mt-6"
           >

@@ -1,0 +1,10 @@
+{
+  "comment": "design-sync only. The custom paths-plugin resolves relative to baseUrl and runs before esbuild's native tsconfig auto-discovery (which handles all other @/* imports via the app tsconfig). We alias ONLY the two browser-unsafe modules to file stubs — file targets avoid the plugin's directory-match quirk that breaks wildcard rules.",
+  "compilerOptions": {
+    "baseUrl": "..",
+    "paths": {
+      "next/link": [".design-sync/stubs/next-link.tsx"],
+      "@/api/browser-client": [".design-sync/stubs/supabase-browser-client.ts"]
+    }
+  }
+}

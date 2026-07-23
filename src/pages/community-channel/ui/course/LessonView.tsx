@@ -1,9 +1,9 @@
 "use client";
 
 import { type CourseView, type Lesson, useLessonVideoUrlQuery } from "@/entities/course";
-import { Button } from "@/shared/components";
+import { Button, Skeleton } from "@/shared/components";
 import { formatDuration } from "@/shared/utils";
-import { ArrowLeft, ArrowRight, Check, Clock, Loader2, PlayCircle } from "lucide-react";
+import { ArrowLeftBold16, ArrowRightBold16, CheckmarkBold16, ClockBold12, PlayCircleBold32 } from "@frosted-ui/icons";
 
 interface LessonViewProps {
   course: CourseView;
@@ -38,9 +38,7 @@ export function LessonView({
         {/* Видео или текстовый блок */}
         {lesson.videoPath ? (
           isVideoLoading || !videoUrl ? (
-            <div className="w-full aspect-video rounded-lg bg-gray-100 border border-gray-200 flex items-center justify-center">
-              <Loader2 className="size-8 animate-spin text-gray-400" />
-            </div>
+            <Skeleton className="w-full aspect-video" radius={8} />
           ) : (
             <video
               key={lesson.id}
@@ -51,7 +49,7 @@ export function LessonView({
           )
         ) : (
           <div className="w-full aspect-video rounded-lg bg-gray-100 border border-gray-200 flex flex-col items-center justify-center gap-2">
-            <PlayCircle className="size-10 text-gray-400" />
+            <PlayCircleBold32 className="size-10 text-gray-400" />
             <span className="text-sm text-gray-500">Урок без видео</span>
           </div>
         )}
@@ -63,7 +61,7 @@ export function LessonView({
           </span>
           {lesson.durationSeconds != null && (
             <span className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-gray-100 text-xs font-medium text-gray-600">
-              <Clock className="size-3" />
+              <ClockBold12 className="size-3" />
               {formatDuration(lesson.durationSeconds)}
             </span>
           )}
@@ -83,8 +81,8 @@ export function LessonView({
         <div className="grid grid-cols-2 gap-2.5 pt-2 lg:flex lg:items-center lg:gap-3">
           <Button
             theme={lesson.completed ? "outline" : "primary"}
-            size="l"
-            Icon={Check}
+            size="lg"
+            Icon={CheckmarkBold16}
             isLoading={isTogglingComplete}
             onClick={() => onToggleComplete(lesson.id)}
             className="col-span-2 lg:hidden"
@@ -93,8 +91,8 @@ export function LessonView({
           </Button>
           <Button
             theme="outline"
-            size="l"
-            Icon={ArrowLeft}
+            size="lg"
+            Icon={ArrowLeftBold16}
             isDisabled={!previous}
             onClick={() => previous && onSelectLesson(previous)}
           >
@@ -102,8 +100,8 @@ export function LessonView({
           </Button>
           <Button
             theme="primary"
-            size="l"
-            IconRight={ArrowRight}
+            size="lg"
+            IconRight={ArrowRightBold16}
             isDisabled={!next || next.locked}
             onClick={() => next && onSelectLesson(next)}
           >
@@ -113,8 +111,8 @@ export function LessonView({
           <div className="hidden lg:block flex-1" />
           <Button
             theme={lesson.completed ? "outline" : "ghost"}
-            size="l"
-            Icon={Check}
+            size="lg"
+            Icon={CheckmarkBold16}
             isLoading={isTogglingComplete}
             onClick={() => onToggleComplete(lesson.id)}
             className="hidden lg:inline-flex"

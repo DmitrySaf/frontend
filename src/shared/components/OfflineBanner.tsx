@@ -1,7 +1,7 @@
 "use client";
 
+import { Illuminati16 } from "@frosted-ui/icons";
 import { onlineManager } from "@tanstack/react-query";
-import { WifiOff } from "lucide-react";
 import { useEffect, useState } from "react";
 
 /**
@@ -27,7 +27,7 @@ export function OfflineBanner() {
       role="status"
       className="fixed inset-x-0 top-0 z-[var(--z-toast)] flex items-center justify-center gap-2 h-8 bg-gray-800 text-white text-[13px] font-medium animate-in fade-in slide-in-from-top-2 duration-200 ease-out-quart"
     >
-      <WifiOff className="size-3.5" />
+      <Illuminati16 className="size-3.5" />
       Нет соединения — ждём сеть…
     </div>
   );

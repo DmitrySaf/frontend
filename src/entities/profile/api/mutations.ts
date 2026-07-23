@@ -1,8 +1,8 @@
 import type { UpdateAuthUserData } from "@/api/auth";
 import type { UpdateProfileData } from "@/api/profiles";
+import { toast } from "@/shared/components";
 import { useBrowserClient } from "@/shared/composables";
 import { useMutation } from "@tanstack/react-query";
-import { toast } from "sonner";
 import { updateAuthUser, updateProfile } from "./api";
 import { useInvalidateAuthUser, useInvalidateProfile } from "./queries";
 

@@ -93,7 +93,7 @@ export function TierFormModal({ isOpen, onClose, onSubmit, tier }: TierFormModal
         <Form methods={methods} onSubmit={handleSubmit} className="space-y-4">
           <Input
             name="name"
-            size="l"
+            size="lg"
             label="Название"
             placeholder="Например, Месячный"
             maxLength={TIER_NAME_MAX_LENGTH}
@@ -116,7 +116,7 @@ export function TierFormModal({ isOpen, onClose, onSubmit, tier }: TierFormModal
             <div className="flex-1">
               <Input
                 name="priceRubles"
-                size="l"
+                size="lg"
                 label="Цена, ₽"
                 placeholder="990"
                 error={errors.priceRubles?.message}
@@ -126,7 +126,7 @@ export function TierFormModal({ isOpen, onClose, onSubmit, tier }: TierFormModal
               <div className="flex-1">
                 <Input
                   name="periodMonths"
-                  size="l"
+                  size="lg"
                   label="Период, мес"
                   placeholder="1"
                   error={errors.periodMonths?.message}
@@ -136,7 +136,7 @@ export function TierFormModal({ isOpen, onClose, onSubmit, tier }: TierFormModal
             <div className="flex-1">
               <Input
                 name="discountPercent"
-                size="l"
+                size="lg"
                 label="Скидка, %"
                 placeholder="—"
                 description="Необязательно"
@@ -146,10 +146,10 @@ export function TierFormModal({ isOpen, onClose, onSubmit, tier }: TierFormModal
           </div>
 
           <DialogFooter>
-            <Button type="button" theme="secondary" size="l" onClick={handleClose}>
+            <Button type="button" theme="secondary" size="lg" onClick={handleClose}>
               Отмена
             </Button>
-            <Button type="submit" theme="primary" size="l" isLoading={isSubmitting}>
+            <Button type="submit" theme="primary" size="lg" isLoading={isSubmitting}>
               {tier ? "Сохранить" : "Создать"}
             </Button>
           </DialogFooter>

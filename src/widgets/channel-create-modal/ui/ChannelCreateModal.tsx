@@ -22,8 +22,8 @@ import {
   Input,
 } from "@/shared/components";
 import { cn } from "@/shared/utils";
+import { ChevronDownBold16, PlusBold16 } from "@frosted-ui/icons";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ChevronDown, Plus } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
@@ -122,7 +122,7 @@ export function ChannelCreateModal({
     })),
     "separator" as const,
     {
-      icon: Plus,
+      icon: PlusBold16,
       label: "Новая категория",
       onClick: () => {
         setIsCreatingCategory(true);
@@ -188,7 +188,7 @@ export function ChannelCreateModal({
 
           <Input
             name="name"
-            size="l"
+            size="lg"
             label="Название таба"
             placeholder={NAME_PLACEHOLDERS[selectedType]}
             maxLength={CHANNEL_NAME_MAX_LENGTH}
@@ -201,7 +201,7 @@ export function ChannelCreateModal({
             {isCreatingCategory ? (
               <Input
                 name="newCategoryName"
-                size="l"
+                size="lg"
                 placeholder="Название новой категории"
                 error={errors.categoryId?.message}
               />
@@ -214,12 +214,12 @@ export function ChannelCreateModal({
                       className="group w-full h-11 flex items-center gap-2 px-3.5 rounded-lg bg-surface inset-ring inset-ring-gray-200 text-sm text-ink cursor-pointer hover:bg-gray-50 transition-colors duration-150"
                     >
                       <span className="flex-1 text-left truncate">{selectedCategoryName}</span>
-                      <ChevronDown className="size-4 text-gray-500 transition-transform duration-200 ease-out-quart group-data-[state=open]:rotate-180" />
+                      <ChevronDownBold16 className="size-4 text-gray-500 transition-transform duration-200 ease-out-quart group-aria-expanded:rotate-180" />
                     </button>
                   }
                   items={categoryItems}
                   align="start"
-                  className="w-(--radix-dropdown-menu-trigger-width)"
+                  className="w-(--trigger-width)"
                 />
                 {errors.categoryId?.message && (
                   <p className="text-sm text-danger">{errors.categoryId.message}</p>
@@ -270,10 +270,10 @@ export function ChannelCreateModal({
           </div>
 
           <DialogFooter>
-            <Button type="button" theme="secondary" size="l" onClick={handleClose}>
+            <Button type="button" theme="secondary" size="lg" onClick={handleClose}>
               Отмена
             </Button>
-            <Button type="submit" theme="primary" size="l" isLoading={isSubmitting}>
+            <Button type="submit" theme="primary" size="lg" isLoading={isSubmitting}>
               {isEditing ? "Сохранить" : "Создать"}
             </Button>
           </DialogFooter>

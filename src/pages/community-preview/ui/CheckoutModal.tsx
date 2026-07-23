@@ -9,7 +9,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/shared/components";
-import { FlaskConical } from "lucide-react";
+import { Beaker16 } from "@frosted-ui/icons";
 
 interface CheckoutModalProps {
   isOpen: boolean;
@@ -62,7 +62,7 @@ export function CheckoutModal({
           </div>
 
           <div className="flex items-start gap-2.5 p-3 rounded-[12px] bg-[#fbf3da] border border-[#e7d29a]">
-            <FlaskConical className="size-4 shrink-0 mt-0.5 text-[#9a7b2a]" />
+            <Beaker16 className="size-4 shrink-0 mt-0.5 text-[#9a7b2a]" />
             <p className="text-[13px] leading-[1.45] text-[#7a5e16]">
               Тестовый режим — деньги не списываются. Реальный платёжный провайдер будет подключён
               позже.

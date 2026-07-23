@@ -85,10 +85,10 @@ export function CommunityCreateModal({ isOpen, onClose, onSubmit }: CommunityCre
           />
 
           <DialogFooter>
-            <Button type="button" theme="secondary" size="l" onClick={handleClose}>
+            <Button type="button" theme="secondary" size="lg" onClick={handleClose}>
               Отмена
             </Button>
-            <Button type="submit" theme="primary" size="l" isLoading={isSubmitting}>
+            <Button type="submit" theme="primary" size="lg" isLoading={isSubmitting}>
               Создать
             </Button>
           </DialogFooter>

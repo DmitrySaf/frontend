@@ -11,13 +11,12 @@ import {
 } from "@/entities/channel";
 import { useCommunityProfileQuery } from "@/entities/community";
 import { leaveCommunity, useCommunityRole, useInvalidateMyMembership } from "@/entities/member";
-import { DeleteDialog, Skeleton } from "@/shared/components";
+import { DeleteDialog, Skeleton, toast } from "@/shared/components";
 import { cn } from "@/shared/utils";
 import { ChannelCreateModal } from "@/widgets/channel-create-modal";
-import { RotateCw } from "lucide-react";
+import { RotateBold16 } from "@frosted-ui/icons";
 import { usePathname, useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
-import { toast } from "sonner";
 import { usePrefetchChannelContent } from "../model/usePrefetchChannelContent";
 import CategorySection from "./CategorySection";
 import ChannelRow from "./ChannelRow";
@@ -164,7 +163,7 @@ export default function CommunitySidebar({ slug, className }: CommunitySidebarPr
               onClick={() => refetch()}
               className="w-full flex items-center justify-center gap-2 py-2 rounded-[10px] text-sm font-medium text-gray-600 hover:bg-gray-100 transition-colors cursor-pointer"
             >
-              <RotateCw className="size-3.5" />
+              <RotateBold16 className="size-3.5" />
               Не загрузилось — повторить
             </button>
           </div>

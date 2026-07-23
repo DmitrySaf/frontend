@@ -16,7 +16,7 @@ import {
 import { useCommunityRole } from "@/entities/member";
 import { ContentErrorState, DeleteDialog, SegmentedControl, Skeleton } from "@/shared/components";
 import { cn } from "@/shared/utils";
-import { ArrowLeft, BookOpen, Eye, Pencil } from "lucide-react";
+import { ArrowLeftBold16, BookBold24, EyeBold16, Pencil16 } from "@frosted-ui/icons";
 import { useParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { LessonEditor } from "./LessonEditor";
@@ -121,7 +121,7 @@ export function CourseScreen({ channel }: { channel: Channel }) {
               onClick={() => setIsListOpenOnMobile(true)}
               className="lg:hidden flex items-center gap-1.5 min-h-11 px-2 text-[13px] font-medium text-gray-600 cursor-pointer whitespace-nowrap"
             >
-              <ArrowLeft className="size-4" />
+              <ArrowLeftBold16 className="size-4" />
               {/* На сверхузких (<360) рядом с сегмент-контролом остаётся только стрелка */}
               <span className="hidden min-[360px]:inline">К урокам</span>
             </button>
@@ -133,8 +133,8 @@ export function CourseScreen({ channel }: { channel: Channel }) {
                 value={mode}
                 onChange={setMode}
                 options={[
-                  { value: "view", label: "Просмотр", icon: Eye },
-                  { value: "edit", label: "Редактирование", icon: Pencil },
+                  { value: "view", label: "Просмотр", icon: EyeBold16 },
+                  { value: "edit", label: "Редактирование", icon: Pencil16 },
                 ]}
               />
             </div>
@@ -230,7 +230,7 @@ function EmptyPane({ title, description }: { title: string; description: string 
     <div className="flex-1 flex items-center justify-center">
       <div className="flex flex-col items-center gap-3 max-w-xs text-center">
         <div className="size-14 rounded-2xl bg-gray-100 border border-gray-200 flex items-center justify-center">
-          <BookOpen className="size-6 text-gray-500" />
+          <BookBold24 className="size-6 text-gray-500" />
         </div>
         <p className="text-[15px] font-semibold text-ink">{title}</p>
         <p className="text-sm text-gray-600">{description}</p>

@@ -2,7 +2,7 @@
 
 import { Button } from "@/shared/components";
 import { cn } from "@/shared/utils";
-import { ChevronLeft } from "lucide-react";
+import { ChevronLeftBold16 } from "@frosted-ui/icons";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 const CODE_LENGTH = 6;
@@ -145,7 +145,7 @@ export function ConfirmationForm({
   return (
     <div className="space-y-4">
       <Button
-        Icon={ChevronLeft}
+        Icon={ChevronLeftBold16}
         theme="ghost"
         size="xl"
         aria-label="Назад к вводу почты"

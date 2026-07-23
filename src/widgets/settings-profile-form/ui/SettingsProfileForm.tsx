@@ -1,9 +1,9 @@
 "use client";
 
-import { Button, Form, Input, Textarea } from "@/shared/components";
+import { Button, Form, Input, Skeleton, Textarea } from "@/shared/components";
 import { cn } from "@/shared/utils";
+import { GlobeBold16 } from "@frosted-ui/icons";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Globe, Loader2, Plus } from "lucide-react";
 import Image from "next/image";
 import { useEffect } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
@@ -40,10 +40,16 @@ export function SettingsProfileForm({ initValues, onSubmit, isLoading }: Setting
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center p-8">
-        <div className="text-center space-y-4">
-          <Loader2 className="w-8 h-8 animate-spin mx-auto text-primary-500" />
-          <p className="text-gray-600">Загружаем настройки...</p>
+      <div className="space-y-6">
+        {[0, 1].map((i) => (
+          <div key={i} className="space-y-2">
+            <Skeleton width={90} height={13} radius={4} />
+            <Skeleton height={48} radius={12} />
+          </div>
+        ))}
+        <div className="space-y-2">
+          <Skeleton width={90} height={13} radius={4} />
+          <Skeleton height={96} radius={12} />
         </div>
       </div>
     );
@@ -89,7 +95,7 @@ export function SettingsProfileForm({ initValues, onSubmit, isLoading }: Setting
               <Input
                 key={social.id}
                 name={social.id}
-                size="l"
+                size="lg"
                 prefix={social.prefix}
                 Icon={
                   <Image src={social.icon} alt={social.id} width={20} height={20} unoptimized />
@@ -99,9 +105,9 @@ export function SettingsProfileForm({ initValues, onSubmit, isLoading }: Setting
             ))}
             <Input
               name="website"
-              size="l"
+              size="lg"
               prefix="https://"
-              Icon={Globe}
+              Icon={GlobeBold16}
               error={errors.customLinks?.[0]?.url?.message}
             />
           </div>

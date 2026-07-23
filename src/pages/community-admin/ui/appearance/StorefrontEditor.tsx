@@ -6,11 +6,10 @@ import {
   type Storefront,
   type StorefrontFeature,
 } from "@/entities/storefront";
-import { Button, Dropdown } from "@/shared/components";
+import { Button, Dropdown, toast } from "@/shared/components";
 import { fileToDataUrl } from "@/shared/utils";
-import { ChevronDown, ImagePlus, Plus, X } from "lucide-react";
+import { AddPhoto20, ChevronDownBold16, PlusBold16, XMarkBold16 } from "@frosted-ui/icons";
 import { useRef } from "react";
-import { toast } from "sonner";
 
 const MAX_MEDIA = 6;
 const MAX_FEATURES = 6;
@@ -90,7 +89,7 @@ export function StorefrontEditor({ value, onChange }: StorefrontEditorProps) {
                 aria-label="Убрать изображение"
                 className="absolute top-1.5 right-1.5 size-6 flex items-center justify-center rounded-md bg-surface/90 border border-gray-200 text-gray-600 hover:text-ink cursor-pointer"
               >
-                <X className="size-3.5" />
+                <XMarkBold16 className="size-3.5" />
               </button>
               {index === 0 && (
                 <span className="absolute bottom-1.5 left-1.5 px-1.5 py-0.5 rounded-md bg-black/60 text-[10px] font-medium text-white">
@@ -106,7 +105,7 @@ export function StorefrontEditor({ value, onChange }: StorefrontEditorProps) {
               onClick={() => mediaInputRef.current?.click()}
               className="aspect-[4/3] flex flex-col items-center justify-center gap-1.5 rounded-[12px] border border-dashed border-gray-300 text-gray-600 hover:border-gray-400 hover:text-ink transition-colors cursor-pointer"
             >
-              <ImagePlus className="size-5" />
+              <AddPhoto20 className="size-5" />
               <span className="text-xs font-medium">Добавить</span>
             </button>
           )}
@@ -140,7 +139,7 @@ export function StorefrontEditor({ value, onChange }: StorefrontEditorProps) {
                       className="h-9 px-2.5 flex items-center gap-1 rounded-[10px] bg-surface inset-ring inset-ring-gray-200 text-gray-600 hover:bg-gray-50 cursor-pointer"
                     >
                       <Icon className="size-4" />
-                      <ChevronDown className="size-3.5" />
+                      <ChevronDownBold16 className="size-3.5" />
                     </button>
                   }
                   items={Object.entries(STOREFRONT_FEATURE_ICONS).map(([key, item]) => ({
@@ -164,7 +163,7 @@ export function StorefrontEditor({ value, onChange }: StorefrontEditorProps) {
                   aria-label="Убрать пункт"
                   className="text-gray-500 hover:text-danger transition-colors cursor-pointer"
                 >
-                  <X className="size-4" />
+                  <XMarkBold16 className="size-4" />
                 </button>
               </div>
             );
@@ -174,8 +173,8 @@ export function StorefrontEditor({ value, onChange }: StorefrontEditorProps) {
         {value.features.length < MAX_FEATURES && (
           <Button
             theme="ghost"
-            size="m"
-            Icon={Plus}
+            size="md"
+            Icon={PlusBold16}
             onClick={() =>
               onChange({
                 ...value,

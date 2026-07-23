@@ -1,102 +1,139 @@
 "use client";
 
-import { X } from "lucide-react";
-import { isValidElement, useMemo } from "react";
+import { XMarkBold12 } from "@frosted-ui/icons";
+import { cva } from "class-variance-authority";
+import { isValidElement, useId, useMemo } from "react";
 import { useFormContext } from "react-hook-form";
 import { IMaskInput } from "react-imask";
-import { tv } from "tailwind-variants";
 
-const inputVariants = tv({
-  slots: {
-    inputWrapper:
-      "w-full flex items-center cursor-text inset-ring inset-ring-gray-200 transition-[box-shadow,opacity] duration-150 focus-within:outline-0 focus-within:inset-ring-2 focus-within:inset-ring-primary-500",
-    // Иконки по краям — без разделителя: иконка, зазор, текст (как поле поиска Apple).
-    // Размер жёстко навязывается слотом (*:size-…), чтобы call-site не приносил свой.
-    iconSlot: "shrink-0 flex items-center justify-center text-gray-500 pointer-events-none",
-    /* Встроенные кнопки поля (очистка, действие) — ghost-прямоугольники. Радиус не
-       выбирается, а выводится законом концентричности (§4.3): радиус поля − зазор до
-       кромки. m: 10−4=6, l: 12−6=6, xl: 14−6=8. Фон появляется только на ховере. */
-    clearButton:
-      "shrink-0 flex items-center justify-center text-gray-500 cursor-pointer transition-[background-color,color] duration-150 hover:bg-fill hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500/45",
-    actionButton:
-      "shrink-0 flex items-center justify-center text-gray-600 cursor-pointer transition-[background-color,color,transform] duration-150 ease-out-quart hover:bg-fill hover:text-ink active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500/45",
-    actionIcon: "flex items-center justify-center pointer-events-none *:size-full *:object-contain",
-    inputContainer: "flex-1 flex items-center min-w-0",
-    prefix: "shrink-0 select-none whitespace-nowrap text-gray-500 pointer-events-none",
-    input: "w-full min-w-0 bg-transparent placeholder:text-gray-500 focus:outline-0",
-    helperText: "text-sm",
-  },
+import { cn } from "@/shared/utils";
+
+/* Движок не нужен: RHF register + нативный <input>. Хром держит ОБЁРТКА (inputWrapper),
+   сам <input> прозрачный (border-0/bg-transparent/p-0/shadow-none). tailwind-variants со
+   слотами разложен на набор cva-функций «по одной на слот» (§9 плана); каждый вызов
+   оборачиваем в cn(), чтобы вернуть twMerge-разрешение конфликтов, которое давал tv
+   (иначе inset-ring-gray-200 базы и inset-ring-danger ошибки не переспорить порядком). */
+
+const inputWrapper = cva(
+  "w-full flex items-center cursor-text inset-ring inset-ring-gray-200 transition-[box-shadow,opacity] duration-150 focus-within:outline-0 focus-within:inset-ring-2 focus-within:inset-ring-primary-500",
+  {
+    variants: {
+      /* Лестница контролов (DESIGN.md §4.3): высоты/радиусы — как у Button. Кегль 16px на
+         ВСЕХ ступенях: ниже Safari на iOS зумит страницу при фокусе. */
+      size: {
+        md: "h-9 px-3 gap-2 rounded-(--radius-control-md) text-base",
+        lg: "h-10 px-3.5 gap-2.5 rounded-(--radius-control-lg) text-base",
+        xl: "h-12 px-4 gap-3 rounded-(--radius-control-xl) text-base",
+      },
+      hasError: {
+        true: "inset-ring-danger focus-within:inset-ring-danger",
+        false: "",
+      },
+      isDisabled: {
+        true: "opacity-50 cursor-not-allowed",
+        false: "",
+      },
+      // Кнопка справа крупнее текстового паддинга — поле поджимается, чтобы она встала у кромки
+      trailing: {
+        action: "",
+        clear: "",
+        none: "",
+      },
+    },
+    compoundVariants: [
+      { trailing: "action", size: "md", class: "pr-1" },
+      { trailing: "action", size: "lg", class: "pr-1.5" },
+      { trailing: "action", size: "xl", class: "pr-1.5" },
+      { trailing: "clear", size: "md", class: "pr-2" },
+      { trailing: "clear", size: "lg", class: "pr-2" },
+      { trailing: "clear", size: "xl", class: "pr-2.5" },
+    ],
+  }
+);
+
+// Иконки по краям — без разделителя: иконка, зазор, текст (как поле поиска Apple).
+// Размер жёстко навязывается слотом (*:size-…), чтобы call-site не приносил свой.
+const iconSlot = cva("shrink-0 flex items-center justify-center text-gray-500 pointer-events-none", {
   variants: {
-    /* Лестница контролов (см. DESIGN.md §4.3): высоты и радиусы — те же, что у Button.
-       Кегль — 16px на ВСЕХ ступенях: ниже Safari на iOS зумит страницу при фокусе.
-       Иконки едут со ступенью: 16/18/20. */
     size: {
-      m: {
-        inputWrapper: "h-9 px-3 gap-2 rounded-[10px] text-base",
-        iconSlot: "size-4 *:size-4 *:object-contain",
-        clearButton: "size-[18px] rounded-[6px] [&_svg]:size-2.5",
-        actionButton: "size-7 rounded-[6px]",
-        actionIcon: "size-4",
-      },
-      l: {
-        inputWrapper: "h-11 px-3.5 gap-2.5 rounded-[12px] text-base",
-        iconSlot: "size-[18px] *:size-[18px] *:object-contain",
-        clearButton: "size-5 rounded-[6px] [&_svg]:size-3",
-        actionButton: "size-8 rounded-[6px]",
-        actionIcon: "size-[18px]",
-      },
-      xl: {
-        inputWrapper: "h-12 px-4 gap-3 rounded-[14px] text-base",
-        iconSlot: "size-5 *:size-5 *:object-contain",
-        clearButton: "size-[22px] rounded-[8px] [&_svg]:size-3",
-        actionButton: "size-9 rounded-[8px]",
-        actionIcon: "size-5",
-      },
-    },
-    hasError: {
-      true: {
-        inputWrapper: "inset-ring-danger focus-within:inset-ring-danger",
-        helperText: "text-danger",
-      },
-      false: {
-        helperText: "text-gray-500",
-      },
-    },
-    // Моно — для ссылок, кодов, номеров карт (правило DESIGN.md §3: моно = цифры/коды)
-    mono: {
-      true: {
-        input: "font-mono",
-        prefix: "font-mono",
-      },
-    },
-    isDisabled: {
-      true: {
-        inputWrapper: "opacity-50 cursor-not-allowed",
-      },
-    },
-    // Кнопка справа крупнее текстового паддинга — поле поджимается, чтобы она
-    // стояла у кромки (как кнопка копирования в поле инвайта)
-    trailing: {
-      action: {},
-      clear: {},
-      none: {},
+      md: "size-4 *:size-4 *:object-contain",
+      lg: "size-[18px] *:size-[18px] *:object-contain",
+      xl: "size-5 *:size-5 *:object-contain",
     },
   },
-  compoundVariants: [
-    { trailing: "action", size: "m", class: { inputWrapper: "pr-1" } },
-    { trailing: "action", size: "l", class: { inputWrapper: "pr-1.5" } },
-    { trailing: "action", size: "xl", class: { inputWrapper: "pr-1.5" } },
-    { trailing: "clear", size: "m", class: { inputWrapper: "pr-2" } },
-    { trailing: "clear", size: "l", class: { inputWrapper: "pr-2" } },
-    { trailing: "clear", size: "xl", class: { inputWrapper: "pr-2.5" } },
-  ],
+});
+
+/* Встроенные кнопки поля (очистка, действие) — ghost-прямоугольники. Радиус не выбирается,
+   а выводится законом концентричности (§4.3): радиус поля − зазор до кромки. */
+const clearButton = cva(
+  "shrink-0 flex items-center justify-center text-gray-500 cursor-pointer transition-[background-color,color] duration-150 hover:bg-fill hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500/45",
+  {
+    variants: {
+      size: {
+        md: "size-[18px] rounded-[6px] [&_svg]:size-2.5",
+        lg: "size-5 rounded-[6px] [&_svg]:size-3",
+        xl: "size-[22px] rounded-[8px] [&_svg]:size-3",
+      },
+    },
+  }
+);
+
+const actionButton = cva(
+  "shrink-0 flex items-center justify-center text-gray-600 cursor-pointer transition-[background-color,color,transform] duration-150 ease-out-quart hover:bg-fill hover:text-ink active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500/45",
+  {
+    variants: {
+      size: {
+        md: "size-7 rounded-[6px]",
+        lg: "size-8 rounded-[6px]",
+        xl: "size-9 rounded-[8px]",
+      },
+    },
+  }
+);
+
+const actionIcon = cva(
+  "flex items-center justify-center pointer-events-none *:size-full *:object-contain",
+  {
+    variants: {
+      size: {
+        md: "size-4",
+        lg: "size-[18px]",
+        xl: "size-5",
+      },
+    },
+  }
+);
+
+// Без вариантов — обычная строка
+const inputContainer = "flex-1 flex items-center min-w-0";
+
+const prefixSlot = cva("shrink-0 select-none whitespace-nowrap text-gray-500 pointer-events-none", {
+  variants: { mono: { true: "font-mono", false: "" } },
+});
+
+/* Голый инпут: прозрачный, без рамки/фона/паддинга — всё несёт обёртка. text-base = 16px
+   на всех ширинах (иначе iOS зумит при фокусе). */
+const inputControl = cva(
+  "h-full w-full min-w-0 border-0 bg-transparent p-0 text-base shadow-none rounded-none placeholder:text-gray-500 focus:outline-0 focus:ring-0",
+  {
+    variants: { mono: { true: "font-mono", false: "" } },
+  }
+);
+
+const helperText = cva("text-sm", {
+  variants: {
+    hasError: {
+      true: "text-danger",
+      false: "text-gray-500",
+    },
+  },
 });
 
 type IconProp = React.ComponentType<{ className?: string }> | React.ReactElement;
 
 export interface InputProps {
   name: string;
-  size: "m" | "l" | "xl";
+  size: "md" | "lg" | "xl";
   // Custom Props
   label?: string;
   placeholder?: string;
@@ -105,7 +142,7 @@ export interface InputProps {
   maxLength?: number;
   /** Текстовый префикс одной строкой со значением («bean.com/») */
   prefix?: string;
-  /** Иконка слева: lucide-компонент или готовый элемент (напр. next/image) — размер задаёт ступень */
+  /** Иконка слева: frosted-компонент или готовый элемент (напр. next/image) — размер задаёт ступень */
   Icon?: IconProp;
   /** Иконка справа. Сама по себе — декоративная; с onIconRightClick — круглая кнопка-действие */
   IconRight?: IconProp;
@@ -127,6 +164,7 @@ export interface InputProps {
    * - Email: /^[^@]*@?[^@]*$/
    * - Число: Number
    */
+  // biome-ignore lint/suspicious/noExplicitAny: маска react-imask полиморфна (string|RegExp|Number|Date|…) — точный тип не выразить без сужения публичного API
   mask?: any;
   /**
    * Дополнительные опции для маски
@@ -169,6 +207,7 @@ const Input = ({
   onBlur: customOnBlur,
 }: InputProps) => {
   const { register, setValue, watch } = useFormContext();
+  const inputId = useId();
 
   // Текущее значение из формы
   const currentValue = watch(name) || "";
@@ -177,7 +216,7 @@ const Input = ({
   const { onBlur: formOnBlur } = useMemo(() => register(name), [register, name]);
 
   // Комбинируем оба onBlur
-  const handleBlur = (e: any) => {
+  const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
     formOnBlur(e);
     customOnBlur?.();
   };
@@ -185,20 +224,15 @@ const Input = ({
   const showClear = !!isClearable && !!currentValue && !isDisabled;
   const trailing = onIconRightClick ? "action" : showClear ? "clear" : "none";
 
-  const styles = inputVariants({
-    size,
-    hasError: !!error,
-    mono: !!mono,
-    isDisabled: !!isDisabled,
-    trailing,
-  });
-
   const handleClear = () => {
     setValue(name, "", { shouldDirty: true, shouldValidate: true });
   };
 
+  const controlClass = cn(inputControl({ mono: !!mono }));
+
   const inputElement = mask ? (
     <IMaskInput
+      id={inputId}
       name={name}
       value={currentValue}
       mask={mask}
@@ -213,32 +247,46 @@ const Input = ({
       placeholder={placeholder}
       disabled={isDisabled}
       autoComplete={autocomplete}
-      className={styles.input()}
+      aria-invalid={!!error || undefined}
+      className={controlClass}
     />
   ) : (
     <input
       {...register(name)}
+      id={inputId}
       type="text"
       disabled={isDisabled}
       placeholder={placeholder}
       maxLength={maxLength}
       autoComplete={autocomplete}
       onBlur={handleBlur}
-      className={styles.input()}
+      aria-invalid={!!error || undefined}
+      className={controlClass}
     />
   );
 
   return (
     <div className="space-y-1">
-      <label className="space-y-1 block">
-        {label && <div className="text-sm font-medium">{label}</div>}
+      <div className="space-y-1">
+        {label && (
+          <label
+            htmlFor={inputId}
+            className={cn(
+              "block text-sm font-medium text-ink",
+              isDisabled && "opacity-50",
+              error && "text-danger"
+            )}
+          >
+            {label}
+          </label>
+        )}
 
-        <div className={styles.inputWrapper()}>
-          {Icon && renderIcon(Icon, styles.iconSlot())}
+        <div className={cn(inputWrapper({ size, hasError: !!error, isDisabled: !!isDisabled, trailing }))}>
+          {Icon && renderIcon(Icon, cn(iconSlot({ size })))}
 
-          <div className={styles.inputContainer()}>
+          <div className={inputContainer}>
             {/* Префикс и значение читаются как одна строка — различаются только цветом */}
-            {prefix && <span className={styles.prefix()}>{prefix}</span>}
+            {prefix && <span className={cn(prefixSlot({ mono: !!mono }))}>{prefix}</span>}
             {inputElement}
           </div>
 
@@ -248,11 +296,11 @@ const Input = ({
             <button
               type="button"
               aria-label="Очистить"
-              className={styles.clearButton()}
+              className={cn(clearButton({ size }))}
               onMouseDown={(e) => e.preventDefault()}
               onClick={handleClear}
             >
-              <X />
+              <XMarkBold12 />
             </button>
           )}
 
@@ -261,23 +309,23 @@ const Input = ({
               <button
                 type="button"
                 aria-label={iconRightLabel}
-                className={styles.actionButton()}
+                className={cn(actionButton({ size }))}
                 onClick={onIconRightClick}
               >
-                {renderIcon(IconRight, styles.actionIcon())}
+                {renderIcon(IconRight, cn(actionIcon({ size })))}
               </button>
             ) : (
-              renderIcon(IconRight, styles.iconSlot())
+              renderIcon(IconRight, cn(iconSlot({ size })))
             ))}
         </div>
-      </label>
+      </div>
 
       {(error || description || (!mask && maxLength)) && (
         <div className="flex justify-between gap-2">
           {error ? (
-            <p className={styles.helperText()}>{error}</p>
+            <p className={cn(helperText({ hasError: true }))}>{error}</p>
           ) : (
-            description && <p className={styles.helperText()}>{description}</p>
+            description && <p className={cn(helperText({ hasError: false }))}>{description}</p>
           )}
 
           {!mask && maxLength && (
@@ -293,4 +341,4 @@ const Input = ({
 
 Input.displayName = "Input";
 
-export { Input, inputVariants };
+export { Input };

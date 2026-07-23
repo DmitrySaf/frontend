@@ -1,6 +1,6 @@
 "use client";
 
-import { RotateCw, WifiOff } from "lucide-react";
+import { Illuminati24, RotateBold16 } from "@frosted-ui/icons";
 import { Button } from "./Button";
 
 interface ContentErrorStateProps {
@@ -23,11 +23,11 @@ export function ContentErrorState({
     <div className="flex-1 flex items-center justify-center p-6">
       <div className="flex flex-col items-center gap-3 max-w-xs text-center">
         <div className="size-14 rounded-2xl bg-gray-100 border border-gray-200 flex items-center justify-center">
-          <WifiOff className="size-6 text-gray-500" />
+          <Illuminati24 className="size-6 text-gray-500" />
         </div>
         <p className="text-[15px] font-semibold text-ink">{title}</p>
         <p className="text-sm text-gray-600">{description}</p>
-        <Button theme="outline" size="m" Icon={RotateCw} onClick={onRetry}>
+        <Button theme="outline" size="md" Icon={RotateBold16} onClick={onRetry}>
           Повторить
         </Button>
       </div>

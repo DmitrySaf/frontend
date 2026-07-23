@@ -1,13 +1,12 @@
 "use client";
 
 import { POST_TITLE_MAX_LENGTH, type PostFormData, postFormSchema } from "@/entities/post";
-import { Button, Form } from "@/shared/components";
+import { Button, Form, toast } from "@/shared/components";
 import { fileToDataUrl } from "@/shared/utils";
+import { AddPhoto16, XMarkBold16 } from "@frosted-ui/icons";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ImagePlus, X } from "lucide-react";
 import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
-import { toast } from "sonner";
 
 interface PostFormProps {
   initialValues?: PostFormData & { coverUrl?: string | null };
@@ -92,7 +91,7 @@ export function PostForm({ initialValues, submitLabel, onSubmit, onCancel }: Pos
             aria-label="Убрать обложку"
             className="absolute top-2.5 right-2.5 size-8 flex items-center justify-center rounded-[10px] bg-surface/90 border border-gray-200 text-gray-600 hover:text-ink cursor-pointer"
           >
-            <X className="size-4" />
+            <XMarkBold16 className="size-4" />
           </button>
         </div>
       ) : (
@@ -101,7 +100,7 @@ export function PostForm({ initialValues, submitLabel, onSubmit, onCancel }: Pos
           onClick={() => fileInputRef.current?.click()}
           className="flex items-center gap-2 px-3.5 h-9 rounded-[10px] border border-dashed border-gray-300 text-sm text-gray-600 hover:border-gray-400 hover:text-gray-800 transition-colors cursor-pointer"
         >
-          <ImagePlus className="size-4" />
+          <AddPhoto16 className="size-4" />
           Добавить обложку
         </button>
       )}
@@ -114,10 +113,10 @@ export function PostForm({ initialValues, submitLabel, onSubmit, onCancel }: Pos
       />
 
       <div className="flex items-center justify-end gap-2 pt-1">
-        <Button theme="ghost" size="l" type="button" onClick={onCancel}>
+        <Button theme="ghost" size="lg" type="button" onClick={onCancel}>
           Отмена
         </Button>
-        <Button theme="primary" size="l" type="submit" isLoading={isSubmitting}>
+        <Button theme="primary" size="lg" type="submit" isLoading={isSubmitting}>
           {submitLabel}
         </Button>
       </div>

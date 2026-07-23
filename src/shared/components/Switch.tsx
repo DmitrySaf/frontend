@@ -1,6 +1,9 @@
+"use client";
+
+import { LockBold12 } from "@frosted-ui/icons";
+import { Switch as AriaSwitch } from "react-aria-components";
+
 import { cn } from "@/shared/utils";
-import { Lock } from "lucide-react";
-import * as React from "react";
 
 export interface SwitchProps {
   // State
@@ -15,41 +18,55 @@ export interface SwitchProps {
 
   // Accessibility
   id?: string;
+  "aria-label"?: string;
 }
 
-const Switch = React.forwardRef<HTMLButtonElement, SwitchProps>(
-  ({ checked = false, onCheckedChange, disabled = false, className, id, ...props }, ref) => {
-    return (
-      <button
-        type="button"
-        role="switch"
-        aria-checked={checked}
-        disabled={disabled}
-        onClick={() => onCheckedChange?.(!checked)}
+/* RAC Switch — движок (роль switch, клавиатура, управление состоянием). Вид целиком наш:
+   HeroUI держал трек/тумблер на своей CSS, у headless-RAC их нет. Трек 40×20 (как прежде —
+   без скачка в рядах настроек), тумблер КРУГЛЫЙ, как у radio (decision №10 «нет круглых
+   кнопок», исключение для ползунков). Состояния — через RAC data-* на самом <Switch> (group):
+   off → gray-300, on → primary-500 (акцент). Токены gray-* переворачиваются в .dark. */
+function Switch({
+  checked = false,
+  onCheckedChange,
+  disabled = false,
+  className,
+  id,
+  "aria-label": ariaLabel,
+}: SwitchProps) {
+  return (
+    <AriaSwitch
+      id={id}
+      aria-label={ariaLabel}
+      isSelected={checked}
+      onChange={onCheckedChange}
+      isDisabled={disabled}
+      className={cn(
+        "group inline-flex cursor-pointer items-center data-[disabled]:cursor-not-allowed",
+        className
+      )}
+    >
+      {/* трек */}
+      <span
         className={cn(
-          "relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-200 ease-out-quart cursor-pointer",
-          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500/45 focus-visible:ring-offset-2",
-          "disabled:cursor-not-allowed",
-          checked ? "bg-primary-500" : "bg-gray-200",
-          className
+          "inline-flex h-5 w-10 shrink-0 items-center rounded-full bg-gray-300 p-0.5 transition-colors duration-200 ease-out-quart",
+          "group-data-[selected]:bg-primary-500",
+          "group-data-[disabled]:opacity-50",
+          "group-data-[focus-visible]:ring-2 group-data-[focus-visible]:ring-primary-500/45 group-data-[focus-visible]:ring-offset-2"
         )}
-        ref={ref}
-        id={id}
-        {...props}
       >
+        {/* круглый бегунок — на 20px вправо при включении (40 − 16 − 2·2 = 20) */}
         <span
           className={cn(
-            "inline-flex size-5 items-center justify-center transform rounded-full bg-surface shadow-sm transition-transform duration-200 ease-out-quart",
-            checked && !disabled ? "translate-x-[22px]" : "translate-x-0.5"
+            "flex size-4 items-center justify-center rounded-full bg-white shadow transition-transform duration-200 ease-out-quart",
+            "group-data-[selected]:translate-x-5"
           )}
         >
-          {disabled && <Lock className="h-2 w-2 text-gray-400" />}
+          {disabled && <LockBold12 className="size-2 text-gray-400" />}
         </span>
-      </button>
-    );
-  }
-);
-
-Switch.displayName = "Switch";
+      </span>
+    </AriaSwitch>
+  );
+}
 
 export { Switch };

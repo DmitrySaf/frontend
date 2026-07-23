@@ -46,7 +46,7 @@ export function PostComposer({ channelId }: { channelId: string }) {
               плейсхолдер вылезал из пилла тремя строками */}
           <Button
             theme="primary"
-            size="m"
+            size="md"
             onClick={() => setIsExpanded(true)}
             className="hidden md:inline-flex"
           >

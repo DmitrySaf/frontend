@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "@heroui/styles";
 @plugin "tailwindcss-animate";
 
 /* Onest — самохостинг (public/fonts). Variable-шрифт: один файл на все веса 100–900.
@@ -33,7 +34,26 @@
   unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
 }
 
-/* Конфигурация темы из tailwind.config.ts */
+/* ============================================================================
+   ТОКЕН-АРХИТЕКТУРА — три тира (Fluent 2 / Polaris / W3C DTCG). Tailwind v4
+   CSS-first: JS-конфига (tailwind.config.ts) нет, всё живёт здесь.
+
+   Tier 1 · PRIMITIVE — сырые шкалы без семантики (--primary-50..900, --gray-50..900,
+     --brand/--white/--black, сырые числа радиусов/типа). Объявлены в :root/.dark ниже.
+   Tier 2 · SEMANTIC — решения-алиасы (--background/--surface/--ink/--border/--accent/
+     --danger/--fill/--muted-foreground, плюс --radius-control и --text-btn). Ссылаются на
+     Tier 1 и ФЛИПАЮТСЯ в .dark. Именно их читают компоненты.
+   Tier 3 · COMPONENT (опц.) — узкие токены компонента поверх Tier 2 (--button-bg и пр.).
+     Пока не заводим: bucket A на RAC красится классами от Tier 2 напрямую (у HeroUI
+     раньше был свой --button-*; с уходом на RAC он не нужен). Вводить по мере надобности.
+
+   Правило: компоненты читают Tier 2/Tier 3, НЕ Tier 1 напрямую (цель; часть call-sites
+   ещё зовёт bg-primary-500/gray-* — довести в отдельный заход). White-label: тенант =
+   переопределение Tier 2 (+Tier 3) в скоупе [data-tenant="x"]/.theme-x — ноль правок кита.
+
+   Блок @theme ниже — ЭКСПОЗИЦИЯ токенов в Tailwind (генерит утилиты bg-, text-, rounded-,
+   text-); он лишь ссылается на сырые/семантические переменные из :root.
+   ============================================================================ */
 @theme {
   /* Моушн-токены: ease-out — входы и ховеры, in-out — движение на экране,
      drawer — iOS-кривая для шторок. Длительности: <160мс микро, 180-240 слои, <300 всё */
@@ -48,8 +68,8 @@
   --font-mono: ui-monospace, "SF Mono", "SFMono-Regular", Menlo, Consolas, monospace;
 
   /* Основные цвета */
-  --color-background: oklch(var(--background));
-  --color-foreground: oklch(var(--foreground));
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
   
   /* Акцентные цвета */
   --color-primary-50: hsl(var(--primary-50));
@@ -69,7 +89,7 @@
   /* Семантические токены поверхности/чернил — переворачиваются в .dark.
      surface = «белый» фон карточек/баров/полей; ink = основной цвет текста.
      white/black остаются литеральными (текст на цвете, оверлеи-скримы). */
-  --color-surface: oklch(var(--surface));
+  --color-surface: var(--surface);
   --color-ink: oklch(var(--ink));
 
   --color-gray: oklch(var(--gray));
@@ -84,8 +104,10 @@
   --color-gray-800: hsl(var(--gray-800));
   --color-gray-900: hsl(var(--gray-900));
 
-  --color-accent: oklch(var(--accent));
-  --color-danger: oklch(var(--danger));
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-danger: var(--danger);
+  --color-danger-foreground: var(--danger-foreground);
 
   /* Бренд-лайм — цвет айдентики, НЕ семантика. Не переворачивается в .dark
      (как white/black): знак должен быть одним цветом в обеих темах.
@@ -112,7 +134,7 @@
   --color-primary-500-foreground: oklch(var(--primary-500-foreground));
   
   /* Границы и элементы интерфейса */
-  --color-border: oklch(var(--border));
+  --color-border: var(--border);
   --color-input: oklch(var(--input));
   --color-ring: oklch(var(--ring));
   
@@ -121,8 +143,17 @@
   --radius-lg: 0.875rem;
   --radius-md: 0.75rem;
 
-  /* Семантическая z-шкала (низ → верх). Порталы используют через
-     z-[var(--z-*)]; тосты (sonner) держат свой высокий z сами.
+  /* Лестничные радиусы контролов (кнопки/инпуты/сегмент-контрол) — держат
+     отношение ≈0.28–0.31 к высоте на каждой ступени (см. DESIGN.md §4.2) */
+  --radius-control-sm: 10px;
+  --radius-control-md: 10px;
+  --radius-control-lg: 12px;
+  --radius-control-xl: 14px;
+  --radius-card: 16px;
+  --radius-modal: 24px;
+
+  /* Семантическая z-шкала (низ → верх). Порталы используют через z-[var(--z-*)];
+     тост-регион HeroUI получает --z-toast явным классом (см. Toast.tsx).
      Dropdown выше modal намеренно: меню открываются внутри модалок и
      мобильного drawer'а — иначе всплывашка ушла бы под слой. */
   --z-sticky: 20;
@@ -160,23 +191,36 @@
   --text-8xl--line-height: 1;
   --text-9xl: 8rem;
   --text-9xl--line-height: 1; */
+
+  /* Кегли кнопочной лестницы (см. DESIGN.md §4.2) — text-(--text-btn-sm) и т.д.
+     line-height: 1, кнопки однострочные и центрируются flex-ом, а не строкой. */
+  --text-btn-sm: 13px;
+  --text-btn-sm--line-height: 1;
+  --text-btn-md: 14px;
+  --text-btn-md--line-height: 1;
+  --text-btn-lg: 16px;
+  --text-btn-lg--line-height: 1;
+  --text-btn-xl: 17px;
+  --text-btn-xl--line-height: 1;
 }
 
 @layer base {
   :root {
     /* Основные цвета */
-    --background: 1 0 0;
-    --foreground: 0.04 0 0;
+    --background: oklch(1 0 0);
+    --foreground: oklch(var(--ink));
     
     /* Акцентные цвета */
     --black: 0.193 0 0;
     --white: 1 0 0;
 
     /* Семантические поверхность/чернила (переворачиваются в .dark) */
-    --surface: 1 0 0;
+    --surface: oklch(1 0 0);
     --ink: 0.193 0 0;
 
-    /* Тональная шкала primary: 500 — фирменный синий (Apple blue, не менять),
+    /* ── Tier 1 · PRIMITIVE — сырые тональные шкалы (primary, gray). Компоненты их
+       НЕ читают напрямую (цель): красятся через семантику Tier 2. ──
+       Тональная шкала primary: 500 — фирменный синий (Apple blue, не менять),
        50-300 — светлые подложки/селекция, 600+ — ховеры, текст на светлом */
     --primary-50: 210 100 97 / 100%;
     --primary-100: 210 100 94 / 100%;
@@ -202,8 +246,13 @@
     --gray-700: 0 0 34 / 100%;
     --gray-800: 0 0 27 / 100%;
     --gray-900: 0 0 16 / 100%;
-    --accent: 0.96 0 0;
-    --danger: 0.5896 0.1962 36.09;
+    /* ── Tier 2 · SEMANTIC — решения-алиасы; читаются компонентами, флипаются в .dark ──
+       accent = акцентное/primary действие — самофлип через primary-500 (отдельного
+       --accent в .dark не нужно). Раньше это была HeroUI-семантика, теперь наша. */
+    --accent: hsl(var(--primary-500));
+    --accent-foreground: oklch(var(--white));
+    --danger: oklch(0.5896 0.1962 36.09);
+    --danger-foreground: oklch(var(--white));
 
     /* #B0F900 — тон 128° унаследован от прежнего лайма (125°), насыщенность
        поднята с 0.106 до предела гаммы: пастель не читается как знак. */
@@ -231,7 +280,7 @@
     --primary-500-foreground: 0.09 0 0;
     
     /* Границы и элементы интерфейса */
-    --border: 0.9 0 0;
+    --border: oklch(0.9 0 0);
     --input: 0.9 0 0;
     --ring: 0.04 0 0;
   }
@@ -239,9 +288,8 @@
   .dark {
     /* Фон/чернила: страница почти чёрная, поверхности приподняты, текст — near-white.
        white/black НЕ переопределяются: остаются для текста-на-цвете и скримов-оверлеев. */
-    --background: 0.04 0 0;
-    --foreground: 0.96 0 0;
-    --surface: 0.15 0 0;
+    --background: oklch(0.04 0 0);
+    --surface: oklch(0.15 0 0);
     --ink: 0.96 0 0;
 
     /* primary: 500 — brighter Apple-blue для тёмного фона (HSL!);
@@ -270,8 +318,7 @@
     --gray-800: 0 0 85 / 100%;
     --gray-900: 0 0 93 / 100%;
 
-    --accent: 0.22 0 0;
-    --danger: 0.62 0.19 36;
+    --danger: oklch(0.62 0.19 36);
 
     /* Роль переворачивается: заливка СВЕТЛЕЕ поверхности модалки (0.15) */
     --fill: 0.26 0 0;
@@ -291,7 +338,7 @@
     --primary-500-foreground: 0.98 0 0;
 
     /* Границы/поля/фокус */
-    --border: 0.22 0 0;
+    --border: oklch(0.22 0 0);
     --input: 0.24 0 0;
     --ring: 0.83 0 0;
   }
@@ -344,20 +391,6 @@
   padding-right: env(safe-area-inset-right);
 }
 
-/* Bottom-sheet (<md): вход/выход карточки модалки снизу. Кастомные кейфреймы вместо
-   slide-in-from-bottom-full: дробные/full-варианты у tailwindcss-animate молча
-   не генерируются (урок этапа 15). Фейд шиту не нужен — он приезжает из-за кромки. */
-@keyframes sheet-in {
-  from {
-    transform: translateY(100%);
-  }
-}
-@keyframes sheet-out {
-  to {
-    transform: translateY(100%);
-  }
-}
-
 /* Тач-цель ≥44px без изменения визуала (HIG): прозрачный псевдоэлемент растягивает
    область клика до 44px по каждой оси. Для мелких иконок-кнопок (send, «···», «+»).
    Соседние цели могут перекрываться слоями — применять там, где между ними ≥8px. */
@@ -389,12 +422,14 @@
     }
   }
 
-  /* Скелетон-примитив (см. shared/components/Skeleton.tsx).
-     Два независимых свойства, чтобы не конфликтовать: reveal — по opacity
-     (появление с задержкой 120мс: быстрый ответ не мигает), пульс — по фону.
-     База gray-200, пульс к gray-300 (на светлой gray-100 был бы невидим —
+  /* Скелетон-примитив (см. shared/components/Skeleton.tsx, обёртка над HeroUI Skeleton).
+     Класс называется НЕ `.skeleton` намеренно — так называется базовый BEM-класс
+     самого HeroUI-компонента (packages/styles/components/skeleton.css), и совпадение
+     имён столкнуло бы каскадные слои. Два независимых свойства, чтобы не конфликтовать:
+     reveal — по opacity (появление с задержкой 120мс: быстрый ответ не мигает), пульс —
+     по фону. База gray-200, пульс к gray-300 (на светлой gray-100 был бы невидим —
      долг этапа 15). Токены переворачиваются в .dark автоматически. */
-  .skeleton {
+  .skeleton-reveal {
     opacity: 0;
     background-color: hsl(var(--gray-200));
     animation:

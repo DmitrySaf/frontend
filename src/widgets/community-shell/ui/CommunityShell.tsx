@@ -3,8 +3,8 @@
 import { useCommunityQuery } from "@/entities/community";
 import { CommunitySidebar } from "@/widgets/community-sidebar";
 import { MainSidebar } from "@/widgets/main-sidebar";
-import { Menu } from "lucide-react";
-import { AnimatePresence, type PanInfo, motion, useReducedMotion } from "motion/react";
+import { MenuBold20 } from "@frosted-ui/icons";
+import { Drawer as HeroDrawer } from "@heroui/react";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
@@ -21,7 +21,6 @@ export function CommunityShell({ slug, children }: CommunityShellProps) {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const pathname = usePathname();
   const { data: community } = useCommunityQuery(slug);
-  const shouldReduceMotion = useReducedMotion();
 
   // Переход по любой ссылке закрывает drawer
   // biome-ignore lint/correctness/useExhaustiveDependencies: pathname — триггер закрытия
@@ -59,45 +58,26 @@ export function CommunityShell({ slug, children }: CommunityShellProps) {
         <CommunitySidebar slug={slug} />
       </div>
 
-      {/* Мобильный drawer: rail + каналы. Spring-вход/выход, свайп влево закрывает */}
-      <AnimatePresence>
-        {isDrawerOpen && (
-          <div className="fixed inset-0 z-[var(--z-modal)] md:hidden">
-            <motion.button
-              type="button"
-              aria-label="Закрыть меню"
-              onClick={() => setIsDrawerOpen(false)}
-              className="absolute inset-0 bg-black/40"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: shouldReduceMotion ? 0.01 : 0.2, ease: "easeOut" }}
-            />
-            <motion.div
-              className="absolute inset-y-0 left-0 flex w-[85vw] max-w-[340px] bg-gray-100 pt-2 pb-safe-2 pl-1 shadow-xl"
-              initial={shouldReduceMotion ? { opacity: 0 } : { x: "-100%" }}
-              animate={shouldReduceMotion ? { opacity: 1 } : { x: 0 }}
-              exit={shouldReduceMotion ? { opacity: 0 } : { x: "-100%" }}
-              transition={
-                shouldReduceMotion
-                  ? { duration: 0.15 }
-                  : { type: "spring", bounce: 0, duration: 0.35 }
-              }
-              drag={shouldReduceMotion ? false : "x"}
-              dragConstraints={{ left: -360, right: 0 }}
-              dragElastic={{ left: 0.05, right: 0 }}
-              onDragEnd={(_: PointerEvent, info: PanInfo) => {
-                if (info.offset.x < -80 || info.velocity.x < -300) setIsDrawerOpen(false);
-              }}
-            >
+      {/* Мобильный drawer: rail + каналы. Вход/выход и drag-to-dismiss — встроены в
+          HeroUI Drawer (та же кривая --ease-drawer: cubic-bezier(0.32,0.72,0,1)).
+          Открытие по свайпу от кромки остаётся снаружи (см. handleTouchMove выше) —
+          у HeroUI такого триггера нет, isDrawerOpen лишь дёргает open(). */}
+      <div className="md:hidden">
+        <HeroDrawer.Backdrop
+          isOpen={isDrawerOpen}
+          onOpenChange={setIsDrawerOpen}
+          className="z-[var(--z-modal-backdrop)] bg-black/40"
+        >
+          <HeroDrawer.Content placement="left" className="z-[var(--z-modal)]">
+            <HeroDrawer.Dialog className="w-[85vw] max-w-[340px] flex-row bg-gray-100 p-0 pt-2 pb-safe-2 pl-1 shadow-xl">
               <MainSidebar withCreateModal={false} />
               <div className="flex-1 min-w-0 rounded-l-md overflow-hidden border-l border-y border-gray-200">
                 <CommunitySidebar slug={slug} className="w-full border-r-0" />
               </div>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
+            </HeroDrawer.Dialog>
+          </HeroDrawer.Content>
+        </HeroDrawer.Backdrop>
+      </div>
 
       <div className="flex-1 flex flex-col min-w-0">
         {/* Мобильный топ-бар */}
@@ -108,7 +88,7 @@ export function CommunityShell({ slug, children }: CommunityShellProps) {
             onClick={() => setIsDrawerOpen(true)}
             className="size-9 touch-hit flex items-center justify-center rounded-lg text-gray-600 hover:text-ink hover:bg-gray-100 transition-colors cursor-pointer"
           >
-            <Menu className="size-5" />
+            <MenuBold20 className="size-5" />
           </button>
           <span className="text-[15px] font-bold text-ink truncate">
             {community?.displayName ?? ""}

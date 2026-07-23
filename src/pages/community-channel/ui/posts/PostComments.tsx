@@ -2,9 +2,9 @@
 
 import { COMMENT_MAX_LENGTH, useAddCommentMutation, usePostCommentsQuery } from "@/entities/post";
 import { useProfileQuery } from "@/entities/profile";
-import { Avatar } from "@/shared/components";
+import { Avatar, Skeleton } from "@/shared/components";
 import { cn, formatRelativeTime } from "@/shared/utils";
-import { Loader2, SendHorizontal } from "lucide-react";
+import { PaperAirplaneRightBold16 } from "@frosted-ui/icons";
 import { useState } from "react";
 import { useAuthorView } from "../useAuthorView";
 
@@ -40,9 +40,15 @@ export function PostComments({ postId, channelId }: PostCommentsProps) {
   return (
     <div data-live={!isLoading} className="border-t border-gray-200 px-5 py-3.5 space-y-3.5">
       {isLoading ? (
-        <div className="flex justify-center py-2">
-          <Loader2 className="size-4 animate-spin text-gray-500" />
-        </div>
+        [0, 1].map((i) => (
+          <div key={i} className="flex gap-2.5">
+            <Skeleton circle width={32} />
+            <div className="flex-1 space-y-2 pt-1">
+              <Skeleton width={100} height={11} radius={4} />
+              <Skeleton height={13} radius={4} />
+            </div>
+          </div>
+        ))
       ) : (
         comments?.map((comment) => {
           const author = resolveAuthor(comment.authorId, comment.author);
@@ -96,7 +102,7 @@ export function PostComments({ postId, channelId }: PostCommentsProps) {
                 : "text-gray-400 opacity-70 cursor-default"
             )}
           >
-            <SendHorizontal className="size-4" />
+            <PaperAirplaneRightBold16 className="size-4" />
           </button>
         </div>
       </div>

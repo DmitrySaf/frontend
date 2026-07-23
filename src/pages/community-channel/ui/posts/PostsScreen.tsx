@@ -4,7 +4,7 @@ import type { Channel } from "@/entities/channel";
 import { useCommunityRole } from "@/entities/member";
 import { useDeletePostMutation, usePostsQuery, usePostsRealtime } from "@/entities/post";
 import { ContentErrorState, DeleteDialog, Skeleton } from "@/shared/components";
-import { Newspaper } from "lucide-react";
+import { Document24 } from "@frosted-ui/icons";
 import { useParams } from "next/navigation";
 import { useState } from "react";
 import { PostCard } from "./PostCard";
@@ -45,7 +45,7 @@ export function PostsScreen({ channel }: { channel: Channel }) {
         ) : (
           <div className="flex flex-col items-center gap-3 py-16 text-center animate-in fade-in zoom-in-95 duration-300 ease-out-quart">
             <div className="size-14 rounded-2xl bg-gray-100 border border-gray-200 flex items-center justify-center">
-              <Newspaper className="size-6 text-gray-500" />
+              <Document24 className="size-6 text-gray-500" />
             </div>
             <p className="text-[15px] font-semibold text-ink">Пока нет постов</p>
             <p className="text-sm text-gray-600 max-w-56">

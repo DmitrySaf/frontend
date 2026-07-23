@@ -1,0 +1,43 @@
+{
+  "projectId": "4db95f96-6d77-459d-8927-4bafe1d60586",
+  "shape": "package",
+  "pkg": "frontend",
+  "globalName": "BeanUI",
+  "srcDir": "src",
+  "tsconfig": ".design-sync/tsconfig.designsync.json",
+  "cssEntry": ".design-sync/.cache/bean-tw.css",
+  "extraFonts": [".design-sync/onest-fonts.css"],
+  "readmeHeader": ".design-sync/conventions.md",
+  "buildCmd": "npx -y @tailwindcss/cli@4.1.7 -i app/globals.css -o .design-sync/.cache/bean-tw.css",
+  "dtsPropsFor": {
+    "Button": "children?: React.ReactNode; theme: 'primary' | 'secondary' | 'outline' | 'ghost' | 'destructive' | 'destructiveTonal' | 'destructiveGhost'; size: 'sm' | 'md' | 'lg' | 'xl'; Icon?: React.ComponentType<{ className?: string }>; IconRight?: React.ComponentType<{ className?: string }>; shape?: 'rounded' | 'pill'; fluid?: boolean; isLoading?: boolean; isDisabled?: boolean; className?: string; href?: string; type?: 'button' | 'submit' | 'reset'; onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void; 'aria-label'?: string;",
+    "Input": "name: string; size: 'md' | 'lg' | 'xl'; label?: string; placeholder?: string; error?: string; description?: string; maxLength?: number; prefix?: string; Icon?: React.ComponentType<{ className?: string }> | React.ReactElement; IconRight?: React.ComponentType<{ className?: string }> | React.ReactElement; onIconRightClick?: () => void; iconRightLabel?: string; isClearable?: boolean; mono?: boolean; autocomplete?: string; isDisabled?: boolean; onBlur?: () => void; mask?: unknown; maskOptions?: Record<string, unknown>;",
+    "Textarea": "name: string; size: 'md' | 'lg' | 'xl'; label?: string; error?: string; description?: string; maxLength?: number; showCounter?: boolean; isClearable?: boolean; className?: string; placeholder?: string; disabled?: boolean; rows?: number;",
+    "Switch": "checked?: boolean; onCheckedChange?: (checked: boolean) => void; className?: string; disabled?: boolean; id?: string; 'aria-label'?: string;",
+    "Avatar": "name: string; src?: string | null; size?: 's' | 'm' | 'l'; shape?: 'square' | 'circle'; className?: string;",
+    "SegmentedControl": "options: Array<{ value: string; label: string; icon?: React.ComponentType<{ className?: string }> }>; value: string; onChange: (value: string) => void; size?: 's' | 'm'; className?: string;",
+    "Dropdown": "trigger: React.ReactElement; items: Array<{ icon?: React.ComponentType<{ className?: string }>; label: string; onClick?: () => void; href?: string; variant?: 'default' | 'danger'; disabled?: boolean } | { note: string } | 'separator'>; align?: 'start' | 'center' | 'end'; side?: 'top' | 'right' | 'bottom' | 'left'; className?: string;",
+    "Tooltip": "content: React.ReactNode; side?: 'top' | 'bottom' | 'left' | 'right'; children: React.ReactElement; className?: string;",
+    "Dialog": "open: boolean; onOpenChange: (open: boolean) => void; children?: React.ReactNode;",
+    "Skeleton": "width?: number | string; height?: number | string; radius?: number | string; circle?: boolean; className?: string;",
+    "Separator": "className?: string; orientation?: 'horizontal' | 'vertical';",
+    "ThemeToggle": "className?: string;"
+  },
+  "overrides": {
+    "Dialog": { "cardMode": "single", "viewport": "860x600" }
+  },
+  "componentSrcMap": {
+    "Button": "src/shared/components/Button.tsx",
+    "Input": "src/shared/components/Input.tsx",
+    "Textarea": "src/shared/components/Textarea.tsx",
+    "Switch": "src/shared/components/Switch.tsx",
+    "SegmentedControl": "src/shared/components/SegmentedControl.tsx",
+    "Avatar": "src/shared/components/Avatar.tsx",
+    "Dropdown": "src/shared/components/Dropdown/Dropdown.tsx",
+    "Tooltip": "src/shared/components/Tooltip.tsx",
+    "Dialog": "src/shared/components/Dialog.tsx",
+    "Skeleton": "src/shared/components/Skeleton.tsx",
+    "Separator": "src/shared/components/Separator.tsx",
+    "ThemeToggle": "src/shared/components/ThemeToggle.tsx"
+  }
+}

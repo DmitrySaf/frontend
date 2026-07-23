@@ -22,6 +22,17 @@ Form architecture based on widgets with clear separation of concerns.
 - **React Hook Form** - form state management
 - **Zod** - client-side validation
 - **@hookform/resolvers** - Zod integration with React Hook Form
+- **Поля — без движка**: `Input`/`Textarea` собраны на **нативном `<input>`/`<textarea>`/`<label>` + RHF `register`** (не RAC `TextField`, не HeroUI). Оформление — наши классы; поведение полю не нужно чужое.
+
+### Автобинд RHF ↔ поле (важно — не ломать)
+
+Наши `Input`/`Textarea` **сами** тянут значение из формы через `useFormContext()` и спредят
+`{...register(name)}` на нативный элемент. Поэтому:
+
+- **`Controller` не вводим** — поля привязываются по `name`, значение/`onBlur`/маска идут через `register`/`setValue`/`watch` внутри компонента.
+- Публичный API поля — **`name` + `error`** (+ `label`, `size`, `description`, `mask`…). Через `error` ставим нативный `aria-invalid` и текст ошибки снизу.
+- Поля живут внутри `<Form methods={methods} onSubmit={onSubmit}>` (у `Form` — `FormProvider` + `handleSubmit` внутри), поэтому `useFormContext()` в поле резолвится.
+- **Публичный API полей неизменен через обе миграции** (HeroUI, затем RAC/native) — 9 форм-виджетов и `Form.tsx` не трогали.
 
 ## Widget Architecture
 
@@ -165,13 +176,13 @@ export function EntityForm({
 
   return (
     <Form methods={methods} onSubmit={onSubmit} className="space-y-6">
-      <Input name="name" size="m" label="Name" error={errors.name?.message} />
+      <Input name="name" size="lg" label="Name" error={errors.name?.message} />
 
       <Button
         type="submit"
         isLoading={isLoading}
         theme="primary"
-        size="l"
+        size="lg"
         fluid
       >
         Сохранить

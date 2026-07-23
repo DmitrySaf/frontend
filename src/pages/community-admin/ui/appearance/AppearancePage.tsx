@@ -7,11 +7,10 @@ import {
   useUpdateStorefrontMutation,
 } from "@/entities/storefront";
 import { useCommunityStatsQuery } from "@/entities/subscription";
-import { Avatar, Button, Skeleton } from "@/shared/components";
+import { Avatar, Button, Skeleton, toast } from "@/shared/components";
 import { fileToDataUrl } from "@/shared/utils";
-import { ImageIcon, Upload, Users, X } from "lucide-react";
+import { PeopleBold16, Photo20, UploadBold16, XMarkBold16 } from "@frosted-ui/icons";
 import { useEffect, useRef, useState } from "react";
-import { toast } from "sonner";
 import { AdminShell } from "../AdminShell";
 import { StorefrontEditor } from "./StorefrontEditor";
 
@@ -52,7 +51,7 @@ function UploadField({ label, hint, value, height, maxWidth, onChange }: UploadF
           <img src={value} alt={label} className="size-full object-cover" />
         ) : (
           <div className="size-full bg-gray-100 flex flex-col items-center justify-center gap-1.5 text-gray-500">
-            <ImageIcon className="size-5" />
+            <Photo20 className="size-5" />
             <span className="text-xs">{hint}</span>
           </div>
         )}
@@ -60,13 +59,13 @@ function UploadField({ label, hint, value, height, maxWidth, onChange }: UploadF
           {value && (
             <Button
               theme="outline"
-              size="m"
-              Icon={X}
+              size="md"
+              Icon={XMarkBold16}
               onClick={() => onChange(null)}
               aria-label="Убрать"
             />
           )}
-          <Button theme="outline" size="m" Icon={Upload} onClick={() => inputRef.current?.click()}>
+          <Button theme="outline" size="md" Icon={UploadBold16} onClick={() => inputRef.current?.click()}>
             Загрузить
           </Button>
         </div>
@@ -130,7 +129,7 @@ export function AppearancePage({ slug }: { slug: string }) {
       actions={
         <Button
           theme="primary"
-          size="m"
+          size="md"
           onClick={handleSave}
           isDisabled={!isDirty}
           isLoading={updateProfile.isPending || updateStorefront.isPending}
@@ -208,11 +207,11 @@ export function AppearancePage({ slug }: { slug: string }) {
                 {profile.description && (
                   <p className="text-[13px] text-gray-600 line-clamp-2">{profile.description}</p>
                 )}
-                <Button theme="primary" size="l" fluid>
+                <Button theme="primary" size="lg" fluid>
                   Присоединиться
                 </Button>
                 <p className="flex items-center justify-center gap-1.5 text-xs text-gray-500">
-                  <Users className="size-3.5" />
+                  <PeopleBold16 className="size-3.5" />
                   {membersCount} участников
                 </p>
               </div>

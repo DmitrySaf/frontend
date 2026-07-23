@@ -269,7 +269,7 @@
 - **Осторожно с утилитами радиуса:** в `@theme` переопределены токены, поэтому `rounded-md` = 12px, `rounded-lg` = **14px**, `rounded-xl` = **16px** (а не как в дефолтном Tailwind). Поэтому контролы (`Button`, `Input`, `Textarea`) берут радиус из **лестничных токенов** `rounded-(--radius-control-*)`, а не из `rounded-md/lg/xl`: ступень не должна съезжать оттого, что кто-то поменял общий токен. `Avatar`/`SegmentedControl`/`LogoTile` пока на явных литералах — точный перенос в токены см. Phase 3.
 - Сетка 4px; карточки `p-5`; контентные колонки: чат full-width, посты 720px, урок 768px (`max-w-3xl`), настройки `max-w-2xl`, витрина 1000px.
 - Тени: карточки `shadow-sm`, поповеры `shadow-lg`; глубина в основном рамками и слоями серого. Модалки — `shadow-modal`, слоистая (hairline-обводка + контактная + две амбиентные): одной тени не хватает — широкая размывается в грязь, короткая липнет к краю. В тёмной теме тень почти не читается, поэтому глубину держат приподнятая поверхность, hairline-обводка и внутренний блик сверху (`inset 0 1px 0 white/6%` — панели macOS ловят свет краем).
-- z-слои: семантическая шкала в `@theme` (`--z-sticky/modal-backdrop/modal/dropdown/toast/tooltip` = 20…70); порталы (HeroUI — Dialog/Drawer/Toast; RAC — Popover/Tooltip) берут её через `z-[var(--z-*)]`; девятисотых значений нет.
+- z-слои: семантическая шкала в `@theme` (`--z-sticky/modal-backdrop/modal/dropdown/toast/tooltip` = 20…70); порталы (HeroUI — Dialog/Drawer/Toast; RAC — Popover/Tooltip) берут её через `z-[var(--z-modal)]` и т.п.; девятисотых значений нет.
 
 ## 6. Motion
 

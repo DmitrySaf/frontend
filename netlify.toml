@@ -1,0 +1,14 @@
+# Netlify деплоит по git-пушу автоматически — этот файл лишь настраивает сборку.
+# @netlify/plugin-nextjs Netlify ставит сам при детекте Next; объявлен явно для надёжности.
+# Env-переменные (NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY)
+# задаются в Netlify UI → Site settings → Environment variables, НЕ здесь.
+
+[build]
+  command = "pnpm build"
+
+[build.environment]
+  NODE_VERSION = "22"
+  PNPM_VERSION = "10"
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"

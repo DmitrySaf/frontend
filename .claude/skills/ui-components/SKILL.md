@@ -40,7 +40,7 @@ triggers:
 
 | Bucket | Движок | Компоненты |
 |---|---|---|
-| **A — примитивы** | **RAC** (`react-aria-components`) | Button, Switch, Tabs, SegmentedControl, Tooltip, Dropdown |
+| **A — примитивы** | **RAC** (`react-aria-components`) | Button, Switch, Tabs, SegmentedControl, Tooltip, Dropdown, Select |
 | **A — без движка** | нативный тег / RHF | Input, Textarea, Separator, Skeleton |
 | **B — HeroUI v3** | **HeroUI** (`@heroui/react`) | Dialog (Modal+Sheet), Drawer (CommunityShell), Toast; Avatar (compound Image/Fallback) |
 

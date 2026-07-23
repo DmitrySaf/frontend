@@ -17,12 +17,12 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  Dropdown,
   Form,
   Input,
+  Select,
 } from "@/shared/components";
 import { cn } from "@/shared/utils";
-import { ChevronDownBold16, PlusBold16 } from "@frosted-ui/icons";
+import { PlusBold16 } from "@frosted-ui/icons";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -82,7 +82,6 @@ export function ChannelCreateModal({
 
   const selectedType = watch("type");
   const selectedAccess = watch("access");
-  const selectedCategoryId = watch("categoryId");
 
   // Синхронизация при открытии: «+» категории или настройки существующего таба
   useEffect(() => {
@@ -108,28 +107,10 @@ export function ChannelCreateModal({
     handleClose();
   };
 
-  const selectedCategoryName =
-    categories.find((category) => category.id === selectedCategoryId)?.name ?? "Категория";
-
-  const categoryItems = [
-    ...categories.map((category) => ({
-      label: category.name,
-      onClick: () => {
-        setIsCreatingCategory(false);
-        setValue("categoryId", category.id, { shouldValidate: true });
-        setValue("newCategoryName", undefined);
-      },
-    })),
-    "separator" as const,
-    {
-      icon: PlusBold16,
-      label: "Новая категория",
-      onClick: () => {
-        setIsCreatingCategory(true);
-        setValue("categoryId", undefined, { shouldValidate: false });
-      },
-    },
-  ];
+  const categoryOptions = categories.map((category) => ({
+    value: category.id,
+    label: category.name,
+  }));
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
@@ -206,25 +187,21 @@ export function ChannelCreateModal({
                 error={errors.categoryId?.message}
               />
             ) : (
-              <>
-                <Dropdown
-                  trigger={
-                    <button
-                      type="button"
-                      className="group w-full h-11 flex items-center gap-2 px-3.5 rounded-lg bg-surface inset-ring inset-ring-gray-200 text-sm text-ink cursor-pointer hover:bg-gray-50 transition-colors duration-150"
-                    >
-                      <span className="flex-1 text-left truncate">{selectedCategoryName}</span>
-                      <ChevronDownBold16 className="size-4 text-gray-500 transition-transform duration-200 ease-out-quart group-aria-expanded:rotate-180" />
-                    </button>
-                  }
-                  items={categoryItems}
-                  align="start"
-                  className="w-(--trigger-width)"
-                />
-                {errors.categoryId?.message && (
-                  <p className="text-sm text-danger">{errors.categoryId.message}</p>
-                )}
-              </>
+              <Select
+                name="categoryId"
+                size="lg"
+                placeholder="Категория"
+                options={categoryOptions}
+                error={errors.categoryId?.message}
+                action={{
+                  icon: PlusBold16,
+                  label: "Новая категория",
+                  onAction: () => {
+                    setIsCreatingCategory(true);
+                    setValue("categoryId", undefined, { shouldValidate: false });
+                  },
+                }}
+              />
             )}
           </div>
 

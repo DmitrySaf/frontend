@@ -31,6 +31,7 @@ export { Input } from "./Input";
 export { OfflineBanner } from "./OfflineBanner";
 export { SegmentedControl } from "./SegmentedControl";
 export { Separator } from "./Separator";
+export { Select, type SelectProps, type SelectOption } from "./Select";
 export { Skeleton } from "./Skeleton";
 export { Toaster, toast } from "./Toast";
 export { Switch } from "./Switch";

@@ -94,7 +94,7 @@
 снаружи приложение знает лишь баррель `@/shared/components`):
 
 - **Примитивы (bucket A) — чистый `react-aria-components` (RAC)** либо вовсе без движка:
-  `Button`, `Switch`, `Tabs`, `SegmentedControl`, `Tooltip`, `Dropdown` — на RAC (headless:
+  `Button`, `Switch`, `Tabs`, `SegmentedControl`, `Tooltip`, `Dropdown`, `Select` — на RAC (headless:
   поведение/доступность, ноль пикселей); `Input`, `Textarea`, `Separator`, `Skeleton`
   движок не держат вовсе (RHF + нативный элемент / `<div>`). Оформление — целиком наши
   классы и токены на том же DOM.
@@ -123,6 +123,7 @@
 | `Input`/`Textarea` | **без движка** — RHF `register` + нативный `<input>`/`<textarea>`/`<label>`; ступени **md/lg/xl = 36/40/48** (лестница контролов, см. §4.3); кегль **16px на всех** — ниже iOS зумит; RHF-автобинд через `useFormContext`; иконки только пропами `Icon`/`IconRight`; `onIconRightClick` → ghost-кнопка-действие (копировать…); `isClearable` — крестик-очистка; встроенные кнопки поля — ghost-прямоугольники, радиус концентрический 6/6/8; `mono` — моно-значение; inset-ring gray-200, focus inset-ring-2 primary-500; лейбл сверху, ошибка снизу danger |
 | `Dialog` | **bucket B (HeroUI)** — **Modal (десктоп) + Drawer (bottom-sheet, <md)** под общим `open`/`onOpenChange` — рендерится одно дерево за раз по JS-медиазапросу (768px); r24, `bg-surface`, тень `shadow-modal`; скрим-«материал» `scrim + blur + saturate`; drag-to-dismiss и slide-анимации — встроенные в Drawer; липкий футер, крестик r10. Способы закрытия — §4.1 |
 | `Dropdown` | RAC Menu (`MenuTrigger`/`Menu`/`MenuItem`/`Popover`); контейнер r12, пункты r8 — концентрично (§4.3); note → RAC `Header`, разделитель → RAC `Separator`, триггер — `Pressable` на существующей кнопке |
+| `Select` | RAC `Select`/`ListBox`/`Popover` (bucket A); RHF-автобинд по `name` (как Input, без Controller), лестница md/lg/xl; поповер по ширине триггера, галочка у выбранного (`data-[selected]`), шеврон крутится по `aria-expanded`; опц. пункт-действие внизу («+ создать…») через `action`; collection-узлы — §11 |
 | `Tooltip` | RAC `TooltipTrigger`/`Tooltip`/`OverlayArrow` — чёрная плашка 12.5px r12 со стрелкой; delay 300; триггер — RAC `Focusable` (без обёртки-`<div role=button>`, иначе «кнопка в кнопке») |
 | `SegmentedControl` | RAC Tabs (`TabList`/`Tab`; имя и терминология «сегмент-контрол» сохранены); трек gray-100, активный сегмент — пилюля **без обводки, только тень** (`data-[selected]`, без слайд-индикатора; реш. №10); радиусы **концентричны** (см. §4.3) |
 | `Switch` | RAC Switch, свой трек 40×20 + круглый бегунок как у radio (реш. №10); `data-[selected]` → `primary-500` |

@@ -90,7 +90,7 @@ export function ConfirmationForm({
           }
           return newDigits;
         });
-      } else if (!isNaN(Number(event.key)) && digits[index]) {
+      } else if (!Number.isNaN(Number(event.key)) && digits[index]) {
         if (index < CODE_LENGTH - 1) {
           focusInput(index + 1);
         }
@@ -166,6 +166,7 @@ export function ConfirmationForm({
         <div className="flex justify-center gap-2">
           {digits.map((digit, index) => (
             <input
+              // biome-ignore lint/suspicious/noArrayIndexKey: позиционные ячейки кода фиксированной длины
               key={index}
               ref={(el) => {
                 inputRefs.current[index] = el;

@@ -58,6 +58,7 @@ function ModuleTitleEditor({
   return (
     <input
       value={value}
+      // biome-ignore lint/a11y/noAutofocus: намеренный фокус на поле инлайн-переименования
       autoFocus
       maxLength={MODULE_TITLE_MAX_LENGTH}
       onChange={(event) => setValue(event.target.value)}

@@ -85,7 +85,7 @@ export function SettingsSecurity() {
         <div>
           <h3 className="text-lg font-semibold text-gray-900 mb-4">Email</h3>
           <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-700">Текущий email</label>
+            <span className="block text-sm font-medium text-gray-700">Текущий email</span>
             <div className="px-4 py-2.5 bg-gray-100 border border-gray-200 rounded-lg text-gray-700">
               {isLoadingAuth ? (
                 <Skeleton width={180} height={20} radius={6} />
@@ -95,7 +95,7 @@ export function SettingsSecurity() {
             </div>
           </div>
 
-          <Form methods={emailMethods} onSubmit={(e) => e.preventDefault()}>
+          <Form methods={emailMethods} onSubmit={async () => {}}>
             <div className="mt-4 flex items-end gap-2">
               <div className="flex-1">
                 <Input name="email" label="Новый email" size="xl" placeholder="example@email.com" />

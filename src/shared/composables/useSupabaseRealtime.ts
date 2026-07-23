@@ -5,7 +5,10 @@ import type { RealtimePostgresChangesPayload } from "@supabase/supabase-js";
 import { useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
 
-interface UseSupabaseRealtimeOptions<T extends Record<string, any> = Record<string, any>> {
+interface UseSupabaseRealtimeOptions<
+  // biome-ignore lint/suspicious/noExplicitAny: дженерик под произвольную строку таблицы БД; повторяет констрейнт supabase-js RealtimePostgresChangesPayload
+  T extends Record<string, any> = Record<string, any>,
+> {
   table: string;
   queryKeys: readonly string[][];
   /** Фильтр postgres_changes, например `channel_id=eq.<uuid>` */
@@ -21,7 +24,10 @@ interface UseSupabaseRealtimeOptions<T extends Record<string, any> = Record<stri
  * Хук для подписки на Supabase realtime изменения.
  * Автоматически инвалидирует указанные query keys при изменениях.
  */
-export const useSupabaseRealtime = <T extends Record<string, any> = Record<string, any>>({
+export const useSupabaseRealtime = <
+  // biome-ignore lint/suspicious/noExplicitAny: дженерик под произвольную строку таблицы БД; повторяет констрейнт supabase-js RealtimePostgresChangesPayload
+  T extends Record<string, any> = Record<string, any>,
+>({
   table,
   queryKeys,
   filter,
@@ -46,25 +52,25 @@ export const useSupabaseRealtime = <T extends Record<string, any> = Record<strin
       }
     };
 
-    const changeConfig = (event: "INSERT" | "UPDATE" | "DELETE") =>
-      ({
-        event,
-        schema: "public",
-        table,
-        ...(filter ? { filter } : {}),
-      }) as any;
+    // biome-ignore lint/suspicious/noExplicitAny: supabase-js .on("postgres_changes") filter config is not exported as a public type
+    const changeConfig = (event: "INSERT" | "UPDATE" | "DELETE"): any => ({
+      event,
+      schema: "public",
+      table,
+      ...(filter ? { filter } : {}),
+    });
 
     const channel = createBrowserClient()
       .channel(`${table}-changes-${filter ?? "all"}`)
-      .on("postgres_changes", changeConfig("INSERT"), (payload: any) => {
+      .on("postgres_changes", changeConfig("INSERT"), (payload: RealtimePostgresChangesPayload<T>) => {
         invalidate();
         onInsert?.(payload);
       })
-      .on("postgres_changes", changeConfig("UPDATE"), (payload: any) => {
+      .on("postgres_changes", changeConfig("UPDATE"), (payload: RealtimePostgresChangesPayload<T>) => {
         invalidate();
         onUpdate?.(payload);
       })
-      .on("postgres_changes", changeConfig("DELETE"), (payload: any) => {
+      .on("postgres_changes", changeConfig("DELETE"), (payload: RealtimePostgresChangesPayload<T>) => {
         invalidate();
         onDelete?.(payload);
       })

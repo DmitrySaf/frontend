@@ -42,6 +42,7 @@ export function RevenueBarChart({ data }: { data: MonthPoint[] }) {
           const heightPercent = (point.value / max) * 100;
           return (
             <div
+              // biome-ignore lint/suspicious/noArrayIndexKey: позиционные столбцы графика, ховер отслеживается по индексу
               key={index}
               className="relative flex-1 h-full flex items-end cursor-default"
               onMouseEnter={() => setHovered(index)}
@@ -71,6 +72,7 @@ export function RevenueBarChart({ data }: { data: MonthPoint[] }) {
       </div>
       <div className="mt-1.5 flex gap-2">
         {data.map((point, index) => (
+          // biome-ignore lint/suspicious/noArrayIndexKey: позиционные подписи оси, соответствуют столбцам по индексу
           <span key={index} className="flex-1 text-center text-[10px] text-gray-500">
             {point.label}
           </span>
@@ -98,6 +100,8 @@ export function MembersLineChart({ data }: { data: MonthPoint[] }) {
   return (
     <div className="relative h-[150px]">
       <svg
+        role="img"
+        aria-label="Рост участников"
         viewBox={`0 0 ${W} ${H}`}
         preserveAspectRatio="none"
         className="absolute inset-0 size-full"
@@ -119,6 +123,7 @@ export function MembersLineChart({ data }: { data: MonthPoint[] }) {
       <div className="absolute inset-0 flex">
         {data.map((point, index) => (
           <div
+            // biome-ignore lint/suspicious/noArrayIndexKey: позиционные ховер-зоны линейного графика
             key={index}
             className="relative flex-1"
             onMouseEnter={() => setHovered(index)}

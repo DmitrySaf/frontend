@@ -40,6 +40,7 @@ export function LessonView({
           isVideoLoading || !videoUrl ? (
             <Skeleton className="w-full aspect-video" radius={8} />
           ) : (
+            // biome-ignore lint/a11y/useMediaCaption: пользовательское видео урока без дорожки субтитров
             <video
               key={lesson.id}
               controls

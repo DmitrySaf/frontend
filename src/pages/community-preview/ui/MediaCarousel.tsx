@@ -38,7 +38,7 @@ export function MediaCarousel({ media, alt }: MediaCarouselProps) {
         <div className="flex gap-2">
           {media.map((url, index) => (
             <button
-              key={index}
+              key={url}
               type="button"
               onClick={() => setActiveIndex(index)}
               aria-label={`Изображение ${index + 1}`}

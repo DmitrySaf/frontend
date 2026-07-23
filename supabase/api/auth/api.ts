@@ -7,14 +7,14 @@ import type { UpdateAuthUserData } from "./types";
 export async function updateAuthUser(
   client: TypedSupabaseClient,
   data: UpdateAuthUserData
-): Promise<{ data: any; error: any }> {
+) {
   return client.auth.updateUser(data);
 }
 
 /**
  * Get current auth user
  */
-export async function getAuthUser(client: TypedSupabaseClient): Promise<{ data: any; error: any }> {
+export async function getAuthUser(client: TypedSupabaseClient) {
   return client.auth.getUser();
 }
 

@@ -41,7 +41,7 @@ export function CommunityCreateModal({ isOpen, onClose, onSubmit }: CommunityCre
     if (transliteratedName.length <= PROJECT_NAME_MAX_LENGTH && !getFieldState("name").isTouched) {
       setValue("name", transliteratedName);
     }
-  }, [watchedDisplayName, setValue]);
+  }, [watchedDisplayName, setValue, getFieldState]);
 
   const handleClose = () => {
     reset();

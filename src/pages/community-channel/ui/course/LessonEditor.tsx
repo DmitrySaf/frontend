@@ -50,7 +50,6 @@ export function LessonEditor({ lesson, onSave, onDelete }: LessonEditorProps) {
     setVideoPath(lesson.videoPath);
     setDurationSeconds(lesson.durationSeconds);
   }, [
-    lesson.id,
     lesson.title,
     lesson.description,
     lesson.videoPath,
@@ -122,6 +121,7 @@ export function LessonEditor({ lesson, onSave, onDelete }: LessonEditorProps) {
             ) : videoPath ? (
               <div className="space-y-2">
                 {videoUrl ? (
+                  // biome-ignore lint/a11y/useMediaCaption: пользовательское видео урока без дорожки субтитров
                   <video
                     controls
                     src={videoUrl}

@@ -61,6 +61,7 @@ export function PostForm({ initialValues, submitLabel, onSubmit, onCancel }: Pos
           {...register("title")}
           placeholder="Заголовок"
           maxLength={POST_TITLE_MAX_LENGTH}
+          // biome-ignore lint/a11y/noAutofocus: намеренный фокус на заголовке при открытии формы поста
           autoFocus
           className="w-full bg-transparent text-lg font-bold text-ink placeholder:text-gray-400 focus:outline-none"
         />

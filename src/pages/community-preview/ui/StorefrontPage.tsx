@@ -293,6 +293,7 @@ export function StorefrontPage({ slug, inviteCode }: StorefrontPageProps) {
                 {storefront.features.map((feature, index) => {
                   const Icon = getFeatureIcon(feature.icon);
                   return (
+                    // biome-ignore lint/suspicious/noArrayIndexKey: read-only список фич без стабильного id в модели
                     <div key={index} className="flex items-center gap-3">
                       <div className="size-9 shrink-0 rounded-[10px] bg-surface border border-gray-200 flex items-center justify-center">
                         <Icon className="size-[18px] text-gray-600" />

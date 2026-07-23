@@ -22,7 +22,7 @@ const tabVariants = cva(
 export interface TabProps {
   text: string;
   href: string;
-  Icon?: any;
+  Icon?: React.ElementType;
   className?: string;
   isActive?: boolean;
 }

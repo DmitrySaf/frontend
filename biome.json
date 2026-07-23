@@ -32,6 +32,8 @@
       "build",
       ".git",
       "bean-design-system",
+      "ds-bundle",
+      ".design-sync",
       "**/*.json",
       "**/*.md",
       "**/*.css"

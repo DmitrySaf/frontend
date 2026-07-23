@@ -1,3 +1,5 @@
+import type { PostgrestError } from "@supabase/supabase-js";
+import type { Json } from "../types/database";
 import type { TypedSupabaseClient } from "../types";
 import type { ProfileWithSocials, SocialLinkInput, UpdateProfileData } from "./types";
 
@@ -9,7 +11,7 @@ const SOCIAL_LINKS_TABLE = "profile_social_links";
  */
 export async function getProfile(
   client: TypedSupabaseClient
-): Promise<{ data: ProfileWithSocials | null; error: any }> {
+): Promise<{ data: ProfileWithSocials | null; error: PostgrestError | Error | null }> {
   // Профили видны всем участникам (авторы сообщений/постов),
   // поэтому свой профиль выбираем явно по auth-сессии
   const { data: sessionData } = await client.auth.getSession();
@@ -45,7 +47,7 @@ export async function getProfile(
 export async function updateProfile(
   client: TypedSupabaseClient,
   data: UpdateProfileData
-): Promise<{ data: ProfileWithSocials | null; error: any }> {
+): Promise<{ data: ProfileWithSocials | null; error: PostgrestError | Error | null }> {
   // Transform social links to match RPC expected format
   const socialLinksForRpc = data.social_links?.map((link) => ({
     platform: link.platform,
@@ -59,7 +61,7 @@ export async function updateProfile(
     p_avatar_url: data.avatar_url ?? undefined,
     p_bio: data.bio ?? undefined,
     p_social_links: socialLinksForRpc ?? undefined,
-    p_privacy_settings: (data.privacy_settings as any) ?? undefined,
+    p_privacy_settings: (data.privacy_settings as unknown as Json) ?? undefined,
   });
 
   if (error) {

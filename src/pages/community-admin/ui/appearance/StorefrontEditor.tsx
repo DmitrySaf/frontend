@@ -76,7 +76,7 @@ export function StorefrontEditor({ value, onChange }: StorefrontEditorProps) {
         <div className="grid grid-cols-3 gap-2.5">
           {value.media.map((url, index) => (
             <div
-              key={index}
+              key={url}
               className="relative aspect-[4/3] overflow-hidden rounded-[12px] border border-gray-200"
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -130,6 +130,7 @@ export function StorefrontEditor({ value, onChange }: StorefrontEditorProps) {
               STOREFRONT_FEATURE_ICONS[DEFAULT_FEATURE_ICON];
             const Icon = meta.icon;
             return (
+              // biome-ignore lint/suspicious/noArrayIndexKey: редактируемый список фич без id; text стартует пустым, поэтому индекс — стабильная позиция
               <div key={index} className="flex items-center gap-2">
                 <Dropdown
                   trigger={

@@ -1,14 +1,14 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import * as React from "react";
+import type { ElementType } from "react";
 import { Tab } from "./Tab";
 
 export interface TabItem {
   id: string;
   name: string;
   href: string;
-  icon?: any;
+  icon?: ElementType;
 }
 
 export interface TabsProps {

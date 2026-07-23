@@ -29,7 +29,7 @@ export function SettingsProfile() {
 
         for (const { key, platform } of socialPlatforms) {
           const value = data[key] as string | undefined;
-          if (value && value.trim()) {
+          if (value?.trim()) {
             socialLinksArray.push({
               platform,
               label: null,
@@ -40,7 +40,7 @@ export function SettingsProfile() {
 
         // Add custom links (website)
         const customLinks = data.customLinks || [];
-        const nonEmptyLinks = customLinks.filter((link) => link.url && link.url.trim());
+        const nonEmptyLinks = customLinks.filter((link) => link.url?.trim());
         if (nonEmptyLinks.length > 0) {
           socialLinksArray.push({
             platform: "website",

@@ -63,7 +63,7 @@ export function SettingsProfileForm({ initValues, onSubmit, isLoading }: Setting
     <>
       <Form
         methods={methods}
-        onSubmit={handleSubmit(onSubmit)}
+        onSubmit={onSubmit}
         className={cn(
           "relative space-y-6",
           // off-scale: клиренс под липкий CTA-бар «Сохранить/Отмена» (его высота)

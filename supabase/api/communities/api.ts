@@ -1,3 +1,4 @@
+import type { PostgrestError } from "@supabase/supabase-js";
 import type { TypedSupabaseClient } from "../types";
 import type { Community, UpdateCommunityData } from "./types";
 
@@ -8,7 +9,7 @@ const COMMUNITY_FIELDS =
 
 export async function getCommunities(
   client: TypedSupabaseClient
-): Promise<{ data: Community[] | null; error: any }> {
+): Promise<{ data: Community[] | null; error: PostgrestError | null }> {
   return client
     .from(COMMUNITIES_TABLE)
     .select(COMMUNITY_FIELDS)
@@ -18,14 +19,14 @@ export async function getCommunities(
 export async function getCommunity(
   client: TypedSupabaseClient,
   name: string
-): Promise<{ data: Community | null; error: any }> {
+): Promise<{ data: Community | null; error: PostgrestError | null }> {
   return client.from(COMMUNITIES_TABLE).select(COMMUNITY_FIELDS).eq("name", name).maybeSingle();
 }
 
 export async function createCommunity(
   client: TypedSupabaseClient,
   data: { name: string; display_name: string; owner_id: string }
-): Promise<{ data: Community | null; error: any }> {
+): Promise<{ data: Community | null; error: PostgrestError | null }> {
   return client
     .from(COMMUNITIES_TABLE)
     .insert({
@@ -41,7 +42,7 @@ export async function updateCommunity(
   client: TypedSupabaseClient,
   name: string,
   data: UpdateCommunityData
-): Promise<{ data: Community | null; error: any }> {
+): Promise<{ data: Community | null; error: PostgrestError | null }> {
   return client
     .from(COMMUNITIES_TABLE)
     .update(data)
@@ -53,6 +54,6 @@ export async function updateCommunity(
 export async function deleteCommunity(
   client: TypedSupabaseClient,
   name: string
-): Promise<{ data: Community | null; error: any }> {
+): Promise<{ data: Community | null; error: PostgrestError | null }> {
   return client.from(COMMUNITIES_TABLE).delete().eq("name", name);
 }

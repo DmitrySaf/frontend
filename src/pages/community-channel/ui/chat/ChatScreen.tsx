@@ -125,6 +125,7 @@ export function ChatScreen({ channel }: { channel: Channel }) {
   }, [isLoading]);
 
   const messagesCount = messages?.length ?? 0;
+  // biome-ignore lint/correctness/useExhaustiveDependencies: messagesCount и channel.id — намеренные триггеры автоскролла к низу
   useEffect(() => {
     const container = scrollRef.current;
     if (container) {

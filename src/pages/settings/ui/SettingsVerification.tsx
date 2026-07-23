@@ -65,21 +65,21 @@ function Banner({
       sub: "text-gray-600",
     },
     pending: {
-      bg: "bg-[#fbf3da]",
-      border: "border-[#e7d29a]",
-      ink: "text-[#7a5e16]",
-      sub: "text-[#9a7b2a]",
+      bg: "bg-warning-surface",
+      border: "border-warning-border",
+      ink: "text-warning-ink",
+      sub: "text-warning-ink-muted",
     },
     passed: {
-      bg: "bg-[#eef3ec]",
-      border: "border-[#bcd0b6]",
-      ink: "text-[#3f5a3a]",
-      sub: "text-[#5a7a52]",
+      bg: "bg-success-surface",
+      border: "border-success-border",
+      ink: "text-success-ink",
+      sub: "text-success-ink-muted",
     },
   }[tone];
 
   return (
-    <div className={cn("flex items-start gap-4 rounded-[18px] border p-5", tones.bg, tones.border)}>
+    <div className={cn("flex items-start gap-4 rounded-(--radius-card) border p-5", tones.bg, tones.border)}>
       <div
         className={cn(
           "size-[46px] shrink-0 rounded-lg bg-surface border flex items-center justify-center",

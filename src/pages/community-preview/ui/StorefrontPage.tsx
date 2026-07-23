@@ -269,6 +269,7 @@ export function StorefrontPage({ slug, inviteCode }: StorefrontPageProps) {
                 size="l"
                 shape="square"
               />
+              {/* off-scale: дисплей-заголовок витрины (26px) — единичный, вне шкалы текста */}
               <h1 className="text-[26px] font-bold text-ink leading-tight">
                 {community.displayName}
               </h1>

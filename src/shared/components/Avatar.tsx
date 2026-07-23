@@ -1,11 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { Avatar as HeroAvatar } from "@heroui/react";
 
 import { cn } from "@/shared/utils";
 
 // Детерминированная пастельная палитра для фолбэка с инициалами (Discord-style).
-// TODO(ds, Этап B): увести хексы в токен-фолбэк при токен-аудите.
+// off-scale: декоративный identity-цвет по хешу имени (как identicon) — палитра тут
+// уместнее одиночного токена; красит ТОЛЬКО фолбэк, под собственным фото её не видно.
 const FALLBACK_COLORS = [
   "bg-[#FBE4E4]",
   "bg-[#F9EED8]",
@@ -39,9 +40,8 @@ interface AvatarProps {
   className?: string;
 }
 
-/* Контентная шкала 32/40/48 (size-8/10/12) — ровно то, что давал HeroUI Avatar sm/md/lg. */
+/* Контентная шкала 32/40/48 (size-8/10/12), кегль инициала идёт с ней в ногу. */
 const sizeClasses = { s: "size-8", m: "size-10", l: "size-12" } as const;
-
 const textSizeClasses = { s: "text-sm", m: "text-base", l: "text-lg" } as const;
 
 /* Радиус square растёт вместе с размером, а не стоит константой: отношение ≈0.28–0.31,
@@ -53,35 +53,24 @@ const squareRadius = {
   l: "rounded-(--radius-control-xl)",
 } as const;
 
-/* Движок не нужен — это <img> поверх слоя-фолбэка. Инициал на пастельном фоне лежит базой
-   и проступает, пока картинка грузится или если не загрузилась (onError снимает <img>). */
+/* Bucket B — на HeroUI Avatar (compound Image/Fallback): движок сам держит загрузку фото
+   и переключение на фолбэк (onError/задержка), поэтому ручной useState/onError не нужен.
+   Вид — НАШ: размер и радиус кладём на корень (его overflow-hidden клипует и фото, и
+   фолбэк), палитру+кегль — на фолбэк. Родные size/radius HeroUI (size-10 / rounded-3xl)
+   НЕ используем — перекрываем утилитами (слой utilities бьёт слой components HeroUI). */
 function Avatar({ name, src, size = "m", shape = "circle", className }: AvatarProps) {
   const initial = name.trim().charAt(0).toUpperCase() || "?";
-  const [imgFailed, setImgFailed] = useState(false);
-  const showImage = Boolean(src) && !imgFailed;
+  const radius = shape === "circle" ? "rounded-full" : squareRadius[size];
 
   return (
-    <span
-      className={cn(
-        "relative inline-flex shrink-0 select-none items-center justify-center overflow-hidden",
-        sizeClasses[size],
-        shape === "circle" ? "rounded-full" : squareRadius[size],
-        colorFromName(name),
-        className
-      )}
-    >
-      <span className={cn("font-semibold text-ink", textSizeClasses[size])} aria-hidden={showImage}>
+    <HeroAvatar className={cn("shrink-0", sizeClasses[size], radius, className)}>
+      {src ? <HeroAvatar.Image alt={name} src={src} /> : null}
+      <HeroAvatar.Fallback
+        className={cn("font-semibold text-ink", colorFromName(name), textSizeClasses[size])}
+      >
         {initial}
-      </span>
-      {showImage && (
-        <img
-          src={src ?? undefined}
-          alt={name}
-          className="absolute inset-0 size-full object-cover"
-          onError={() => setImgFailed(true)}
-        />
-      )}
-    </span>
+      </HeroAvatar.Fallback>
+    </HeroAvatar>
   );
 }
 

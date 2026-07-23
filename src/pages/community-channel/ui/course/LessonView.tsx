@@ -67,6 +67,7 @@ export function LessonView({
           )}
         </div>
 
+        {/* off-scale: дисплей-заголовок урока (22px) — единичный, вне шкалы текста */}
         <h2 className="text-[22px] font-bold text-ink leading-[1.2]">{lesson.title}</h2>
 
         {lesson.description && (

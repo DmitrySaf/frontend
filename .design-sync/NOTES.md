@@ -6,9 +6,10 @@ library), so the sync runs the **package shape in synth-entry mode**.
 ## ⚠️ Engine is now HYBRID (post-RAC-migration) — RE-SYNC REQUIRED
 
 The kit migrated **off HeroUI** for primitives. **Bucket A** (Button, Input, Textarea, Switch,
-Avatar, Separator, Skeleton, Tabs, SegmentedControl, Tooltip, Dropdown) is now **`react-aria-components`
-or engine-free** (native `<input>`/`<textarea>`/`<img>`/`<div>` + RHF). Only **bucket B** stays on
-HeroUI — `Dialog` (in the core set via the `overrides.Dialog` render) and `Toast` (not in core).
+Separator, Skeleton, Tabs, SegmentedControl, Tooltip, Dropdown) is now **`react-aria-components`
+or engine-free** (native `<input>`/`<textarea>`/`<div>` + RHF). **Bucket B** stays on HeroUI —
+`Dialog` (in the core set via the `overrides.Dialog` render), `Toast` (not in core), and **`Avatar`**
+(HeroUI's compound Avatar, image→fallback — moved back to HeroUI by owner decision).
 Consequences for the next sync:
 
 - The bundle / previews / `.cache` captured below were built from the **old HeroUI** code — **stale**.

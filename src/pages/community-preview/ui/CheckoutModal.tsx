@@ -61,9 +61,9 @@ export function CheckoutModal({
             <span className="text-lg font-bold font-mono text-ink">₽ {rubles}</span>
           </div>
 
-          <div className="flex items-start gap-2.5 p-3 rounded-[12px] bg-[#fbf3da] border border-[#e7d29a]">
-            <Beaker16 className="size-4 shrink-0 mt-0.5 text-[#9a7b2a]" />
-            <p className="text-[13px] leading-[1.45] text-[#7a5e16]">
+          <div className="flex items-start gap-2.5 p-3 rounded-[12px] bg-warning-surface border border-warning-border">
+            <Beaker16 className="size-4 shrink-0 mt-0.5 text-warning-ink-muted" />
+            <p className="text-[13px] leading-[1.45] text-warning-ink">
               Тестовый режим — деньги не списываются. Реальный платёжный провайдер будет подключён
               позже.
             </p>

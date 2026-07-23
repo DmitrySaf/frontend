@@ -95,13 +95,14 @@
 
 - **Примитивы (bucket A) — чистый `react-aria-components` (RAC)** либо вовсе без движка:
   `Button`, `Switch`, `Tabs`, `SegmentedControl`, `Tooltip`, `Dropdown` — на RAC (headless:
-  поведение/доступность, ноль пикселей); `Input`, `Textarea`, `Avatar`, `Separator`, `Skeleton`
-  движок не держат вовсе (RHF + нативный элемент / `<img>` / `<div>`). Оформление — целиком наши
+  поведение/доступность, ноль пикселей); `Input`, `Textarea`, `Separator`, `Skeleton`
+  движок не держат вовсе (RHF + нативный элемент / `<div>`). Оформление — целиком наши
   классы и токены на том же DOM.
-- **Тяжёлое поведение (bucket B) — остаётся на HeroUI v3** (`@heroui/react` на React Aria):
+- **Тяжёлое поведение + `Avatar` (bucket B) — на HeroUI v3** (`@heroui/react` на React Aria):
   `Dialog` (Modal+Sheet, dual-tree + фокус-менеджмент), боковой `Drawer` в `CommunityShell`,
-  `Toast` (очередь + императивный API). Пересобирать это на RAC не окупается — владелец разберёт
-  точечно позже.
+  `Toast` (очередь + императивный API). Плюс `Avatar` — HeroUI Avatar (compound Image/Fallback)
+  сам держит загрузку фото и фолбэк, вид задаём классами (реш. владельца — не `<img>`). Пересобирать
+  это на RAC не окупается — владелец разберёт точечно позже.
 
 **Движок — деталь реализации, гасить у RAC нечего:** нет дефолтной заливки, а голую `<button>`
 сбрасывает Tailwind preflight. Нейтрализаторы HeroUI-хрома (`.button--primary`, `.input`)
@@ -125,7 +126,7 @@
 | `Tooltip` | RAC `TooltipTrigger`/`Tooltip`/`OverlayArrow` — чёрная плашка 12.5px r12 со стрелкой; delay 300; триггер — RAC `Focusable` (без обёртки-`<div role=button>`, иначе «кнопка в кнопке») |
 | `SegmentedControl` | RAC Tabs (`TabList`/`Tab`; имя и терминология «сегмент-контрол» сохранены); трек gray-100, активный сегмент — пилюля **без обводки, только тень** (`data-[selected]`, без слайд-индикатора; реш. №10); радиусы **концентричны** (см. §4.3) |
 | `Switch` | RAC Switch, свой трек 40×20 + круглый бегунок как у radio (реш. №10); `data-[selected]` → `primary-500` |
-| `Avatar` | **без движка** — `<img>` над всегда-присутствующим инициалом (fallback по `onError`); инициал на детерминированном пастельном фоне; аватары людей круглые; контентная шкала 32/40/48 (**не** лестница контролов); радиус square растёт с размером — 10/12/14 (см. §4.3) |
+| `Avatar` | **bucket B (HeroUI)** — HeroUI Avatar (compound `Image`/`Fallback`: сам грузит фото и падает в фолбэк); наш вид классами — инициал на детерминированном пастельном фоне, аватары людей круглые; контентная шкала 32/40/48 (**не** лестница контролов); радиус square растёт с размером — 10/12/14 (см. §4.3) |
 | `Logo` | `LogoMark` — знак штрихом на `currentColor`; `LogoTile variant` — 4 версии плитки, `LogoLockup tone` — 4 тона (см. §2); вордмарк «BEAN» (Unbounded 800) в **контурах**, не живым текстом |
 | `Toast` (`Toaster`/`toast`) | **bucket B (HeroUI)** — HeroUI Toast (был sonner); один провайдер в layout, `toast` из `@/shared/components` (shim: `.error`→`.danger`); успех без description, ошибка с description |
 

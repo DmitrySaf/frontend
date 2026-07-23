@@ -41,8 +41,8 @@ triggers:
 | Bucket | Движок | Компоненты |
 |---|---|---|
 | **A — примитивы** | **RAC** (`react-aria-components`) | Button, Switch, Tabs, SegmentedControl, Tooltip, Dropdown |
-| **A — без движка** | нативный тег / RHF / `<img>` | Input, Textarea, Avatar, Separator, Skeleton |
-| **B — тяжёлое поведение** | **HeroUI v3** (`@heroui/react`) | Dialog (Modal+Sheet), Drawer (CommunityShell), Toast |
+| **A — без движка** | нативный тег / RHF | Input, Textarea, Separator, Skeleton |
+| **B — HeroUI v3** | **HeroUI** (`@heroui/react`) | Dialog (Modal+Sheet), Drawer (CommunityShell), Toast; Avatar (compound Image/Fallback) |
 
 Radix / shadcn / sonner из проекта удалены — **не возвращать**.
 
@@ -59,7 +59,7 @@ import { Button as AriaButton } from "react-aria-components";
 export const Button = (props: ButtonProps) => <AriaButton className={ourClasses} {...} />;
 
 // ✅ CORRECT (bucket A без движка): нативный тег + наши классы
-export const Avatar = (props: AvatarProps) => <span className={ourClasses}><img .../></span>;
+export const Separator = (props: SeparatorProps) => <div role="separator" className={ourClasses} />;
 
 // ❌ WRONG: вернуть Radix/shadcn (удалено из проекта)
 import * as DropdownMenuPrimitive from "@radix-ui/react-dropdown-menu";

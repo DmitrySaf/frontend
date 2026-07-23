@@ -64,7 +64,11 @@ export function SettingsProfileForm({ initValues, onSubmit, isLoading }: Setting
       <Form
         methods={methods}
         onSubmit={handleSubmit(onSubmit)}
-        className={cn("relative space-y-6", !isDirty && "pb-[102px]")}
+        className={cn(
+          "relative space-y-6",
+          // off-scale: клиренс под липкий CTA-бар «Сохранить/Отмена» (его высота)
+          !isDirty && "pb-[102px]"
+        )}
       >
         <Input name="name" size="xl" label="Имя" error={errors.name?.message} />
 

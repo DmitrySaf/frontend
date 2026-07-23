@@ -5,6 +5,7 @@ export default function NotFound() {
   return (
     <div className="min-h-dvh bg-gray-50 flex items-center justify-center p-4">
       <div className="text-center space-y-5 animate-in fade-in slide-in-from-bottom-2 duration-400">
+        {/* off-scale: единичный дисплей-нумерал 404 — отдельной шкалы дисплея в ДС нет */}
         <p className="text-[64px] leading-none font-bold font-mono text-gray-300">404</p>
         <div className="space-y-1.5">
           <p className="text-2xl font-bold text-ink">Страница не найдена</p>

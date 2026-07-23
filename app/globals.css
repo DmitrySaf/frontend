@@ -109,6 +109,17 @@
   --color-danger: var(--danger);
   --color-danger-foreground: var(--danger-foreground);
 
+  /* Статус-тона баннеров (Tier 2) → утилиты bg-/border-/text-{warning,success}-*.
+     Плоские: в .dark пока не флипаются (сырьё см. :root). */
+  --color-warning-surface: var(--warning-surface);
+  --color-warning-border: var(--warning-border);
+  --color-warning-ink: var(--warning-ink);
+  --color-warning-ink-muted: var(--warning-ink-muted);
+  --color-success-surface: var(--success-surface);
+  --color-success-border: var(--success-border);
+  --color-success-ink: var(--success-ink);
+  --color-success-ink-muted: var(--success-ink-muted);
+
   /* Бренд-лайм — цвет айдентики, НЕ семантика. Не переворачивается в .dark
      (как white/black): знак должен быть одним цветом в обеих темах.
      Кислотный: стоит у границы sRGB, поэтому на белом читается только
@@ -253,6 +264,19 @@
     --accent-foreground: oklch(var(--white));
     --danger: oklch(0.5896 0.1962 36.09);
     --danger-foreground: oklch(var(--white));
+
+    /* Статус-тона баннеров: warning = на проверке (янтарь), success = пройдено (зелень).
+       Плоские пастели, промотаны 1:1 из page-литералов (SettingsVerification, тест-режим
+       CheckoutModal) — Tier 2, но пока БЕЗ флипа в .dark (поведение сохранено как было).
+       TODO(ds): тёмная тема — тон из полосы баланса, L 0.55–0.65 (см. §2 DESIGN.md). */
+    --warning-surface: #fbf3da;
+    --warning-border: #e7d29a;
+    --warning-ink: #7a5e16;
+    --warning-ink-muted: #9a7b2a;
+    --success-surface: #eef3ec;
+    --success-border: #bcd0b6;
+    --success-ink: #3f5a3a;
+    --success-ink-muted: #5a7a52;
 
     /* #B0F900 — тон 128° унаследован от прежнего лайма (125°), насыщенность
        поднята с 0.106 до предела гаммы: пастель не читается как знак. */

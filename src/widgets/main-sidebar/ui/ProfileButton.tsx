@@ -51,7 +51,7 @@ export default function ProfileButton() {
       <div className="relative size-15">
         <div
           data-expanded={isMenuOpen || undefined}
-          className="group absolute bottom-0 left-0 z-[var(--z-sticky)] flex h-15 w-15 items-center gap-1.5 overflow-hidden rounded-[18px] bg-surface p-1 ring ring-gray-200 transition-[width,box-shadow] duration-300 ease-out-expo hover:w-[300px] hover:shadow-md focus-within:w-[300px] focus-within:shadow-md data-[expanded]:w-[300px] data-[expanded]:shadow-md"
+          className="group absolute bottom-0 left-0 z-[var(--z-sticky)] flex h-15 w-15 items-center gap-1.5 overflow-hidden rounded-(--radius-card) bg-surface p-1 ring ring-gray-200 transition-[width,box-shadow] duration-300 ease-out-expo hover:w-[300px] hover:shadow-md focus-within:w-[300px] focus-within:shadow-md data-[expanded]:w-[300px] data-[expanded]:shadow-md"
         >
           {/* Аватар + имя/ник — карточка профиля */}
           <button

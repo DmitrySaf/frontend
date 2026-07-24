@@ -55,11 +55,16 @@ export async function updateProfile(
     link: link.link,
   }));
 
+  // null = «очистить поле» → пустая строка-сигнал для RPC; undefined = не трогать.
+  // ?? undefined схлопнул бы null в undefined, и очистка avatar/bio была бы no-op.
+  const clearable = (value: string | null | undefined) =>
+    value === null ? "" : value;
+
   const { error } = await client.rpc("update_profile_with_social_links", {
     p_username: data.username ?? undefined,
     p_display_name: data.display_name ?? undefined,
-    p_avatar_url: data.avatar_url ?? undefined,
-    p_bio: data.bio ?? undefined,
+    p_avatar_url: clearable(data.avatar_url),
+    p_bio: clearable(data.bio),
     p_social_links: socialLinksForRpc ?? undefined,
     p_privacy_settings: (data.privacy_settings as unknown as Json) ?? undefined,
   });

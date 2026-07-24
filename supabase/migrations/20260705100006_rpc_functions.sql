@@ -145,9 +145,11 @@ begin
     raise exception 'Сообщество недоступно';
   end if;
 
+  -- Любой активный тариф (в т.ч. hidden invite-only) → сообщество платное.
+  -- hidden — замена bypass-флагам, оплата только через simulate_purchase.
   if exists (
     select 1 from pricing_tiers
-    where community_id = p_community_id and is_active and not is_hidden
+    where community_id = p_community_id and is_active
   ) then
     raise exception 'PAYMENT_REQUIRED';
   end if;
@@ -195,7 +197,7 @@ begin
   if not was_member then
     if exists (
       select 1 from pricing_tiers
-      where community_id = inv.community_id and is_active and not is_hidden
+      where community_id = inv.community_id and is_active
     ) then
       raise exception 'PAYMENT_REQUIRED';
     end if;
@@ -272,6 +274,10 @@ begin
       then now() + make_interval(months => tier.period_months)
     else null
   end;
+
+  -- Не плодим дубли active-подписок (двойной клик, апгрейд/продление тарифа)
+  update subscriptions set status = 'canceled'
+  where user_id = auth.uid() and community_id = tier.community_id and status = 'active';
 
   insert into subscriptions (user_id, community_id, tier_id, status, started_at, expires_at)
   values (auth.uid(), tier.community_id, tier.id, 'active', now(), sub_expires);

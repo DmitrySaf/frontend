@@ -1,4 +1,4 @@
-import { createServerClient } from "@supabase/ssr";
+import { createServerClient, type SetAllCookies } from "@supabase/ssr";
 import { type NextRequest, NextResponse } from "next/server";
 import { SUPABASE_PUBLISHABLE_KEY, SUPABASE_URL } from "./env";
 import { createFetchWithTimeout } from "./fetch-with-timeout";
@@ -15,7 +15,7 @@ export async function updateSession(request: NextRequest) {
       getAll() {
         return request.cookies.getAll();
       },
-      setAll(cookiesToSet) {
+      setAll(cookiesToSet: Parameters<SetAllCookies>[0]) {
         for (const { name, value } of cookiesToSet) {
           request.cookies.set(name, value);
         }
@@ -44,18 +44,26 @@ export async function updateSession(request: NextRequest) {
     request.nextUrl.pathname.startsWith("/communities") ||
     request.nextUrl.pathname.startsWith("/settings");
 
+  // Редирект должен унести обновлённые Supabase-куки (ротация refresh-токена),
+  // иначе браузер остаётся со старым токеном и сессию рвёт преждевременно
+  const redirectTo = (pathname: string) => {
+    const url = request.nextUrl.clone();
+    url.pathname = pathname;
+    const response = NextResponse.redirect(url);
+    for (const cookie of supabaseResponse.cookies.getAll()) {
+      response.cookies.set(cookie.name, cookie.value, cookie);
+    }
+    return response;
+  };
+
   if (!user && isAuthenticatedRoute) {
     // Редиректим неавторизованных пользователей на страницу логина
-    const url = request.nextUrl.clone();
-    url.pathname = "/login";
-    return NextResponse.redirect(url);
+    return redirectTo("/login");
   }
 
   if (user && request.nextUrl.pathname === "/login") {
     // Редиректим авторизованных пользователей с страницы логина
-    const url = request.nextUrl.clone();
-    url.pathname = "/communities";
-    return NextResponse.redirect(url);
+    return redirectTo("/communities");
   }
 
   // IMPORTANT: You *must* return the supabaseResponse object as it is.

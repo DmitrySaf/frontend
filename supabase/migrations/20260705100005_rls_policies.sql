@@ -205,11 +205,21 @@ create policy "invites_select_members" on public.community_invites
   for select to authenticated
   using (public.is_community_member(community_id) or public.is_community_admin(community_id));
 
+-- channel-инвайт вправе создать только тот, кто сам имеет доступ к каналу
+-- (админ или обладатель гранта); канал обязан принадлежать сообществу инвайта —
+-- иначе участник самоприглашением получал бы грант в чужой приватный канал
 create policy "invites_insert_members" on public.community_invites
   for insert to authenticated
   with check (
     created_by = auth.uid()
     and (public.is_community_member(community_id) or public.is_community_admin(community_id))
+    and (
+      channel_id is null
+      or (
+        public.channel_community(channel_id) = community_id
+        and (public.is_community_admin(community_id) or public.has_channel_grant(channel_id))
+      )
+    )
   );
 
 create policy "invites_update_admin" on public.community_invites
@@ -290,10 +300,15 @@ create policy "messages_insert_own" on public.messages
   for insert to authenticated
   with check (author_id = auth.uid() and public.has_channel_access(channel_id));
 
+-- has_channel_access в WITH CHECK не даёт автору «телепортировать» своё
+-- сообщение UPDATE-ом channel_id в канал, куда у него нет доступа
 create policy "messages_update_author_or_admin" on public.messages
   for update to authenticated
   using (author_id = auth.uid() or public.is_community_admin(public.channel_community(channel_id)))
-  with check (author_id = auth.uid() or public.is_community_admin(public.channel_community(channel_id)));
+  with check (
+    (author_id = auth.uid() or public.is_community_admin(public.channel_community(channel_id)))
+    and public.has_channel_access(channel_id)
+  );
 
 -- ============================================================
 -- posts: читают участники с доступом; создаёт ТОЛЬКО владелец сообщества
@@ -312,10 +327,14 @@ create policy "posts_insert_owner_only" on public.posts
     and public.is_community_owner(public.channel_community(channel_id))
   );
 
+-- has_channel_access не даёт перенести пост UPDATE-ом channel_id в недоступный канал
 create policy "posts_update_author_or_admin" on public.posts
   for update to authenticated
   using (author_id = auth.uid() or public.is_community_admin(public.channel_community(channel_id)))
-  with check (author_id = auth.uid() or public.is_community_admin(public.channel_community(channel_id)));
+  with check (
+    (author_id = auth.uid() or public.is_community_admin(public.channel_community(channel_id)))
+    and public.has_channel_access(channel_id)
+  );
 
 create policy "posts_delete_author_or_admin" on public.posts
   for delete to authenticated

@@ -116,11 +116,13 @@ begin
     raise exception 'Требуется авторизация';
   end if;
 
+  -- Для avatar_url/bio пустая строка = «очистить» (сигнал от клиента),
+  -- null = «не трогать»; nullif превращает '' обратно в SQL NULL
   update public.profiles set
     username = coalesce(p_username, username),
     display_name = coalesce(p_display_name, display_name),
-    avatar_url = coalesce(p_avatar_url, avatar_url),
-    bio = coalesce(p_bio, bio),
+    avatar_url = case when p_avatar_url is null then avatar_url else nullif(p_avatar_url, '') end,
+    bio = case when p_bio is null then bio else nullif(p_bio, '') end,
     privacy_settings = coalesce(p_privacy_settings, privacy_settings)
   where id = auth.uid();
 

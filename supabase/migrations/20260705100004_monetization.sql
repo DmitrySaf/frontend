@@ -31,6 +31,9 @@ create table public.subscriptions (
 
 create index subscriptions_community_id_idx on public.subscriptions (community_id);
 create index subscriptions_user_id_idx on public.subscriptions (user_id);
+-- Максимум одна active-подписка на (user, community): БД отклоняет дубли
+create unique index subscriptions_one_active_per_community_user
+  on public.subscriptions (user_id, community_id) where status = 'active';
 
 create table public.transactions (
   id uuid primary key default gen_random_uuid(),

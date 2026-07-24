@@ -1,4 +1,4 @@
-import { createServerClient as _createServerClient } from "@supabase/ssr";
+import { createServerClient as _createServerClient, type SetAllCookies } from "@supabase/ssr";
 import { cookies } from "next/headers";
 import { SUPABASE_PUBLISHABLE_KEY, SUPABASE_URL } from "./env";
 import { createFetchWithTimeout } from "./fetch-with-timeout";
@@ -12,7 +12,7 @@ export async function createServerClient() {
       getAll() {
         return cookieStore.getAll();
       },
-      setAll(cookiesToSet) {
+      setAll(cookiesToSet: Parameters<SetAllCookies>[0]) {
         try {
           for (const { name, value, options } of cookiesToSet) {
             cookieStore.set(name, value, options);

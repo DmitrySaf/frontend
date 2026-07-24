@@ -40,8 +40,12 @@ export const getCourse = async (channelId: string, channelName: string): Promise
       .select(COURSE_FIELDS)
       .single();
 
-    // У участника нет прав на insert — показываем пустой курс
     if (insertError) {
+      // 42501 = участнику RLS запрещает insert — показываем пустой курс.
+      // Остальные ошибки (сеть/констрейнты) пробрасываем, чтобы не маскировать сбой.
+      if (insertError.code !== "42501") {
+        throw new Error(insertError.message);
+      }
       return {
         course: {
           id: "",
@@ -261,7 +265,8 @@ export const toggleLessonComplete = async (lessonId: string): Promise<void> => {
     ? await client.from("lesson_progress").delete().eq("id", existing.id)
     : await client.from("lesson_progress").insert({ lesson_id: lessonId, user_id: userId });
 
-  if (error) {
+  // 23505 = дубль при быстром двойном тапе; отметка уже стоит, ошибку не показываем
+  if (error && error.code !== "23505") {
     throw new Error(error.message);
   }
 };

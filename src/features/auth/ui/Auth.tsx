@@ -3,7 +3,7 @@
 import { createBrowserClient } from "@/api/browser-client";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useCallback, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import type { ConfirmationFormData, EmailFormData } from "../model/validation";
 import { ConfirmationForm } from "./ConfirmationForm";
 import { EmailForm } from "./EmailForm";
@@ -21,6 +21,19 @@ export default function Auth({ onSuccess }: AuthProps) {
   const [currentEmail, setCurrentEmail] = useState("");
   const [confirmationError, setConfirmationError] = useState<string | undefined>(undefined);
 
+  // Случайная личность для НОВОГО аккаунта — почта не попадает в username/display_name.
+  // Генерируем один раз и переиспользуем при повторной отправке кода, чтобы имя не «прыгало».
+  // Для существующих пользователей metadata игнорируется — их профиль не меняется.
+  // ponytail: 8 hex ≈ 4 млрд вариантов; при UNIQUE(username) редкая коллизия свалит регистрацию — тогда добавить ретрай
+  const identityRef = useRef<{ username: string; display_name: string } | null>(null);
+  const getNewUserIdentity = useCallback(() => {
+    if (!identityRef.current) {
+      const suffix = crypto.randomUUID().slice(0, 8);
+      identityRef.current = { username: `user_${suffix}`, display_name: `Пользователь ${suffix}` };
+    }
+    return identityRef.current;
+  }, []);
+
   const handleEmailSubmit = useCallback(
     async (data: EmailFormData) => {
       setIsLoading(true);
@@ -31,10 +44,7 @@ export default function Auth({ onSuccess }: AuthProps) {
           email: data.email,
           options: {
             shouldCreateUser: true,
-            data: {
-              username: data.email.toUpperCase().split("@")[0],
-              display_name: data.email.toLowerCase().split("@")[0],
-            },
+            data: getNewUserIdentity(),
           },
         });
 
@@ -50,7 +60,7 @@ export default function Auth({ onSuccess }: AuthProps) {
         setIsLoading(false);
       }
     },
-    [supabase]
+    [supabase, getNewUserIdentity]
   );
 
   const handleConfirmationSubmit = useCallback(
@@ -103,10 +113,7 @@ export default function Auth({ onSuccess }: AuthProps) {
         email: currentEmail,
         options: {
           shouldCreateUser: true,
-          data: {
-            username: currentEmail.toUpperCase().split("@")[0],
-            display_name: currentEmail.toLowerCase().split("@")[0],
-          },
+          data: getNewUserIdentity(),
         },
       });
 
@@ -120,7 +127,7 @@ export default function Auth({ onSuccess }: AuthProps) {
     } finally {
       setIsLoading(false);
     }
-  }, [currentEmail, supabase]);
+  }, [currentEmail, supabase, getNewUserIdentity]);
 
   return (
     <div className="space-y-6">

@@ -51,11 +51,14 @@ export const updateStorefront = async (
 
   const media = await Promise.all(
     patch.media.map((url, index) =>
-      uploadDataUrlImage(
-        "community-covers",
-        `${communityId}/storefront-${Date.now()}-${index}.jpg`,
-        url
-      )
+      // Уже загруженные URL оставляем как есть — заливаем только новые data:-медиа
+      url.startsWith("data:")
+        ? uploadDataUrlImage(
+            "community-covers",
+            `${communityId}/storefront-${Date.now()}-${index}.jpg`,
+            url
+          )
+        : url
     )
   );
 

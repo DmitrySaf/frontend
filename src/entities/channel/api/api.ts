@@ -148,6 +148,8 @@ export const createChannel = async (input: CreateChannelInput): Promise<ChannelR
       .insert({ channel_id: channel.id, title: channel.name });
 
     if (courseError) {
+      // Откатываем таб, чтобы не осталось осиротевшего канала без курса
+      await client.from("community_channels").delete().eq("id", channel.id);
       throw new Error(courseError.message);
     }
   }

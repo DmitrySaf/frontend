@@ -6,7 +6,9 @@ const METHOD_FIELDS = "id, user_id, kind, last4, brand, holder_name, is_default,
 
 function detectBrand(cardNumber: string): string {
   const digits = cardNumber.replace(/\D/g, "");
-  if (digits.startsWith("2")) return "МИР";
+  const first4 = Number(digits.slice(0, 4));
+  if (first4 >= 2200 && first4 <= 2204) return "МИР";
+  if (first4 >= 2221 && first4 <= 2720) return "Mastercard"; // вторая BIN-зона Mastercard
   if (digits.startsWith("4")) return "Visa";
   if (digits.startsWith("5")) return "Mastercard";
   return "Карта";

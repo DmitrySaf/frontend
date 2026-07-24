@@ -52,27 +52,24 @@ export function ConfirmationForm({
     (value: string, index: number) => {
       const digit = value.replace(/\D/g, "").slice(-1);
 
-      setDigits((prev) => {
-        const newDigits = [...prev];
-        newDigits[index] = digit;
+      const newDigits = [...digits];
+      newDigits[index] = digit;
+      setDigits(newDigits);
 
-        if (index === CODE_LENGTH - 1 && digit) {
-          const fullCode = newDigits.join("");
-          if (fullCode.length === CODE_LENGTH) {
-            setTimeout(() => {
-              onSubmit({ email, confirmationCode: fullCode });
-            }, 100);
-          }
+      if (index === CODE_LENGTH - 1 && digit) {
+        const fullCode = newDigits.join("");
+        if (fullCode.length === CODE_LENGTH) {
+          setTimeout(() => {
+            onSubmit({ email, confirmationCode: fullCode });
+          }, 100);
         }
-
-        return newDigits;
-      });
+      }
 
       if (digit && index < CODE_LENGTH - 1) {
         focusInput(index + 1);
       }
     },
-    [focusInput, onSubmit, email]
+    [digits, focusInput, onSubmit, email]
   );
 
   const handleKeyDown = useCallback(

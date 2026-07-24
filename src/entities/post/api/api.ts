@@ -35,6 +35,8 @@ async function getChannelCommunityId(channelId: string): Promise<string> {
 }
 
 async function uploadPostCover(channelId: string, coverUrl: string): Promise<string> {
+  // Уже загруженный URL (не data:) не перезаливаем — иначе плодятся объекты в Storage
+  if (!coverUrl.startsWith("data:")) return coverUrl;
   const communityId = await getChannelCommunityId(channelId);
   return uploadDataUrlImage("post-covers", `${communityId}/${crypto.randomUUID()}.jpg`, coverUrl);
 }
@@ -125,16 +127,21 @@ export const createPost = async (input: CreatePostInput): Promise<PostRecord> =>
 export const updatePost = async (input: UpdatePostInput): Promise<PostRecord> => {
   const client = createBrowserClient();
 
-  const coverUrl = input.coverUrl ? await uploadPostCover(input.channelId, input.coverUrl) : null;
+  const patch: Record<string, unknown> = {
+    title: input.title,
+    content: input.content,
+    updated_at: new Date().toISOString(),
+  };
+  // undefined = не трогать обложку; null = очистить; строка = заменить
+  if (input.coverUrl !== undefined) {
+    patch.cover_url = input.coverUrl
+      ? await uploadPostCover(input.channelId, input.coverUrl)
+      : null;
+  }
 
   const { data, error } = await client
     .from("posts")
-    .update({
-      title: input.title,
-      content: input.content,
-      cover_url: coverUrl,
-      updated_at: new Date().toISOString(),
-    })
+    .update(patch)
     .eq("id", input.postId)
     .select(POST_FIELDS)
     .single();
@@ -192,7 +199,8 @@ export const toggleLike = async (postId: string): Promise<void> => {
     ? await client.from("post_likes").delete().eq("id", existing.id)
     : await client.from("post_likes").insert({ post_id: postId, user_id: userId });
 
-  if (error) {
+  // 23505 = дубль при быстром двойном тапе; лайк уже поставлен, ошибку не показываем
+  if (error && error.code !== "23505") {
     throw new Error(error.message);
   }
 };

@@ -23,7 +23,7 @@ export const transformCourse = (data: CourseData): CourseView => {
           lessonNumber += 1;
           const completed = completedLessonIds.has(lesson.id);
           const locked = !completed && !previousCompleted;
-          previousCompleted = completed;
+          previousCompleted = previousCompleted && completed;
 
           return {
             id: lesson.id,

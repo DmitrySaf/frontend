@@ -14,14 +14,19 @@ create policy "media_public_read" on storage.objects
   for select to anon, authenticated
   using (bucket_id in ('community-covers', 'community-logos', 'post-covers'));
 
--- Видео уроков — по доступу к каналу (2-й сегмент пути), а не просто membership:
--- иначе free-участник качал бы signed URL для платного/приватного курса.
--- has_channel_access покрывает и админа, и участника с грантом/open-каналом.
+-- Видео уроков — по доступу к каналу урока (video_path = имя объекта в бакете),
+-- а не по одному лишь membership: иначе free-участник качал бы signed URL для
+-- платного/приватного курса. Путь остаётся {community_id}/{file} — канал берём
+-- из урока. has_channel_access покрывает и админа, и участника с грантом/open.
 create policy "lesson_videos_member_read" on storage.objects
   for select to authenticated
   using (
     bucket_id = 'lesson-videos'
-    and public.has_channel_access(((storage.foldername(name))[2])::uuid)
+    and exists (
+      select 1 from public.course_lessons l
+      where l.video_path = storage.objects.name
+        and public.has_channel_access(public.lesson_channel(l.id))
+    )
   );
 
 -- Запись во все бакеты — только админ сообщества из первого сегмента пути

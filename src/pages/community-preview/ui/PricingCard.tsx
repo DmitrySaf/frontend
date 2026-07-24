@@ -27,6 +27,9 @@ export function PricingCard({
   isJoining,
 }: PricingCardProps) {
   const isFree = tiers.length === 0;
+  // Платное сообщество без выбранного тарифа: не даём вступить (иначе клик уходит
+  // в бесплатный join на платной витрине) — просим сначала выбрать тариф
+  const needsTier = !isFree && !selectedTierId;
 
   return (
     <div className="rounded-2xl border border-gray-200 bg-surface shadow-sm p-5 space-y-3.5">
@@ -78,8 +81,15 @@ export function PricingCard({
           Открыть сообщество
         </Button>
       ) : (
-        <Button theme="primary" size="xl" fluid onClick={onJoin} isLoading={isJoining}>
-          {isFree ? "Присоединиться бесплатно" : "Присоединиться"}
+        <Button
+          theme="primary"
+          size="xl"
+          fluid
+          onClick={onJoin}
+          isLoading={isJoining}
+          isDisabled={needsTier}
+        >
+          {isFree ? "Присоединиться бесплатно" : needsTier ? "Выберите тариф" : "Присоединиться"}
         </Button>
       )}
 

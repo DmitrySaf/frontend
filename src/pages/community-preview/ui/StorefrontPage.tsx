@@ -157,27 +157,33 @@ export function StorefrontPage({ slug, inviteCode }: StorefrontPageProps) {
     }
   };
 
+  // Продолжение вступления (после выбора тарифа/авторизации). На платном сообществе
+  // без выбранного тарифа НЕ вступаем бесплатно — ведём к выбору тарифа
+  const continueJoin = () => {
+    if (selectedTier) {
+      setIsCheckoutOpen(true);
+      return;
+    }
+    if (visibleTiers.length) {
+      mobilePricingRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+      return;
+    }
+    finalizeJoin(null);
+  };
+
   const handleJoinClick = () => {
     if (!isAuthed) {
       setIsAuthDialogOpen(true);
       return;
     }
-    if (selectedTier) {
-      setIsCheckoutOpen(true);
-    } else {
-      finalizeJoin(null);
-    }
+    continueJoin();
   };
 
   const handleAuthSuccess = () => {
     setIsAuthDialogOpen(false);
     queryClient.invalidateQueries({ queryKey: storefrontQueryKeys.view(slug, inviteCode) });
     // После входа продолжаем начатое действие
-    if (selectedTier) {
-      setIsCheckoutOpen(true);
-    } else {
-      finalizeJoin(null);
-    }
+    continueJoin();
   };
 
   const handleOpenCommunity = async () => {

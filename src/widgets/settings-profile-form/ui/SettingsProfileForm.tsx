@@ -6,7 +6,7 @@ import { GlobeBold16 } from "@frosted-ui/icons";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Image from "next/image";
 import { useEffect } from "react";
-import { useFieldArray, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { SOCIAL_NETWORKS, type UserSettingsData, userSettingsSchema } from "../model";
 import { UnsavedChangesBar } from "./UnsavedChangesBar";
 
@@ -26,13 +26,7 @@ export function SettingsProfileForm({ initValues, onSubmit, isLoading }: Setting
     handleSubmit,
     formState: { errors, isSubmitting, isDirty },
     reset,
-    control,
   } = methods;
-
-  const { fields, remove } = useFieldArray<UserSettingsData>({
-    control,
-    name: "customLinks",
-  });
 
   useEffect(() => {
     reset(initValues);
@@ -108,7 +102,7 @@ export function SettingsProfileForm({ initValues, onSubmit, isLoading }: Setting
               />
             ))}
             <Input
-              name="website"
+              name="customLinks.0.url"
               size="lg"
               prefix="https://"
               Icon={GlobeBold16}

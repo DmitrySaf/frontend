@@ -21,10 +21,22 @@
     "Dialog": "open: boolean; onOpenChange: (open: boolean) => void; children?: React.ReactNode;",
     "Skeleton": "width?: number | string; height?: number | string; radius?: number | string; circle?: boolean; className?: string;",
     "Separator": "className?: string; orientation?: 'horizontal' | 'vertical';",
-    "ThemeToggle": "className?: string;"
+    "ThemeToggle": "className?: string;",
+    "Select": "name: string; size: 'md' | 'lg' | 'xl'; options: Array<{ value: string; label: string; icon?: React.ComponentType<{ className?: string }> }>; label?: string; placeholder?: string; error?: string; description?: string; isDisabled?: boolean; action?: { label: string; icon?: React.ComponentType<{ className?: string }>; onAction: () => void };",
+    "Tabs": "items: Array<{ id: string; name: string; href: string; icon?: React.ElementType }>; className?: string;",
+    "DeleteDialog": "isOpen: boolean; onClose: () => void; onDelete: () => Promise<void>; title: string; description: string; confirmText?: string; cancelText?: string;"
   },
   "overrides": {
-    "Dialog": { "cardMode": "single", "viewport": "860x600" }
+    "Button": { "cardMode": "column" },
+    "Input": { "cardMode": "column" },
+    "Textarea": { "cardMode": "column" },
+    "Select": { "cardMode": "column" },
+    "SegmentedControl": { "cardMode": "column" },
+    "Tabs": { "cardMode": "column" },
+    "Skeleton": { "cardMode": "column" },
+    "Dialog": { "cardMode": "single", "viewport": "920x700", "primaryStory": "FormDialog" },
+    "DeleteDialog": { "cardMode": "single", "viewport": "860x600" },
+    "Toaster": { "cardMode": "single", "viewport": "520x440" }
   },
   "componentSrcMap": {
     "Button": "src/shared/components/Button.tsx",
@@ -38,6 +50,11 @@
     "Dialog": "src/shared/components/Dialog.tsx",
     "Skeleton": "src/shared/components/Skeleton.tsx",
     "Separator": "src/shared/components/Separator.tsx",
-    "ThemeToggle": "src/shared/components/ThemeToggle.tsx"
+    "ThemeToggle": "src/shared/components/ThemeToggle.tsx",
+    "Select": "src/shared/components/Select.tsx",
+    "Tabs": "src/shared/components/Tabs/Tabs.tsx",
+    "DeleteDialog": "src/shared/components/DeleteDialog.tsx",
+    "Toaster": "src/shared/components/Toast.tsx",
+    "Tab": null
   }
 }

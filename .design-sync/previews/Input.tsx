@@ -1,11 +1,10 @@
-import { Search } from "lucide-react";
+// Per-icon subpath, never the barrel (see Button.tsx — the 5132-module barrel hangs preview compile).
+import { MagnifyingGlassBold16 } from "@frosted-ui/icons/MagnifyingGlassBold16";
 import type { ReactNode } from "react";
 // FormProvider/useForm come from "frontend" (the bundle's RHF instance) — NOT from
 // "react-hook-form" directly, or the context won't match the Input's useFormContext.
 import { FormProvider, Input, useForm } from "frontend";
 
-/* Input tie into react-hook-form via useFormContext — every preview wraps in a real
-   FormProvider (the same contract the app uses), seeding values so states render. */
 function Field({ defaults, children }: { defaults: Record<string, string>; children: ReactNode }) {
   const methods = useForm({ defaultValues: defaults });
   return (
@@ -15,42 +14,40 @@ function Field({ defaults, children }: { defaults: Record<string, string>; child
   );
 }
 
-export const Default = () => (
-  <Field defaults={{ name: "" }}>
-    <Input name="name" size="lg" label="Имя" placeholder="Введите имя" />
-  </Field>
-);
+const stack: React.CSSProperties = { display: "flex", flexDirection: "column", gap: 14 };
 
+// Size ladder — md/lg/xl = 36/40/48.
 export const Sizes = () => (
-  <Field defaults={{ a: "", b: "", c: "" }}>
-    <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-      <Input name="a" size="md" label="md · 36px" placeholder="md" />
-      <Input name="b" size="lg" label="lg · 40px" placeholder="lg" />
-      <Input name="c" size="xl" label="xl · 48px" placeholder="xl" />
+  <Field defaults={{ md: "", lg: "", xl: "" }}>
+    <div style={stack}>
+      <Input name="md" size="md" label="md · 36" placeholder="Введите текст" />
+      <Input name="lg" size="lg" label="lg · 40" placeholder="Введите текст" />
+      <Input name="xl" size="xl" label="xl · 48" placeholder="Введите текст" />
     </div>
   </Field>
 );
 
-export const WithIcon = () => (
-  <Field defaults={{ q: "" }}>
-    <Input name="q" size="lg" label="Поиск" Icon={Search} placeholder="Найти сообщество…" />
-  </Field>
-);
-
-export const Invalid = () => (
-  <Field defaults={{ email: "не-e-mail" }}>
-    <Input name="email" size="lg" label="E-mail" error="Введите корректный e-mail" />
-  </Field>
-);
-
-export const Clearable = () => (
-  <Field defaults={{ text: "можно очистить" }}>
-    <Input name="text" size="lg" label="Очищаемое поле" isClearable />
-  </Field>
-);
-
-export const WithPrefix = () => (
-  <Field defaults={{ slug: "my-community" }}>
-    <Input name="slug" size="lg" label="Адрес" prefix="bean.co/" />
+// Every state at size lg — placeholder, filled, icon, prefix, clearable, error, disabled.
+export const States = () => (
+  <Field
+    defaults={{
+      empty: "",
+      filled: "Пиксель",
+      search: "",
+      slug: "my-community",
+      clr: "можно очистить",
+      email: "не-e-mail",
+      dis: "Недоступно",
+    }}
+  >
+    <div style={stack}>
+      <Input name="empty" size="lg" label="Плейсхолдер" placeholder="Введите имя" />
+      <Input name="filled" size="lg" label="Заполнено" />
+      <Input name="search" size="lg" label="С иконкой" Icon={MagnifyingGlassBold16} placeholder="Поиск…" />
+      <Input name="slug" size="lg" label="Префикс" prefix="bean.co/" />
+      <Input name="clr" size="lg" label="Очищаемое" isClearable />
+      <Input name="email" size="lg" label="Ошибка" error="Введите корректный e-mail" />
+      <Input name="dis" size="lg" label="Выключено" isDisabled />
+    </div>
   </Field>
 );

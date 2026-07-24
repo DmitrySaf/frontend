@@ -5,9 +5,9 @@ borders (not shadows), a ladder of radii, and the **Onest** font. Components car
 look — you style them through **props**, not utility classes.
 
 ### Setup
-No provider is required for most components — render them directly. **Exception:** `Input` and
-`Textarea` read `react-hook-form` context. Wrap them in a `FormProvider` and bind by `name`
-(there is no `value`/`onChange` prop):
+No provider is required for most components — render them directly. **Exception:** `Input`,
+`Textarea`, and `Select` read `react-hook-form` context. Wrap them in a `FormProvider` and bind by
+`name` (there is no `value`/`onChange` prop):
 
 ```tsx
 import { FormProvider, useForm } from "react-hook-form";
@@ -36,8 +36,12 @@ classes:
   Buttons take all four; **fields (`Input`/`Textarea`) take `md`/`lg`/`xl` only** (≥16px text —
   iOS zoom rule). `lg` is the default for primary actions and fields.
 - **Booleans**: `isLoading`, `isDisabled`, `fluid` (Button); `error` (string), `isClearable`,
-  `Icon`/`IconRight` (fields/buttons — pass a lucide component).
+  `Icon`/`IconRight` (fields/buttons — pass a `@frosted-ui/icons` component, the kit's own icon
+  set; any component taking a `className` prop works).
 - **Avatar**: `shape="circle"` for people, `shape="square"` for communities; `size` = `s`/`m`/`l`.
+- **Dialog** is compound (`Dialog` › `DialogContent` › `DialogHeader`/`DialogTitle`/
+  `DialogDescription` + `DialogFooter layout="stack"|"split"`); **toasts are imperative** — mount
+  `<Toaster/>` once and call `toast.success(msg)` / `toast.error(msg, { description })`.
 
 For **your own layout glue** (not the components' internals), Tailwind v4 utilities and Bean
 tokens are available via the shipped CSS. Real token names:

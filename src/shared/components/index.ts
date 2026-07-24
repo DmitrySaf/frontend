@@ -26,7 +26,7 @@ export {
   type DropdownNoteConfig,
 } from "./Dropdown";
 export { Form } from "./Form";
-export { HydrationBoundary } from "./HydrationBoundary";
+export { HydrationBoundary } from "@tanstack/react-query";
 export { Input } from "./Input";
 export { OfflineBanner } from "./OfflineBanner";
 export { SegmentedControl } from "./SegmentedControl";
